@@ -1,0 +1,76 @@
+@CHARSET "UTF-8";
+* {	margin: 0;padding: 0;}
+body {margin: 0;padding: 0; font-family: "Myriad Set Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif,"微软雅黑";}
+ul, ol, li {list-style: none;}
+:focus {outline: 0;}
+a { color: #000;text-decoration: none;}
+img { border: 0;}
+i {  font-style: normal;}
+table { border-collapse:collapse;}
+
+/* 邀请活动 start */
+.invited_warp{ width: 100%; overflow: hidden; min-width: 1400px;}
+.invited_header{ width:100%; height: 898px; background:url(/portal/images/activity/act20171127/top.jpg) center top no-repeat;}
+.invited_pass{ width:100%; height: 1213px; background:url(/portal/images/activity/act20171127/plate2_main.jpg) center top no-repeat;}
+.invited_content{ width:100%; height: 1498px; background:url(/portal/images/activity/act20171127/plate3_main.jpg) center top no-repeat; position: relative;}
+.invited_main{ width:1010px; padding-top:165px; margin: 0 auto;}
+.invited_box{ width:1010px; overflow: hidden;}
+.invited_left{ width: 450px; float: left; margin-left: 55px; margin-top:40px;}
+.invited_num1,.invited_num2{ color: #fff; font-size: 20px; font-family: "microsoft yahei"; margin-top: 10px;}
+.invited_num1 span,.invited_num2 span{ font-size: 30px; margin:0 10px; font-weight:bold; display: inline-flex;}
+.invited_right{width: 460px; height: 200px; float: right; margin-right: 25px; position: relative;}
+.invited_r_title{ width: 460px; background:#2674bc; border-radius: 5px; padding:7px 0;}
+.invited_r_title1{ width: 440px; height: 20px; background:#15446e; border-radius: 25px; margin: 0 auto;}
+.invited_list{ width: 415px; height: 185px; position: absolute; top: 15px; left: 23px; background:#fff; box-shadow:0px 12px 11px #999 inset; }
+.invited_list table thead{ width: 100%;}
+.invited_list table thead th{ height: 30px; font-size:16px;}
+.invited_list table tbody tr td{ text-align: center; color: #2474bb; height: 30px; font-size:14px;}
+.invited_but{ width:220px; height: 45px; box-shadow: 0 5px 0 #f39800; background:#ffd96a; color: #2474bb; text-align:center; line-height: 45px; margin: 0 auto; font-size: 24px; border-radius: 25px; margin-top:40px; cursor: pointer;}
+.invited_code{ background:#2674bc; padding:30px 0; height: 190px;}
+.invited_codeMain{ width:1110px; margin: 0 auto; height: 190px;}
+.invited_codePic{ float: left;}
+.invited_codeList{ float: right; position: relative;}
+.invited_ico{ float: left; margin-right: 28px; margin-top:40px;}
+.invited_ico .ico1,.invited_ico .ico2,.invited_ico .ico3,.invited_ico .ico4{ display: block; width: 60px; height: 60px; margin: 0 auto; cursor: pointer; border:none;}
+#copy1{ display: none; width: 472px; height: 25px; line-height: 25px; background:#fff; border:1px solid #ccc; color: #888; font-size: 12px; position: absolute;top: 1px; left: 0;}
+#code2{ display: none; padding:5px; position: absolute; top: -76px; left: 74px; background:#fff; border:1px solid #ccc;}
+#code3{ display: none; padding:5px; position: absolute; top: -76px; right: 93px; background:#fff; border:1px solid #ccc;}
+.invited_ico .ico1{ background:url(/portal/images/activity/act20171127/plate3_ico01.jpg) no-repeat; border:none;}
+.invited_ico .ico2{ background:url(/portal/images/activity/act20171127/plate3_ico02.jpg) no-repeat;}
+.invited_ico .ico3{ background:url(/portal/images/activity/act20171127/plate3_ico03.jpg) no-repeat;}
+.invited_ico .ico4{ background:url(/portal/images/activity/act20171127/plate3_ico04.jpg) no-repeat;}
+.invited_ico p{ color: #fff; margin-top: 8px;}
+.invited_footer{ width:100%; padding:35px 0; background:#227ed5; overflow: hidden;}
+.invited_footerMain{ width:1110px; margin:0 auto; overflow: hidden;}
+.in_footerLeft{ width:625px; float: left;}
+.in_footTitle{ font-size: 28px; color: #fff; letter-spacing: 1px;}
+.in_footList{ counter-reset:section;}
+.in_footList ul{ overflow: hidden;}
+.in_foot_li{ margin-top:20px; overflow: hidden;}
+.in_footNum{ width:20px; height: 20px; line-height: 20px; font-size: 14px; text-align:center; color: #fff;border-radius:100%; background:#1539a8; float: left;}
+.in_footNum:before{ counter-increment: section; content:"" counter(section);}
+.in_footFont{ width: 593px; float: left; margin-left:10px; color: #fff; font-size: 18px;}
+.in_foot_p{ width:100%; color: #fff; display: inline-block; margin: 10px 0 0 30px;}
+.in_footerRight{ float: right; margin-top:125px;}
+.in_foot_ico{ float: left; margin-right: 20px;}
+.foot_ico1,.foot_ico2,.foot_ico3{ display: block; width: 119px; height: 117px;}
+.foot_ico1{ background:url(/portal/images/activity/act20171127/code_01.jpg) no-repeat; border:none;}
+.foot_ico2{ background:url(/portal/images/activity/act20171127/code_02.jpg) no-repeat;}
+.foot_ico3{ background:url(/portal/images/activity/act20171127/code_03.jpg) no-repeat;}
+.in_foot_ico p{ color: #fff; margin-top: 8px; text-align: center;}
+.blackBg{ width:100%; height: 100%; display: none; position:fixed; top: 0; left: 0; z-index: 9; background:#000; opacity: 0.7; -webkit-opacity: 0.7; -moz-opacity: 0.7; filter: Alpha(opacity=70); }
+.in_popup{ width:540px;height: 440px; z-index: 15; display: none; position:fixed; top: 50%; left: 50%;/* margin-left: -220px; margin-top:-220px; */background:#5badf8;}
+.in_popupClose{ height: 45px; padding:0 15px; text-align: center; line-height:45px; font-size:22px; color:#fff;}
+.in_popupClose span{ float: right; cursor: pointer; font-size: 46px; color: #fff;}
+.in_popupMain{ width:500px; height: 380px; margin:0 auto; overflow: hidden; position: relative;}
+.in_popup_title{ width: 500px; background:#2674bc; border-radius: 5px; padding:7px 0;}
+.in_popup_title1{ width: 480px; height: 20px; background:#15446e; border-radius: 25px; margin: 0 auto;}
+.in_popupList{ width: 455px; height: 336px; position: absolute; top: 15px; left: 23px; background:#fff; box-shadow:0px 12px 11px #999 inset; overflow-y: auto; }
+.in_popupList table thead{ width: 100%;}
+.in_popupList table thead th{ height: 30px; font-size:16px;}
+.in_popupList table tbody tr td{ text-align: center; color: #2474bb; height: 30px; font-size:14px;}
+.invest_login1{ text-align: center; margin: 35px 0 0 0; font-size:16px;}
+.invest_login1 a{ text-decoration: underline; color: #8a0214;}
+.invest_login2{ font-size: 16px; color: #000;}
+.invest_login2 a{ text-decoration: underline; color: #8a0214;}
+/* 邀请活动 end */

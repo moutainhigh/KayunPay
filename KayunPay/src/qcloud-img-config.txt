@@ -1,0 +1,12 @@
+
+#####测试配置############
+appid_test=10013338
+secretid_test=AKIDWt5Sts8yKQxHtqvCIFCjDqglywRSlOhJ
+secretkey_test=TNwVW4Pb46Q2DAqWY566IdpjV4p8kqMt
+bucket_test=yrhx1130
+
+#####测试配置##########
+appid=10013338
+secretid=AKIDWt5Sts8yKQxHtqvCIFCjDqglywRSlOhJ
+secretkey=TNwVW4Pb46Q2DAqWY566IdpjV4p8kqMt
+bucket=yrhx1130

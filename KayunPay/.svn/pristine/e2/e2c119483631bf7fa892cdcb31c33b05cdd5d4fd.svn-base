@@ -1,0 +1,201 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+	<div class="am-g">
+		<!-- 标准功能按钮  End -->
+		<!-- 条件区 Start -->
+		<div class="am-u-sm-12 am-u-md-3">
+		<form class="am-form-inline ext-form" role="form" data-am-validator>
+			<div class="am-form-group">活动类型：
+				<select data-am-selected="{btnSize: 'sm'}" name="active" id="active">
+				</select>
+			</div>
+		</form>
+		</div>
+		<div class="am-u-sm-12 am-u-md-3">
+			<div class="am-input-group am-input-group-sm">
+				<input type="text" class="am-form-field allkey"><span
+					class="am-input-group-btn">
+					<button class="am-btn am-btn-default query-btn" type="button">搜索</button>
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- 条件区  End -->
+	<!-- Table -->
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 15 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+						<li id="not"><input type="text" size="5" id="goValue" onkeypress="return IsNum(event)" value="1"/></li>
+						<li id="go"><input type="button" value="GO" onclick="$('#go').attr('index',$('#goValue').val())"/></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="../assets/js/jquery.min.js"></script>
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script src="../assets/js/amazeui.js"></script>
+	<script>
+		//查询活动列表
+		function queryPrize(){
+			YRHX.ajax({
+				url:"/queryPrizeList",
+				success:function(sucData){
+					$("#active").makeSelectMap4s(sucData);
+				},
+				error:function(data){
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			})
+		}
+		
+	
+		var maxQueryNum = 10;
+		var queryUrl = "/queryPrizeRecordList";
+		var size=0;//总页数
+		
+		//查询抽奖记录列表
+		function queryData(pNum, pSize) {
+			//对页码参数验证
+			if(isNaN(pNum)){
+				alert("GO栏请输入数字！");
+				return;
+			}
+			if(size<1){
+				size=1;
+			}
+			if(pNum > size && size != 0){
+				pNum=size;
+				$("#goValue").val(pNum);
+			}
+			YRHX.ajax({
+				url : queryUrl,
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize || maxQueryNum,
+					activeCode : $("#active").val() || "",
+					allkey : $(".allkey").val()
+				},
+				success : function(sucData) {
+					size=Math.ceil(sucData["totalRow"]/maxQueryNum);//总页数
+					makeTable(sucData.list, {
+						index : sucData["pageNumber"],
+						max : sucData["pageSize"],
+						size : sucData["totalRow"]
+					});
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+
+		}
+
+		$(".query-btn").click(function(){
+			queryData(1);
+			$("#goValue").val(1);//设置GO栏默认页码为1
+		});
+
+		$("div.pad-div").find("ul.am-pagination").find("li").not("#not").click(function() {
+			var that = $(this);
+			if (that.hasClass("am-disabled") == false) {
+				var pageNum = that.attr("index");
+				$("#goValue").val(pageNum);//更改GO栏页码
+				queryData(pageNum, maxQueryNum);
+			}
+		});
+
+		var isStatus = YRHX.sortData(RES["DATA_MAP"]["isStatus"]) ;//取出res.js中status数组常量
+		
+		//抽奖记录列表
+		function makeTable(tableData, pageData) {
+			$(".am-g").table({
+				dataFormat : function(rowObj) {
+					rowObj["status"]=isStatus[rowObj["status"]];//根据标识取出值
+					rowObj["addDateTime"] = rowObj["addDateTime"].dateformat();
+					return rowObj;
+				},
+				max : 10,
+				pag : pageData,
+				header : [ {
+					name : "",
+					text : "用户昵称",
+					html : "#{userName}"
+				}, {
+					name : "",
+					text : "活动名称",
+					html : "#{activeName}"
+				}, {
+					name : "",
+					text : "奖品名称",
+					html : "#{prizeName}"
+				}, {
+					name : "",
+					text : "处理状态",
+					html : "#{status}"
+				}, {
+					name : "",
+					text : "备注",
+					html : "#{remark}"
+				}, {
+					name : "",
+					text : "抽奖时间",
+					html : "#{addDateTime}"
+				}],
+				data : tableData
+			});
+		}
+		
+		//页面初始化
+		queryData(1);
+		queryPrize();	
+		
+		//下拉框查询
+		$("#active").change(function() {
+			queryData(1);
+			$("#goValue").val(1);//更改GO栏页码
+		});
+		
+		//延迟移除下拉框默认生成样式（默认样式会隐藏下拉框）
+		 setTimeout(function(){
+			$("#active").css("display","inline");
+		},100); 
+	</script>
+</body>
+</html>

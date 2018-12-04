@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- <title>注册</title> -->
+<title>注册</title>
+<link type="text/css" href="/portal/css/login.css" rel="stylesheet">
+<link type="text/css" href="/portal/css/public.css" rel="stylesheet">
+<link type="text/css" href="/portal/css/user.css?v=1.0.1" rel="stylesheet">
+<!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+<script type='text/javascript'>
+window._CWiQ = window._CWiQ || [];
+window.BX_CLIENT_ID = 37650; // 帐号ID
+(function() {
+var c = document.createElement('script')
+,p = 'https:'==document.location.protocol;
+c.type = 'text/javascript';
+c.async = true;
+c.src = (p?'https://':'http://')+'tp.ana.pjdsp.com/boot/0';
+var h = document.getElementsByTagName('script')[0];
+h.parentNode.insertBefore(c, h);
+})();
+</script>
+
+</head>
+<body>
+	<header id="header" class="header"></header>
+
+
+	<div class="mainContent">
+		<div class="register-block">
+			<div class="register-padding">
+				<div class="regForm">
+					<h2>新会员注册</h2>
+					<!-- <span class="mailReg">您也可以试用<a class="red">邮箱注册</a></span> -->
+					<div class="inputBox">
+						<div class="inputItem">
+							<label>昵称</label> <input type="text" class="uNickName" maxlength="10" placeholder="昵称须为2~10个字，不能全为数字"/>
+						</div>
+						<div class="inputItem">
+							<label>手机号</label> <input type="number" class="uPhone" maxlength="11" placeholder="请输入11位数字有效手机号"/>
+						</div>
+						<div class="inputItem">
+							<label>密码</label> <input type="password" class="uPwd" maxlength="15" placeholder="请输入6位以上的密码"/>
+						</div>
+						<div class="inputItem">
+							<label>确认密码</label> <input type="password" class="uPwdCheck" maxlength="15" placeholder="请重复输入密码"/>
+						</div>
+						<div class="inputItem">
+							<label>推荐人手机</label> <input type="number" class="uReferee" maxlength="11" placeholder="请输入推荐人手机号(选填)"/>
+						</div>
+						<div class="inputItem">
+							<label>验证码</label> <input type="text" class="uCheckCode" maxlength="6" placeholder="请输入验证码"/>
+							<span class="getCode"><i id="sendMsgBtn" sendToggle="0">获取验证码</i><b id="msgCounter"></b></span>
+						</div>
+						<div class="inputItem">
+							  <label>&nbsp;</label>
+							<p id="msgTips"></p> 
+						</div>
+						<div class="agreementItem">
+							<input id="reg_agree" name="agree" type="checkbox" checked="checked" style="vertical-align:middle;">
+							<a class="form-item_xy" style="margin-left:0;" href="javascript:void(0);" onClick="window.open('agreement','maxwindow','toolbar=no,width=1000,location=no,directories=no,menubar=no,scrollbars=yes,resizable=no,status=no');">同意&nbsp;《易融恒信服务协议》, 投资有风险，投资需谨慎</a>。
+						</div>
+						<div class="agreementItem">
+							<div class="submitBtn">立即注册</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="regAd">
+					<img src="/portal/images/regAd.jpg" alt="新手指南" class="regAdImg"/>
+					<p>已经是我们的会员? <a href="login" class="red">立即登录</a></p>
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+
+	<!-- 注册完提示开通存管	 -->
+	<div id="goBank">
+	<div><img class='icon_close' src="/portal/images/icons/close05.png" style="position:relative;float: right;right:70px;top:15px;cursor:pointer;"></div>
+	<div align='center' class='icon' style="position:relative;margin-top: 360px;cursor:pointer;"><!-- <img class='icon' style="position:relative;margin-top: 360px;cursor:pointer;"> -->
+		<span style="font:normal bold 30px/50px arial,sans-serif;background-color:#FFF359;color:#653F03;padding:10px 40px;border-radius:25px;">开通银行存管账户</span>
+	</div>
+	</div>
+	
+	<!-- 开通银行存管 -->
+	<div id="addBankDialog" class="add_bank_dialog" style="z-index:1113;">
+		<div class="bank_dialog_header">
+			<h4>开通银行存管</h4>
+			<div class="del"></div>
+		</div>
+		<form>
+			<div class="addIterm">
+				<label>真实姓名</label>
+				<span>
+					<input id="trueName" type="text" value="" />
+				</span>
+			</div>
+			<div class="addIterm">
+				<label>身份证号码</label>
+				<span>
+					<input id="cardId" type="text" value="" />
+				</span>
+			</div>
+			<div class="addIterm">
+				<label>银行卡号</label>
+				<span>
+					<input id="input_add_cardno" type="text" value="" /> <span class="bankCardTips">银行卡开户名必须与真实姓名保持一致</span>
+				</span>
+			</div>
+			<div class="addIterm">
+				<label>平台支付密码</label>
+				<span>
+					<input id="payPwd" type="text" value="" />
+				</span>
+			</div>
+			<div class="addIterm">
+				<label>开户银行</label>
+				<select id="bankname" class="bankname" style="width: 202px"></select>
+			</div>
+			<div class="addIterm">
+				<label>银行卡所在地</label>
+				<select id="Province" class="porvice"></select>
+				<select id="City" class="city"></select>
+			</div>
+			<div class="addIterm">
+				<label>短信校验</label>
+				<span><input type="text" id="input_add_msgmac" value="" maxlength="6" /></span>
+				<a id="sendMsgBtn1" class="vail" href="javascript:" sendToggle="0">获取验证码</a>
+				<label id="msgCounter"></label>
+			</div>
+			<div class="cardSaveBtn addIterm">
+				<div id="btn_add_save">保存</div>
+				<label style="width:200px;" id="msgTips" class="red"></label>
+			</div>
+		</form>
+	</div>
+	
+	<div id="yinying" class="safeYinying"></div>
+	<footer id="footer" class="footer"></footer>
+	<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+	<script type="text/javascript" src="/portal/js/config.js"></script>
+	<script type="text/javascript" src="/portal/js/public.js"></script>
+	<script type="text/javascript" src="/portal/js/user.js"></script>
+	<script type="text/javascript">
+		//注册成功弹窗
+		$('#goBank').css('background','url(/portal/images/register_succeed.png) center no-repeat');
+		
+		//注册成功后绑定存管按钮
+		$('#goBank .icon').click(function(){
+			bankName();//查询银行卡列表
+			provice();//查询省份地区
+			$('#goBank').hide();
+			to_center($('#addBankDialog').show());
+		});
+		$('#goBank').hide();
+		$("#yinying").hide();
+		
+		//开通银行存管账号关闭按钮（默认跳转至投资页面）
+		$('#addBankDialog .del').click(function(){
+			window.location.href="Z02";
+		}) 
+		
+		//注册成功后关闭按钮
+		$('.icon_close').click(function(){
+			$('#goBank').hide();
+			window.location.href='Z02';
+		})
+		
+		var bankname=$("#bankname");
+		var province=$("#Province");
+		var city=$("#City");
+		//省份地区列表
+		function provice(){
+			YRHX.ajax({
+				url:"/queryBankProvinceCodes",
+				success:function(sucData){
+					 province.html("");
+					 province.append("<option value='请选择省份' selected='selected'>请选择省份</option>");
+					 city.append("<option value='请选择城市' selected='selected'>请选择市区县</option>");
+					 for(var i=0;i<sucData.length;i++){
+						 var bankprovince=sucData[i];
+						 province.append("<option value='"+bankprovince.provinceCode+"'>"+bankprovince.provinceName+"</option>");
+					} 
+					
+				},
+				error:function(errorData){
+					$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+				}
+			});
+			$('#Province').change(function(){
+				var provinceCode = $(this).find('option:selected').val();
+				if("请选择省份"==provinceCode){
+					city.html("");
+					city.append("<option value='请选择城市' selected='selected'>请选择城市</option>");
+				}else{
+				YRHX.ajax({
+					url:"/queryBankCityCodes",
+					data:{"provinceCode":provinceCode},
+					success:function(sucData){
+						city.html("");
+						for(var i=0;i<sucData.length;i++){
+						var bankcity=sucData[i];
+						city.append("<option value='"+bankcity.cityCode+"'>"+bankcity.cityName+"</option>");}
+					},
+					error:function(errorData){
+					$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+				}
+				});
+				}
+				
+			});
+		}
+		//银行列表
+		function bankName(){
+			bankname.append("<option value='请选择银行名称' selected='selected'>请选择银行名称</option>")
+			YRHX.ajax({
+				url:"/querBankName",
+				success:function(sucData){
+					for(var i=0;i<sucData.length;i++){
+						var bank=sucData[i];
+					bankname.append("<option value='"+bank.bankCode+"'>"+bank.bankName+"</option>");
+					}
+				}
+			});
+		}
+		
+		//查询银行卡列表
+		$.queryCards = function(){
+			YRHX.ajax({
+				url : CONFIG.getRequestURI("bankv2List"),
+				success : function( sucData ) {
+					
+					if( sucData.trueName ){
+						$(".bank_card").show();
+						$("#addBank").hide();
+						$(".card_num").text( sucData["bankNo"]);
+						var uName = sucData["trueName"];
+						var leftWordNum = uName.length-1;
+						var frontStr = "";
+						for(var i = 0; i<leftWordNum ;i++ ){
+							frontStr +="*";
+						}
+						var uNameAll = frontStr  + uName.charAt(leftWordNum );
+						$(".card_name").text( uNameAll );
+						$(".card_logo").attr("src","/portal/images/banks/" +  sucData["bankType"] + ".jpg");
+					}else{
+						$(".bank_card").hide();
+					}
+				},
+				error : function( errorData ){
+					$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+				}
+			});
+		};
+		
+		//添加银行卡点击事件
+		$('#btn_add_save').click(function(e){
+			var bankno = $('#input_add_cardno').val();
+			var bankcity = $('#Province').val() +"|"+ $('#City').val();
+			var msgMac = $('#input_add_msgmac').val();
+	
+			if($("#trueName").val().length<2){
+				$("#btn_add_save").popUp ("err","真实姓名请输入2-10位字符");
+				return false;
+			}
+			
+			if($("#cardId").val().length!=18){
+				$("#btn_add_save").popUp ("err","请输入18位身份证号");
+				return false;
+			}
+			
+			if( bankno.length == 0 ){
+				$("#btn_add_save").popUp ("err","请输入银行卡号",function(){
+				});
+				return false;
+			}
+			
+			if($('#payPwd').val().length < 6){
+				$("#btn_add_save").popUp ("err","请输入至少6位平台支付密码");
+				return false;
+			}
+			
+			if($('#bankname').val() == "请选择银行名称"){
+				$("#btn_add_save").popUp ("err","请认真输入银行名称");
+				return false;
+			}
+			if($('#Province').val() == "请选择省份" ||$('#City').val() == "请选择城市"){
+				$("#btn_add_save").popUp ("err","请认真输入银行卡所在地");
+				return false;
+			}
+			if( msgMac.length == 0 ){
+				$("#btn_add_save").popUp ("err","请输入验证码",function(){
+					$('#input_add_msgmac').focus();
+				});
+				return false;
+			}
+			
+			
+			YRHX.ajax({
+				url : CONFIG.getRequestURI("bankv3Save"),
+				data : {
+					'bankNo':bankno,
+					'bankCode':$("#bankname").val(),
+					'bankName':$("#bankname").find("option:selected").text(), 
+					'CityCode': $("#City").val(),
+					'provinceName':$("#Province").find("option:selected").text(),
+					'CityName':$("#City").find("option:selected").text(),
+					'smsCode': msgMac,
+					'payPwd':$("#payPwd").val(),
+					'trueName':$("#trueName").val(),
+					'cardId':$("#cardId").val()
+				},
+				success : function( sucAddData ) {
+					$('#yinying').hide();
+					$('body,html').css('overflow', 'auto');
+					$('#addBankDialog').hide();
+					$("#lab_send_msgTip").text("");
+					$.queryCards();
+					alert("激活存管账户成功，您的存管支付密码默认为手机号后六位，请在安全中心页面及时修改");
+					window.location.href="Z02";
+					//重新加载数据
+				},
+				error : function( errorData ){
+					$("#lab_send_msgTip").text("");
+					 $.popTips("popTipErr",errorData.return_info || "激活存管账户失败,请确认银行卡信息是否正确");
+				}
+			});
+		});
+		
+	
+		$.registerFn = function(){
+			
+			
+			var uNickName = $(".uNickName").val();
+			var uPhone = $(".uPhone").val();
+			var uPwd = $(".uPwd").val();
+			var uPwdCheck = $(".uPwdCheck").val();
+			var uCheckCode = $(".uCheckCode").val();
+			var numRule = new RegExp("^[0-9]*$") ;
+			var uReferee = $(".uReferee").val();
+
+			if( uNickName.length < 2  ){
+				$.popTips("popTipErr","昵称须为2~10个字",function(){
+					$(".uNickName").focus();
+				 }) ;
+				return false;
+			}
+
+			if (numRule.test(uNickName)) {
+				$.popTips("popTipErr","昵称不能全为数字",function(){
+					$(".uNickName").focus();
+				 }) ;
+				return false;
+			}
+
+			if( uPhone.length == 0 || uPhone.length != 11 ){
+				$.popTips("popTipErr","请输入11位数字有效手机号!",function(){
+					$(".uPhone").focus();
+				}) ;
+				return false ;
+			}
+
+			if( uPwd.length < 6  ){
+				$.popTips("popTipErr","请输入6位以上的密码!",function(){
+					$(".uPwd").focus();
+				}) ;
+				return false ;
+			}
+			if( uPwd != uPwdCheck ){
+				$.popTips("popTipErr","确认密码不匹配!",function(){
+					$(".uPwdCheck").focus();
+				}) ;
+				return false ;
+			}
+		
+			if( uPhone == uReferee ){
+				$.popTips("popTipErr","推荐人不能为自己!",function(){
+					$(".uReferee").focus();
+				}) ;
+				return false ;
+			}
+			if( uCheckCode.length == 0 || uCheckCode.length > 6){
+				$.popTips("popTipErr","验证码不正确!",function(){
+					$(".uCheckCode").focus();
+				}) ;
+				return false ;
+			}
+			if( $("input[name='agree']").attr("checked") != "checked"){
+				$.popTips("popTipErr","请同意协议!") ;
+				return false ;
+			}
+
+			 YRHX.ajax({
+				url : CONFIG.getRequestURI("register"),
+				data : {
+					userName    : uNickName ,
+					userMobile  : uPhone ,
+					loginPasswd : uPwd,
+					uCheckCode  : uCheckCode,
+					fMobile     : uReferee
+				},
+				success : function(sucData ){
+					 _CWiQ.push(['_trackReg', 1]);
+					$('body,html').css('overflow','hidden');
+					//注册完提示开通存管
+					YRHX.Cookie("userCode",sucData.userCode).set();
+					YRHX.Cookie("userName",sucData.userName).set();
+					YRHX.Cookie("loginName",uPhone).set();
+					window.location.reload();
+				},
+				error : function(errData ){
+					 $.popTips("popTipSuc",errData.return_info,function(){
+					 }) ;
+				}
+			}); 
+		};
+
+		$(".submitBtn").click(function(){
+			$.registerFn();
+		});
+		$(window).on("keydown",function(){
+			if (event.keyCode == 13) {
+				$.registerFn();
+			}
+		});
+		
+	
+		//发送验证码
+		 $('#sendMsgBtn').click(function(){
+			if( $(".uPhone").val().length == 11 ){
+				captchaApiV2(function( capVal ){
+					$('#sendMsgBtn').sendMsg({
+						"msgCounter" : "#msgCounter",
+						"msgTips"    : "#msgTips",
+						"type"       : "0",
+						"urPhone"    : $(".uPhone").val(),
+						"url"		 : "sendMsgMobile",
+						"cv"		 : capVal
+					});
+				});
+				
+			}else{
+				$.popTips("popTipErr","请认真填写您的手机号码!") ;
+			}
+			
+		}) 
+		
+		//发送验证码
+		$('#sendMsgBtn1').click(function(){
+			if( $(this).attr("sendToggle") == 0){
+				captchaApiV2(function( capVal ){
+					$("#sendMsgBtn1").sendMsg({
+						"msgCounter" : "#msgCounter",
+						"msgTips"    : "#msgTips",
+						"type"       : "0",
+						"urPhone"    : "",
+						"url"		 : "sendMsgMac",
+						"cv"		 : capVal
+					});
+				});
+			}
+		})
+		
+		var userCode=YRHX.Cookie("userCode").get();
+		if(userCode!=null){//根据userCode判断是否注册成功
+			$("#yinying").show();
+			$('#goBank').show();
+			to_center($('#goBank'));
+		}
+	</script>
+</body>
+</html>

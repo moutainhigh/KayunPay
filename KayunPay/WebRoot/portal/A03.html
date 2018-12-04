@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>资金统计</title>
+<link type="text/css" href="/portal/css/public.css" rel="stylesheet">
+<link type="text/css" href="/portal/css/user.css" rel="stylesheet">
+<link type="text/css" href="/portal/css/datapicker/datepicker.css" rel="stylesheet">
+<!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+<body>
+	<div class="wrapper">
+		<header id="header" class="header">
+			<!--code here-->
+		</header>
+		<nav class='user_index'></nav>
+		<main class="user">
+		<div class="user-main">
+			<div class="user-main-left">
+				<h2>投资管理</h2>
+				<div class="user-nav"></div>
+			</div>
+
+			<div class="user-main-right">
+				<div class="user-main-right-c">
+					<div class="tabNav">
+						<i></i>
+						<ul>
+							<li class="active">资金统计</li>
+						</ul>
+					</div>
+
+					<div id="tab-content">
+						<div class="fundCountbox">
+							<h4
+								style="margin-bottom: 20px; font-size: 14px; font-weight: bold; color: #000000;">已累计为您赚取收益:
+								<b id="accumulatedEarnings">加载ing</b>元</h4>
+							<div class="finance-table">
+								<table>
+									<tbody>
+										<tr>
+											<th colspan="4">回报统计</th>
+										</tr>
+										<tr>
+											<td width="25%">已赚利息</td>
+											<td width="25%"><i class="red" id="reciedInterest">加载ing</i></td>
+											<td width="25%">预期待赚利息</td>
+											<td width="25%"><i class="red" id="beRecyInterest">加载ing</i></td>
+										</tr>
+										<tr>
+											<td>已收本金</td>
+											<td><i class="red" id="reciedPrincipal">加载ing</i></td>
+											<td>待收本金</td>
+											<td><i class="red" id="beRecyPrincipal">加载ing</i></td>
+										</tr>
+										<tr>
+											<td></td>
+											<td><i class="red"></i></td>
+											<td>30天内待收本金</td>
+											<td><i class="red" id="nextAmount">加载ing</i></td>
+										</tr>
+										<tr>
+											<td></td>
+											<td><i class="red"></i></td>
+											<td>30天内预期待收利息</td>
+											<td><i class="red" id="nextInterest">加载ing</i></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+
+							<div class="finance-table">
+
+
+								<table>
+									<tbody>
+										<tr>
+											<th colspan="4">资金统计</th>
+										</tr>
+										<tr>
+											<td width="25%">总借出金额</td>
+											<td width="25%"><i class="red" id="outFundsCount">加载ing</i></td>
+											<td width="25%">待回收本息</td>
+											<td width="25%"><i class="red" id="forRecovery">加载ing</i></td>
+										</tr>
+										<tr>
+											<td>已回收本息</td>
+											<td><i class="red" id="haveRecovery">加载ing</i></td>
+											<td>待回收笔数</td>
+											<td><i class="red" id="beRecyCount">加载ing</i></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		</main>
+		<footer id="footer" class="footer"></footer>
+	</div>
+	<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+	<script type="text/javascript" src="/portal/js/config.js"></script>
+	<script type="text/javascript" src="/portal/js/public.js"></script>
+	<script type="text/javascript">
+		window.userNavActive = 2;topNavSelect= '4';
+	</script>
+	<script type="text/javascript" src="/portal/js/user.js"></script>
+	<script>
+	setting(1,window.userNavActive);
+	NavMenu(1);
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("queryFundsCount4user"),
+			success : function( sucData ){
+				$("#accumulatedEarnings").text( YRHX.toDecimal2((sucData.reciedInterest - sucData.recyMFee4loan) / 10.0/10.0) + '元' );
+				$("#blanceEarnings").text( sucData.blanceEarnings );
+				
+				$("#reciedInterest").text( YRHX.toDecimal2(  sucData.reciedInterest / 10.0/10.0) + '元' );
+				$("#beRecyInterest").text(  YRHX.toDecimal2(sucData.beRecyInterest / 10.0/10.0) + '元' );
+				$("#reciedPrincipal").text(  YRHX.toDecimal2(sucData.reciedPrincipal / 10.0/10.0) + '元' );
+				$("#beRecyPrincipal").text(  YRHX.toDecimal2(sucData.beRecyPrincipal / 10.0/10.0) + '元');
+				$("#outFundsCount").text(  YRHX.toDecimal2(sucData.outFundsCount / 10.0/10.0) + '元');
+				$("#haveRecovery").text(  YRHX.toDecimal2(sucData.haveRecovery / 10.0/10.0) + '元');
+				$("#forRecovery").text(  YRHX.toDecimal2(sucData.forRecovery / 10.0/10.0) + '元');
+				
+
+				$("#nextAmount").text(  YRHX.toDecimal2((sucData.nextAmount||0)/ 10.0/10.0) + '元' );
+				$("#nextInterest").text(  YRHX.toDecimal2((sucData.nextInterest||0) / 10.0/10.0) + '元');
+				
+				$("#beRecyCount").text( sucData.beRecyCount );
+				$("#fee").text( YRHX.toDecimal2(sucData.recyMFee4loan / 10.0/10.0) + '元' );
+				
+				$("#yzyj").text( YRHX.toDecimal2(sucData.yzyj / 10.0/10.0) + '元');
+				$("#yyxjq").text( YRHX.toDecimal2(sucData.yyxjq / 10.0/10.0) + '元');
+				$("#dsyj").text( YRHX.toDecimal2(sucData.dsyj / 10.0/10.0) + '元');
+			},
+			error : function( errData ){
+				 $.popTips("popTipErr", errData.return_info || "链接服务失败" );
+			}
+		});
+	</script>
+
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>风险承受能力测评</title>
+<link type="text/css" href="/portal/css/public.css?v=1.0.0" rel="stylesheet">
+<link type="text/css" href="/portal/css/user.css?v=1.0.1" rel="stylesheet">
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/config.js?v=1.2.18" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js?v=1.2.18" charset="utf-8"></script>
+<script>   topNavSelect= '3';</script>
+<script type="text/javascript" src="/portal/js/public.js?v=1.8.27"></script>
+</head>
+<body>
+	<div class="wrapper">
+	    <header id="header" class="header">
+	        <!--code here-->
+	    </header>
+	    <div class="assessResult">
+	    	<div class="result">
+	    		<span></span>
+	    	</div>
+	    	<p></p>
+	    	<div class="result_btn">
+	    		<a href="/assessment" class="againAssess">重新评估</a>
+	    		<a href="/Z02?navTab=1" class="resultInvest">立即投资</a>
+	    	</div>
+	    </div>
+	    <footer id="footer" class="footer"></footer>
+	</div>
+	<script>
+		function assessText(){
+			var assess = "";
+			var assesstxt="";
+			var result = YRHX.queryString("level");
+			if(result =="A"){
+				assess = "保守型 ";
+				assesstxt="您对风险比较敏感，更注重资产的安全性，力求确保本金绝对安全。";
+			}else if(result =="B"){
+				assess = "稳健型 ";
+				assesstxt="从总体投资来看，在风险较小的情况下获得一定的收益是您主要的投资目的。";
+			}else if(result =="C"){
+				assess = "进取型 ";
+				assesstxt="您愿意承担一定的风险来获取更高的收益。";
+			}else if(result =="D"){
+				assess = "冒险型";
+				assesstxt="追求高收益，勇于承受高风险是您的投资策略，倾向于尝试各种资产配置。";
+			}else{
+				alert("跳转失败 ");
+				window.location.href="/C01";
+			}
+			
+			$(".result span").text(assess);
+			$(".assessResult p").text(assesstxt);
+		}
+	
+		$(function(){
+			
+			assessText();
+		});
+	
+	</script>
+</body>
+</html>

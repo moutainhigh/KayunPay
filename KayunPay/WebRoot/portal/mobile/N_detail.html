@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>易融恒信提示 - 易融恒信，做中国最大的网贷!</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link type="text/css" href="/portal/mobile/css/style.css" rel="stylesheet" />
+	<script type="text/javascript" src="/portal/mobile/js/jquery-1.7.1.min.js"></script>
+</head>
+<body>
+<!-- <div class="top_panel has_back">
+	<a id="back" class="back iconfont" href="/notice/N_index.html" rel="external">&#xe619;</a>
+	最新公告
+</div> -->
+<div class="new_text">
+	<h1>标题</h1>
+	<p id="timeDate" style="padding:10px;"></p>
+	<div class="text">
+		详细内容
+	</div>
+</div>
+<script>
+
+$.queryString = function(item){
+	var svalue = location.search.match(new RegExp("[\?\&]" + item + "=([^\&]*)(\&?)","i"));
+	return svalue ? svalue[1] : svalue;
+};
+
+var articleId = $.queryString("id");
+
+$.ajax({
+		url : "/queryNewsDetail",
+		data:{
+			"id": articleId
+		},
+		success : function( sucData ){
+			var renturnData = sucData.return_data;
+			if( renturnData ){
+				
+				$(".new_text h1").text( renturnData["title"]);
+				
+				$(".text").html( renturnData["content"]);
+				
+				$("#timeDate").text( renturnData["upDateTime"].dateformat() );
+				
+				$("#clicks").text( renturnData["clicks"] );
+			}else{
+				
+			}
+		},
+		error: function( errData ){
+			
+		}
+	});
+String.prototype.dateformat = function(){
+	var temp = this ;
+	var returnVal = "" ;
+	if( this.length == 6 ){
+		//temp = "00000000" + this ;
+		returnVal += temp.substring(0,2);
+		returnVal += ":" ;
+		returnVal += temp.substring(2,4);
+		returnVal += ":" ;
+		returnVal += temp.substring(4,6);
+	}
+	if( this.length == 8){
+		//temp = this + "000000";
+		returnVal = temp.substring(0,4);
+		returnVal += "-" ;
+		returnVal += temp.substring(4,6);
+		returnVal += "-" ;
+		returnVal += temp.substring(6,8);
+	}
+	if( this.length == 14){
+		returnVal = temp.substring(0,4);
+		returnVal += "-" ;
+		returnVal += temp.substring(4,6);
+		returnVal += "-" ;
+		returnVal += temp.substring(6,8);
+		returnVal += " " ;
+		returnVal += temp.substring(8,10);
+		returnVal += ":" ;
+		returnVal += temp.substring(10,12);
+		returnVal += ":" ;
+		returnVal += temp.substring(12,14);
+	}
+	return returnVal ;
+};
+
+</script>
+
+</body>
+</html>

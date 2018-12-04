@@ -1,0 +1,35 @@
+package com.dutiantech.plugins;
+
+import javax.servlet.ServletOutputStream;
+
+import com.dutiantech.model.Contracts;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+
+/**
+ * 电子合同 pdf 文件输出类
+ * 
+ * @author stonexk
+ *
+ */
+public class ContractPDFReportV3 extends PDFReport {
+
+	public ContractPDFReportV3(ServletOutputStream os) {
+		super(os);
+	}
+
+	/**
+	 * 输出电子合同
+	 * 
+	 * @throws DocumentException
+	 */
+	public void generatePDF() throws DocumentException {
+		Contracts contracts = (Contracts) contractMap.get("contracts");
+
+		String content = contracts.getStr("content");
+
+		document.add(createParagraph(content, textfontBig, Paragraph.ALIGN_LEFT));
+
+		document.close();
+	}
+}

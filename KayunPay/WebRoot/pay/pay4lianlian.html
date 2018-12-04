@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<title>易融恒信收银台-生成订单</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="alternate icon" type="image/png" href="/assets/i/favicon.png">
+<link rel="stylesheet" href="/assets/css/amazeui.min.css" />
+<script src="/assets/js/jquery.min.js"></script>
+<script src="/app/js/res.js"></script>
+<script src="/app/js/biz.js"></script>
+</head>
+<body>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		function postData( data ){
+			var ExportForm = document.createElement("FORM");
+			document.body.appendChild(ExportForm); 
+			ExportForm.method = "POST";  
+		    ExportForm.action = "https://cashier.lianlianpay.com/payment/bankgateway.htm"; 
+		    
+		    for( var key in data ){
+		    	var ele = document.createElement("input");  
+		    	ele.setAttribute("type", "hidden");
+		    	ele.setAttribute("name" , key );
+		    	ele.value = data[key];
+		    	ExportForm.appendChild(ele);
+		    }
+		    
+		    ExportForm.submit();
+		}
+		YRHX.ajax({
+			"url" : "/lianlian_webBankPay",
+			"data" : {
+				"payAmount" : YRHX.queryString("chargeMoney") ,
+				"hostName" : window.location.origin ,
+				"bankType" : YRHX.queryString("bankCode")//"03010000"
+			},
+			"success" : function(data ){
+				postData(data);
+			}
+		});
+	</script>
+</body>
+
+</html>

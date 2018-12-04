@@ -1,0 +1,41 @@
+//输入验证
+function inputCheckout(nums,that,thats){
+	if($(".am-alert")!=null){//若存在默认验证信息，则清除
+		$(".am-alert").remove();
+	}
+	if(flag){
+		//输入框后增加span标签作为输入提示内容
+		$(thats).after("<span style='color:red'></span>");
+		flag=false;
+	}
+	 var minlength=$(that).attr("minlength");//获取下限
+	 var maxlength=$(that).attr("maxlength");//获取上限
+	 var placeholder=$(that).attr("placeholder");//获取提示语
+	 var text=$(that).val();//获取输入框数据
+	 if(nums!=null){//待验证数字数组不为空
+		 var name=$(that).attr("name");//获取当前标签name值
+		 var result=$.inArray(name,nums);//遍历数组，判断是否需要验证数字输入
+		 if(result!=-1){
+			 if(isNaN(text)){//判断是否是数字
+				 $(that).next().html("请输入数字");
+					return 0;
+			 }
+		 }  
+	 }
+	 
+	 //验证输入位数是否正确
+	  if(minlength==null&&maxlength==null){//无上下限不验证
+		 return;
+	 }else if(minlength!=null){
+		 if(text.length==0||text.length<minlength){//输入小于最小值且text为空
+			 $(that).next().html(placeholder);
+			 return 0;
+		 }
+	 }else if(maxlength!=null){
+		 if(text.length==0||text.length>maxlength){//输入超过最大值且text为空
+			 $(that).next().html(placeholder);
+			 return 0;
+		 }
+	 } 
+	 $(that).next().html('');//输入正常清空提示
+}

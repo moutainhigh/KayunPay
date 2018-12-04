@@ -1,0 +1,587 @@
+package com.dutiantech.controller.admin;
+
+import com.dutiantech.anno.AuthNum;
+import com.dutiantech.controller.BaseController;
+import com.dutiantech.util.CommonUtil;
+import com.jfinal.core.ActionKey;
+
+public class ActionController extends BaseController{
+	
+	/**
+	 * --------------------- HTML 路径 映射 BEGIN--------------------------
+	 * 							(路径page开头)
+	 */
+
+	@ActionKey("/login")
+	public void login(){
+//		String aCode = UIDUtil.generate() ;
+//		//加入验证码识别码
+//		setCookie("cac_login_v1", aCode , 60) ;
+//		CACHED.put( aCode , "11|11" , true , 60 );	//设置buid和sid
+		forward("/login.html");
+	}
+	
+	@ActionKey("/first")
+	public void first(){
+		forward("/pages/default.html");
+	}
+	
+	@ActionKey("/main")
+	public void main(){
+		forward("/main.html");
+	}
+	
+	@ActionKey("/pageUserMgrForm")
+	public void pageUserMgrForm(){
+		forward("/pages/admin-user-manager-form.html");
+	}
+	
+	@ActionKey("/pageTransferMgrForm")
+	public void pageTransferMgrForm(){
+		forward("/pages/admin-transfer-info-form.html");
+	}
+	
+	@ActionKey("/pageRoleForm")
+	public void pageRoleForm(){
+		forward("/pages/admin-role-form.html");
+	}
+	
+	@ActionKey("/pageFundsForm")
+	public void pageFundsForm(){
+		forward("/pages/funds-form.html");;
+	}
+	
+	@ActionKey("/pageFundsTraceForm")
+	public void pageFundsTraceForm(){
+		forward("/pages/funds-trace-form.html");;
+	}
+	
+	@ActionKey("/pageFundsTraceList")
+	public void pageFundsTraceList(){
+		forward("/pages/funds-trace-list.html");
+	}
+	
+	@ActionKey("/pageLoanBasicForm")
+	public void pageLoanBasicForm(){
+		forward("/pages/loan-basic-form.html");
+	}
+	
+	@ActionKey("/pageLoanForm")
+	public void pageLoanForm(){
+		forward("/pages/loan-form.html");
+	}
+	
+	@ActionKey("/mLoanPubList")
+	public void mLoanPubList(){
+		forward("/pages/loan-pub-list.html");
+	}
+	
+	@ActionKey("/pageLoanList")
+	public void pageLoanList(){
+		forward("/pages/loan-list.html");
+	}
+	
+	@ActionKey("/pageLoanTraceList")
+	public void pageLoanTraceList(){
+		forward("/pages/loan-trace-list.html");
+	}
+	
+	@ActionKey("/pageLoanNoticeForm")
+	public void pageLoanNoticeForm(){
+		forward("/pages/loan-notice-form.html");
+	}
+	
+	@ActionKey("/pageLoanNoticeList")
+	public void pageLoanNoticeList(){
+		forward("/pages/loan-notice-list.html");
+	}
+	
+	@ActionKey("/pageLoanTransferForm")
+	public void pageLoanTransferForm(){
+		forward("/pages/loan-transfer-form.html");;
+	}
+	
+	@ActionKey("/pageLoanOverdueList")
+	public void pageLoanOverdueList(){
+		forward("/pages/loan-overdue-list.html");;
+	}
+	
+	@ActionKey("/pageLoanOverdueForm")
+	public void pageLoanOverdueForm(){
+		forward("/pages/loan-overdue-form.html");;
+	}
+
+	@ActionKey("/pageUserList")
+	public void pageUserList(){
+		forward("/pages/user-list.html");
+	}
+	
+	@ActionKey("/pageUserForm")
+	public void pageUserForm(){
+		forward("/pages/user-form.html");
+	}
+	
+	@ActionKey("/pageUserAuthedForm")
+	public void pageUserAuthedForm(){
+		forward("/pages/user-authed-form.html");
+	}
+	
+	@ActionKey("/pageUserLoanTraceList")
+	public void pageUserLoanTraceList(){
+		forward("/pages/user-loan-trace-list.html");
+	}
+	
+	@ActionKey("/pageCreateLoanNotice")
+	public void pageCreateLoanNotice(){
+		forward("/pages/loan-notice-create-form.html");
+	}
+	@ActionKey("/pageCreatePlatformUser")
+	public void pageCreatePlatformUser(){
+		forward("/pages/user-create.html");
+	}
+	
+	@ActionKey("/pageLoanApplyForm")
+	public void pageLoanFormBak(){
+		forward("/pages/loan-apply-form.html");
+	}
+	
+	@ActionKey("/pageLoanApplyList")
+	public void pageLoanApplyList(){
+		forward("/pages/loan-apply-list.html");
+	}
+	
+	@ActionKey("/pageLoanPubList")
+	public void pageLoanPubList(){
+		forward("/pages/loan-pub-list.html");
+	}
+	
+	@ActionKey("/bizLog")
+	public void bizLog(){
+		forward("/pages/biz-log-list.html");
+	}
+	
+	@ActionKey("/bizLogForm")
+	public void bizLogForm(){
+		forward("/pages/biz-log-form.html");
+	}
+	
+	@ActionKey("/pageContentNewsForm")
+	public void pageContentNewsForm(){
+		forward("/pages/content-news-form.html");
+	}
+	
+	@ActionKey("/pageShopProductForm")
+	public void pageShopProductForm(){
+		forward("/pages/shop-product-form.html");
+	}
+	
+	@ActionKey("/pageShopExchangedForm")
+	public void pageShopExchangedForm(){
+		forward("/pages/shop-exchanged-form.html");
+	}
+	
+	@ActionKey("/pageTJJLForm")
+	public void pageTJJLForm(){
+		forward("/pages/user-tj-form.html");
+	}
+	
+	@ActionKey("/pageRechargeTraceList")
+	public void pageRechargeTraceList(){
+		forward("/pages/funds-cz-list.html");
+	}
+	
+	@ActionKey("/pageWithdrawTraceList")
+	public void pageWithdrawTraceList(){
+		forward("/pages/funds-tx-list.html");
+	}
+	
+	@ActionKey("/pageJiangQuanForm")
+	public void pageTicketForm(){
+		forward("/pages/jiangquan-form.html");
+	}
+	
+	@ActionKey("/pageUserScoreDetail")
+	public void pageUserScoreDetail(){
+		forward("/pages/user-score-detail.html");
+	}
+	
+	@ActionKey("/contract")
+	public void contract(){
+		forward("/portal/contract.html");
+	}
+	
+	@ActionKey("/contractV2")
+	public void contractV2() {
+		forward("/portal/contractV2.html");
+	}
+	
+	@ActionKey("/pageContractsFrom")
+	public void pageContractsFrom(){
+		forward("/pages/contracts-form.html");
+	}
+	
+	/**
+	 * --------------------- HTML 路径 映射      END--------------------------
+	 * 							(路径page开头)
+	 */
+	
+	/**
+	 * --------------------- 系统菜单 路径 映射   BEGIN--------------------------
+	 * 							(路径m开头)
+	 */
+	
+	@AuthNum(value=10,pval=10,desc="系统管理")
+	public void mSysMgr(){
+	}
+	
+	@ActionKey("/mOpManager")
+	@AuthNum(value=11,pval=10,desc="操作员管理")
+	public void mOpManager(){
+		forward("/pages/admin-user-manager-list.html");
+	}
+	
+	@ActionKey("/mMenuManager")
+	@AuthNum(value=12,pval=10,desc="菜单管理")
+	public void mMenuManager(){
+		forward("/pages/admin-menu-manager.html");
+	}
+	
+	@ActionKey("/mRoleManager")
+	@AuthNum(value=13,pval=10,desc="角色管理")
+	public void mRoleManager(){
+		forward("/pages/admin-role-list.html");
+	}
+	
+	@ActionKey("/mTransferInfo")
+	@AuthNum(value=75,pval=10,desc="债权人管理")
+	public void mTransferInfo(){
+		forward("/pages/admin-transfer-info-list.html");
+	}
+	
+	@ActionKey("/mPlatFormSettings")
+	@AuthNum(value=200,pval=10,desc="平台配置")
+	public void mPlatFormSettings(){
+		forward("/pages/admin-plaform-setting-list.html");
+	}
+	
+	@ActionKey("/mPlatFormSettingsForm") 
+	@AuthNum(value=201,pval=10,desc="平台配置表单")
+	public void mPlatFormSettingsForm(){
+		forward("/pages/admin-platform-setting-form.html");
+	}
+	
+	
+	@AuthNum(value=14,pval=14,desc="发标申请")
+	public void mLoanApplyMgr(){
+		
+	}
+
+	@ActionKey("/mLoanApplyList")
+	@AuthNum(value=15,pval=14,desc="申请列表")
+	public void mLoanApplyNewList(){
+		forward("/pages/loan-apply-list.html");
+	}
+	
+	@ActionKey("/mLoanApplyUserList")
+	@AuthNum(value=16,pval=14,desc="借款人列表")
+	public void mLoanApplyUserList(){
+		forward("/pages/loan-apply-user-list.html");
+	}
+	
+	@ActionKey("/mLoanApplyForm")
+	@AuthNum(value=17,pval=14,desc="申请贷款")
+	public void mLoanApplyForm(){
+		redirect("/pageLoanApplyForm?opType=new");
+	}
+	
+	@ActionKey("/mLoanApplyXSList")
+	@AuthNum(value=18,pval=14,desc="信审")
+	public void mLoanApplyXSList(){
+		forward("/pages/loan-apply-xs-list.html");
+	}
+	
+	@ActionKey("/mLoanApplyAuditList")
+	@AuthNum(value=19,pval=14,desc="风控审核")
+	public void mLoanApplyAuditList(){
+		forward("/pages/loan-apply-audit-list.html");
+	}
+	
+	
+	@AuthNum(value=26,pval=26,desc="贷款管理")
+	public void mLoanMgr(){
+		
+	}
+	
+	@ActionKey("/mHKGL")
+	@AuthNum(value=27,pval=26,desc="还款管理")
+	public void mHKGL(){
+		forward("/pages/loan-hk-list.html");
+	}
+	
+	@ActionKey("/mLoanJRHK")
+	@AuthNum(value=28,pval=26,desc="今日还款")
+	public void mLoanJRHK(){
+		forward("/pages/loan-jrhk-list.html");
+	}
+	
+	@ActionKey("/mLoanMade")
+	@AuthNum(value=29,pval=26,desc="制作新标")
+	public void mLoanMade(){
+		forward("/pages/loan-made-list.html");
+	}
+	
+	@ActionKey("/mPubLoanManager")
+	@AuthNum(value=30,pval=26,desc="待发布")
+	public void mPubLoanManager(){
+		forward("/pages/loan-pub-list.html");
+	}
+	
+	@ActionKey("/mLoanZB")
+	@AuthNum(value=31,pval=26,desc="招标中")
+	public void mLoanZB(){
+		forward("/pages/loan-zbz-list.html");
+	}
+	
+	@ActionKey("/mLoanAuditMgr")
+	@AuthNum(value=32,pval=26,desc="已满标")
+	public void mLoanAuditMgr(){
+		forward("/pages/loan-audit-list.html");
+	}
+	
+	@ActionKey("/mOverLoan")
+	@AuthNum(value=33,pval=26,desc="已流标")
+	public void mLoanOverdueManager(){
+		forward("/pages/loan-ylb-list.html");
+	}
+	
+	@ActionKey("/mLoanList")
+	@AuthNum(value=34,pval=26,desc="贷款列表")
+	public void mLoanList(){
+		forward("/pages/loan-list.html");
+	}
+	
+	@ActionKey("/mCJFBGG")
+	@AuthNum(value=35,pval=26,desc="创建发标公告")
+	public void mLoanHK(){
+		forward("/pages/loan-notice-create-form.html");
+	}
+	
+	@ActionKey("/mLoanNoticeManager")
+	@AuthNum(value=36,pval=26,desc="审核发标公告")
+	public void mLoanNoticeManager(){
+		forward("/pages/loan-notice-list.html");
+	}
+	
+	
+	@AuthNum(value=39,pval=39,desc="财务管理")
+	public void mFundManager(){
+	}
+	
+	@ActionKey("/mLiCaiRenAccount")
+	@AuthNum(value=40,pval=39,desc="理财人账户")
+	public void mLiCaiRenAccount(){
+		forward("/pages/funds-mananger1-list.html");
+	}
+	
+	@ActionKey("/mJieKuanRenAccount")
+	@AuthNum(value=41,pval=39,desc="借款人账户")
+	public void mJieKuanRenAccount(){
+		forward("/pages/funds-mananger2-list.html");
+	}
+
+	@ActionKey("/mWithdrawalsTraceList")
+	@AuthNum(value=42,pval=39,desc="提现流水")
+	public void mWithdrawalsTraceList(){
+		forward("/pages/funds-tx-list.html");
+	}
+	
+	@ActionKey("/mRechargeTraceList")
+	@AuthNum(value=43,pval=39,desc="充值流水")
+	public void mRechargeTraceList(){
+		forward("/pages/funds-cz-list.html");
+	}
+	
+	@ActionKey("/mfundsTrace")
+	@AuthNum(value=44,pval=39,desc="资金流水")
+	public void fundTrace(){
+		forward("/pages/funds-trace-list.html");
+	}
+	
+	@ActionKey("/mWithdrawalsAudit")
+	@AuthNum(value=45,pval=39,desc="提现管理")
+	public void mWithdrawalsAudit(){
+		forward("/pages/funds-tixian-sh-list.html");
+	}
+	
+	@ActionKey("/mUpdateBank")
+	@AuthNum(value=46,pval=39,desc="修改银行卡号")
+	public void mUpdateBank(){
+		if ("lianlian".equals(CommonUtil.PAY_INTERFACE)) {
+			forward("/pages/update-bank-form.html");	
+		} else if ("fuiou".equals(CommonUtil.PAY_INTERFACE)) {
+			forward("/pages/update-bank-fuiou.html");
+		}
+	}
+	
+	@ActionKey("/mUnbindBank4LianLian")
+	@AuthNum(value=47,pval=39,desc="解绑理财卡(LL)")
+	public void mUnbindBank4LianLian(){
+		forward("/pages/update-unbindbank4lianlian-form.html");
+	}
+	
+	@ActionKey("/mABCDEFG")
+	@AuthNum(value=48,pval=39,desc="商银信商户提现")
+	public void mABCDEFG(){
+		forward("/pages/syx-adv.html");
+	}
+	
+	@AuthNum(value=49,pval=49,desc="用户管理")
+	public void mPlatformUserManager(){
+	}
+	
+	@ActionKey("/mPlatformUserList")
+	@AuthNum(value=50,pval=49,desc="用户中心")
+	public void mPlatformUserList(){
+		forward("/pages/user-list.html");
+	}
+	
+	@ActionKey("/mPlatformUserAuthed")
+	@AuthNum(value=51,pval=49,desc="认证中心")
+	public void mPlatformUserAuthed(){
+		forward("/pages/user-authed-list.html");
+	}
+	
+	@ActionKey("/mPlatformUserScore")
+	@AuthNum(value=52,pval=49,desc="积分管理")
+	public void mPlatformUserScore(){
+		forward("/pages/user-score-list.html");
+	}
+	
+	@ActionKey("/mPlatFormUserDetailList")
+	@AuthNum(value=54,pval=49,desc="积分明细")
+	public void mPlatFormUserDetailList(){
+		forward("/pages/user-score-detail.html");
+	}
+	
+	@ActionKey("/mTJJL")
+	@AuthNum(value=53,pval=49,desc="推荐奖励")
+	public void mTJYJ(){
+		forward("/pages/user-tj-list.html");
+	}
+	
+	@ActionKey("/mUpdateMobile")
+	@AuthNum(value=55,pval=49,desc="修改手机号")
+	public void mUpdateMobile(){
+		forward("/pages/update-mobile-form.html");
+	}
+	
+	@AuthNum(value=58,pval=58,desc="内容管理")
+	public void mWebContentManager(){
+	}
+	
+	@ActionKey("/mContentNews")
+	@AuthNum(value=59,pval=58,desc="文章信息")
+	public void mDocManager(){
+		forward("/pages/content-news-list.html");
+	}
+	@ActionKey("/mPushMessage")
+	@AuthNum(value=60,pval=58,desc="APP消息推送")
+	public void mPushMessage(){
+		forward("/pages/app-message-form.html");
+	}
+	
+	@ActionKey("/mSendMobileMsg")
+	@AuthNum(value=61,pval=58,desc="发送手机短信")
+	public void mSendMobileMsg(){
+		forward("/pages/send-message-form.html");
+	}
+	
+	@AuthNum(value=65,pval=65,desc="积分商城")
+	public void mScoreShop(){
+	}
+	
+	@ActionKey("/mProductManager")
+	@AuthNum(value=66,pval=65,desc="商品管理")
+	public void mProductManager(){
+		forward("/pages/shop-product-list.html");
+	}
+	
+	@ActionKey("/mExchangedList")
+	@AuthNum(value=67,pval=65,desc="兑换明细")
+	public void mExchangedList(){
+		forward("/pages/shop-exchanged-list.html");
+	}
+	
+	@AuthNum(value=70,pval=70,desc="奖券")
+	public void mJiangQuan(){
+	}
+	
+	@ActionKey("/mCreateJiangQuan")
+	@AuthNum(value=71,pval=70,desc="新增奖券")
+	public void mCreateJiangQuan(){
+		forward("/pages/jiangquan-form.html");
+	}
+	
+	@ActionKey("/mJiangQuanList")
+	@AuthNum(value=72,pval=70,desc="奖券列表")
+	public void mJiangQuanList(){
+		forward("/pages/jiangquan-list.html");
+	}
+	
+	@ActionKey("/mSubTicket")
+	@AuthNum(value=73,pval=70,desc="奖券列表")
+	public void mSubTicket(){
+		forward("/pages/sub-ticket-form.html");
+	}
+
+	@ActionKey("/mBatchPoints")
+	@AuthNum(value=74,pval=49,desc="批量积分修改")
+	public void mBatchPoints() {
+		forward("/pages/batch-points-form.html");
+	}
+	
+	@ActionKey("/mBatchTickets")
+	@AuthNum(value = 75, pval = 49, desc = "批量发放奖券")
+	public void mBatchTickets() {
+		forward("/pages/batch-tickets-form.html");
+	}
+	@ActionKey("/mUserJqList")
+	@AuthNum(value = 75, pval = 49, desc = "个人投资加权金额查询")
+	public void mUserJqList() {
+		forward("/pages/funds-jq-list.html");
+	}
+	
+	@ActionKey("/mContractTemplate")
+	@AuthNum(value = 76,pval = 10,desc="合同模板管理")
+	public void mContractTemplate(){
+		forward("/pages/admin-contractTemplate-list.html");
+	}
+	@ActionKey("/pageTemplateForm")
+	public void pageTemplateForm(){
+		forward("/pages/admin-contractTemplate-form.html");
+	}
+	@AuthNum(value = 80, pval = 80, desc = "抽奖管理")
+	public void mPrize() {
+	}
+	
+	@ActionKey("/mPrizeRecord")
+	@AuthNum(value = 81, pval = 80, desc = "抽奖记录")
+	public void mPrizeRecord() {
+		forward("/pages/prize-record-list.html");
+	}
+	
+	@AuthNum(value=90, pval=90, desc="合同")
+	public void mContract(){
+	}
+	@ActionKey("/mContMrg")
+	@AuthNum(value=91, pval=90, desc="合同管理")
+	public void mContMrg(){
+		forward("/pages/contracts.html");
+	}
+	
+	/**
+	 * --------------------- 系统菜单 路径 映射       END--------------------------
+	 * 							(路径m开头)
+	 */
+	
+}

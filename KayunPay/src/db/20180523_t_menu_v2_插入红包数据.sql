@@ -1,0 +1,1 @@
+INSERT INTO `t_menu_v2` VALUES (0047, 39, '红包发放', 'A', '/voucherPayTrace', 'com.dutiantech.controller.admin.ActionController', 'voucherPayTrace', 'A', '自动生成');

@@ -1,0 +1,150 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+	<!-- Table -->
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 15 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+						<li id="not"><input type="text" size="5" id="goValue" onkeypress="return IsNum(event)" value="1"/></li>
+						<li id="go"><input type="button" value="GO" onclick="$('#go').attr('index',$('#goValue').val())"/></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="../assets/js/jquery.min.js"></script>
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script>
+		var maxQueryNum = 10 ;
+		var userCode = YRHX.queryString("userCode") || "";
+		var size = 0;//总页数
+				
+		//查询实现
+		function queryData( pNum , pSize ){
+			//对页码参数验证
+			if(isNaN(pNum)){
+				alert("GO栏请输入数字！");
+				return;
+			}
+			size = size < 1 ? 1 : size;
+			if(pNum > size && size != 0){
+				pNum=size;
+				$("#goValue").val(pNum);
+			}
+			YRHX.ajax({
+				url : "/queryAutoLoanByPage",
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize ||maxQueryNum ,
+					userCode : userCode
+				},
+				success : function(sucData){
+					size=Math.ceil(sucData["totalRow"]/maxQueryNum);//总页数
+					makeTable(sucData.list , {
+						index : sucData["pageNumber"] ,
+						max : sucData["pageSize"] ,
+						size : sucData["totalRow"]
+					});
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+			
+		}
+		
+		$("div.pad-div").initPagEvent( queryData );
+		
+		function makeTable( tableData ,pageData){
+			$(".am-g").table({
+				dataFormat : function(rowObj) {
+					rowObj["bizDateTime"] = rowObj["bizDateTime"].dateformat();
+					rowObj["accessPort"] = rowObj["accessPort"];
+					rowObj["onceMinAmount"] = rowObj["onceMinAmount"] || " ";
+					rowObj["onceMaxAmount"] = rowObj["onceMaxAmount"] || " ";
+					rowObj["autoMinLim"] = rowObj["autoMinLim"] || " ";
+					rowObj["autoMaxLim"] = rowObj["autoMaxLim"] || " ";
+					rowObj["refundType"] = rowObj["refundType"] || " ";
+					rowObj["autoType"] = rowObj["autoType"] || " ";
+					rowObj["useTicket"] = rowObj["useTicket"] || " ";
+					rowObj["priorityMode"] = rowObj["priorityMode"] || " ";
+					return rowObj;
+				},
+				max : 10,
+				pag : pageData,
+				header : [
+						{
+							text : "时间",html : "#{bizDateTime}"
+						},
+						{
+							text : "访问端",html : "#{accessPort}"
+						},
+						{
+							text : "自动投标设置状态",html : "#{autoState}"
+						},
+						{
+							text : "最小金额",html : "#{onceMinAmount}"
+						},
+						{
+							text : "最大金额",html : "#{onceMaxAmount}"
+						},
+						{
+							text : "最小期限",html : "#{autoMinLim}"
+						},
+						{
+							text : "最大期限",html : "#{autoMaxLim}"
+						},
+						{
+							text : "还款方式",html : "#{refundType}"
+						},
+						{
+							text : "自动投标类型",html : "#{autoType}"
+						},
+						{
+							text : "使用理财券类型",html : "#{useTicket}"
+						},
+						{
+							text : "理财券使用优先方式",html : "#{priorityMode}"
+						}],
+				data : tableData
+			});
+		}
+		queryData(1);
+	</script>
+</body>
+</html>

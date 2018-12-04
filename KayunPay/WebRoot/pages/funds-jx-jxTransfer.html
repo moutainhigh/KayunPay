@@ -1,0 +1,232 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+	<div class="am-u-sm-12 am-u-md-4" style="width:700px;";>
+		<strong style="font-size:20px;color:green;">对账文件下载:</strong>&nbsp;
+		<span>请求交易日期</span>&nbsp;<input type="text" name="tranDate" size="10" id="tranDate"/>
+		<input type="button" id="liquidationDownloan" value="清算文件下载"/>
+		<input type="button" id="T1001Downloan" value="代付下载"/>
+		<input type="button" id="T1003Downloan" value="代扣下载"/>
+	</div>
+	<br/>
+	<br/>
+	
+	<div class="am-g" style="margin-top:-10px;">
+	<hr style="height:1px;width:650px;margin-left:10px;margin-top:10px;margin-bottom:20px;border:none;border-top:1px dashed #AEAEAE;" />
+		<div class="am-u-sm-12 am-u-md-4" style="width:600px;margin-top:-10px;";>
+			<strong style="font-size:20px;color:green;">代付划拨:</strong>&nbsp;
+			<span>代付金额</span>&nbsp;<input type="text" name="txAmount" size="10" id="T1001TxAmount"/>
+			<span>平台手机号</span>&nbsp;<input type="text" name="mobile" size="15" id="T1001Mobile"/>
+			<input type="button" id="T1001Pay" value="发送"/>
+		</div>
+		<div class="am-u-sm-12 am-u-md-3">
+				<div class="am-input-group am-input-group-sm">
+					<input type="text" class="am-form-field allkey"><span
+						class="am-input-group-btn">
+						<button class="am-btn am-btn-default query-btn" type="button">搜索</button>
+					</span>
+				</div>
+		</div>
+	</div>
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 15 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+						<li id="not"><input type="text" size="5" id="goValue" onkeypress="return IsNum(event)" value="1"/></li>
+						<li id="go"><input type="button" value="GO" onclick="$('#go').attr('index',$('#goValue').val())"/></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="../assets/js/jquery.min.js"></script>
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script>
+		//初始化请求交易日期
+	 	var now = new Date();
+		$("#tranDate").val(""+now.getFullYear()+(now.getMonth()+1<10?"0"+(now.getMonth()+1):now.getMonth()+1)+(now.getDate()<10?"0"+now.getDate():now.getDate()));
+		
+		var maxQueryNum = 10 ;
+		var queryUrl = "/T1001List";
+		var size=0;//总页数
+		
+		$(".query-btn").click(function(){
+			queryData(1);
+		});
+		//查询实现
+		function queryData( pNum , pSize ){
+			//对页码参数验证
+			if(isNaN(pNum)){
+				alert("GO栏请输入数字！");
+				return;
+			}
+			if(size<1){
+				size=1;
+			}
+			if(pNum > size && size != 0){
+				pNum=size;
+				$("#goValue").val(pNum);
+			}
+			YRHX.ajax({
+				url : queryUrl,
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize ||maxQueryNum,
+					allkey : $(".allkey").val()
+				},
+				success : function(sucData){
+					size=Math.ceil(sucData["totalRow"]/maxQueryNum);//总页数
+					makeTable(sucData.list , {
+						index : sucData["pageNumber"] , 
+						max : sucData["pageSize"] ,
+						size : sucData["totalRow"]
+					});
+				},
+				error : function(data) {
+					YRHX.alert("提示",data.return_info || "获取信息失败");
+				}
+			});
+		}
+		
+		$(".query-btn").click(function(){
+			queryData(1);
+			$("#goValue").val(1);//设置GO栏默认页码为1
+		});
+		
+		$("div.pad-div").initPagEvent( queryData );
+		
+		$("#T1001Pay").click(function(){
+			var txAmount = $("#T1001TxAmount").val();
+			var mobile = $("#T1001Mobile").val();
+			//对页码参数验证
+			if(isNaN(txAmount) || txAmount.length == 0){
+				alert("代付金额输入错误");
+				return;
+			}
+			if(isNaN(mobile) || mobile.length != 11){
+				alert("手机号输入不正确");
+			}
+			YRHX.ajax({
+				url : "/T1001",
+				data : {
+					txAmount : txAmount,
+					mobile : mobile
+				},
+				success : function(sucData){
+					YRHX.alert("提示","代付划扣"+sucData || "获取信息失败");
+				},
+				error : function(data) {
+					YRHX.alert("提示",data.return_info || "获取信息失败");
+				}
+			});
+		});
+
+		function makeTable( tableData ,pageData){
+			$(".am-g").table({
+						dataFormat : function(rowObj) {
+							rowObj["status"] = rowObj["status"]||"";
+							return rowObj;
+						},
+						max : 10,
+						pag : pageData,
+						header : [
+								{
+									name : "",text : "订单号",html : "#{orderNo}"
+								},
+								{
+									name : "",text : "交易类型",html : "#{txMsg}"
+								},
+								{
+									name : "",text : "手机号",html : "#{mobile}"
+								},
+								{
+									name : "",text : "银行卡号",html : "#{cardNo}"
+								},
+								{
+									name : "",text : "姓名",html : "#{accName}"
+								},
+								{
+									name : "",text : "用户名",html : "#{userName}"
+								},
+								{
+									name : "",text : "交易金额",html : "#{amount}"
+								},
+								{
+									name : "",text : "交易状态",html : "#{status}"
+								},
+								{
+									name : "",text : "备注",html : "#{retMsg}"
+								}],
+						data : tableData
+					});
+			}
+		
+		//清算文件下载
+		$("#liquidationDownloan").click(function(){
+			var tranDate = $("#tranDate").val();
+			if(isNaN(tranDate) || tranDate.length != 8){
+				alert("请求交易日期输入错误");
+				return;
+			}
+			window.open("/D8001?tranDate="+tranDate+"&fileType=1");
+		})
+		
+		//代付文件下载
+		$("#T1001Downloan").click(function(){
+			var tranDate = $("#tranDate").val();
+			if(isNaN(tranDate) || tranDate.length != 8){
+				alert("请求交易日期输入错误");
+				return;
+			}
+			window.open("/D8001?tranDate="+tranDate+"&tranType=2");
+		})
+		
+		//代扣文件下载
+		$("#T1003Downloan").click(function(){
+			var tranDate = $("#tranDate").val();
+			if(isNaN(tranDate) || tranDate.length != 8){
+				alert("请求交易日期输入错误");
+				return;
+			}
+			window.open("/D8001?tranDate="+tranDate+"&tranType=1");
+		})
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		queryData(1);
+	</script>
+</body>
+</html>

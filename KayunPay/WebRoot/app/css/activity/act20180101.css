@@ -1,0 +1,51 @@
+@CHARSET "UTF-8";
+* {	margin: 0;padding: 0;}
+body {margin: 0;padding: 0; font-family: "Myriad Set Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif,"微软雅黑";}
+ul, ol, li {list-style: none;}
+:focus {outline: 0;}
+a { color: #000;text-decoration: none;}
+img { border: 0;}
+i {  font-style: normal;}
+table { border-collapse:collapse;}
+
+.money_plan{ width:100%; overflow: hidden;}
+.money_header1{ padding-top:138.47%; background:url(/app/images/act20180101/money_header1.jpg) no-repeat; background-size: 100%;}
+.money_header2{ padding-top:113.61%; background:url(/app/images/act20180101/money_header2.jpg) no-repeat; background-size: 100%;}
+.money_warp{ width:100%; background:#feca1f; padding:1.0em 0;}
+.money_box{ width:96%; margin:0 auto; padding:1.4em 0 0 0; position:relative; }
+.money_title{ width:55%; height:51px; background:url(/app/images/act20180101/money_title.png) no-repeat; background-size:100%; position:absolute; top:0; left:50%; margin-left:-26%;}
+.money_box table{ width:100%; min-height:350px; display: block; border-radius:3px; background:#ff3301; padding-bottom: 1.2em;}
+.money_box table thead tr th{ color: #fff; font-size: 0.8em; padding:2.5em 0 1.2em 0;}
+.money_box table tbody tr{ height: 3.0em;}
+.money_box table tbody tr td{color: #fff; text-align: center;}
+.money_box table tbody{ counter-reset:section;}
+.money_even,.money_th{ width:100%; background:#ff8800;}
+.money_tr1{ width:100%; background:#ff6b00;}
+.money_tr3{ width:100%; background:#ff6000;}
+.money_tr5{ width:100%; background:#ff5300;}
+.money_tr7{ width:100%; background:#ff4601;}
+.money_tr9{ width:100%; background:#ff3a01;}
+.money_ranking{ width:21px; height:21px; display: block; background:#feca1f; border-radius:100%;margin: 0 auto;}
+.m_font{ font-size: 0.8em;}
+.m_ico{ width:21px; height: 21px; border-radius:100%; background:#fff; margin: 0 auto; display: block;}
+.m_num{ font-size: 0.8em; text-align:center; line-height: 21px; font-weight: bold;color: #881b00;}
+.m_num:before{ counter-increment: section; content:"" counter(section);}
+.m_details{ width:55%; height:61px; display: block; background:url(/app/images/act20180101/money_detail.png) no-repeat; background-size:100%; margin: 1.1em auto 0; cursor: pointer;}
+.money_content{ width:100%; padding:1.2em 0; background:#ff8800;}
+.money_rule{ width:90%; margin:0 auto; padding:0.5em; background:#fdc0a1; border-radius:10px;}
+.rule_white{ width:85%; margin:0 auto; position:relative; background:#fff; padding:0 1.2em 1em 1.2em;}
+.rule_rightico{ position:absolute; top:0; right:0; width:6%; height:5%; background:url(/app/images/act20180101/money_right.jpg) no-repeat; background-size: 100%;}
+.rule_leftico{ position:absolute; bottom:0; left:0; width:7%; height:4%; background:url(/app/images/act20180101/money_left.jpg) no-repeat; background-size: 100%;}
+.rule_title{ width:65%; height:66px; margin:0 auto; background:url(/app/images/act20180101/money_rule.png) 0 20px no-repeat; background-size:100%;}
+.rule_list{ overflow:hidden;}
+.rule_list li{ margin:0.4em 0; overflow: hidden; width: 100%;}
+.rule_font{ font-size:0.8em; color:#9a0000; float: left; width:88%; line-height:1.7em;}
+.rule_list li span{ float: left; width:18px; height:18px; line-height:18px; text-align:center; font-size:0.6em; color:#fff; background:#ff3201; border-radius:100%; display:inline-block; margin-right:10px;}
+.money_footer{ padding-top:15.97%; background:url(/app/images/act20180101/money_footer.jpg) no-repeat; background-size:100%;}
+.money_title1{ width:45%; height:2em; line-height: 2em; text-align: center; color: #fff; font-size:1em; position:absolute; top:0; left:50%; margin-left:-23%; background:#ff3533; border:0.4em solid #feca1f; border-radius:1.5em;}
+
+
+
+
+
+

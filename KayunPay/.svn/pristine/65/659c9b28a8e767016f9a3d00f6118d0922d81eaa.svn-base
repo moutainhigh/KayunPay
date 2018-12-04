@@ -1,0 +1,47 @@
+package com.dutiantech.controller.admin;
+
+import java.util.List;
+
+import com.dutiantech.Message;
+import com.dutiantech.anno.AuthNum;
+import com.dutiantech.controller.BaseController;
+import com.dutiantech.interceptor.AuthInterceptor;
+import com.dutiantech.interceptor.PkMsgInterceptor;
+import com.dutiantech.model.PrizeRecords;
+import com.dutiantech.service.PrizeRecordsService;
+import com.jfinal.aop.Before;
+import com.jfinal.core.ActionKey;
+import com.jfinal.plugin.activerecord.Page;
+
+public class PrizeRecordsController extends BaseController{
+	private PrizeRecordsService prizeRecordsService=getService(PrizeRecordsService.class);
+	
+	/**
+	 * 分页查询抽奖记录
+	 * @return
+	 */
+	@ActionKey("/queryPrizeRecordList")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message queryPrizeRecordList() {
+		Integer pageNumber = getParaToInt("pageNumber", 1);
+		pageNumber = pageNumber > 0 ? pageNumber : 1;
+		Integer pageSize = getParaToInt("pageSize", 10);
+		
+		String allkey=getPara("allkey","");//模糊查询关键字
+		String activeCode=getPara("activeCode","");//活动标识
+		Page<PrizeRecords> prizeRecords = prizeRecordsService.findByPage(pageNumber, pageSize, allkey, activeCode);
+		return succ("分页查询完成",prizeRecords);
+	}
+	
+	/**
+	 * 活动列表
+	 */
+	@ActionKey("/queryPrizeList")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message queryPrizeList() {
+		List<PrizeRecords> prizeList = prizeRecordsService.prizeList();
+		return succ("分页查询完成",prizeList);
+	}
+}

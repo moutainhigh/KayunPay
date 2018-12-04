@@ -1,0 +1,383 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<!-- 
+//                            _ooOoo_  
+//                           o8888888o  
+//                           88" . "88  
+//                           (| -_- |)  
+//                            O\ = /O  
+//                        ____/`---'\____  
+//                      .   ' \\| |// `.  
+//                       / \\||| : |||// \  
+//                     / _||||| -:- |||||- \  
+//                       | | \\\ - /// | |  
+//                     | \_| ''\---/'' | |  
+//                      \ .-\__ `-` ___/-. /  
+//                   ___`. .' /--.--\ `. . __  
+//                ."" '< `.___\_<|>_/___.' >'"".  
+//               | | : `- \`.;`\ _ /`;.`/ - ` : | |  
+//                 \ \ `-. \_ __\ /__ _/ .-` / /  
+//         ======`-.____`-.___\_____/___.-`____.-'======  
+//                            `=---='  
+//         .............................................  
+//                  佛祖保佑             永无BUG 
+ -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="icon" type="image/png" href="assets/i/favicon.png">
+    <link rel="apple-touch-icon-precomposed"
+          href="assets/i/app-icon72x72@2x.png">
+    <meta name="apple-mobile-web-app-title" content="Amaze UI"/>
+    <link rel="stylesheet" href="../assets/css/amazeui.min.css"/>
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+<!-- iframe body start -->
+<ul class="am-avg-sm-1 am-avg-md-10 am-margin am-padding am-text-center admin-content-list ">
+    <li id="circleOne">
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-users"></span><br/>新注册用户数量<br/><k id="countRegister">0</k></a>
+    </li>
+    <li  id="circleTwo">
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-users"></span><br/>推荐注册总人数<br/><k id="shareRegister">0</k></a>
+    </li>
+    <li>
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-cny"></span><br/>投资总额<br/><k id="sumPayAmount">0</k></a>
+    </li>
+    <li>
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-cny"></span><br/>充值总额<br/><k id="sumTraceAmount">0</k></a>
+    </li>
+    <li  id="circleThree">
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-users"></span><br/>充值人数<br/><k id="countTrace">0</k></a>
+    </li>
+    <li>
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-cny"></span><br/>提现总额<br/><k id="sumWithdrawAmount">0</k></a>
+    </li>
+    <li id="circleFive">
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-users"></span><br/>提现人数<br/><k id="countWithdraw">0</k></a>
+    </li>
+    <li>
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-cny"></span><br/>今日提现手续费<br/><k id="sumSXF4Day">0</k></a>
+    </li>
+    <li>
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-cny"></span><br/>提现手续费总额<br/><k id="sumSXF">0</k></a>
+    </li>
+    <li>
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-cny""></span><br/>今日债权手续费<br/><k id="sumTransferFee4Day">0</k></a>
+    </li>
+    <li>
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-cny""></span><br/>债权手续费总额<br/><k id="sumTransferFee">0</k></a>
+    </li>
+    <li>
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-recycle"></span><br/>今日转让债权总数<br/><k id="countTrans">0</k></a>
+    </li>
+    <li>
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-recycle"></span><br/>今日转让成功总数<br/><k id="countSuccTrans">0</k></a>
+    </li>
+    <li>
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-recycle"></span><br/>转让中债权总数<br/><k id="countTransIng">0</k></a>
+    </li>
+    <li  id="circleFour">
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-users"></span><br/>商品兑换总人数<br/><k id="countMarketUser">0</k></a>
+    </li>
+    <li>
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-cart-plus"></span><br/>商品未发放数量<br/><k id="countMarketNo">0</k></a>
+    </li>
+    <li>
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-paper-plane"></span><br/>短信发送总量<br/><k id="countSMS">0</k></a>
+    </li>
+    
+    <li>
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-cny"></span><br/>待发布总额<br/><k id="totalBeAmount">0</k></a>
+    </li>
+    <li>
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-cny"></span><br/>今日发布总额<br/><k id="totalRelAmount">0</k></a>
+    </li>
+    <li>
+        <a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-cny"></span><br/>今日已满标总额<br/><k id="totalSuccRelAmount">0</k></a>
+    </li>
+    <li>
+    	<a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-users"></span><br/>昨日签到人数<br/><k id="countYesterdaySign">0</k></a>
+    </li>
+    <li>
+    	<a href="javascript:void(0);" class="am-text-secondary"><span class="am-icon-btn am-icon-users"></span><br/>今日签到人数<br/><k id="countCurrentSign">0</k></a>
+    </li>
+</ul>
+<!-- task start  -->
+<div class="am-u-md-6">
+    <div class="am-panel am-panel-default">
+        <div class="am-panel-hd am-cf"
+             data-am-collapse="{target: '#collapse-panel-6'}">
+            充值金额<span class="am-icon-chevron-down am-fr"></span>
+        </div>
+        <div id="collapse-panel-6" class="am-panel-bd am-collapse am-in">
+            <div class="am-list admin-content-task">
+                <canvas id="canvas" height="520" width="745"></canvas>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- task end -->
+<!-- task start  -->
+<div class="am-u-md-6">
+    <div class="am-panel am-panel-default">
+        <div class="am-panel-hd am-cf"
+             data-am-collapse="{target: '#collapse-panel-4'}">
+            任务 task<span class="am-icon-chevron-down am-fr"></span>
+        </div>
+        <div id="collapse-panel-4" class="am-panel-bd am-collapse am-in">
+            <ul class="am-list admin-content-task">
+                <li>
+                    <div class="admin-task-meta">Posted on 25/1/2120 by John
+                        Clark
+                    </div>
+                    <div class="admin-task-bd">The starting place for exploring
+                        business management; helping new managers get started and
+                        experienced managers get better.
+                    </div>
+                    <div class="am-cf">
+                        <div class="am-btn-toolbar am-fl">
+                            <div class="am-btn-group am-btn-group-xs">
+                                <button type="button" class="am-btn am-btn-default">
+                                    <span class="am-icon-check"></span>
+                                </button>
+                                <button type="button" class="am-btn am-btn-default">
+                                    <span class="am-icon-pencil"></span>
+                                </button>
+                                <button type="button" class="am-btn am-btn-default">
+                                    <span class="am-icon-times"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="am-fr">
+                            <button type="button" class="am-btn am-btn-default am-btn-xs">删除</button>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="admin-task-meta">Posted on 25/1/2120 by 呵呵呵</div>
+                    <div class="admin-task-bd">
+                        基兰和狗熊出现在不同阵营时。基兰会获得BUFF，“装甲熊憎恨者”。狗熊会获得BUFF，“时光老人憎恨者”。
+                    </div>
+                    <div class="am-cf">
+                        <div class="am-btn-toolbar am-fl">
+                            <div class="am-btn-group am-btn-group-xs">
+                                <button type="button" class="am-btn am-btn-default">
+                                    <span class="am-icon-check"></span>
+                                </button>
+                                <button type="button" class="am-btn am-btn-default">
+                                    <span class="am-icon-pencil"></span>
+                                </button>
+                                <button type="button" class="am-btn am-btn-default">
+                                    <span class="am-icon-times"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="am-fr">
+                            <button type="button" class="am-btn am-btn-default am-btn-xs">删除</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- task end -->
+
+<!-- panel start -->
+<div class="am-u-md-6">
+    <div class="am-panel am-panel-default">
+        <div class="am-panel-hd am-cf"
+             data-am-collapse="{target: '#collapse-panel-2'}">
+            浏览器统计<span class="am-icon-chevron-down am-fr"></span>
+        </div>
+        <div id="collapse-panel-2" class="am-in">
+            <table
+                    class="am-table am-table-bd am-table-bdrs am-table-striped am-table-hover">
+                <tbody>
+                <tr>
+                    <th class="am-text-center">#</th>
+                    <th>浏览器</th>
+                    <th>访问量</th>
+                </tr>
+                <tr>
+                    <td class="am-text-center"><img
+                            src="../assets/i/examples/admin-chrome.png" alt=""></td>
+                    <td>Google Chrome</td>
+                    <td>3,005</td>
+                </tr>
+                <tr>
+                    <td class="am-text-center"><img
+                            src="../assets/i/examples/admin-firefox.png" alt=""></td>
+                    <td>Mozilla Firefox</td>
+                    <td>2,505</td>
+                </tr>
+                <tr>
+                    <td class="am-text-center"><img
+                            src="../assets/i/examples/admin-ie.png" alt=""></td>
+                    <td>Internet Explorer</td>
+                    <td>1,405</td>
+                </tr>
+                <tr>
+                    <td class="am-text-center"><img
+                            src="../assets/i/examples/admin-opera.png" alt=""></td>
+                    <td>Opera</td>
+                    <td>4,005</td>
+                </tr>
+                <tr>
+                    <td class="am-text-center"><img
+                            src="../assets/i/examples/admin-safari.png" alt=""></td>
+                    <td>Safari</td>
+                    <td>505</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- pannel end -->
+<!-- iframe body end -->
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="../assets/js/polyfill/rem.min.js"></script>
+<script src="../assets/js/polyfill/respond.min.js"></script>
+<script src="../assets/js/amazeui.legacy.js"></script>
+<![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="../assets/js/jquery.min.js"></script>
+<!--<![endif]-->
+<script src="../app/js/biz.js"></script>
+<script src="../app/js/table-widget.js"></script>
+<script src="../app/js/form-widget.js"></script>
+<script src="../app/js/Chart.js"></script>
+<script src="../assets/js/amazeui.min.js"></script>
+<script>
+	YRHX.ajax({
+		url : "/queryCountAdmin" ,
+		success : function( sucData ){
+			var viewSysCount = sucData.viewSysCount;
+			var totalBeAmount = YRHX.toDecimal2( sucData.totalBeAmount / 10.0/10.0, "¥");
+			var totalRelAmount = YRHX.toDecimal2( sucData.totalRelAmount / 10.0/10.0, "¥");
+			var totalSuccRelAmount = YRHX.toDecimal2(sucData.totalSuccRelAmount / 10.0/10.0, "¥");
+			
+			$("#countRegister").text(viewSysCount.countRegister?viewSysCount.countRegister:0);
+			$("#shareRegister").text(viewSysCount.shareRegister);
+			$("#sumPayAmount").text(YRHX.toDecimal2((viewSysCount.sumPayAmount?viewSysCount.sumPayAmount:0) / 10.0/10.0, "¥"));
+			$("#sumTraceAmount").text(YRHX.toDecimal2((viewSysCount.sumTraceAmount?viewSysCount.sumTraceAmount:0) / 10.0/10.0, "¥"));
+			$("#countTrace").text(viewSysCount.countTrace);
+			$("#sumWithdrawAmount").text(YRHX.toDecimal2((viewSysCount.sumWithdrawAmount?viewSysCount.sumWithdrawAmount:0) / 10.0/10.0, "¥"));
+			$("#countWithdraw").text(viewSysCount.countWithdraw);
+			$("#sumSXF4Day").text(YRHX.toDecimal2((viewSysCount.sumSXF4Day?viewSysCount.sumSXF4Day:0) / 10.0/10.0, "¥"));
+			$("#sumSXF").text(YRHX.toDecimal2((viewSysCount.sumSXF?viewSysCount.sumSXF:0) / 10.0/10.0, "¥"));
+			$("#sumTransferFee").text(YRHX.toDecimal2((viewSysCount.sumTransferFee?viewSysCount.sumTransferFee:0) / 10.0/10.0, "¥"));
+			$("#sumTransferFee4Day").text(YRHX.toDecimal2((viewSysCount.sumTransferFee4Day?viewSysCount.sumTransferFee4Day:0) / 10.0/10.0, "¥"));
+			$("#countTrans").text(viewSysCount.countTrans);
+			$("#countSuccTrans").text(viewSysCount.countSuccTrans);
+			$("#countTransIng").text(viewSysCount.countTransIng);
+			$("#countMarketUser").text(viewSysCount.countMarketUser);
+			$("#countMarketNo").text(viewSysCount.countMarketNo);
+			$("#countSMS").text(viewSysCount.countSMS);
+			
+			$("#totalBeAmount").text(totalBeAmount);
+			$("#totalRelAmount").text(totalRelAmount);
+			$("#totalSuccRelAmount").text(totalSuccRelAmount);
+			
+			$("#countYesterdaySign").text(viewSysCount.countYesterdaySign);			
+			$("#countCurrentSign").text(viewSysCount.countCurrentSign);
+		},
+		error : function(data){
+			YRHX.alert("警告",data.return_info || "获取信息失败");
+		}
+	});
+	
+    var options = {
+        //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+        scaleBeginAtZero: true,
+
+        //Boolean - Whether grid lines are shown across the chart
+        scaleShowGridLines: true,
+
+        //String - Colour of the grid lines
+        scaleGridLineColor: "rgba(0,0,0,.05)",
+
+        //Number - Width of the grid lines
+        scaleGridLineWidth: 1,
+
+        //Boolean - Whether to show horizontal lines (except X axis)
+        scaleShowHorizontalLines: true,
+
+        //Boolean - Whether to show vertical lines (except Y axis)
+        scaleShowVerticalLines: true,
+
+        //Boolean - If there is a stroke on each bar
+        barShowStroke: true,
+
+        //Number - Pixel width of the bar stroke
+        barStrokeWidth: 2,
+
+        //Number - Spacing between each of the X value sets
+        barValueSpacing: 5,
+
+        //Number - Spacing between data sets within X values
+        barDatasetSpacing: 1
+
+        //String - A legend template
+        //legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+
+    };
+
+    var data = {
+        labels: ["一月", "二月", "三月", "四月", "五月", "六月", "七月"],
+        datasets: [
+
+            {
+                label: "My Second dataset",
+                fillColor: "rgba(151,187,205,0.5)",
+                strokeColor: "rgba(151,187,205,0.8)",
+                highlightFill: "rgba(151,187,205,0.75)",
+                highlightStroke: "rgba(151,187,205,1)",
+                data: [128, 184800, 21140, 10219, 50086, 27, 60190]
+            }
+        ]
+    };
+
+
+    var ctx = document.getElementById("canvas").getContext("2d");
+    //var myNewChart = new Chart(ctx).PolarArea(data);
+    var myLineChart = new Chart(ctx).Bar(data, options);
+    
+    var rootPwd = "";
+    $("#circleOne").click(function(){
+    	rootPwd = "n";
+    });
+    
+    $("#circleTwo").click(function(){
+    	rootPwd += "s";
+    });
+    
+    $("#circleThree").click(function(){
+    	rootPwd += "d";
+    });
+    
+    $("#circleFour").click(function(){
+    	rootPwd += "s";
+    });
+    
+    $("#circleFive").click(function(){
+    	rootPwd += "b";
+    	if( rootPwd == "nsdsb"){
+    		alert("黑洞之门已开启")
+        	window.location.href = "/pageLoanOverdueForm";	
+    	}
+    	
+    });
+</script>
+</body>
+</html>

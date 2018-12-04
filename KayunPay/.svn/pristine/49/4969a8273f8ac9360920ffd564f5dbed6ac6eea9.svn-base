@@ -1,0 +1,210 @@
+package com.dutiantech.controller.admin;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.dutiantech.Message;
+import com.dutiantech.anno.AuthNum;
+import com.dutiantech.controller.BaseController;
+import com.dutiantech.interceptor.AuthInterceptor;
+import com.dutiantech.interceptor.PkMsgInterceptor;
+import com.dutiantech.model.ContractTemplate;
+import com.dutiantech.model.Contracts;
+import com.dutiantech.model.OPUserV2;
+import com.dutiantech.service.ContractTemplateService;
+import com.dutiantech.service.ContractsService;
+import com.dutiantech.service.OPUserV2Service;
+import com.dutiantech.util.DateUtil;
+import com.dutiantech.util.StringUtil;
+import com.dutiantech.util.SysEnum.StoreNo;
+import com.dutiantech.util.UIDUtil;
+import com.jfinal.aop.Before;
+import com.jfinal.core.ActionKey;
+import com.jfinal.plugin.activerecord.Page;
+@Before(value=AuthInterceptor.class)
+public class ContractsController extends BaseController{
+	
+	private ContractsService contractsService=getService(ContractsService.class);
+	private OPUserV2Service opUserV2Service = getService(OPUserV2Service.class);
+	private ContractTemplateService contractTemplateService = getService(ContractTemplateService.class);
+	
+	/**
+	 * 查询合同列表信息
+	 * @return
+	 */
+	@ActionKey("/queryContractsByPage")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message queryContractsByPage(){
+		//获取当前页码、每页显示的数量
+		Integer pageNumber=getParaToInt("pageNumber",1);
+		pageNumber=pageNumber > 0 ? pageNumber:1;
+		
+		//获取模糊查询字段
+		String dimSearch=getPara("dimSearch","");
+		
+		Integer pageSize=getParaToInt("pageSize",10);
+		
+		Page<Contracts> contractsList = contractsService.findContractsByPage(pageNumber, pageSize,dimSearch);
+		if(pageNumber>contractsList.getTotalPage() && contractsList.getTotalPage()>0){
+			pageNumber=contractsList.getTotalPage();
+			contractsList = contractsService.findContractsByPage(pageNumber, pageSize,dimSearch);
+		}
+		for (int i = 0; i < contractsList.getList().size(); i++) {
+			Contracts contracts = contractsList.getList().get(i);
+			String opCode = contracts.getStr("opCode");
+			//查询后台操作员
+			String opName = contractsService.queryOpName(opCode);
+			contracts.set("opCode", opName);
+		}
+		return succ("ok", contractsList);
+	}
+	
+	/**
+	 * 查询单条合同信息
+	 * @return
+	 */
+	@ActionKey("/queryContractsById")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message queryContractsById(){
+		//获取合同编号
+		String contractCode=getPara("contractCode");
+		
+		Contracts contracts = contractsService.findById(contractCode);
+		
+		String op_code = contracts.getStr("opCode");
+		//查询后台操作员
+		String opName = contractsService.queryOpName(op_code);
+		
+		contracts.set("opCode", opName);
+		return succ("ok", contracts);
+	}
+	
+	/**
+	 * 更新合同信息
+	 * @return
+	 */
+	@ActionKey("/modContracts")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message modContracts(){
+		//获取后台操作员的编码
+		String opCode=getUserCode();
+		//获取合同信息
+		String contractCode=getPara("contractCode");
+		Integer uid=getParaToInt("uid");
+		String title=getPara("title","");
+		String content=getPara("content","");
+		String updateDateTime=DateUtil.getNowDateTime();
+		
+		Map<String, Object> para = new HashMap<String, Object>();
+		para.put("uid", uid);
+		para.put("title", title);
+		para.put("content", content);
+		para.put("opCode", opCode);
+		para.put("updateDateTime", updateDateTime);
+		
+		boolean result = contractsService.modContracts(contractCode, para);
+		if(result){
+			return succ("ok", result);
+		}
+		return error("no", "修改失败", null);
+	}
+	
+	/**
+	 * 添加合同信息
+	 * @return
+	 */
+	@ActionKey("/addContracts")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message addContracts(){
+		// 获取后台操作人员编码
+		String opUserCode = getUserCode();
+		// 根据合同类型获取合同模板
+		String contractTemplateType = getPara("templateType", "");
+		if (StringUtil.isBlank(contractTemplateType)) {
+			return error("01", "合同类型错误", null);
+		}
+		ContractTemplateController conTemplController = new ContractTemplateController();
+		List<ContractTemplate> contractTemplates = conTemplController.queryByType(contractTemplateType);
+		// 获取填写内容
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("[#transferUserName]", getPara("transferUserName", ""));
+		map.put("[#transferCardId]", getPara("transferCardId", ""));
+		// 更换模板内容
+		for (ContractTemplate contractTemplate : contractTemplates) {
+			String content = conTemplController.replaceTemplateContent(contractTemplate.getStr("content"), map);
+			Contracts contract = new Contracts();
+			contract.set("contractCode", UIDUtil.generate());
+			contract.set("title", contractTemplate.getStr("title") + getPara("loanNo"));
+			contract.set("content", content);
+			contract.set("opCode", opUserCode);
+			contract.set("addDateTime", DateUtil.getNowDateTime());
+			contract.set("updateDateTime", DateUtil.getNowDateTime());
+			contractsService.save(contract);
+		}
+		return error("err02", "添加合同失败", null);
+	}
+	
+	/**
+	 * 删除单条合同信息
+	 * @return
+	 */
+	@ActionKey("/delContractsById")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message delContractsById(){
+		//获取合同编码
+		String contractCode=getPara("contractCode");
+		
+		boolean result = contractsService.delContractsById(contractCode);
+		if(result){
+			return succ("ok", result);
+		}
+		return error("no", "删除失败!", null);
+	}
+	
+	/**
+	 * 生成合同编号
+	 * @return
+	 */
+	@ActionKey("/generateContractNo")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class, PkMsgInterceptor.class})
+	public Message generateContractNo() {
+		String opUserCode = getUserCode();
+		if (StringUtil.isBlank(opUserCode)) {
+			return error("01", "获取用户信息失败", null);
+		}
+		StringBuilder contractNo = new StringBuilder();
+		// 拼接合同门店号
+		OPUserV2 opUserV2 = opUserV2Service.findById(opUserCode);
+		String opGroup = opUserV2.getStr("op_group");
+		for (StoreNo store : StoreNo.values()) {
+			if (store.val().equals(opGroup)) {
+				contractNo.append(store.desc());
+			}
+		}
+		// 拼接合同生成日期
+		contractNo.append(DateUtil.getNowDate());
+		// 拼接合同编号
+		long tmpLastNo = contractsService.countByDate(DateUtil.getNowDate());
+		if (tmpLastNo < 10) {
+			if (tmpLastNo == 0) {
+				contractNo.append("01");
+			} else {
+				contractNo.append("0" + tmpLastNo);
+			}
+		} else {
+			contractNo.append(tmpLastNo);
+		}
+		if (StringUtil.isBlank(opGroup)) {
+			return error("01", "获取门店信息失败", null);
+		}
+		return succ("suc", contractNo.toString());
+	}
+	
+}

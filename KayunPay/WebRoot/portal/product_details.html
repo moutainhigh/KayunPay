@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品详情</title>
+    <meta name="keywords" content="易融恒信,网贷平台,p2p网贷平台排名,p2p投资,p2b网贷,p2p投资平台,小投资,武汉贷款,武汉小额投资,武汉网贷公司,武汉易融恒信"/>
+    <meta name="description" content="易融恒信,致力于做华中地区最好的p2p网贷平台,为投资者提供最安全,最靠谱,最透明的互联网金融p2p投资平台,咨询电话400-027-0707"/>
+    <link type="text/css" href="/portal/css/public.css" rel="stylesheet">
+    <link type="text/css" href="/portal/css/aboutUs.css" rel="stylesheet">
+    <link type="text/css" href="/portal/css/datapicker/datepicker.css" rel="stylesheet">
+    <link type="text/css" href="/portal/css/user.css" rel="stylesheet">
+    <!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+<body>
+<div class="wrapper"><!--[if lt IE 9]>
+    <script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+    <header id="header" class="header"></header>
+   	<div class="product_show"></div>
+   	<div class="product_detail">
+   		<div class='topic'><span>商品详情</span></div>
+   		<hr width='100%' color=#f3f3f3 size=1>
+   		<div class='text'></div>
+   	</div>
+   	<div id="productYinying" class="productYinying"></div>
+	<div class="productModal" id="productModal">
+   	<div class="productCenter" id="infoModal" style="display: none">
+				<p>
+					<label>收件手机号：</label> <input type="text" name="mobile" />
+				</p>
+				<p>
+					<label>收件地址：</label> <input type="text" name="address" />
+				</p>
+				<p>
+					<label>备注：</label> <input type="text" name="remark" />
+				</p>
+				<p style="color:red">
+					温馨提示：积分商城兑换实物将依此信息安排寄送，请详细填写以上信息，备注可不填。 
+				</p>
+				<div class="opBtns">
+					<span class="safeSubBtn"  id="subinfo">确定</span>
+					<span class="safeCanBtn" id="cancelInfo">取消</span>
+					
+				</div>
+			</div>
+			</div>
+    <footer id="footer" class="footer"></footer>
+</div>
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/config.js?v=1.2.18" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js?v=1.2.18" charset="utf-8"></script>
+<script>   topNavSelect= '4';</script>
+<script type="text/javascript" src="/portal/js/public.js?v=1.8.27"></script>
+<script type="text/javascript" src="/portal/js/aboutUs.js?v=1.6"></script>
+
+<script>
+var mCode = YRHX.queryString("mCode");
+if(mCode){
+	queryMarketDetail(mCode);
+}
+function queryMarketDetail(mCode){	
+	YRHX.ajax({
+		url : CONFIG.getRequestURI("queryMarketDetail"),
+		data : {
+			"mCode" : mCode
+		},
+		success : function(sucData) {
+			var tmp = sucData.market;
+			var type = tmp["mType"];
+			productInfoHtml(tmp,'.product_show');
+			detailHtml(type);
+		},
+		error : function(errData) {
+			$.popTips("popTipErr", errData.return_info);
+		}
+});
+}
+	function closeModal() {
+			$("#productYinying").hide()
+			$(".productModal").hide()
+			$("html,body").css("overflow", "initial")
+		}
+
+		function showModal() {
+			$("#productYinying").show()
+			$(".productModal").show()
+			$('body,html').css("overflow", "hidden");
+		}
+	function productInfoHtml(tmp,container){
+	var point = tmp['point']/100;
+		var ProductInfoHtml = "<div class='product_img'><img src='"+tmp['mPic']+"'></div>";
+			ProductInfoHtml += "<div class='product_info'>"
+			ProductInfoHtml += "<h1>"+tmp['mName']+"</h1>";
+			ProductInfoHtml += "<br/>";
+			ProductInfoHtml += "<h3>兑换积分：<span>"+tmp['point']/100+"</span></h3>";
+			ProductInfoHtml += "<h3>兑换数量：</h3><br/><button class='reduce_btn'>-</button><input maxlength='1' class='amount' value='1' /><button class='increase_btn'>+</button>"+"剩余  "+tmp['remainCount']+"  件";
+			ProductInfoHtml += "<br/><br/><br/><button class='exchange_now' mType="+tmp['mType']+">立即兑换</button></div>";
+			$(container).append(ProductInfoHtml);
+			$('.increase_btn').click(function(){
+				var num = parseInt($('.amount').val());
+				if (1<= num && num <9) {
+						$('.amount').val(num+1);
+				} else {
+					alert('土豪，单次最多兑换  9  次！');
+				}		
+			});
+			$('.reduce_btn').click(function(){
+				var num = parseInt($('.amount').val());
+				if(num>1){
+					$('.amount').val(num-1);
+				} else {
+					alert('不能再少了，老板！');
+				}		
+			});
+			$(".amount").blur(function() {
+		        if ($('.amount').val() == '' || $('.amount').val() < 1  || isNaN($('.amount').val())){
+		        	$('.amount').val('1');
+		        }
+		      });
+			var isAddress = 0;
+			$(function() {
+				YRHX.ajax({
+					url : CONFIG.getRequestURI("queryUserInfo"),
+					success : function(sucData) {
+						var address = sucData.userAddress;
+						if (address && "" != address) {
+							isAddress = 1;
+						}
+					},
+					error : function(errData) {
+						//$.popTips("popTipErr",errData.return_info);
+					}
+				});
+			});
+			$('.exchange_now').click(function() {		
+	         /*YRHX.ajax({
+				url : CONFIG.getRequestURI("queryUserInfo"),
+				success : function(sucData) {
+					$("input[name='mobile']").val(sucData.mobile);
+					$("input[name='address']").val(sucData.userAddress);
+				},
+				error : function(errData) {
+					$.popTips("popTipErr", errData.return_info);
+				}
+			});*/
+			var proType=$('.exchange_now').attr('mType');
+			if(proType.length>1 || proType=='B'){
+			var ready2Go = confirm("确定兑换 "+$('.amount').val()+" 件吗？");
+			if (ready2Go) {
+					var count = $('.amount').val();
+					YRHX.ajax({
+						url : CONFIG.getRequestURI("exchange"),
+						data : {
+							"mCode" : mCode,
+							"num" : count,
+						},
+							success : function(sucData) {
+							var sing="兑换成功!请到我的账户-投资劵中查看";
+							if(proType=='B'){
+							sing = "兑换成功！请等待工作人员短信发送京东E卡兑换码。";
+							}
+							$.popTips("popTipSuc",sing,function() {
+									window.location.href = "/K08";
+										}, 2000);
+										},
+										error : function(errData) {
+											$.popTips("popTipErr",errData.return_info);
+										}
+						});
+				}
+			}
+			else{
+			var userName=YRHX.Cookie("userName").get();
+	        YRHX.ajax({
+					url : CONFIG.getRequestURI("querySumScoreByCookie"),
+					data:{
+					'userName':userName
+					},
+					success : function(sucData) {
+			var point1=sucData["points"] / 100;
+				if(point1>point){
+					showModal();
+			       $('#infoModal').show();
+					}else{
+					$.popTips("popTipErr","积分不足，投资可以赚取积分哦！");
+					}
+		},
+		error : function(errData) {
+			$.popTips("popTipErr", errData.return_info);
+		}
+	}); 
+			
+			
+			}
+			
+			/*if (!$(this).hasClass("grayBtn")) {
+				if (isAddress == 0) {
+					$.popTips("popTipErr", "您还未填写联系地址，请补全联系地址",function() {
+						window.location.href = '/C04';
+							}, 2000);
+							return false;
+				}
+				var ready2Go = confirm("确定兑换 "+$('.amount').val()+" 件吗？");
+				if (ready2Go) {
+					var count = $('.amount').val();
+					YRHX.ajax({
+						url : CONFIG.getRequestURI("exchange"),
+						data : {
+							"mCode" : mCode,
+							"num" : count
+						},
+							success : function(sucData) {
+								var sing="兑换成功!工作人员会尽快给您处理,请耐心等待,谢谢!";
+								if($('.exchange_now').attr('mType').length>1){
+									sing="兑换成功!请到我的账户-投资劵中查看";
+								}
+								$.popTips("popTipSuc",sing,function() {
+									window.location.href = "/K08";
+										}, 2000);
+										},
+										error : function(errData) {
+											$.popTips("popTipErr",errData.return_info);
+										}
+						});
+				}
+			}*/
+		});
+		$('#cancelInfo').click(function() {
+			$("input[name='mobile']").val("");
+			$("input[name='address']").val("");
+			$("input[name='remark']").val("");
+			closeModal();
+			$('#infoModal').hide();
+		});
+		$('#subinfo').click(function(){
+		var mobile=$("input[name=mobile]").val();
+		var address=$("input[name=address]").val();
+		var remark=$("input[name=remark]").val();
+		  if (mobile == '') {
+				$.popTips("popTipErr", "请输入收件人手机号");
+				$("input[name=mobile]").focus();
+				return false;
+			}
+			if (address == '') {
+				$.popTips("popTipErr", "请输入收件人地址");
+				$("input[name=address]").focus();
+				return false;
+			}
+				var count = $('.amount').val();
+					YRHX.ajax({
+						url : CONFIG.getRequestURI("exchange"),
+						data : {
+							"mCode" : mCode,
+							"num" : count,
+							"mobile":mobile,
+							"address":address,
+							"remark":remark
+						},
+							success : function(sucData) {
+								var sing="兑换成功!工作人员会尽快给您处理,请耐心等待,谢谢!";
+								
+								$.popTips("popTipSuc",sing,function() {
+									window.location.href = "/K08";
+										}, 2000);
+										},
+										error : function(errData) {
+											$.popTips("popTipErr",errData.return_info);
+										}
+						});
+				
+		})
+
+	}
+
+	function detailHtml(type) {
+		var DetailHtml1 = "<h3>1）使用方法：</h3><h4>成功兑换后抵用券即发放到个人账户中，可在【我的账户】-【账户管理】-【积分商城】中查看，投资确认时选择使用该优惠券</h4><h4>投资金额=现金抵用券金额+实际支出金额</h4><br/>";
+		DetailHtml1 += "<h3>2）使用限制：</h3><h4>单笔投资仅限使用一张优惠券，有效期自兑换成功起30天，无投资门槛，过期即作废</h4><br/>";
+		DetailHtml1 += "<h3>3）使用说明：</h3><h4>现金抵用券一经兑换不可退货</h4><h4>投资金额需大于或等于现金抵用券金额</h4><h4>兑换成功后，将扣除相应可用积分，现金抵用券在“投资券”中查看</h4><br/>";
+		var DetailHtml2 = "<h3>发货流程：</h3><h4>1.  商品兑换成功后，将扣除相应积分，工作人员将在5个工作日内处理发放奖品；</h4><br/>";
+		DetailHtml2 += "<h3>其他：</h3><h4>1.  积分兑换实物是易融恒信答谢出借人所提供的回馈服务，因此与其它礼品一样，将不提供任何报销单据；</h4><h4>2.  积分商城商品数量有限，兑完即止，除严重质量问题影响到使用时，兑出的产品不能退换，敬请谅解；</h4><h4>3.  积分商城将不定期更新商品类型；</h4>";
+		DetailHtml2 += "<h4>4.  未经手机认证或未实名认证用户不享受积分兑换；</h4><h4>5.  因奖品市场价格波动，积分兑换所需分值受其影响也会略微调整，感谢您一直以来的支持；</h4><h4>6.  本活动最终解释权归易融恒信所有，如有疑问请致电客服热线：400-027-0707；</h4>";
+		DetailHtml2 += "<br/><h4>备注：兑换的实物由官方旗舰店发货；</h4>";
+		var DetailHtml3 = "<h3>1）兑换方法：</h3><h4>点击“立即兑换”加息券即发放到个人账户中，可在【我的账户】-【账户管理】-【投资券】中查看，投资确认时选择使用该加息券；</h4><br/>";
+		DetailHtml3 += "<h3>2) 使用限制：</h3><h4>单笔投资仅限使用一张加息券，有效期自兑换成功起30天，无投资金额限制，过期即作废，加息券一经兑换不可退还</h4>。";
+		if (type == 'A' || type == 'B') {
+			$('.product_detail .text').append(DetailHtml2);
+		} else {
+			if (type.indexOf("X") >= 0) {
+				$('.product_detail .text').append(DetailHtml3);
+			} else {
+				$('.product_detail .text').append(DetailHtml1);
+			}
+		}
+	}
+</script>
+</body>
+</html>

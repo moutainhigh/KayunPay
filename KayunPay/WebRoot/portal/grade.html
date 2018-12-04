@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>会员等级</title>
+		<link rel="stylesheet" href="/portal/css/public.css?v=1.0.0" type="text/css" />
+		<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+		<script src="/portal/js/pub/core.js?v=1.0.0" type="text/javascript"></script>
+		<script type="text/javascript" src="/portal/js/config.js?v=1.0.0"></script>
+		<script>topNavSelect = "4";</script>
+		<script type="text/javascript" src="/portal/js/public.js?v=1.0.0"></script>
+		
+	</head>
+	<body>
+	<div class="wrapper">
+	    <header id="header" class="header">
+	        <!--code here-->
+	    </header>
+	    <nav class='user_index'></nav>
+	    <main>
+			<div class="g_header">
+				<div class="g_head_pic">
+					<div class="g_loginBtn">立即登录</div>
+				</div>
+				<div class="g_userBox">
+					<div class="g_name"></div>
+					<div class="g_user">
+						<div class="g_headpor"></div>
+						<div class="g_userFont"></div>
+						<div class="g_prompt">
+							<div class="g_prompt_f">每天凌晨根据用户前一天的总待收划分用户当天的会员等级<i></i></div>
+						</div>
+					</div>
+					<div class="g_money">
+						<span class="g_money_1">当前待收:</span>
+						<div class="g_money_2">
+							<span class="g_money_sp"></span>
+							<div class="g_money_p">
+								<div class="g_money_p1">距离下一个等级还差<span></span><i></i></div>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+				<div class="g_userList">
+					<ul>
+						<li>
+							<div class="g_menu g_menuHover">新手</div>
+							<p class="g_menu_p g_moneyHover">0w</p><span></span>
+						</li>
+						<li>
+							<div class="g_menu">普通会员</div>
+							<p class="g_menu_p">1W</p><span></span>
+						</li>
+						<li>
+							<div class="g_menu">青铜会员</div>
+							<p class="g_menu_p">2W</p><span></span>
+						</li>
+						<li>
+							<div class="g_menu">白银会员</div>
+							<p class="g_menu_p">5W</p><span></span>
+						</li>
+						<li>
+							<div class="g_menu">黄金会员</div>
+							<p class="g_menu_p">10W</p><span></span>
+						</li>
+						<li>
+							<div class="g_menu">白金会员</div>
+							<p class="g_menu_p">20W</p><span></span>
+						</li>
+						<li>
+							<div class="g_menu">钻石会员</div>
+							<p class="g_menu_p">50W</p><span></span>
+						</li>
+						<li>
+							<div class="g_menu">黑钻会员</div>
+							<p class="g_menu_p">100W</p><span></span>
+						</li>
+						<li>
+							<div class="g_menu">至尊会员</div>
+							<p class="g_menu_p">500W</p>
+						</li>
+					</ul>
+					<i></i>
+				</div>
+			</div>
+			<div class="g_warp_1">
+				<div class="g_1_title"></div>
+				<div class="g_1_list">
+					<ul>
+						<li>
+							<a href="javascript:;" class="g_ico ico1">
+								<div class="g_font">免费提现次数</div>
+							</a>
+							<p>不同会员等级，当月享有不同免费提现次数，超过次数收费2元/笔。</p>
+						</li>
+						<li>
+							<a href="javascript:;" class="g_ico ico2">
+								<div class="g_font">利息管理费</div>
+							</a>
+							<p>所有会员等级，收取8%的利息管理费。</p>
+						</li>
+						<li>
+							<a href="javascript:;" class="g_ico ico3">
+								<div class="g_font">加息奖励</div>
+							</a>
+							<p>不同会员等级，投资可获得相应级别加息奖励。</p>
+						</li>
+						<li>
+							<a href="javascript:;" class="g_ico ico4">
+								<div class="g_font">专属客服</div>
+							</a>
+							<p>钻石及以上级别会员可添加平台客服微信号， VIP客户群专享投资咨询服务。</p>
+						</li>
+						<li>
+							<a href="javascript:;" class="g_ico ico5">
+								<div class="g_font">首次升级礼</div>
+							</a>
+							<p>用户首次升级成为相应高等级会员，可获得额外加息劵奖励，使用有效期限30天。</p>
+						</li>
+						<li>
+							<a href="javascript:;" class="g_ico ico6">
+								<div class="g_font">生日礼包</div>
+							</a>
+							<p>暂不开放</p>
+						</li>
+						<li>
+							<a href="javascript:;" class="g_ico ico7">
+								<div class="g_font">生日特权</div>
+							</a>
+							<p>生日当天，发送生日祝福短信，不同会员等级投资享有不同倍数的积分奖励。</p>
+						</li>
+						<li>
+							<a href="javascript:;" class="g_ico ico8">
+								<div class="g_font">年会特权</div>
+							</a>
+							<p>享受二等座动车车费往返报销，包住宿。</p>
+						</li>
+					</ul>
+				</div>
+			</div>
+			
+			<div class="g_warp_2">
+				<div class="g_2_main">
+					<div class="g_2_title"></div>
+					<div class="g_2_pic"></div>
+					<div class="g_bar-box">
+						<div class="g_bar-up">
+							<div class="out out1">
+								<div class="in in1 a_height"></div>
+							</div>
+							<div class="out out2">
+								<div class="in in2 a_height"></div>
+							</div>
+							<div class="out out3">
+								<div class="in in3 a_height"></div>
+							</div>
+							<div class="out out4">
+								<div class="in in4 a_height"></div>
+							</div>
+							<div class="out out5">
+								<div class="in in5 a_height"></div>
+							</div>
+							<div class="out out6">
+								<div class="in in6 a_height"></div>
+							</div>
+							<div class="out out7">
+								<div class="in in7 a_height"></div>
+							</div>
+							<div class="out out8">
+								<div class="in in8 a_height"></div>
+							</div>
+						</div>
+						<div class="g_bar-down">
+							<span class="sp1">新手</span>
+							<span>普通会员</span>
+							<span>青铜会员</span>
+							<span>白银会员</span>
+							<span>黄金会员</span>
+							<span>白金会员</span>
+							<span>钻石会员</span>
+							<span>黑钻会员</span>
+							<span class="sp2">至尊会员</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="g_warp_3">
+			<div class="g_3_title"></div>
+			<div class="g_3_pic"></div>
+			<p class="g_3_font">注：投资默认专属加息（债权转让不享受会员福利），专属加息、加息劵、现金抵用券等任选其一使用。</p>
+			<!-- <p class="g_3_font g_font1">债权转让不享受会员福利。</p> -->
+		</div>
+		</main>
+	  	<footer id="footer" class="footer"></footer>
+	</div>
+	</body>
+	<script type="text/javascript">
+	
+		var lable_welcome = "";
+		var nowDate = new Date();
+		var hour = nowDate.getHours();
+		
+		if(hour < 4){
+			lable_welcome = "晚上好";
+		}else if (hour < 9){
+			lable_welcome = "早上好";
+		}else if (hour < 12){
+			lable_welcome = "上午好"; 
+		}else if (hour < 17){
+			lable_welcome = "下午好";
+		}else{
+			lable_welcome = "晚上好";
+		}
+		
+		function GradeText(){
+			var userName=YRHX.Cookie("userName").get();
+			if(userName!=null){
+				YRHX.ajax({
+					url:"/queryVIPCenterPage",
+					dataType:"jsonp",
+					success:function(curData){
+						$(".g_warp_2").hide();
+						$(".g_head_pic").hide();
+						$(".g_userBox").show();
+						$(".g_userList").show();
+						var nowBeRecyAmount=curData.nowBeRecyAmount; //待收金额
+						var leftAmount=curData.leftAmount;  //等级差金额
+						var vipLevelName=curData.vipLevelName; //会员等级
+						var vipLevel=curData.vipLevel;
+						$(".g_userFont").text(vipLevelName);
+						$(".g_money_sp").text(nowBeRecyAmount+"元");
+						$(".g_money_p1").find("span").text(leftAmount+"元");
+						$(".g_userList ul li").find(".g_menu").removeClass("g_menuHover");
+						$(".g_userList ul li").find(".g_menu_p").removeClass("g_moneyHover");
+						for(var i=1; i<=9; i++){
+							if(i==vipLevel){
+								$(".g_userList ul li").eq(i-1).find(".g_menu").addClass("g_menuHover");
+								$(".g_userList ul li").eq(i-1).find(".g_menu_p").addClass("g_moneyHover");
+							}
+							$(".g_ico").removeClass("ico"+i)
+							$(".g_ico").removeClass("icoNo"+i)
+							if(vipLevel==1){
+								$(".g_ico").eq(0).addClass("ico1");
+								$(".g_ico").eq(1).addClass("ico2");
+								$(".g_ico").eq(2).addClass("icoNo3");
+								$(".g_ico").eq(3).addClass("icoNo4");
+								$(".g_ico").eq(4).addClass("icoNo5");
+								$(".g_ico").eq(5).addClass("ico6");
+								$(".g_ico").eq(6).addClass("ico7");
+								$(".g_ico").eq(7).addClass("icoNo8");
+								$(".g_userList").find("i").css("left","50px");
+								$(".g_userFont").css("background-image","url(/portal/images/index/grade_font_01.png)");
+								$(".g_userFont").css("padding-left","23px");
+								$(".g_userFont").css("text-align","center");
+							}
+							if(vipLevel==2 || vipLevel==3){
+								$(".g_ico").eq(0).addClass("ico1");
+								$(".g_ico").eq(1).addClass("ico2");
+								$(".g_ico").eq(2).addClass("icoNo3");
+								$(".g_ico").eq(3).addClass("icoNo4");
+								$(".g_ico").eq(4).addClass("ico5");
+								$(".g_ico").eq(5).addClass("ico6");
+								$(".g_ico").eq(6).addClass("ico7");
+								$(".g_ico").eq(7).addClass("icoNo8");
+								if(vipLevel==2){
+									$(".g_userList").find("i").css("left","190px");
+									$(".g_userFont").css("background-image","url(/portal/images/index/grade_font_02.png)");
+								}
+								if(vipLevel==3){
+									$(".g_userList").find("i").css("left","320px");
+									$(".g_userFont").css("background-image","url(/portal/images/index/grade_font_03.png)");
+								}
+							}
+							if(vipLevel==4 || vipLevel==5 || vipLevel==6){
+								$(".g_ico").eq(0).addClass("ico1");
+								$(".g_ico").eq(1).addClass("ico2");
+								$(".g_ico").eq(2).addClass("ico3");
+								$(".g_ico").eq(3).addClass("icoNo4");
+								$(".g_ico").eq(4).addClass("ico5");
+								$(".g_ico").eq(5).addClass("ico6");
+								$(".g_ico").eq(6).addClass("ico7");
+								$(".g_ico").eq(7).addClass("icoNo8");
+								if(vipLevel==4){
+									$(".g_userList").find("i").css("left","455px");
+									$(".g_userFont").css("background-image","url(/portal/images/index/grade_font_04.png)");
+								}
+								if(vipLevel==5){
+									$(".g_userList").find("i").css("left","585px");
+									$(".g_userFont").css("background-image","url(/portal/images/index/grade_font_05.png)");
+								}
+								if(vipLevel==6){
+									$(".g_userList").find("i").css("left","720px");
+									$(".g_userFont").css("background-image","url(/portal/images/index/grade_font_06.png)");
+								}
+							}
+							if(vipLevel==7){
+								$(".g_ico").eq(0).addClass("ico1");
+								$(".g_ico").eq(1).addClass("ico2");
+								$(".g_ico").eq(2).addClass("ico3");
+								$(".g_ico").eq(3).addClass("ico4");
+								$(".g_ico").eq(4).addClass("ico5");
+								$(".g_ico").eq(5).addClass("ico6");
+								$(".g_ico").eq(6).addClass("ico7");
+								$(".g_ico").eq(7).addClass("icoNo8");
+								$(".g_userList").find("i").css("left","850px");
+								$(".g_userFont").css("background-image","url(/portal/images/index/grade_font_07.png)");
+							}
+							if(vipLevel==8 || vipLevel==9){
+								$(".g_ico").eq(0).addClass("ico1");
+								$(".g_ico").eq(1).addClass("ico2");
+								$(".g_ico").eq(2).addClass("ico3");
+								$(".g_ico").eq(3).addClass("ico4");
+								$(".g_ico").eq(4).addClass("ico5");
+								$(".g_ico").eq(5).addClass("ico6");
+								$(".g_ico").eq(6).addClass("ico7");
+								$(".g_ico").eq(7).addClass("ico8");
+								if(vipLevel==8){
+									$(".g_userList").find("i").css("left","980px");
+									$(".g_userFont").css("background-image","url(/portal/images/index/grade_font_08.png)");
+								}
+								if(vipLevel==9){
+									$(".g_userList").find("i").css("left","1110px");
+									$(".g_userFont").css("background-image","url(/portal/images/index/grade_font_09.png)");
+									$(".g_money_p").hide();
+									$(".g_money").css("display","table");
+									$(".g_money").css("margin","0 auto");
+								}
+							}
+						}
+						/*欢迎  */
+						var Welcome = "<div>"+lable_welcome+",<span>"+userName+"</span>";
+						$('.g_name').append(Welcome);
+					}
+				});
+			 }
+			else{
+				$(".g_head_pic").show();
+				$(".g_userBox").hide();
+				$(".g_userList").hide();
+				//show_login_dialog();
+			}
+		};
+		
+		
+	
+		$(function(){
+			 GradeText(); 
+			
+			
+			$(".g_loginBtn").on("click",function(){
+				var userName=YRHX.Cookie("userName").get();
+				if(userName!=null){
+					GradeText();
+				}
+				else{
+					show_login_dialog();
+				}
+				
+			});
+			
+			$(".g_headpor").mouseenter(function(){
+				$(this).nextAll(".g_prompt").fadeIn();
+			});
+			$(".g_headpor").mouseleave(function(){
+				$(this).nextAll(".g_prompt").fadeOut();
+			});
+			
+			
+			//会员权益详情
+			$(".g_1_list ul li a").mouseenter(function(){
+				$(this).next("p").fadeIn();
+			});
+			$(".g_1_list ul li a").mouseleave(function(){
+				$(this).next("p").fadeOut();
+			});
+			
+
+			$(".g_userList ul li").on("click",function(){
+				$(this).find(".g_menu").addClass("g_menuHover").parents("li").siblings().find(".g_menu").removeClass("g_menuHover");
+				$(this).find(".g_menu_p").addClass("g_moneyHover").parents("li").siblings().find(".g_menu_p").removeClass("g_moneyHover");
+				var index=$(this).index();
+				
+				for(var i=1; i<=9; i++){
+					$(".g_ico").removeClass("ico"+i)
+					$(".g_ico").removeClass("icoNo"+i)
+					if(index==0){
+						$(".g_ico").eq(0).addClass("ico1");
+						$(".g_ico").eq(1).addClass("ico2");
+						$(".g_ico").eq(2).addClass("icoNo3");
+						$(".g_ico").eq(3).addClass("icoNo4");
+						$(".g_ico").eq(4).addClass("icoNo5");
+						$(".g_ico").eq(5).addClass("ico6");
+						$(".g_ico").eq(6).addClass("ico7");
+						$(".g_ico").eq(7).addClass("icoNo8");
+						$(".g_userList").find("i").css("left","50px");
+					}
+					if(index==1 || index==2){
+						$(".g_ico").eq(0).addClass("ico1");
+						$(".g_ico").eq(1).addClass("ico2");
+						$(".g_ico").eq(2).addClass("icoNo3");
+						$(".g_ico").eq(3).addClass("icoNo4");
+						$(".g_ico").eq(4).addClass("ico5");
+						$(".g_ico").eq(5).addClass("ico6");
+						$(".g_ico").eq(6).addClass("ico7");
+						$(".g_ico").eq(7).addClass("icoNo8");
+						if(index==1){
+							$(".g_userList").find("i").css("left","190px");
+						}
+						if(index==2){
+							$(".g_userList").find("i").css("left","320px");
+						}
+					}
+					if(index==3 || index==4 || index==5){
+						$(".g_ico").eq(0).addClass("ico1");
+						$(".g_ico").eq(1).addClass("ico2");
+						$(".g_ico").eq(2).addClass("ico3");
+						$(".g_ico").eq(3).addClass("icoNo4");
+						$(".g_ico").eq(4).addClass("ico5");
+						$(".g_ico").eq(5).addClass("ico6");
+						$(".g_ico").eq(6).addClass("ico7");
+						$(".g_ico").eq(7).addClass("icoNo8");
+						if(index==3){
+							$(".g_userList").find("i").css("left","455px");
+						}
+						if(index==4){
+							$(".g_userList").find("i").css("left","585px");
+						}
+						if(index==5){
+							$(".g_userList").find("i").css("left","720px");
+						}
+					}
+					if(index==6){
+						$(".g_ico").eq(0).addClass("ico1");
+						$(".g_ico").eq(1).addClass("ico2");
+						$(".g_ico").eq(2).addClass("ico3");
+						$(".g_ico").eq(3).addClass("ico4");
+						$(".g_ico").eq(4).addClass("ico5");
+						$(".g_ico").eq(5).addClass("ico6");
+						$(".g_ico").eq(6).addClass("ico7");
+						$(".g_ico").eq(7).addClass("icoNo8");
+						$(".g_userList").find("i").css("left","850px");
+					}
+					if(index==7 || index==8){
+						$(".g_ico").eq(0).addClass("ico1");
+						$(".g_ico").eq(1).addClass("ico2");
+						$(".g_ico").eq(2).addClass("ico3");
+						$(".g_ico").eq(3).addClass("ico4");
+						$(".g_ico").eq(4).addClass("ico5");
+						$(".g_ico").eq(5).addClass("ico6");
+						$(".g_ico").eq(6).addClass("ico7");
+						$(".g_ico").eq(7).addClass("ico8");
+						if(index==7){
+							$(".g_userList").find("i").css("left","980px");
+						}
+						if(index==8){
+							$(".g_userList").find("i").css("left","1110px");
+						}
+					}
+				}
+			});
+			
+			
+		});
+	</script>
+</html>

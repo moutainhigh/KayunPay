@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>在线客服</title>
+		<link href="/portal/css/file.css" type="text/css" rel="stylesheet" />
+		<!-- <link type="text/css" href="/portal/css/public.css?v=1.0.0" rel="stylesheet"> -->
+	</head>
+	<body>
+		<div class="service">
+			<div class="service_header">
+				<div class="service_logo">易融恒信在线客服 1.1</div>
+				<div class="service_close"></div>
+			</div>
+			<div class="service_warp">
+				<div class="service_menu">
+					<ul>
+						<li class="menu1">咨询</li>
+						<li class="menu2">留言</li>
+					</ul>
+				</div>
+				<div class="service_main" style="position: relative;float: left;">
+					<div class="service_content">
+						<div class="service_news">
+							<div class="service_time">今天&nbsp;<i id="nowTime">16:32</i></div>
+							<ul class="service_newBox">
+								<li class="newBox_name leftMsg">
+									<div class="new_headpic"></div>
+									<div class="new_nessage">
+										<p>您好，我是您的智能助手小Y，请回复问题编号获得帮助 : </p>
+										<p><a href="#" class="answerBtn2" num="1">1.常见问题</a></p>
+										<p><a href="#" class="answerBtn2" num="2">2.注册登录</a></p>
+										<p><a href="#" class="answerBtn2" num="3">3.开通银行存管账户</a></p>
+										<p><a href="#" class="answerBtn2" num="4">4.手动投标及自动投标</a></p>
+										<p><a href="#" class="answerBtn2" num="5">5.债权转让规则</a></p>
+										<p><a href="#" class="answerBtn2" num="6">6.自助服务</a></p>
+										<p><a href="#" class="answerBtn2" num="7">7.会员等级</a></p>
+										<p>如需人工帮助请联系客服，电话400-027-0707,或点击右下角转人工服务。</p>
+										<i class="ico1"></i>
+									</div>
+								</li>
+								<!-- <li class="newBox_name rightMsg">
+									<div class="new_headpic1"></div>
+									<div class="new_nessage">
+										1
+										<i class="ico2"></i>
+									</div>
+								</li> -->
+								<!-- <li class="newBox_name leftMsg">
+									<div class="new_headpic"></div>
+									<div class="new_nessage">
+										<p>您好，您需要咨询的是下面的问题吗？<br></p>
+										<ul class="sugguestions">
+											<li><a href="#" class="answerBtn">1.不开通银行存管账户能进行投资吗？</a></li>
+											<li><a href="#" class="answerBtn">2.银行存管账户交易密码和银行卡交易密码有关系吗？</a></li>
+											<li><a href="#" class="answerBtn">3. 如何开通银行存管账户？</a></li>
+										</ul>
+										<i class="ico1"></i>
+									</div>
+								</li> -->
+							</ul>
+						</div>
+						<div class="service_input">
+							<div class="footer_text">
+								<div class="footer_panel">
+									<a href="http://crm2.qq.com/page/portalpage/wpa.php?uin=4000270707&f=1&ty=1&aty=0&a=&from=6" class="chatSwitch">转人工服务</a>
+								</div>
+								<div class="textArea">
+									<pre class="textareaPre"></pre>
+									<textarea placeholder="请简短描述您的问题" onfocus="this.placeholder=''" onblur="this.placeholder='请简短描述您的问题'" class="footer_grey"></textarea>
+								</div>
+								<span class="send_btn" onclick="sendbtn()">发送</span>
+							</div>
+						</div>
+					</div>
+					
+					<div class="service_content" style="background:#f9fdff;height:670px;">
+						<div class="ser_mes">
+							<div class="mess_title">欢迎您给我们提出宝贵的意见和建议！</div>
+							<form>
+								<div class="mess_input">
+									<span>您的姓名:</span>
+									<input type="text" name="userTrueName" value="" class="mess_name" />
+								</div>
+								<div class="mess_input">
+									<span>手机号:</span>
+									<input type="number" name="userMobile" value="" class="mess_phone" />
+								</div>
+								<div class="mess_input">
+									<span>平台用户名:</span>
+									<input type="text" name="userName" value="" class="mess_username" />
+								</div>
+								<div class="mess_input">
+									<span>电子邮箱:</span>
+									<input type="text" name="eMail" value="" class="mess_meail" />
+								</div>
+								<div class="mess_input">
+									<span>留言内容:</span>
+									<textarea class="mess_textarea"></textarea>
+								</div>
+								<div class="mess_btn">提交</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<div class="serviceSelf" style="position: relative;float: left;">
+					<div >
+					<table class="zzfw">
+						<tr><td style="font-weight: 800">自助服务</td>
+						</tr>
+						<tr><td><a href="/findPwd"><img src="/portal/images/zhmm.png"/></a><br>找回登录<br>密码</td>
+							<td><a href="/C01"><img src="/portal/images/xgmm.png"/></a><br>修改登录<br>密码</td>
+						</tr>
+						<tr><td><a href="/C01"><img src="/portal/images/jymm.png"/></a><br>找回交易<br>密码</td>
+							<td><a href="/C01"><img src="/portal/images/xgmm.png"/></a><br>修改交易<br>密码</td>
+						</tr>
+						<tr><td><a href="/C01"><img src="/portal/images/xgyhk.png"/></a><br>修改银行<br>卡</td>
+							<td><a href="/C01"><img src="/portal/images/xgsjh.png"/></a><br>修改平台<br>手机号</td>
+						</tr>
+					</table>
+					</div>
+					<div class="wtfx" >
+						<div style="font-weight: 800;margin-top: 10px">问题分类</div>
+						<div class="qclassify">
+							<ul>
+								<li><a href="#" class="answerBtn2" num="1">1.常见问题</a></li>
+								<li><a href="#" class="answerBtn2" num="2">2.注册登录</a></li>
+								<li><a href="#" class="answerBtn2" num="3">3.银行存管账户</a></li>
+								<li><a href="#" class="answerBtn2" num="4">4.手动投标及自动投标</a></li>
+								<li><a href="#" class="answerBtn2" num="5">5.债权转让规则</a></li>
+								<li><a href="#" class="answerBtn2" num="6">6.自助服务</a></li>
+								<li><a href="#" class="answerBtn2" num="7">7.会员等级</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="yinying" class="yinying"></div>
+		<div class="submitSuccess" align="center"><img class="closeblue" src="/portal/images/closeblue.png"><p>提交成功！</p></div>
+	</body>
+	<script src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+	<script type="text/javascript" src="/portal/js/config.js"></script>
+	<script type="text/javascript" src="/portal/js/public.js"></script>
+	<script>
+		var msgHtml2 ='';
+			msgHtml2+='<li class="newBox_name leftMsg #{non}">';
+			msgHtml2+='<div class="new_headpic"></div><div class="new_nessage">';
+			msgHtml2+='#{message}';
+			msgHtml2+='<i class="ico1"></i></div></li>';
+		function getNowTime(){
+		var nowDateTime = new Date();
+		var nowTime=nowDateTime.toLocaleTimeString();
+		$("#nowTime").html(nowTime.substring(nowTime.length-8,nowTime.length-3));
+		}
+		getNowTime();
+		$(function(){
+			
+			//判断是否输入内容，显示发送按钮
+			$(".footer_grey").keyup(function(){
+				var txt=$(this).val();
+				$(".textareaPre").text(txt);
+				var txtlist=$(".textareaPre").html();
+				if(txtlist!=""){
+					$(".send_btn").addClass("send_btnhover");
+				}
+				else{
+					$(".send_btn").removeClass("send_btnhover");
+				}
+				
+			});
+			$(".send_btn").click(sendbtn());
+			
+			//菜单切换
+			$(".service_main").find(".service_content:first").show();
+			$(".service_menu ul li:first").addClass("menu_selected");
+			$(".service_menu ul li").on("click",function(){
+			    var index=$(this).index();  //获取当前a标签的个数  
+			    $(this).parents(".service_menu").next(".service_main").find(".service_content").hide().eq(index).show(); //返回上一层，在下面查找css名为box隐藏，然后选中的显示  
+			    //$(this).addClass("menu_selected").siblings().removeClass("menu_selected"); //a标签显示，同辈元素隐藏  
+			    if(index==0){
+			    	$(".service_menu ul li").eq(index).addClass("menu_selected");
+			    }
+			    else{
+			    	$(".service_menu ul li").eq(0).removeClass("menu_selected");
+			    }
+			    if(index==1){
+					$(".service_menu ul li").eq(index).addClass("menu_selected1");
+			    }
+			    else{
+			    	$(".service_menu ul li").eq(1).removeClass("menu_selected1");
+			    }
+			    
+			});
+			
+			
+			//留言 提交按钮
+			$(".mess_btn").on("click",function(){
+				var name=$(".mess_name").val();
+				var phone=$(".mess_phone").val();
+				var userRule = new RegExp("^[0-9]*$") ;
+				var username=$(".mess_username").val();
+				var reg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/; //邮箱表达式
+				var email=$(".mess_meail").val();
+				var txtval=$(".mess_textarea").val();
+		        var html="<p></p>";
+		        $(".mess_input p").remove();
+		        
+		        if(name==""){
+		        	$(".mess_name").after(html);
+		        	$(".mess_input p").html("*用户名不能为空");
+		        }
+		        else if(phone=="" || phone.length == 0 || phone.length != 11){
+		        	$(".mess_phone").after(html);
+		        	$(".mess_input p").html("*请输入11位数字有效手机号");
+		        }
+		        else if(username==""){
+		        	$(".mess_username").after(html);
+		        	$(".mess_input p").html("*平台用户名不能为空");
+		        }
+		        else if(userRule.test(username)){
+		        	$(".mess_username").after(html);
+		        	$(".mess_input p").html("*平台用户名不能全为数字");
+		        }
+		        else if(!reg.test(email)){
+		        	$(".mess_meail").after(html);
+		        	$(".mess_input p").html("*请输入有效的邮箱");
+		        }
+		        else if(email==""){
+		        	$(".mess_meail").after(html);
+		        	$(".mess_input p").html("*请输入有效的邮箱");
+		        }
+		        else if(txtval==""){
+		        	$(".mess_textarea").after(html);
+		        	$(".mess_input p").html("*留言内容不能为空");
+		        }else{
+		        YRHX.ajax({
+		        	url:"/saveLeaveNote",
+		        	data:{"name":name,
+		        		"phone":phone,
+		        		"username":username,
+		        		"email":email,
+		        		"txtval":txtval},
+		        	success:function(sucData){
+		        		//alert("提交成功");
+		        		to_center($('#yinying').show());
+		        		$(".submitSuccess").show();
+		        		setTimeout(function(){
+		        			closeblue();
+		        		},3000)
+		        		$(".mess_name").val("");
+		        		$(".mess_phone").val("");
+		        		$(".mess_username").val("");
+		        		$(".mess_meail").val("");
+		        		$(".mess_textarea").val("");
+		        	},
+		        	error:function(errData){
+		        		alert("提交失败，请确保您已经注册成功");
+		        	}
+		        });
+		        }
+			});
+			
+		});
+		
+		function answerQuestion(aa){
+			var code = $(aa).attr("code");
+			queryQuestionDetail(code);
+			}
+		function queryQuestionDetail(code){
+			YRHX.ajax({
+			url:"/queryQuestionDetail",
+			data:{"qCode":code},
+			success:function(sucDate){
+				var answerMsg2 = sucDate["answer"];
+				var answerMsg3 = msgHtml2.replace("#{message}",answerMsg2);
+					answerMsg3 = answerMsg3.replace("#{non}","non1");
+				$(".service_newBox").append(answerMsg3);
+				$('.service_news').scrollTop( $('.service_news')[0].scrollHeight );
+			},
+			error:function(errDate){
+				$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+			}
+			});
+		
+		}
+		document.onkeydown=keyDownSearch;  
+      
+    	function keyDownSearch(e) {    
+        // 兼容FF和IE和Opera    
+        var theEvent = e || window.event;    
+        var code = theEvent.keyCode || theEvent.which || theEvent.charCode;    
+        if (code == 13) {    
+            sendbtn();//具体处理函数   
+            return false;    
+        }    
+        return true;    
+    	}
+    	function sendbtn(){
+				if($(".send_btn").hasClass("send_btnhover")){
+				var txtlist=$(".textareaPre").html();
+				txtlist=txtlist.replace(/[\r\n]/g,"");
+				var msgHtml ='';
+				msgHtml+='<li class="newBox_name rightMsg">';
+				msgHtml+='<div class="new_headpic1"></div><div class="new_nessage">';
+				msgHtml+=txtlist;
+				msgHtml+='<i class="ico2"></i></div></li>';
+				$(".service_newBox").append(msgHtml);
+				//查询答案
+				var keyword;
+				keyword=getClassify(txtlist);
+				txtlist=keyword[1];
+				if(txtlist=="N"){
+					YRHX.ajax({
+					url:"/queryByKeyWord",
+					data:{"keyword":keyword[0]},
+					async : false,
+					success:function(sucDate){
+							var questions = '<p>您好，您需要咨询的是下面的问题吗？<br></p>';
+							questions+='<ul class="sugguestions">';
+							for(var i=0;i<sucDate.length;i++){
+								questions+='<li><a href="#" onclick="answerQuestion(this)" class="answerBtn" code="'+
+								sucDate[i]["qCode"]+'">'+(i+1)+'.'+sucDate[i]["question"]+'点击查看!</a></li>';
+							}
+							questions+='</ul>';
+							var answerMsg = msgHtml2.replace("#{message}",questions);
+							answerMsg = answerMsg.replace("#{non}","non2");
+							$(".service_newBox").append(answerMsg);
+						},
+					error:function(){
+						var initMessage = '未能识别问题编号，请回复问题编号获得帮助 : '
+						initMessage+='<p><a href="#" class="answerBtn2" num="1">1.常见问题</a></p>'
+						initMessage+='<p><a href="#" class="answerBtn2" num="2">2.注册登录</a></p>'
+						initMessage+='<p><a href="#" class="answerBtn2" num="3">3.开通银行存管账户</a></p>'
+						initMessage+='<p><a href="#" class="answerBtn2" num="4">4.手动投标及自动投标</a></p>'
+						initMessage+='<p><a href="#" class="answerBtn2" num="5">5.债权转让规则</a></p>'
+						initMessage+='<p><a href="#" class="answerBtn2" num="6">6.自助服务</a></p>'
+						initMessage+='<p><a href="#" class="answerBtn2" num="7">7.会员等级</a></p>'
+						initMessage+='<p>如需人工帮助请联系客服电话400-027-0707，或点击右下角转人工服务</p>';
+						var msgHtml = msgHtml2.replace("#{message}",initMessage);
+						msgHtml = msgHtml.replace("#{non}","non1");
+						$(".service_newBox").append(msgHtml);
+						$(".answerBtn2").click(function(){
+							//var index = $(".wtfx .qclassify ul li").index(this)+1;,
+							var index = $(this).attr("num");
+							getquestions(index);
+						});
+						}
+					});
+				}else{
+					YRHX.ajax({
+					url:"/queryQuestion",
+					data:{"type":txtlist},
+					async : false,
+					success:function(sucDate){
+						var questions = '<p>您好，您需要咨询的是下面的问题吗？<br></p>';
+							questions+='<ul class="sugguestions">';
+							for(var i=0;i<sucDate.length;i++){
+								questions+='<li><a href="#" onclick="answerQuestion(this)" class="answerBtn" code="'+
+								sucDate[i]["qCode"]+'">'+(i+1)+'.'+sucDate[i]["question"]+'点击查看!</a></li>';
+							}
+							questions+='</ul>';
+						var answerMsg = msgHtml2.replace("#{message}",questions);
+							answerMsg = answerMsg.replace("#{non}","non2");
+						$(".service_newBox").append(answerMsg);
+					},
+					error:function(errDate){
+						$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+					}
+					});
+				}
+				$('.service_news').scrollTop( $('.service_news')[0].scrollHeight );
+				$(".footer_grey").val("");
+				}
+			}
+			$(".answerBtn2").click(function(){
+				//var index = $(".wtfx .qclassify ul li").index(this)+1;
+				var index = $(this).attr("num");
+				getquestions(index);
+			});
+			
+			function getquestions(index){
+				var keyword = getClassify(index);
+				var txtlist = keyword[1];
+				YRHX.ajax({
+					url:"/queryQuestion",
+					data:{"type":txtlist},
+					async : false,
+					success:function(sucDate){
+						var questions = '<p>您好，您需要咨询的是下面的问题吗？<br></p>';
+							questions+='<ul class="sugguestions">';
+							for(var i=0;i<sucDate.length;i++){
+								questions+='<li><a href="#" onclick="answerQuestion(this)" class="answerBtn" code="'+
+								sucDate[i]["qCode"]+'">'+(i+1)+'.'+sucDate[i]["question"]+'点击查看!</a></li>';
+							}
+							questions+='</ul>';
+						var answerMsg = msgHtml2.replace("#{message}",questions);
+							answerMsg = answerMsg.replace("#{non}","non2");
+						$(".service_newBox").append(answerMsg);
+					},
+					error:function(errDate){
+						$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+					}
+					});
+					$('.service_news').scrollTop( $('.service_news')[0].scrollHeight );
+			}
+			
+			function getClassify(txtlist){
+				var key=[];
+				switch(txtlist){
+					case "1":
+					txtlist="Y";//常见问题
+					break;
+					case "2":
+					txtlist="A";//注册
+					break;
+					case "3":
+					txtlist="B";//存管账户
+					break;
+					case "4":
+					txtlist="C";//投标
+					break;
+					case "5":
+					txtlist="D";//债权转让
+					break;
+					case "6":
+					txtlist="E";//自助服务
+					break;
+					case "7":
+					txtlist="G";//会员等级
+					break;
+					default:
+					key[0]=txtlist;
+					txtlist="N";
+				}
+				key[1]=txtlist;
+				return key;
+			}
+			$(".closeblue").click(function(){
+				closeblue();
+			});
+			function closeblue(){
+				$('#yinying').hide();
+				$(".submitSuccess").hide();
+			}
+			$(".service_close").click(function(){
+				window.close();
+			});
+	</script>
+</html>

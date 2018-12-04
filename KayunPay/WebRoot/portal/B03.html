@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>易融恒信-安全可靠透明的投资平台,p2p网贷平台</title>
+<meta name="keywords" content="易融恒信,网贷平台,p2p网贷平台排名,p2b网贷,p2p投资平台,小投资,武汉贷款,武汉小额投资,武汉网贷公司,武汉易融恒信" />
+<meta name="description" content="易融恒信,致力于做华中地区最好的p2p网贷平台,为投资者提供最安全,最靠谱,最透明的互联网金融p2p投资平台,咨询电话400-027-0707" />
+<link href="/portal/css/public.css" rel="stylesheet" media="screen" type="text/css"  charset="utf-8" />
+<link type="text/css" href="/portal/css/user.css" rel="stylesheet">
+<link type="text/css" href="/portal/css/datapicker/datepicker.css" rel="stylesheet">
+<!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+<style type="text/css">
+.yinying{top:0px !important;}
+</style>
+</head>
+<body>
+<header id="header" class="header"></header>
+<nav class='user_index'></nav>
+<main class="user">
+	 <div class="user-main">
+        <div class="user-main-left">
+             <h2>资金管理</h2>
+            <div class="user-nav"></div>
+        </div>
+		<div class="user-main-right">
+			<div class='user-main-right-c'>
+			<div class='tabNav'>
+				<i></i>
+				<ul	class="menu">
+					<li id="cashApply" class="active">申请提现</li> 
+					<li id="cashHistory" >提现记录</li>
+				</ul>
+				<div class="clear"></div>
+			</div>
+			<div id="tab-content">
+				<!--申请提现-->
+				<div class="tab-content-list">
+						<div class="add_money top_text" style="padding-top: 10px;">
+						<!-- <div class="write_text3" id="write_text2"><label>绑定银行卡：</label><span class="card_num"></span></div> -->
+					<div class="write_text3"><label>账户可用余额：</label><span id="avBanlance">加载中ing</span></div>						
+						<div class="write_text3">							
+							<label>可提现金额：</label><span><i id="canTakeMoney"></i>( 需收取服务费部分：<span class="red" id="chargeMoney">0.00</span>元，<a id="forNow" style="color:#048dd1;cursor:pointer; display:none;position: relative;">暂时<div class="forNewRule">
+								<div class="forNewRuleArrow"></div>
+								<div class="forContent">免费提现额度 = 已回收本息+待回收本金 - 提现总额。</div>
+							</div></a>无需收取服务费部分：<span class="red" id="noChargeMoney">473.77</span>元。)</span>
+						</div>						
+						<div class="write_text3"><label>提现手续费：</label><span><input type="radio" name="isScore" class="m_t"  checked  value="useTimes" />使用免费提现次数 ( 剩余次数<span id="leftFree" class="red"></span> )</span></div>
+						<div id="genneralHide">
+							<div class="write_text3"><label></label><span><input type="radio" name="isScore" class="m_t"value="chargeTwo" /><i class="red">2</i>元</span>  ( 会员等级达到<i class="red">黑钻会员</i>无需收取手续费。)</div>
+							<div class="write_text3"><label></label><span><input type="radio" name="isScore" class="m_t" value="useScore" /></span>使用 <span class="red">200</span> 积分抵扣&nbsp;&nbsp;( 剩余积分<span id="leftScore" class="red"></span> )</div>
+						</div>
+						<div class="write_text3"><label>服 务 费：</label><span class="red" id="chargeFee">0.00</span>元&nbsp;&nbsp;<!-- (充值未投标金额部分，收取 <span class="red">1%</span> 服务费。) --></div>
+					</div>
+					<div class="add_money i">
+						<div class="write_text">
+							<label>提现银行卡：</label>
+							<div class="select">
+								<span id="bankFirstCard"></span>						
+								<div class="options" id="bankCards">
+									<!-- <a href="javascript:">建设银行&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;****&nbsp;&nbsp;****&nbsp;&nbsp;6243</a>
+									<a href="javascript:">建设银行&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;****&nbsp;&nbsp;****&nbsp;&nbsp;6243</a>
+									<a href="javascript:">建设银行&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;****&nbsp;&nbsp;****&nbsp;&nbsp;6243</a>
+									<a href="javascript:">建设银行&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;****&nbsp;&nbsp;****&nbsp;&nbsp;6243</a>
+									<a href="javascript:">建设银行&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;****&nbsp;&nbsp;****&nbsp;&nbsp;****&nbsp;&nbsp;6243</a> -->
+								</div>
+							</div>
+							<!-- <span class="text"><a class="blur" href="B04">新增银行卡</a></span> -->
+						</div>
+						
+						<div class="write_choice">
+							<label><input name="Fruit" type="radio" value="" checked="checked" />普通提现 </label> 
+							<label><input name="Fruit" type="radio" value="2" />大额提现</label> 
+						</div>
+						<div class="write_text1"><label>银行联号：</label><span><input type="text" name="amountcode" class="write_input" /></span><span class="text"><a href="http://www.lianhanghao.com/" target="view_window" class="write_query">查询</a></span></div>
+						
+						
+						<div class="write_text"><label>提现金额：</label><span><input type="text" name="amount" id="withdrawMoney" /></span><span class="text">元&nbsp;&nbsp;</span></div>
+						<input style="display:none">
+						<!-- <div class="write_text"><label><i>*</i>支付密码：</label><span><input type="password" name="payPwd" /></span><span id="hasPayPwd" class="text">（未设置,马上去<a class="blur" href="C01">设置</a>）</span></div> -->
+						<!-- <div class="popOver">
+							<div class="popArrow"></div>
+							<div class="popContent">阿萨德卡号是的机会</div>
+						</div> -->
+						<!-- <div class="write_text"><label><i>*</i>手机验证码：</label><span><input type="text" name="msgMac" maxlength="6" placeholder="验证码每分钟只能获取一次"/></span><span class="text"><a class="vail" id="sendMsgBtn" href="javascript:" sendToggle="0">获取验证码</a><label id="msgCounter"></label></span></div> -->
+						<div class="button_panel"><button id="submit" type="submit"  >申请提现</button>&nbsp;&nbsp;&nbsp;&nbsp;（以银行到账时间为准）</div>
+					</div>					
+				
+									
+					<div class="tip_text">
+						<h4>可提现金额：**元（需收取服务费部分：0.00元，无需收取服务费部分：0.00元。）</h4>
+						<h4>江西银行电子账户提现限额</h4>
+						<table class="tip_textTable">
+							<tbody>
+								<tr>
+									<td></td>
+									<td>提现金额</td>
+									<td>提现次数限制</td>
+									<td>提现时间</td>
+									<td>到账时间</td>
+								</tr>
+								<tr>
+									<td>小额提现</td>
+									<td>小于等于5万元</td>
+									<td>40次/天</td>
+									<td>不受限制</td>
+									<td>T+0，实时</td>
+								</tr>
+								<tr>
+									<td>大额提现</td>
+									<td>大于5万元</td>
+									<td>40次/天</td>
+									<td>工作日9:30-16:30</td>
+									<td>官方时间：T+1个工作</td>
+								</tr>
+							</tbody>
+						</table>
+						<h4>平台提现规则</h4>
+						<ul>
+							<li>1.出借账户，按会员等级可获得一定的免费提现次数，具体参考平台会员体系超出部分按每笔2收取提现费（200积分可抵扣一次）。每月剩余免费提现次数，当月月底归零。</li>
+							<li>2、提现时间为T+0，用户操作提现后实时到账，实际到账时间以银行为准。</li>
+							<li>3、充值未投标客户进行提现操作，需收取未投标提现金额的1%为服务费。</li>
+							<li>4、为缓解平台资金站岗问题，即日起在本平台充值后达15天的用户，在第16天可免服务费提现1次。</li>
+						</ul>　
+						<h4>免服务费提现要求：</h4>
+						<ul>
+						    <li>1.必须成功开启自动投标设置；</li>
+						    <li>2.自动投标设置必须为可投出状态；</li>
+						    <li>3.免服务费提现金额需为充值达15天的金额（例如开启自动投标后，再进行充值，这期间所充值的金额未达15天不支持免服务费提现）；</li>
+						    <li>4. 满足以上条件请主动联系官方客服， 客服电话：400-027-0707。</li>
+						</ul>
+					</div>					
+				</div>
+				<!--提现记录-->
+				<div class="tab-content-list" style="display: none;">
+					<div class="search">
+						<label>状态</label>
+						<div class="select">
+							<span>所有</span>
+							<input type="hidden" id="dropDownValue">
+							<div class="options">
+								<a href="javascript:" value=" ">所有</a>
+								<a href="javascript:" value="0">未审核</a>
+								<a href="javascript:" value="1">已审核</a>
+								<a href="javascript:" value="2">提现中</a>
+								<a href="javascript:" value="3">提现成功</a>
+								<a href="javascript:" value="4">提现失败</a>
+								<a href="javascript:" value="5">审核不通过</a>
+							</div>
+						</div>
+						从
+						<span class="input_panel"><input class="time_input" type="text" id="startTime"/></span>
+						<i class="clear_text"></i>
+						到
+						<span class="input_panel"><input class="time_input" type="text" id="endTime"/></span>
+						<i class="clear_text"></i>
+						<button id="conditionQueryBtn">查询</button>
+					</div>
+					<div class="list_table">
+						<table id="withdrawalsHistory">
+							<thead>
+								<tr class="h">
+									<th width="100">时间</th>
+									<th width="70">金额</th>
+									<th width="70">手续服务费</th>
+									<th width="100">卡号</th>
+									<th width="70">银行</th>
+									<th width="70">状态</th>
+									<!-- <th width="70">操作</th> -->
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>							
+						</table>
+					</div>
+					<div class="page_panel"></div>
+				</div>
+			</div>
+		</div>
+		</div>
+    </div>
+</main>
+<div id="yinying" class="yinying"></div>
+
+<!-- 开通存管弹窗 -->
+<div class="cg">
+	<div class="cg-bg">
+		<a href="A00" id="closeBtn"></a>
+		<a href="#" class="enter"></a>
+	</div>
+	<div class="shade"></div>
+</div>
+
+<!-- 设置密码弹窗 -->
+<div class="cg_auth_1">
+	<div class="cgAuth_title">
+		设置存管账户密码
+		<div class="cgAuth_close">×</div>
+	</div>
+	<div class="cgAuth_txt_1">请您进行密码设置后，才可以使用！</div>
+	<div class="cgAuth_submitBox">
+		<a href="#" class="cgAuth_submit" id="cgAuth_sub">立即开通</a>
+		<div class="cgAuth_submitClose">取消</div>
+	</div>
+</div>
+<!-- 开通授权弹窗 -->
+<div class="cg_auth">
+	<div class="cgAuth_title">
+		开通缴费授权
+		<div class="cgAuth_close">×</div>
+	</div>
+	<div class="cgAuth_txt">开通缴费授权才能正常进行提现、还款、债权转让等操作</div>
+	<div class="cgAuth_submitBox">
+		<a href="depositoryUser?step=3" class="cgAuth_submit">立即开通</a>
+		<div class="cgAuth_submitClose">取消</div>
+	</div>
+</div>
+
+<!-- 绑定银行卡弹窗 -->
+<div class="cg_auth_2">
+	<div class="cgAuth_title">
+		绑定银行卡
+		<div class="cgAuth_close">×</div>
+	</div>
+	<div class="cgAuth_txt_1">请您先绑定银行卡，才可以使用！</div>
+	<div class="cgAuth_submitBox">
+		<a href="depositoryUserUsed?step=1" class="cgAuth_submit" id="cgAuth_bank">立即绑卡</a>
+		<div class="cgAuth_submitClose">取消</div>
+	</div>
+</div>
+
+<!-- 提现 -->
+<div id="chargeDialog" class="dialogLayOut">
+	<div class="dialogHeader"><div class="dialogTitle">提现成功了吗？</div><div class="dialogClose"></div></div>
+	<div class="chargeDialogBar">
+		<a href="#" id="chargeSuccess">提现已完成</a>
+		<a href="#" id="chargeFaile">未成功，请重新操作</a>
+	</div>
+	<div class="chargeTips">温馨提示：如果您在提现过程中有任何疑问请联系客服</div>
+</div>
+<!-- <div id="addBankDialog" class="add_bank_dialog">
+	<div class="bank_dialog_header">
+		<h4>补填提现银行卡信息</h4>
+		 <div class="del"></div>
+	</div>
+	<form>
+		<div class="addIterm">
+			<label>银行卡所在地</label>
+			<select id="Province" class="porvice"></select>
+			<select id="City" class="city"></select>
+		</div>
+		<div class="addIterm">
+			<label>银行开户网点</label>
+			<input id="bankLocation" type="text" >
+		</div>		
+		<div class="cardSaveBtn addIterm">
+			<div id="btn_add_save">保存</div>
+		</div>		
+		<b class="red">*未填写银行卡银行卡所在地以及开户行可能导致提现失败</b>
+	</form>
+</div> -->
+<footer id="footer" class="footer">
+</footer>
+</footer>
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+<script type="text/javascript" src="/portal/js/config.js"></script>
+<script type="text/javascript" src="/portal/js/public.js"></script>
+<script type="text/javascript">window.userNavActive = 3;topNavSelect= '4'; </script>
+<script type="text/javascript" src="/portal/js/user.js"></script>
+<script type="text/javascript" src="/portal/js/pub/widget-table.js"></script>
+<script type="text/javascript" src="/portal/css/datapicker/bootstrap-datepicker.js"></script>
+<script>
+var t_host=window.location.host;
+var t_pro=window.location.protocol;	
+t_host=t_pro+"//"+t_host;
+setting(2,window.userNavActive);
+NavMenu(2);
+	$("#chargeFaile").click(function(){
+		window.location.reload();
+	});
+	
+	$("#chargeSuccess").click(function(){
+		$('body,html').css('overflow', 'auto');
+		$("#yinying").hide();
+		$("#chargeDialog").hide();
+		$("#cashHistory").click();
+	});
+	
+	
+	$("#chargeDialog .dialogClose").click(function(){
+		$('body,html').css('overflow', 'auto');
+		$('#yinying').hide();
+		$('#chargeDialog').hide();
+	});
+	$('.time_input').datepicker({
+		'format':'yyyy-mm-dd'
+	});
+	
+	$("#forNow").hover(function(){
+		
+	},function(){
+		
+	});
+	var where = new Array(35);
+	function comefrom(loca,locacity) { 
+		this.loca = loca; 
+		this.locacity = locacity; 
+	}
+	where[0]= new comefrom("请选择省份","请选择城市");
+	where[1] = new comefrom("北京","请选择城市|东城|西城|崇文|宣武|朝阳|丰台|石景山|海淀|门头沟|房山|通州|顺义|昌平|大兴|平谷|怀柔|密云|延庆"); 
+	where[2] = new comefrom("上海","请选择城市|黄浦|卢湾|徐汇|长宁|静安|普陀|闸北|虹口|杨浦|闵行|宝山|嘉定|浦东|金山|松江|青浦|南汇|奉贤|崇明");
+	where[3] = new comefrom("天津","请选择城市|和平|东丽|河东|西青|河西|津南|南开|北辰|河北|武清|红挢|塘沽|汉沽|大港|宁河|静海|宝坻|蓟县");
+	where[4] = new comefrom("重庆","请选择城市|万州|涪陵|渝中|大渡口|江北|沙坪坝|九龙坡|南岸|北碚|万盛|双挢|渝北|巴南|黔江|长寿|綦江|潼南|铜梁|大足|荣昌|壁山|梁平|城口|丰都|垫江|武隆|忠县|开县|云阳|奉节|巫山|巫溪|石柱|秀山|酉阳|彭水|江津|合川|永川|南川");
+	where[5] = new comefrom("河北","请选择城市|石家庄|邯郸|邢台|保定|张家口|承德|廊坊|唐山|秦皇岛|沧州|衡水");
+	where[6] = new comefrom("山西","请选择城市|太原|大同|阳泉|长治|晋城|朔州|吕梁|忻州|晋中|临汾|运城");
+	where[7] = new comefrom("内蒙古","请选择城市|呼和浩特|包头|乌海|赤峰|呼伦贝尔盟|阿拉善盟|哲里木盟|兴安盟|乌兰察布盟|锡林郭勒盟|巴彦淖尔盟|伊克昭盟");
+	where[8] = new comefrom("辽宁","请选择城市|沈阳|大连|鞍山|抚顺|本溪|丹东|锦州|营口|阜新|辽阳|盘锦|铁岭|朝阳|葫芦岛");
+	where[9] = new comefrom("吉林","请选择城市|长春|吉林|四平|辽源|通化|白山|松原|白城|延边");
+	where[10] = new comefrom("黑龙江","请选择城市|哈尔滨|齐齐哈尔|牡丹江|佳木斯|大庆|绥化|鹤岗|鸡西|黑河|双鸭山|伊春|七台河|大兴安岭");
+	where[11] = new comefrom("江苏","请选择城市|南京|镇江|苏州|南通|扬州|盐城|徐州|连云港|常州|无锡|宿迁|泰州|淮安");
+	where[12] = new comefrom("浙江","请选择城市|杭州|宁波|温州|嘉兴|湖州|绍兴|金华|衢州|舟山|台州|丽水");
+	where[13] = new comefrom("安徽","请选择城市|合肥|芜湖|蚌埠|马鞍山|淮北|铜陵|安庆|黄山|滁州|宿州|池州|淮南|巢湖|阜阳|六安|宣城|亳州");
+	where[14] = new comefrom("福建","请选择城市|福州|厦门|莆田|三明|泉州|漳州|南平|龙岩|宁德");
+	where[15] = new comefrom("江西","请选择城市|南昌|景德镇|九江|鹰潭|萍乡|新馀|赣州|吉安|宜春|抚州|上饶");
+	where[16] = new comefrom("山东","请选择城市|济南|青岛|淄博|枣庄|东营|烟台|潍坊|济宁|泰安|威海|日照|莱芜|临沂|德州|聊城|滨州|菏泽");
+	where[17] = new comefrom("河南","请选择城市|郑州|开封|洛阳|平顶山|安阳|鹤壁|新乡|焦作|濮阳|许昌|漯河|三门峡|南阳|商丘|信阳|周口|驻马店|济源");
+	where[18] = new comefrom("湖北","请选择城市|武汉|宜昌|荆州|襄樊|黄石|荆门|黄冈|十堰|恩施|潜江|天门|仙桃|随州|咸宁|孝感|鄂州");
+	where[19] = new comefrom("湖南","请选择城市|长沙|常德|株洲|湘潭|衡阳|岳阳|邵阳|益阳|娄底|怀化|郴州|永州|湘西|张家界");
+	where[20] = new comefrom("广东","请选择城市|广州|深圳|珠海|汕头|东莞|中山|佛山|韶关|江门|湛江|茂名|肇庆|惠州|梅州|汕尾|河源|阳江|清远|潮州|揭阳|云浮");
+	where[21] = new comefrom("广西","请选择城市|南宁|柳州|桂林|梧州|北海|防城港|钦州|贵港|玉林|南宁地区|柳州地区|贺州|百色|河池");
+	where[22] = new comefrom("海南","请选择城市|海口|三亚");
+	where[23] = new comefrom("四川","请选择城市|成都|绵阳|德阳|自贡|攀枝花|泸州|德阳|广元|遂宁|内江|乐山|资阳|宜宾|南充|达州|雅安|阿坝藏族羌族自治州|甘孜藏族自治州|凉山彝族自治州|广安|巴中|眉山");
+	where[24] = new comefrom("贵州","请选择城市|贵阳|六盘水|遵义|安顺|铜仁|黔西南|毕节|黔东南|黔南");
+	where[25] = new comefrom("云南","请选择城市|昆明|大理|曲靖|玉溪|昭通|楚雄|红河|文山|思茅|西双版纳|保山|德宏|丽江|怒江|迪庆|临沧");
+	where[26] = new comefrom("西藏","请选择城市|拉萨|日喀则|山南|林芝|昌都|阿里|那曲");
+	where[27] = new comefrom("陕西","请选择城市|西安|宝鸡|咸阳|铜川|渭南|延安|榆林|汉中|安康|商洛");
+	where[28] = new comefrom("甘肃","请选择城市|兰州|嘉峪关|金昌|白银|天水|酒泉|张掖|武威|定西|陇南|平凉|庆阳|临夏|甘南");
+	where[29] = new comefrom("宁夏","请选择城市|银川|石嘴山|吴忠|固原");
+	where[30] = new comefrom("青海","请选择城市|西宁|海东|海南|海北|黄南|玉树|果洛|海西");
+	where[31] = new comefrom("新疆","请选择城市|乌鲁木齐|石河子|克拉玛依|伊犁|巴音郭勒|昌吉|克孜勒苏柯尔克孜|博尔塔拉|吐鲁番|哈密|喀什|和田|阿克苏");
+	where[32] = new comefrom("香港","香港");
+	where[33] = new comefrom("澳门","澳门");
+	where[34] = new comefrom("台湾","请选择城市|台北|高雄|台中|台南|屏东|南投|云林|新竹|彰化|苗栗|嘉义|花莲|桃园|宜兰|基隆|台东|金门|马祖|澎湖"); 
+	
+	function init_porvice(){
+		for(var i in where){
+			$('<option>').html(where[i].loca).appendTo('#Province');
+		}
+		$('#Province').change(function(){
+			var index = $(this).find('option:selected').index();
+			var str = where[index].locacity;
+			var arr = str.split('|');
+			$('#City').html('');
+			for(var i in arr){
+				$('<option>').html(arr[i]).appendTo('#City');
+			}
+		});
+	}
+	
+	init_porvice();
+	
+	//查询会员免费提现次数
+	YRHX.ajax({
+		url : CONFIG.getRequestURI("queryFreeWithdrawal4user"),
+		success : function( sucData ) {
+			var leftFree = "";
+			if( sucData.vipFree == -1){
+				//将军
+				leftFree = "不限";
+				$("#genneralHide").hide();
+			}else{
+				if( sucData.useFree < 0 ){
+					sucData.useFree = 0;
+				}
+				leftFree = sucData.vipFree - sucData.useFree;	
+				if(  leftFree == 0 ){
+					//免费次数用完
+					$("input[name='isScore']").eq(0).attr("disabled","disabled");
+					$("input[name='isScore']").eq(1).attr("checked","checked");
+				}else if( leftFree  < 0 ){
+					//降级
+					leftFree = 0;
+					if( sucData.vipFree != -1){
+						$("input[name='isScore']").eq(0).attr("disabled","disabled");
+						$("input[name='isScore']").eq(1).attr("checked","checked");
+					}
+					
+				}else{
+					$("#genneralHide").hide();
+				}
+			}
+			
+			$("#leftFree").text( leftFree )
+			if( sucData.vipFree > sucData.useFree ){
+				//可免费提现
+			}			
+		},
+		error : function( errorData ){
+			 $.popTips("popTipErr",errorData.return_info || "获取信息失败");
+		}
+	})
+		
+	//验证提现银行卡信息
+	$.validateCardCity = function(){		
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("validateCardCity"),
+			success : function( sucData ) {
+				//0 理财卡未绑定 1理财卡省市信息非空2理财卡省市信息为空
+				if( sucData != "0" &&  sucData == "2" ){
+					/* to_center($('#yinying').show());
+					$('body,html').css('overflow', 'hidden'); */
+					to_center($('#addBankDialog').show());
+				}
+			},
+			error : function( errorData ){
+				 $.popTips("popTipErr",errorData.return_info || "获取信息失败");
+			}
+		})
+		
+	}
+	
+	$.validateCardCity();
+	
+	$.dialogClose = function(){
+		$('#yinying').hide();
+		$('body,html').css('overflow', 'auto');
+		$('#addBankDialog').hide();
+	}
+	
+	//补填提现银行卡信息
+	$("#btn_add_save").click(function(){
+		if( !$('#Province').val() || $('#Province').val() == "请选择省份" ||  !$('#City').val() || $('#City').val() == "请选择城市" ){
+			$("#btn_add_save").popUp ("err","请认真输入银行卡所在地");
+			return false;
+		}
+
+		var bankcity = $('#Province').val() +"|"+ $('#City').val();
+		
+		if( $("#bankLocation").val() ){
+			bankcity +=  "|" + $("#bankLocation").val();
+		}
+		
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("updateCardCity"),
+			data : {
+				cardCity : bankcity
+			},
+			success : function( sucData ) {
+				$.dialogClose();
+			},
+			error : function( errorData ){
+				 $.popTips("popTipErr",errorData.return_info || "获取信息失败");
+			}
+		})
+		
+	});	
+	
+	//提现记录
+	$.withdrawalsHistory = function( pageNumber ){
+		var beginDate = ($("#startTime").val()).replaceAll("-","");
+		var endDate =($("#endTime").val()).replaceAll("-","");
+		var statusCode = $("#dropDownValue").val();//TODO
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("withdrawalsHistory"),
+			data : {
+				"pageNumber" : pageNumber || 1,
+				"pageSize" : 10,
+				"beginDate" : beginDate?beginDate+"000000":"",
+				"endDate" : endDate?endDate+"235959":"",
+				"status" : statusCode || '' //提现状态类型
+			},
+			success : function( sucData ) {
+				
+				var rowHtml = "<tr><td>#{dateTime}</td>";
+				rowHtml += "<td>#{withdrawAmount}</td>";
+				rowHtml += "<td>#{sxf}</td>";
+				rowHtml += "<td>#{bankNo}</td>";
+				rowHtml += "<td>#{bankName}</td>";
+				rowHtml += "<td><span style='padding-right:10px;' class='#{statusCode}'>#{statusName}</span><button class='red_button #{isShow}' withdrawCode=#{withdrawCode}>取消</button></td></tr>";
+				
+				var returnData = sucData.list ;
+				if (returnData && returnData.length > 0) {
+					var tableEle = $("#withdrawalsHistory").find("tbody");
+					var tfootEle = $("#withdrawalsHistory").find("tfoot");
+					tableEle.html("");
+					tfootEle.remove();
+
+					for (var i = 0; i < returnData.length; i++) {
+						var row = returnData[i];
+						if ( row ) {							
+						/* 	if( row["status"] == "0"){
+								row["operateDesc"] = "取消";
+							}else if( row["status"] == "05"){
+								//已取消
+								row["operateDesc"] = "已取消";
+							}else{
+								
+							} */
+							row["sxf"] = (row["sxf"] / 100).toFixed(2) 
+							row["bankNo"] = row["bankNo"].substr(0,4) + "***********" + row["bankNo"].substr(-4);
+							row["dateTime"] = row["createDateTime"].dateformat();
+							row["withdrawAmount"] = YRHX.toDecimal2( row["withdrawAmount"] / 100 ) + '元';
+							switch ( row["status"] ){
+								case "0":
+									row["statusName"] = "未审核";
+									row["statusCode"] = "";
+									row["isShow"] = "";									
+									break;
+								case "1":
+									row["statusName"] = "已审核";
+									row["statusCode"] = "success";
+									row["isShow"] = "isHide";
+									break;
+								case "2":
+									row["statusName"] = "申请提现";
+									row["isShow"] = "isHide";
+									break;
+								case "3":
+									row["statusName"] = "提现成功";
+									row["statusCode"] = "success";
+									row["isShow"] = "isHide";
+									break;
+								case "4":
+									row["statusName"] = "提现失败";
+									row["statusCode"] = "red";
+									row["isShow"] = "isHide";
+									break;
+								case "5":
+									row["statusName"] = "审核不通过";
+									row["statusCode"] = "red";
+									row["isShow"] = "isHide";
+									break;
+								case "6":
+									row["statusName"] = "已取消";
+									row["statusCode"] = "red";
+									row["isShow"] = "isHide";
+									break;
+								/* default:
+									row["statusName"] = "异常";
+									row["statusCode"] = "red"; */										
+							}
+						}
+						var tempHtml = rowHtml.makeHtml(row);
+						tableEle.append(tempHtml);						
+					}
+					$(".red_button").on("click",function(){
+						var withdrawCode = $(this).attr("withdrawCode");							
+						var confirmTips = confirm("确定取消提现？");
+						if( confirmTips ){
+							YRHX.ajax({
+								url : CONFIG.getRequestURI("cancelWithdrawals"),
+								data : {
+									"withdrawCode" : withdrawCode
+								},
+								success : function( sucData ) {
+									window.location.reload();
+									//$.withdrawalsHistory();
+								},
+								error: function(errorData){
+									$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+								}
+							})
+						}						
+					});
+					//分页
+					$(".page_panel").pag(sucData["pageNumber"], sucData["pageSize"],sucData["totalRow"], function() {					
+						var reqIndex = $(this).attr("index");
+						$.withdrawalsHistory( reqIndex || 1);
+					}); 
+				}else{
+					//暂无数据
+					$("#withdrawalsHistory").noData();
+				}				
+			},
+			error : function( errorData ){
+				 $.popTips("popTipErr",errorData.return_info || "获取信息失败");
+			}
+		});
+	};
+		
+	//提现记录条件查询
+	$("#conditionQueryBtn, #cashHistory").click(function(){
+		$.withdrawalsHistory();
+	});
+	
+	//申请提现
+	$.cashApply = function(){
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("withdrawalsInit"),
+			success : function( sucData ) {				
+				if( sucData ){					
+					//是否有足够积分抵扣
+					if( sucData["funds"]["points"] / 10 / 10  < 200 ){
+						$("input[name='isScore']").eq(2).attr("disabled","disabled");
+					}									
+					//投资总额（待收回本金 + 已回收本金 + 已回收利息）
+					var totalVest = sucData["funds"]["beRecyPrincipal"] + sucData["funds"]["reciedPrincipal"] + sucData["funds"]["reciedInterest"];					
+					if( totalVest  > 0 ){
+						var canTakeMoney =  sucData["funds"]["avBalance"];
+					}else{
+						var canTakeMoney =  sucData["funds"]["avBalance"] ;
+						if( canTakeMoney < 0 ){
+							canTakeMoney = 0;
+						}
+					}					
+					//无需收服务费部分（投资总额 - 提现总额 ）
+					var noChargeMoney = totalVest - sucData["funds"]["totalWithdraw"];					
+					if(  noChargeMoney < 0  ){						
+						noChargeMoney = 0;						
+					}else{
+						 if( noChargeMoney >= sucData["funds"]["avBalance"]  ){
+							 noChargeMoney = sucData["funds"]["avBalance"];
+						 }
+					}					
+					//需要收取服务费部分（提现金额 - 无需收取服务费部分）
+					var chargeMoney = sucData["funds"]["avBalance"] - noChargeMoney;
+					if(  chargeMoney < 0  ){					
+						chargeMoney = 0;						
+					}					
+					$("#withdrawMoney").attr({
+						"avBalance":sucData["funds"]["avBalance"],
+						"chargeMoney":chargeMoney,
+						"noChargeMoney":noChargeMoney
+					});					
+					$("#avBanlance").text( YRHX.toDecimal2(  sucData["funds"]["avBalance"] / 100) + '元' );
+					$("#canTakeMoney").text(  YRHX.toDecimal2( canTakeMoney / 100) + '元' );
+					$("#chargeMoney").text( YRHX.toDecimal2(  chargeMoney / 100) );//需收取服务费部分
+					$("#noChargeMoney").text( YRHX.toDecimal2(  noChargeMoney / 100 ));//无需收取服务费部分
+					$("#leftScore").text(  sucData["funds"]["points"] / 100 );
+					//是否设置支付密码
+					if( sucData["isSetPayPwd"] == 1 ){
+						$("#hasPayPwd").hide();	
+					}
+					var divEle = $("#bankList");
+					if( sucData["banks"] ){
+						var banCardHtml ="";
+						var returnData = sucData["banks"];						
+						for (var i = 0; i < returnData.length; i++) {
+							if(i < 1 ){
+								returnData[i]["bankNo"]=returnData[i]["bankNo"].substr(0,4)+"********"+returnData[i]["bankNo"].substr(-4);
+								/* $(".card_num").text(returnData[i]["bankNo"]); */
+								/* $("#bankFirstCard").html( returnData[i].bankName + "   **** **** **** " + returnData[i]["bankNo"].substr(returnData[i]["bankNo"].length-4,4) ); */
+								$("#bankFirstCard").html( returnData[i].bankName + "   " + returnData[i]["bankNo"] );
+								$("#bankFirstCard").attr("bankCode",returnData[i].bankCode);
+							}
+							banCardHtml += "<a href='javascript:' bankCode ='"+ returnData[i].bankCode+"'>"+ returnData[i].bankName +"    **** **** **** " + returnData[i]["bankNo"].substr(returnData[i]["bankNo"].length-4,4)+"</a>";							
+						}						
+						$("#bankCards").html( banCardHtml );
+						$('.select .options a').click(function(){
+							var html = $(this).html();
+							var curBankNo = $(this).attr("bankCode");
+							var value = html;
+							var selectElement = $(this).parent().parent();
+							if($(this).attr('value')){
+								value = $(this).attr('value');
+							}
+							selectElement.children('span').html(html);
+							selectElement.children('span').attr("bankCode",curBankNo);
+							$(this).parent().hide();
+						});					
+					}else{
+						$("#bankFirstCard").text("暂无绑定银行卡");
+					}
+				}			
+			},
+			error : function( errorData ){
+				 $.popTips("popTipErr",errorData.return_info || "获取信息失败");
+			}
+		});
+	}
+	
+	$("#withdrawMoney").blur(function(){
+		var inputMoney = $("#withdrawMoney").val();
+		$("#withdrawMoney").val( (inputMoney*100).toFixed(0)  / 100);
+		inputMoney = $("#withdrawMoney").val();		
+		if( inputMoney < 3){
+			$("#submit").popUp("suc","提现金额必须大于3元");
+			$("#withdrawMoney").val("");
+		}else{
+			if( isNaN(inputMoney) == true ){
+				$("#submit").popUp("suc","提现金额非法");
+				$("#withdrawMoney").val("");
+			}else if( (inputMoney*100).toFixed(0).toString().indexOf(".") > 0 ){
+				$("#submit").popUp("suc","提现金额最小单位为分");
+				$("#withdrawMoney").val("");
+			}else{
+				var avbalance = $(this).attr("avbalance") / 100;
+				var nochargemoney = $(this).attr("nochargemoney") / 100;
+				if( inputMoney > avbalance ){
+					$("#submit").popUp("suc","提现金额大于可用余额");
+					$("#withdrawMoney").val("");
+				}else{
+					var chargeFee = 0;					
+					var chargePart = (inputMoney - nochargemoney).toFixed(2);
+					if( chargePart > 0){
+						chargeFee = ( Math.floor(chargePart)  * 0.01 ).toFixed(2);   //充值未投标金额部分，收取 1% 服务费。
+					} 					
+					$("#chargeFee").text( chargeFee )					
+				}
+			}			
+		}		
+	});
+	
+	//申请提现
+	$("#cashApply").click(function(){
+		$.cashApply();
+	});
+	
+	$.cashApply();
+	
+	
+	$(".write_choice label").click(function(){
+		var index=$(this).index();
+		if(index==0){
+			$(".write_text1").hide();
+		}
+		else{
+			$(".write_text1").show();
+		}
+	});
+	
+	
+	if(!YRHX.Cookie("loginId").get()){
+		$(".cg").show();
+	}else if(YRHX.Cookie("verifyPwd").get()=="n"){
+		$(".cg").show();
+	}else if(YRHX.Cookie("verifyPwd").get()=="y"){
+		//验证是否绑过卡
+		YRHX.ajax({
+	 		url : "/verifyBindCard",
+	 		dataType:'jsonp',
+	 		success : function( sucData ) {
+	 			if(sucData == "n"){
+	 				$(".cg_auth_2").show();
+	 				$(".yinying").show();
+	 			}else if(YRHX.Cookie("verifyAuth").get()=="n"){
+	 				$(".cg_auth").show();
+	 				$(".yinying").show();
+	 			}
+	 		},
+	 		error : function( errorData ){
+	 			$.popTips("popTipErr", errorData.return_info);
+	 		}
+	 	}); 
+	}
+	
+	$(".enter").click(function(){
+		if(!YRHX.Cookie("loginId").get()){
+			window.location.href="depositoryUser?step=1";
+		}else if(YRHX.Cookie("verifyPwd").get()=="n"){
+			//验证是否绑过卡
+			YRHX.ajax({
+		 		url : "/verifyBindCard",
+		 		dataType:'jsonp',
+		 		success : function( sucData ) {
+		 			if(sucData == "y"){
+		 				window.location.href="depositoryUserUsed?step=2";
+		 			}else{
+		 				window.location.href="depositoryUserUsed?step=1";
+		 			}
+		 		},
+		 		error : function( errorData ){
+		 			$.popTips("popTipErr", errorData.return_info);
+		 		}
+		 	}); 
+		}
+	});
+ 	/* YRHX.ajax({
+ 		url : "/checkOpenAccount",
+ 		dataType:'jsonp',
+ 		success : function( sucData ) {
+ 			$(".yinying").hide();
+ 			//用户
+ 			if(sucData==1){
+ 				$(".cg").show();
+ 			}
+ 			//密码
+ 			else if(sucData==2){
+ 				$(".cg_auth_1").show();
+ 				$(".yinying").show();
+ 			}
+ 			//授权
+ 			else if(sucData==3){
+ 				$(".cg_auth").show();
+ 				$(".yinying").show();
+ 			}
+ 			else if(sucData==0){
+ 				$(".cg_auth").hide();
+ 				$(".yinying").hide();
+ 			}
+ 		},
+ 		error : function( errorData ){
+ 			$.popTips("popTipErr", errorData.return_info);
+ 		}
+ 	}); */
+ 	//首次设密
+ 	$("#cgAuth_sub").click(function(){
+ 		YRHX.ajax({
+			url : "/setDepositPwd",
+			success : function(sucData) {
+			window.location.href='/setDepositPwd?verifyOrderId='+sucData;
+			},
+			error : function(data) {
+				$.popTips("popTipErr",data.return_info || "获取信息失败");
+			}
+		});
+ 	});
+
+ 	//关闭授权弹窗
+ 	$(".cgAuth_close").click(function(){
+ 		window.location.href="A00";
+ 	});
+ 	$(".cgAuth_submitClose").click(function(){
+ 		window.location.href="A00";
+ 	});
+
+	//发送验证码
+	$('#sendMsgBtn').click(function(){		
+		$("#sendMsgBtn").sendMsg({
+			"msgCounter" : "#msgCounter",
+			"msgTips"    : "#msgTips",
+			"type"       : "2",
+			"urPhone"    : "",
+			"url"		 : "sendMsgMac"
+		});
+	})
+		
+	$("#submit").click(function(){
+		$inputAmount = $("input[name=amount]");
+// 		$inputPayPwd = $("input[name=payPwd]");
+		$inputFruit = $("input[name=Fruit]:checked");
+		$inputAmountCode = $("input[name=amountcode]");
+		$inputMsgMac = $("input[name=msgMac]");
+		$inputIsScore = $("input[name='isScore']:checked").val();
+		
+		if( $inputAmount.val() == '' ){
+			 $("#submit").popUp("suc","请输入提现金额",function(){
+				 $inputAmount.focus(); 
+			 });
+			return false;
+		}
+		if($inputFruit.val() == '2'){
+			if($inputAmount.val() <= 50000){
+				 $("#submit").popUp("suc","5万及以下的提现，请选普通提现",function(){
+					 $inputAmount.focus(); 
+				 });
+				 return false;
+			}
+			if($inputAmountCode.val() == ''){
+				 $("#submit").popUp("suc","大额提现，请输入银行联号",function(){
+					 $inputAmount.focus(); 
+				 });
+				 return false;
+			}
+		}else{
+			if($inputAmount.val() > 50000){
+				 $("#submit").popUp("suc","5万以上的提现，请选大额提现",function(){
+					 $inputAmount.focus(); 
+				 });
+				 return false;
+			}
+		}
+		//chargeTwo useScore useTimes
+		var isScore = 0;
+		var useTimes = "n";
+		switch( $inputIsScore ){
+		case "chargeTwo": 
+			break;
+		case "useScore":
+			isScore = 1;
+			break;
+		case "useTimes":
+			useTimes = "y";
+			break;
+		}
+		//TODO
+		/* if( $inputIsScore.attr("checked") ){
+			var isScore = 1;
+		}else{
+			var isScore = 0;
+		} */
+		/* YRHX.ajax({
+			url : CONFIG.getRequestURI("isLogin"),
+			success : function( sucData ) {
+				window.location.href = "/withdrawByFuiou?amount=" + ($inputAmount.val() * 100).toFixed(0) + "&isScore=" + isScore + "&useFree=" + useTimes + "&url=" + t_host;
+			},
+			error : function( errorData ){
+				$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+			}
+		}); */
+		if(YRHX.Cookie("loginId").get()){
+			if($inputFruit.val() == 2){
+				YRHX.ajax({
+					url : "/withdraw",
+					data : {
+						"amount" : ($inputAmount.val() * 100).toFixed(0),
+						"isScore":isScore,
+						"useFree":useTimes,
+						"routeCode":$inputFruit.val(),
+						"cardBankCnaps":$inputAmountCode.val()
+					},
+					async: false,
+					success : function(sucData) {
+						window.location.href="/withdraw?amount=" + ($inputAmount.val() * 100).toFixed(0) + "&isScore=" + isScore + "&useFree=" + useTimes + "&routeCode=" + $inputFruit.val() + "&cardBankCnaps=" + $inputAmountCode.val() + "&url=" + t_host+"&verifyOrderId="+sucData;
+						/* to_center($("#yinying").show());
+						to_center($("#chargeDialog").show()); */
+					},
+					error : function(data) {
+						$.popTips("popTipErr",data.return_info || "获取信息失败");
+					}
+				});
+			}else{
+				YRHX.ajax({
+					url : "/withdraw",
+					data : {
+						"amount" : ($inputAmount.val() * 100).toFixed(0),
+						"isScore":isScore,
+						"useFree":useTimes
+					},
+					async: false,
+					success : function(sucData) {
+						window.location.href="/withdraw?amount=" + ($inputAmount.val() * 100).toFixed(0) + "&isScore=" + isScore + "&useFree=" + useTimes + "&url=" + t_host+"&verifyOrderId="+sucData;
+						/* to_center($("#yinying").show());
+						to_center($("#chargeDialog").show()); */
+					},
+					error : function(data) {
+						$.popTips("popTipErr",data.return_info || "获取信息失败");
+					}
+				});
+			}
+		}else{
+			$.popTips("popTipErr", "获取信息失败");
+		}
+// 		YRHX.ajax({
+// 			url : CONFIG.getRequestURI("withdrawals"),
+// 			data : {
+// 				amount  : ($inputAmount.val() * 100).toFixed(0),
+// 				payPwd  : $inputPayPwd.val(),
+// 				msgMac	: $inputMsgMac.val(),
+// 				bankCode: $("#bankFirstCard").attr("bankCode"),
+// 				isScore : isScore || 0,
+// 				useFree : useTimes || 'n'
+// 			},
+// 			success : function( sucData ) {
+// 				 $.popTips("popTipSuc","申请提现成功，请等待审核",function(){
+// 					 window.location.reload();	 
+// 					 $inputMsgMac.val(""); 
+// 				 });
+// 			},
+// 			error : function( errorData ){
+// 				 $("#submit").popUp("suc",errorData.return_info);
+// 				/*  $.popTips("popTipErr",errorData.return_info || "获取信息失败"); */
+// 			}
+// 		});								
+	});
+</script>
+</body>
+</html>

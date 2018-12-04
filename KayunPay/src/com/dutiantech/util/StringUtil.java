@@ -1,0 +1,791 @@
+package com.dutiantech.util;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * 
+ * @author 充满智慧的威哥
+ * 
+ */
+public class StringUtil {
+
+	/**
+	 * 截取字符串
+	 * 
+	 * @param s
+	 * @param maxLength
+	 * @return
+	 */
+	public static String interceptStr(String s, int maxLength) {
+		if (isBlank(s)) {
+			return "";
+		}
+		return s.length() > maxLength ? s.substring(0, maxLength - 1) + "..."
+				: s;
+	}
+
+	/**
+	 * 判断字符串是否为空
+	 * 
+	 * @param s
+	 * @return
+	 */
+	public static boolean isBlank(String s) {
+		if (s == null || s.trim().length() == 0 || "null".equals(s)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 首字母小写
+	 * 
+	 * @param s
+	 *            String
+	 * @return String
+	 */
+	public static String firstCharLowerCase(String s) {
+		if (s == null || "".equals(s)) {
+			return ("");
+		}
+		return s.substring(0, 1).toLowerCase() + s.substring(1);
+	}
+
+	/**
+	 * 首字母大写
+	 * 
+	 * @param s
+	 *            String
+	 * @return String
+	 */
+	public static String firstCharUpperCase(String s) {
+		if (s == null || "".equals(s)) {
+			return ("");
+		}
+		return s.substring(0, 1).toUpperCase() + s.substring(1);
+	}
+
+	/**
+	 * aBbbCcc => a_bbb_ccc
+	 * 
+	 * @param property
+	 * @return String
+	 */
+	public static String getConverColName(String property) {
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < property.length(); i++) { // 遍历property如果有大写字母则将大写字母转换为_加小写
+			char cur = property.charAt(i);
+			if (Character.isUpperCase(cur)) {
+				sb.append("_");
+				sb.append(Character.toLowerCase(cur));
+			} else {
+				sb.append(cur);
+			}
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * a_bbb_ccc => aBbbCcc
+	 * 
+	 * @param property
+	 * @return String
+	 */
+	public static String getConverColBean(String property) {
+		if (isBlank(property) || property.indexOf("_") == -1) {
+			return property;
+		}
+		StringBuffer sb = new StringBuffer();
+		boolean flag = false;
+		for (int i = 0; i < property.length(); i++) { // 遍历property如果有大写字母则将大写字母转换为_加小写
+			char cur = property.charAt(i);
+			if ('_' == cur) {
+				flag = true;
+				continue;
+			} else {
+				sb.append(flag ? Character.toUpperCase(cur) : cur);
+				flag = false;
+			}
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * 是否有中文字符
+	 * 
+	 * @param s
+	 * @return
+	 */
+	public static boolean hasCn(String s) {
+		if (s == null) {
+			return false;
+		}
+		return countCn(s) > s.length();
+	}
+
+	/**
+	 * 获得字符。符合中文习惯。
+	 * 
+	 * @param s
+	 * @param length
+	 * @return
+	 */
+	public static String getCn(String s, int len) {
+		if (s == null) {
+			return s;
+		}
+		int sl = s.length();
+		if (sl <= len) {
+			return s;
+		}
+		// 留出一个位置用于…
+		len -= 1;
+		int maxCount = len * 2;
+		int count = 0;
+		int i = 0;
+		while (count < maxCount && i < sl) {
+			if (s.codePointAt(i) < 256) {
+				count++;
+			} else {
+				count += 2;
+			}
+			i++;
+		}
+		if (count > maxCount) {
+			i--;
+		}
+		return s.substring(0, i) + "…";
+	}
+
+	/**
+	 * 计算GBK编码的字符串的字节数
+	 * 
+	 * @param s
+	 * @return
+	 */
+	public static int countCn(String s) {
+		if (s == null) {
+			return 0;
+		}
+		int count = 0;
+		for (int i = 0; i < s.length(); i++) {
+			if (s.codePointAt(i) < 256) {
+				count++;
+			} else {
+				count += 2;
+			}
+		}
+		return count;
+	}
+
+	/**
+	 * 文本转html
+	 * 
+	 * @param txt
+	 * @return
+	 */
+	public static String txt2htm(String txt) {
+		if (isBlank(txt)) {
+			return txt;
+		}
+		StringBuilder bld = new StringBuilder();
+		char c;
+		for (int i = 0; i < txt.length(); i++) {
+			c = txt.charAt(i);
+			switch (c) {
+			case '&':
+				bld.append("&amp;");
+				break;
+			case '<':
+				bld.append("&lt;");
+				break;
+			case '>':
+				bld.append("&gt;");
+				break;
+			case '"':
+				bld.append("&quot;");
+				break;
+			case ' ':
+				bld.append("&nbsp;");
+				break;
+			case '\n':
+				bld.append("<br/>");
+				break;
+			default:
+				bld.append(c);
+				break;
+			}
+		}
+		return bld.toString();
+	}
+
+	/**
+	 * html转文本
+	 * 
+	 * @param htm
+	 * @return
+	 */
+	public static String htm2txt(String htm) {
+		if (htm == null) {
+			return htm;
+		}
+		htm = htm.replace("&amp;", "&");
+		htm = htm.replace("&lt;", "<");
+		htm = htm.replace("&gt;", ">");
+		htm = htm.replace("&quot;", "\"");
+		htm = htm.replace("&nbsp;", " ");
+		htm = htm.replace("<br/>", "\n");
+		return htm;
+	}
+
+	/**
+	 * 全角-->半角
+	 * 
+	 * @param qjStr
+	 * @return
+	 */
+	public String Q2B(String qjStr) {
+		String outStr = "";
+		String Tstr = "";
+		byte[] b = null;
+		for (int i = 0; i < qjStr.length(); i++) {
+			try {
+				Tstr = qjStr.substring(i, i + 1);
+				b = Tstr.getBytes("unicode");
+			} catch (java.io.UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			if (b[3] == -1) {
+				b[2] = (byte) (b[2] + 32);
+				b[3] = 0;
+				try {
+					outStr = outStr + new String(b, "unicode");
+				} catch (java.io.UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+			} else
+				outStr = outStr + Tstr;
+		}
+		return outStr;
+	}
+
+	public static final char[] N62_CHARS = { '0', '1', '2', '3', '4', '5', '6',
+			'7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+			'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w',
+			'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+			'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
+			'X', 'Y', 'Z' };
+	public static final char[] N36_CHARS = { '0', '1', '2', '3', '4', '5', '6',
+			'7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+			'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w',
+			'x', 'y', 'z' };
+
+	private static StringBuilder longToNBuf(long l, char[] chars) {
+		int upgrade = chars.length;
+		StringBuilder result = new StringBuilder();
+		int last;
+		while (l > 0) {
+			last = (int) (l % upgrade);
+			result.append(chars[last]);
+			l /= upgrade;
+		}
+		return result;
+	}
+
+	/**
+	 * 长整数转换成N62
+	 * 
+	 * @param l
+	 * @return
+	 */
+	public static String longToN62(long l) {
+		return longToNBuf(l, N62_CHARS).reverse().toString();
+	}
+
+	public static String longToN36(long l) {
+		return longToNBuf(l, N36_CHARS).reverse().toString();
+	}
+
+	/**
+	 * 长整数转换成N62
+	 * 
+	 * @param l
+	 * @param length
+	 *            如N62不足length长度，则补足0。
+	 * @return
+	 */
+	public static String longToN62(long l, int length) {
+		StringBuilder sb = longToNBuf(l, N62_CHARS);
+		for (int i = sb.length(); i < length; i++) {
+			sb.append('0');
+		}
+		return sb.reverse().toString();
+	}
+
+	public static String longToN36(long l, int length) {
+		StringBuilder sb = longToNBuf(l, N36_CHARS);
+		for (int i = sb.length(); i < length; i++) {
+			sb.append('0');
+		}
+		return sb.reverse().toString();
+	}
+
+	/**
+	 * N62转换成整数
+	 * 
+	 * @param n62
+	 * @return
+	 */
+	public static long n62ToLong(String n62) {
+		return nToLong(n62, N62_CHARS);
+	}
+
+	public static long n36ToLong(String n36) {
+		return nToLong(n36, N36_CHARS);
+	}
+
+	private static long nToLong(String s, char[] chars) {
+		char[] nc = s.toCharArray();
+		long result = 0;
+		long pow = 1;
+		for (int i = nc.length - 1; i >= 0; i--, pow *= chars.length) {
+			int n = findNIndex(nc[i], chars);
+			result += n * pow;
+		}
+		return result;
+	}
+
+	private static int findNIndex(char c, char[] chars) {
+		for (int i = 0; i < chars.length; i++) {
+			if (c == chars[i]) {
+				return i;
+			}
+		}
+		throw new RuntimeException("N62(N36)非法字符：" + c);
+	}
+
+	/**
+	 * 方法描述:把数组1,2,3转化成字符串
+	 * 
+	 * @param integerList
+	 * @return
+	 */
+	public static String getSplitStringByInt(List<Integer> integerList) {
+		if (null != integerList && integerList.size() != 0) {
+			String splitString = "";
+			for (int intInstance : integerList) {
+				splitString += intInstance + ",";
+			}
+			return splitString.substring(0, splitString.length() - 1);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * 方法描述:把数组1,2,3转化成字符串
+	 * 
+	 * @param integerList
+	 * @return
+	 */
+	public static String getSplitStringByString(List<String> StringList) {
+		if (null != StringList && StringList.size() != 0) {
+			String splitString = "";
+			for (String stringInstance : StringList) {
+				splitString += stringInstance + ",";
+			}
+			return splitString.substring(0, splitString.length() - 1);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * 拼装('1','2','3',...)
+	 * 
+	 * @param ids
+	 * @return
+	 */
+	public static String getHqlIdStr(Object[] ids) {
+		StringBuffer hql = new StringBuffer();
+		hql.append("(");
+		for (int i = 0; i < ids.length - 1; i++) {
+			hql.append("'").append(ids[i].toString()).append("'").append(",");
+		}
+		hql.append("'").append(ids[ids.length - 1].toString()).append("'");
+		hql.append(")");
+		return hql.toString();
+	}
+
+	public static String createBlock(Long[] dirIds) {
+		if (dirIds == null || dirIds.length == 0)
+			return "('')";
+		StringBuilder blockStr = new StringBuilder("(");
+		for (int i = 0; i < dirIds.length - 1; i++) {
+			blockStr.append("'").append(dirIds[i]).append("',");
+		}
+		blockStr.append("'").append(dirIds[dirIds.length - 1]).append("')");
+		return blockStr.toString();
+	}
+
+	/**
+	 * 判断字符串是否在规定范围内
+	 * 
+	 * @param str
+	 * @param min
+	 * @param max
+	 * @return
+	 */
+	public static Boolean checkString(String str, int min, int max) {
+		if (str == null || str.trim().length() < min
+				|| str.trim().length() > max)
+			return false;
+		return true;
+	}
+
+	/**
+	 * 获取距离现在的时间
+	 */
+	public static String getMinutes(long times, int i) {
+		long time = new Date().getTime() - times;// time 单位是 毫秒
+		if (i != 0) {
+			time += i * 1000 * 60 * 60;
+		}
+		String res = null; // 转化成天数
+		if (time < 60 * 1000) {
+			// 一分钟以内显示刚刚
+			res = "刚刚";
+		} else if (time < 60 * 60 * 1000) {
+			// 先判断是不是小于 60 * 60 * 1000 也就是 小于1小时，那么显示 ： **分钟前
+			res = (time / 1000 / 60) + "分钟前";
+		} else if (time >= 60 * 60 * 1000 && time < 24 * 60 * 60 * 1000) {
+			// 如果大于等于1小时 小于等于一天，那么显示 ： **小时前
+			res = (time / 1000 / 60 / 60) + "小时前";
+		} else if (time >= 24 * 60 * 60 * 1000
+				&& time < 7 * 24 * 60 * 60 * 1000) {
+			// 如果大于等于1小时 小于等于一天，那么显示 ： **小时前
+			res = (time / 1000 / 60 / 60 / 24) + "天前";
+		} else if (time >= 7 * 24 * 60 * 60 * 1000) {
+			res = "一周前";
+		}
+		// 如果时间不明确或者发帖不足一分钟 ，则不显示
+		else {
+			res = "刚刚";
+		}
+		return res;
+	}
+
+	/**
+	 * 返回中文字符长度的字符串
+	 * 
+	 * @param oldstr
+	 *            原字符串
+	 * @param length
+	 *            中文长度
+	 * @return
+	 */
+	public static String cutStr(String oldstr, int length) {
+		int max = length * 2;
+		int count = 0;
+		int cur = 0;
+		for (int i = 0; i < oldstr.length(); i++) {
+			if (oldstr.substring(i, i + 1).matches("[\\u4e00-\\u9fbf]+")) {
+				count += 2;
+			} else {
+				count++;
+			}
+			if (count >= max) {
+				break;
+			} else {
+				cur++;
+			}
+		}
+		return oldstr.substring(0, cur);
+	}
+
+	public static String[] split(String msg, int num) {
+		int len = msg.length();
+		if (len <= num)
+			return new String[] { msg };
+		int count = len / (num - 1);
+		count += len > (num - 1) * count ? 1 : 0; // 这里应该值得注意
+		String[] result = new String[count];
+		int pos = 0;
+		int splitLen = num - 1;
+		for (int i = 0; i < count; i++) {
+			if (i == count - 1)
+				splitLen = len - pos;
+			result[i] = msg.substring(pos, pos + splitLen);
+			pos += splitLen;
+		}
+		return result;
+	}
+
+	/**
+	 * 转换bits为数组参数 比如 101010 ，可得到 (1,3,5)
+	 * 
+	 * @param bits
+	 * @return
+	 */
+	public static String bits2params(String bits) {
+
+		ArrayList<Integer> a = new ArrayList<Integer>();
+
+		for (int i = 0, len = bits.length(); i < len; i++) {
+			String bit = bits.substring(i, i + 1);
+			if ("1".equals(bit))
+				a.add(i + 1);
+		}
+
+		return a.toString().replace("[", "(").replace("]", ")");
+	}
+
+	/**
+	 * 生成查询条件 Example" and %s %s '%s'"
+	 * 
+	 * @param key
+	 * @param m
+	 * @param val
+	 * @return
+	 */
+	public static String genSqlEx(String key, String m, String val) {
+		val = StringUtil.txt2htm(val);
+		/* 防注入过滤,暂时不考虑这里过滤,直接考虑请求参数处过滤 */
+
+		return String.format(" and %s %s '%s' ", key, m, val);
+	}
+
+	public static String md5(String src) throws Exception {
+		return MD5Code.md5(src);
+	}
+
+//	@SuppressWarnings("rawtypes")
+//	public static String genHC(Object obj, Class cls) throws Exception {
+//		StringBuffer sb = new StringBuffer("");
+//		Method[] ms = cls.getMethods();
+//		for (Method m : ms) {
+//			if (m.getName().indexOf("get") == 0
+//					&& m.getName().toLowerCase().indexOf("hc") < 0
+//					&& "getClass".equals(m.getName()) == false) {
+//				try {
+//					Object o = m.invoke(obj, null);
+//					sb.append(o.toString());
+//				} catch (Exception e) {
+//					sb.append("null");
+//				}
+//			}
+//		}
+//		return StringUtil.md5(sb.toString());
+//	}
+
+	public static String stream2str(InputStream is) {
+
+		StringBuffer out = new StringBuffer();
+		byte[] b = new byte[4096];
+		try {
+			for (int n; (n = is.read(b)) != -1;) {
+				out.append(new String(b, 0, n));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return out.toString();
+	}
+
+	/**
+	 * Sort Class
+	 * 
+	 * @param array
+	 *            or list
+	 */
+	private static class Sort {
+		
+		private String[] strArray = null;
+
+		public Sort(String[] strArray) {
+			this.strArray = strArray;
+		}
+
+		public Sort(List<String> strList) {
+			this.strArray = new String[strList.size()];
+			this.strArray = strList.toArray(this.strArray);
+		}
+
+		private boolean CheckNum(String str) {
+			for (int i = 0; i < str.length(); i++) {
+				if (str.charAt(i) > '9' || str.charAt(i) < '0')
+					return false;
+			}
+			return true;
+		}
+
+		private boolean CompareTwoStrings(String a, String b) {
+			if (CheckNum(a) && CheckNum(b)) {
+				if (a.length() > b.length()) {
+					int numOfZeroAddedOfB = a.length() - b.length();
+					StringBuilder zeros_of_b = new StringBuilder();
+					for (int i = 0; i < numOfZeroAddedOfB; i++) {
+						zeros_of_b.append("0");
+					}
+					b = zeros_of_b.toString() + b;
+				} else {
+					int numOfZeroAddedOfA = b.length() - a.length();
+					StringBuilder zeros_of_a = new StringBuilder();
+					for (int i = 0; i < numOfZeroAddedOfA; i++) {
+						zeros_of_a.append("0");
+					}
+					a = zeros_of_a.toString() + a;
+				}
+			}
+			return a.compareTo(b) > 0 ? true : false;
+		}
+
+		private int Partition(int start, int end) {
+			String baseValue = strArray[start];
+			int basePos = start;
+			for (int i = start + 1; i <= end; i++) {
+				if (CompareTwoStrings(baseValue, strArray[i])) {
+					basePos++;
+					Swap(basePos, i);
+				}
+			}
+			Swap(start, basePos);
+			return basePos;
+		}
+
+		private void QuickSort(int start, int end) {
+			if (start < end) {
+				int basePos = Partition(start, end);
+				QuickSort(start, basePos - 1);
+				QuickSort(basePos + 1, end);
+			}
+		}
+
+		private void Swap(int pos1, int pos2) {
+			String tempValue = strArray[pos1];
+			strArray[pos1] = strArray[pos2];
+			strArray[pos2] = tempValue;
+		}
+
+		public String[] getSortedArray() {
+			try {
+				QuickSort(0, strArray.length - 1);
+			} catch (NullPointerException e) {
+				System.out.print("null array!");
+			}
+			return strArray;
+		}
+
+		public List<String> getSortedList() {
+			try {
+				QuickSort(0, strArray.length - 1);
+			} catch (NullPointerException e) {
+				System.out.print("null array!");
+			}
+			return java.util.Arrays.asList(this.strArray);
+		}
+	}
+	
+	public static String getFirstParam(String src){
+		String regex = "\\(.*?\\)";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher( src );
+		if( matcher.find() ){
+			return matcher.group(0) ;
+		}
+		return "" ;
+	}
+	
+	public static String[] sortStringArray(String[] src){
+		Sort sort = new Sort(src) ;
+		return sort.getSortedArray() ;
+	}
+	
+	public static List<String> sortStringList(List<String> list ){
+		Sort sort = new Sort(list);
+		return sort.getSortedList() ;
+	}
+	
+	/**
+	 * 验证是否为纯数字
+	 * @param str
+	 * @return
+	 * @author shiqingsong
+	 */
+	public static boolean isNumeric(String str){
+		if(isBlank(str)){
+			return false;
+		}
+		for (int i = 0; i < str.length(); i++) {
+			if (!Character.isDigit(str.charAt(i))){
+			    return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * 检索是否包含特殊符号  ws   20180205
+	 * */
+	 public static boolean isValid(String sql){
+		 boolean isValid = true;
+		 if(!StringUtil.isBlank(sql)){
+			String[] bidStrlist = {"'","&","--"};
+			String tempStr = sql.toLowerCase();
+			for(int i=0;i<bidStrlist.length;i++){
+				if(tempStr.indexOf(bidStrlist[i])!=-1){
+					isValid=false;
+					break;
+				}
+			}
+		 }
+         return isValid;
+	 }
+
+	 /** WJW
+	  * 金额单位元转化为分
+	  * @param money 转化金额(可带两位小数)
+	  * @return
+	  */
+	 public static long getMoneyCent(String money){
+		 BigDecimal b = new BigDecimal(money);
+		 return b.multiply(BigDecimal.valueOf(100.0)).longValue();
+	 }
+	 
+	 /**
+	  * 金额单位分转化为元 WJW
+	  * @param money
+	  * @return
+	  */
+	 public static String getMoneyYuan(long money){
+		 BigDecimal b = new BigDecimal(money*0.01);
+		 return b.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+	 }
+	 
+	 /**
+	  * 获取百分比 WJW
+	  * @param num1	分子
+	  * @param num2	分母
+	  * @return
+	  */
+	 public static String getPercentage(long num1,long num2){
+		if(num2 == 0){
+			return "0%";
+		}
+		NumberFormat numberFormat = NumberFormat.getInstance();
+		numberFormat.setMaximumFractionDigits(2);
+		return numberFormat.format((float)num1 / (float)num2 * 100) + "%";
+	 }
+
+}
+
+
+

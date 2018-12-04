@@ -1,0 +1,450 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed" href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="stylesheet" href="../assets/css/app.css">
+</head>
+<body>
+	<!-- iframe body start -->
+	<form id="info-form" action="" data-am-validator>
+		<div class="am-tabs am-margin" data-am-tabs="{noSwipe: 1}">
+			<ul class="am-tabs-nav am-nav am-nav-tabs">
+				<li class="am-active"><a href="#tab1">基本信息</a></li>
+				<li ><a href="#tab2">贷款设置</a></li>
+				<li ><a href="#tab3">费用费率</a></li>
+				<li ><a href="#tab4">借款描述</a></li>
+				<li ><a href="#tab5">图片材料</a></li>
+				<li ><a href="#tab6">缩略图</a></li>
+			</ul>
+			<div class="am-tabs-bd">
+				<div
+					class="am-tab-panel am-fade am-in am-active am-form am-form-inline" id="tab1" style="height:650px;">
+					<div class="am-g am-margin-top field" name="loanCode" type="text"
+						text="贷款编号" edit=disabled></div>
+					<div class="am-g am-margin-top field" name="loanNo" type="text"
+						text="贷款序号" edit="disabled"></div>
+					<div class="am-g am-margin-top field" name="contractNo" type="text" required text="借款合同号" >
+					</div>
+					<div class="am-g am-margin-top field" name="loanTitle" type="text"
+						text="贷款标题"></div>
+					<div class="am-g am-margin-top field" name="loanAmount" type="text"
+						text="贷款金额" dtype="number" desc="单位 元" edit="disabled"></div>
+					<div class="am-g am-margin-top field" name="loanBalance"
+						type="text" dtype="number" text="贷款余额" desc="单位元" edit="hide"></div>
+					<div class="am-g am-margin-top field" name="loanArea" type="text"
+						text="来源" desc="来源(地区或机构)" ></div>
+					<div class="am-g am-margin-top field" name="rateByYear" type="text"
+						text="年利率" dtype="number"  desc="如19.20% 则输入19.20"></div>
+					<div class="am-g am-margin-top field" name="userName" type="text"
+						text="借款人姓名"  edit="disabled"></div>
+					<div class="am-g am-margin-top field" name="userCardId" type="text"
+						text="借款人证件号码" edit="disabled"></div>
+					<div class="am-g am-margin-top field" name="creditorName" type="text"
+						text="债权人姓名"></div>
+					<div class="am-g am-margin-top field" name="creditorCardId" type="text"
+						text="债权人身份证"></div>
+				</div>
+				<div class="am-tab-panel am-fade am-form" id="tab2">
+					<div class="am-g am-margin-top field" name="productType"
+						type="select" map="productType" text="产品类型" ></div>
+					<div class="am-g am-margin-top field" name="loanType" type="select"
+						map="loanType" text="贷款标类型"></div>
+					<div class="am-g am-margin-top field" name="loanUsedType"
+						type="select" map="loanUsedType" text="借款用途" ></div>
+					<div class="am-g am-margin-top field" name="refundType"
+						type="select" map="refundType" text="还款方式" ></div>
+						
+					<div class="am-g am-margin-top field" name="loanTimeLimit"
+						type="text" text="还款期限" desc="单位 月" ></div>
+					<div class="am-g am-margin-top field" map="hasInvedByTrips"
+						name="hasInvedByTrips" text="是否实地考察" type="radio" defaultValue="1">
+					</div>
+					<div class="am-g am-margin-top field" map="isInterest"
+						name="isInterest" text="本息保障" type="radio" defaultValue="1">
+					</div>
+					<!--  
+					<div class="am-g am-margin-top field" map="isAutoLoan"
+						name="isAutoLoan" text="是否自动放款" type="radio" defaultValue ="1" >
+					</div>-->
+				</div>
+				<div class="am-tab-panel am-fade am-form" id="tab3">
+					<div class="am-g am-margin-top field" name="rewardRateByYear"
+						type="text" dtype="number" text="奖励年利率" desc="如19.20% 则输入19.20" defaultValue="0"></div>
+					<div class="am-g am-margin-top field" name="benefits4new"
+						type="text" dtype="number" text="新人专享福利" desc="如19.20% 则输入19.20(不是老平台的积分)" defaultValue="0"></div>
+
+					<div class="am-g am-margin-top field" name="maxLoanCount"
+						type="text" dtype="number" text="最大投标次数" desc="正整数" defaultValue="999"></div>
+
+					<div class="am-g am-margin-top field" name="maxLoanAmount"
+						type="text" dtype="number" text="最大投标金额" min=0 desc="单位元" defaultValue="1000000"></div>
+
+					<div class="am-g am-margin-top field" name="minLoanAmount"
+						type="text" dtype="number" text="最小投标金额" desc="单位元" defaultValue="1"></div>
+
+
+					<div class="am-g am-margin-top field" name="invedTripFees"
+						type="text" dtype="number" text="实地考察费用" desc="单位元" defaultValue="0"></div>
+
+					<div class="am-g am-margin-top field" name="serviceFees"
+						type="text" dtype="number" text="服务费" desc="单位元" defaultValue="0"></div>
+
+					<!-- <div class="am-g am-margin-top field" name="managerRate"
+						type="text" dtype="number" text="管理费率" desc="百分比值" defaultValue="0"></div>
+					<div class="am-g am-margin-top field" name="riskRate" type="text"
+						text="风险储备金费率" dtype="number" desc="百分比值" defaultValue="0"></div> -->
+				</div>
+				<div class="am-tab-panel am-fade am-form" id="tab4" style="min-height: 200px;">
+					<div class="am-g am-margin-top field" name="loanDesc"
+						type="textarea" text="借款描述" row=15></div>
+					<!-- <div class="am-g am-margin-top field" name="loanUsedDesc"
+						type="textarea" text="借款用途描述"></div>
+					<div class="am-g am-margin-top field" name="loanerDataDesc"
+						type="textarea" text="借款人提供的资料描述"></div>
+					<div class="am-g am-margin-top field" name="loanInvDesc"
+						type="textarea" text="借款人被考察描述"></div>
+					<div class="am-g am-margin-top field" name="loanRiskDesc"
+						type="textarea" text="风控审核描述"></div>
+					<div class="am-g am-margin-top field" name="loanDesc"
+						type="textarea" text="其它描述"></div> -->
+				</div>
+				<!-- <div class="am-tab-panel am-fade am-form" id="tab5" style="min-height: 200px;">
+					<div style="height: 50px;">
+						 <span class="am-btn am-btn-primary picFile" style="z-index: 1; position: absolute;"> 上传图片 </span> <input
+							type="file" name="picFile" id="picFile" class="am-btn-primary" />
+					</div>
+					<ul data-am-widget="gallery" class="am-gallery " data-am-gallery="{ pureview: true }">
+					</ul>
+				</div>-->
+				<div class="am-tab-panel am-fade am-form" id="tab5"
+					style="min-height: 200px; ">
+					<div class="am-gallery-item am-position-relative"  id="loanPicsBtn">
+						<img src="../assets/css/uploadBg.jpg"  />
+						<div >选择图片</div>
+						<!-- <input type="file" name="picFile" id="loanFile" class="am-btn-primary am-field-valid"> -->
+					</div>
+					<ul data-am-widget="gallery"
+						class="am-gallery am-avg-sm-3 am-avg-md-3 
+						am-avg-lg-4 am-gallery-default loanPicsList"
+						data-am-gallery="{ pureview: true }" name="loanPics">
+					</ul>	
+				</div>
+				<div class="am-tab-panel am-fade am-form" id="tab6"
+					style="min-height: 200px; ">
+					<div class="am-gallery-item am-position-relative"  id="loanThumbnailBtn">
+						<img src="../assets/css/uploadBg.jpg"  />
+						<div >选择图片</div>
+						<!-- <input type="file" name="picFile" id="loanFile" class="am-btn-primary am-field-valid"> -->
+					</div>
+					<ul data-am-widget="gallery"
+						class="am-gallery am-avg-sm-3 am-avg-md-3 
+						am-avg-lg-4 am-gallery-default loanThumbnailsList"
+						data-am-gallery="{ pureview: true }" name="loanThumbnail">
+					</ul>	
+				</div>
+			</div>
+		</div>
+		<div class="am-margin">
+			<button id="submitBtn" type="button"
+				class="am-btn am-btn-primary am-btn-xs">提交</button>
+			<button id="cancelBtn" type="button"
+				class="am-btn am-btn-primary am-btn-xs">返回</button>
+		</div>
+		<input type="hidden" id="loanUserCode" />
+	</form>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/webuploader/0.1.0/webuploader.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script>
+		//---init
+		$.newFileBtn({
+			pick : "#loanPicsBtn" ,
+			listEle : $(".loanPicsList")
+		});
+		$.newFileBtn({
+			pick : "#loanThumbnailBtn" ,
+			listEle : $(".loanThumbnailsList")
+		});
+		
+		//biz code
+		$("#submitBtn").click(function() {
+			if ($("#info-form").validateForm()) {
+				var zz = $("#info-form").formSerialize("loanInfo");
+
+				/*var map_loanType = RES["DATA_MAP"]["loanType"];
+
+				for ( var i in map_loanType) {
+					if (map_loanType[i].value == zz["loanInfo.loanType"]) {
+						zz["loanInfo.loanTypeDesc"] = map_loanType[i].text;
+					}
+				}*/
+				zz["loanInfo.rewardRateByYear"] = parseFloat(zz["loanInfo.rewardRateByYear"])*100 ;
+				zz["loanInfo.rateByYear"] = parseFloat(zz["loanInfo.rateByYear"])*100 ;
+				zz["loanInfo.loanAmount"] = parseFloat(zz["loanInfo.loanAmount"])*100 ;
+				zz["loanInfo.benefits4new"] = parseFloat(zz["loanInfo.benefits4new"])*100 ;
+				zz["loanInfo.minLoanAmount"] = parseFloat(zz["loanInfo.minLoanAmount"])*100 ; 
+				zz["loanInfo.maxLoanAmount"] = parseFloat(zz["loanInfo.maxLoanAmount"])*100 ; 
+				zz["loanInfo.invedTripFees"] = parseFloat(zz["loanInfo.invedTripFees"])*100 ; 
+				zz["loanInfo.serviceFees"] = parseFloat(zz["loanInfo.serviceFees"]||0)*100 ; 
+				zz["loanInfo.managerRate"] = parseFloat(zz["loanInfo.managerRate"]||0)*100 ; 
+				zz["loanInfo.riskRate"] = parseFloat(zz["loanInfo.riskRate"]||0)*100 ; 
+					
+				//zz["loanInfo.loanCode"] = YRHX.queryString("loanInfo.loanCode");
+				var tmp_loan_pic = [];
+				$(".loanPicsList").find("li").each(function(){
+					var that = $(this) ;
+					var tmp = {};
+					tmp["code"] = that.attr("imgcode");
+					tmp["desc"] = that.find("input").val();
+					tmp_loan_pic.push(tmp);
+				});
+				var tmp_thumbnail_pic = [];
+				$(".loanThumbnailsList").find("li").each(function(){
+					var that = $(this) ;
+					var tmp = {};
+					tmp["code"] = that.attr("imgcode");
+					tmp["desc"] = that.find("input").val();
+					tmp_thumbnail_pic.push(tmp);
+				});
+				/*$(".am-gallery").find("img").each(function(){
+					tmp_loan_pic = tmp_loan_pic + this.src+"|";
+				});*/
+				zz["loanInfo.loan_pic"] = JSON.stringify( tmp_loan_pic );
+				zz["loanInfo.loanThumbnail"] = JSON.stringify( tmp_thumbnail_pic );
+				YRHX.ajax({
+					url : $("#info-form").attr("action"),
+					data : zz,
+					success : function(sucData) {
+						if (sucData != null && sucData == true) {
+							YRHX.alert("提示", "补充资料完成,准备发布");
+							window.location.href = "/mLoanPubList";
+						}
+					},
+					error : function(data) {
+						if(data.return_code=="-315"){
+							var error_Msg = "";
+							$.each(data.return_data,function(key,value){
+								error_Msg = error_Msg + value+"<br>";
+							});
+							YRHX.alert("警告",error_Msg);
+						}else{
+							YRHX.alert("警告",data.return_info || "获取信息失败");
+						}
+					}
+				});
+			}
+		});
+		
+		$("#cancelBtn").click(function(){
+			history.go(-1);
+		});
+		$(document).delegate(
+				"#picFile",
+				"change",
+				function() {
+					if ($("#picFile").val()) {
+						$.ajaxFileUpload({
+							url : '/uploadFile?fileType=A&fileRemark='
+									+ encodeURI("标的图片材料") + "&userCode="
+									+ $("#loanUserCode").val(),//处理图片脚本
+							secureuri : false,
+							fileElementId : 'picFile',//file控件id
+							dataType : 'json',
+							success : function(data) {
+								var picurl = data.fileSource;
+								$(".am-gallery").appendImg(
+										picurl.replace("original", "yasuo"));
+							},
+							error : function(data, status, e) {
+								YRHX.alert("提示","上传图片失败!");
+							}
+						});
+					}
+				});
+		//图片材料关闭按钮
+		$(document).delegate(".am-gallery-close", "click", function() {
+			$(this).parent().parent().remove();
+		});
+		var titleIndex = ["一","二","三","四","五","六","七","八","九","十"];
+		function showImgInfos( eleKey , data ){
+			console.log( data )
+			var echoHtml = "<li fid='#{fid}' imgcode='#{fid}'><div class='am-gallery-item am-position-relative loan-pic-item'><i class='am-close am-gallery-close'>×</i>"
+				+ "<img src='#{imgurl}' data-rel='#{imgurl}' /><input class='am-gallery-title am-gallery-title' value='#{imgname}' ext='#{ext}' ></input></div></li>";
+			var eleList = $("." + eleKey +"List") ;
+			var files = JSON.parse(data);
+			for(var fi in files ){
+				var file = files[ fi ] ;
+				//console.log(file);
+				var tmpHtml = echoHtml.replaceAll("#{fid}" , file.code )
+					.replaceAll("#{imgname}",file.desc )
+					.replaceAll("#{imgurl}", $.makeRequestImgUrl(file.code) )
+					.replaceAll("#{ext}","" );
+				eleList.append(tmpHtml);
+			}
+		}
+		function initFormDataByLoanNo(loanNo){
+			YRHX.ajax({
+				url : "/getLoanApplyById",
+				data : {
+					"loanCode" : loanNo
+				},success : function( sucData ){
+					sucData["loanAmount"] = sucData["loanAmount"]/100;
+					sucData["rateByYear"] = sucData["rateByYear"]/100;
+					sucData["userName"] = sucData["loanTrueName"];
+					sucData["userCardId"] = sucData["loanCardId"];
+					sucData["loanArea"] = sucData["applyUserGroup"];
+				if( sucData["loanPics"]){
+						showImgInfos("loanPics",sucData["loanPics"]);
+					}
+					if( sucData["loanThumbnail"]){
+						
+						showImgInfos("loanThumbnail",sucData["loanThumbnail"]);
+					}
+					/* 
+					var loanPics = JSON.parse(sucData["loanPics"]);
+					for(var lpi in loanPics){
+						var pic = loanPics[lpi] ;
+						var purl = $.makeRequestImgUrl( pic.code , "yasuo");
+						$(".am-gallery").appendImg(purl);
+					}*/
+					$("#info-form").formUnSerialize(sucData);
+				}
+			});
+		}
+		
+				
+		function initFormData(lCode) {
+			YRHX.ajax({
+				url : "/getLoanInfoById",
+				data : {
+					loanCode : lCode
+				},
+				success : function(sucData) {
+					sucData["loanAmount"] = YRHX
+							.toDecimal2(sucData["loanAmount"] / 100);
+					sucData["loanBalance"] = YRHX
+							.toDecimal2(sucData["loanBalance"] / 100);
+					sucData["invedTripFees"] = YRHX
+							.toDecimal2(sucData["invedTripFees"] / 100);
+					sucData["serviceFees"] = YRHX
+							.toDecimal2(sucData["serviceFees"]/ 100);
+					sucData["serviceFees"] = YRHX
+							.toDecimal2(sucData["serviceFees"] / 100);
+					sucData["managerRate"] = YRHX
+							.toDecimal2(sucData["managerRate"] / 100);
+					sucData["riskRate"] = YRHX
+							.toDecimal2(sucData["riskRate"] / 100);
+					sucData["rateByYear"] = YRHX
+							.toDecimal2(sucData["rateByYear"] / 100);
+					sucData["rewardRateByYear"] = YRHX
+							.toDecimal2(sucData["rewardRateByYear"] / 100);
+					sucData["benefits4new"] = YRHX
+							.toDecimal2(sucData["benefits4new"] / 100);
+					sucData["minLoanAmount"] = YRHX
+							.toDecimal2(sucData["minLoanAmount"] / 100);	//
+					sucData["maxLoanAmount"] = YRHX
+							.toDecimal2(sucData["maxLoanAmount"] / 100);
+					//sucData["maxLoanCount"] = YRHX.toDecimal2(sucData["maxLoanCount"] / 100);
+					/*var loanPics = JSON.parse(sucData["loan_pic"]);
+					for(var lpi in loanPics){
+						var pic = loanPics[lpi] ;
+						var purl = $.makeRequestImgUrl( pic.code , "yasuo");
+						$(".am-gallery").appendImg(purl);
+					}*/
+					if( sucData["loan_pic"]){
+						showImgInfos("loanPics",sucData["loan_pic"]);
+					}
+					delete sucData["loan_pic"] ;
+					
+					if( sucData["loanThumbnail"]){
+						showImgInfos("loanThumbnails",sucData["loanThumbnail"]);
+					}
+
+					$("#info-form").formUnSerialize(sucData);
+
+					/*var pics = sucData["loan_pic"].split("|");
+					for ( var pIndex in pics) {
+						var picurl = pics[pIndex];
+						if (picurl)
+							$(".am-gallery").appendImg(pics[pIndex]);
+					}
+					$("#loanUserCode").val(sucData["userCode"]);*/
+				},
+				error : function(data) {
+					YRHX.alert("警告", data.return_info || "获取信息失败");
+				}
+			});
+		}
+
+		var formType = YRHX.queryString("opType") || "view";
+		if(formType=='view'){
+			$("#info-form").formInit({
+				"formType" : "view",
+				"request" : "/nil"
+			});
+			$("#submitBtn").hide();
+		}
+		if( formType == "newLoan"){
+			$("#info-form").formInit({
+				"formType" : "edit",
+				"request" : "/modifyLoanInfo"
+			});
+		}
+		if( formType == "modify"){
+			$("#info-form").formInit({
+				"formType" : "edit",
+				"request" : "/modifyLoanInfo"
+			});
+		}
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		$("#info-form").validatorInit();
+		var loanCode = YRHX.queryString("loanCode");
+		if (loanCode) {
+			initFormData(loanCode);
+		}
+		
+		var loanNo = YRHX.queryString("loanApplyCode");
+		if( loanNo ){
+			initFormDataByLoanNo(loanNo);
+		}
+		
+		$("body").delegate("input[name='rateByYear']","mousewheel",function(e){
+			e.preventDefault();
+		});
+		
+		$("body").delegate("input[name='rewardRateByYear']","mousewheel",function(e){
+			e.preventDefault();
+		});
+		
+		$("body").delegate("input[name='benefits4new']","mousewheel",function(e){
+			e.preventDefault();
+		});
+		
+	</script>
+</body>
+</html>

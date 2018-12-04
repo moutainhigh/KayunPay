@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>易融恒信-安全可靠透明的投资理财平台,p2p网贷平台</title>
+<meta name="keywords" content="易融恒信,网贷平台,p2p网贷平台排名,p2p理财,p2b网贷,p2p投资理财平台,小投资理财,武汉贷款,武汉小额投资,武汉网贷公司,武汉易融恒信" />
+<meta name="description" content="易融恒信,致力于做华中地区最好的p2p网贷平台,为投资者提供最安全,最靠谱,最透明的互联网金融p2p投资理财平台,咨询电话400-027-0707" />
+<link href="/portal/css/public.css" rel="stylesheet" media="screen" type="text/css"  charset="utf-8" />
+<link type="text/css" href="/portal/css/sscw.css" rel="stylesheet">
+<!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+
+<script data-main="/portal/js/pub/main" src="/portal/js/pub/require.js"></script>
+</head>
+<body>
+<header id="header" class="header"></header>
+<main class="sscw">
+	<div class="sscw-main">
+		<h1>易融恒信<b>实时财务</b>数据</h1>
+
+		<div class="sscwData">
+			<li>
+				<span>累计为出借人赚取收益</span>
+				<span><i id="paytotal">加载中...</i>元</span>
+			</li>
+			<li>
+				<span>待收回金额</span>
+				<span><i id="reciedtotal">加载中...</i>元</span>
+			</li>
+			<li>
+				<span>风险准备金</span>
+				<span><i id="risktotal">加载中...</i>元</span>
+				<a href="Z03_1" class="clickCheck"></a>
+			</li>
+		</div>
+		<div class="sscwBox">
+			<li class="fl">
+				<span>交易总额</span>
+				<span><i id="payamounttotal">加载中...</i>元</span>
+			</li>
+			<li  class="fr">
+				<div class="circleRed">
+					<span>坏账率</span>
+					<i id="baddebttotal">加载中...</i>
+				</div>
+				<div class="circleBlue">
+					<span>逾期率</span>
+					<i id="overduetotal">加载中...</i>
+				</div>
+			</li>
+		</div>
+		<div class="incomeChart" id="container">
+
+		</div>
+
+		<div class="tabNav">
+			<li class="active">一周内应回收欠款列表</li>
+			<li id="delayMonth">逾期30天内未归还列表</li>
+			<li id="overDelayMonth">逾期30天以上未归还列表</li>
+			<li id="delayReturn">逾期已归还列表</li>
+		</div>
+		
+		<div id="tabContent">
+			<div class="tab-content-list firstTab">
+			<div class="kindList">
+			<div class="select">
+				<span>一周内</span>
+				<div class="options" style="display: none;">
+					<a href="javascript:">一周内</a>					
+				</div>
+			</div>
+			<!--<span class="weekPay">一周内应归还总额 <b>5,806,543.60</b>元</span>
+			 <span class="weekPay">一周内已归还<i>6,543.60</i>元</span>
+			<span class="weekPay">一周内未归还<i>543.60</i>元</span> -->
+		</div>
+			<table id="weekReturn">
+				<thead>
+				<tr>
+					<th>借款人</th>
+					<th>标题</th>
+					<!-- <th>逾期期数</th> -->
+					<th>应归还金额</th>
+					<th>应归还日期</th>
+				</tr>
+				</thead>
+				<tbody>
+					
+				</tbody>
+			</table>
+			<div class="page_panel pageOne"></div>
+		</div>
+			<div class="tab-content-list secondTab" style="display: none;">
+				<table id="delayMonthTable">
+					<thead>
+					<tr>
+						<th width="20%">借款人</th>
+						<th width="20%">标题</th>
+						<th width="20%">逾期期数</th>
+						<th width="20%">应归还金额</th>
+						<th width="20%">应归还日期</th>
+					</tr>
+					</thead>
+					<tbody>
+					
+					</tbody>
+				</table>
+				<div class="page_panel pageTwo"></div>
+			</div>
+			<div class="tab-content-list thirdTab" style="display: none;">
+				<table id="overDelayMonthTable">
+					<thead>
+					<tr>
+						<th width="20%">借款人</th>
+						<th width="20%">标题</th>
+						<th width="20%">逾期期数</th>
+						<th width="20%">应归还金额</th>
+						<th width="20%">应归还日期</th>
+					</tr>
+					</thead>
+					<tbody>
+
+					</tbody>
+				</table>
+				<div class="page_panel pageThree"></div>
+			</div>
+			<div class="tab-content-list fourthTab" style="display: none;">
+				<table id="delayReturnTable">
+					<thead>
+					<tr>
+						<th width="20%">借款人</th>
+						<th width="20%">标题</th>
+						<th width="20%">逾期期数</th>
+						<th width="20%">应归还金额</th>
+						<th width="20%">应归还日期</th>
+					</tr>
+					</thead>
+					<tbody>
+
+					</tbody>
+				</table>
+				<div class="page_panel pageFour"></div>
+			</div>
+		</div>
+	</div>
+</main>
+<footer id="footer" class="footer">
+</footer>
+
+
+<!-- <script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+<script type="text/javascript" src="/portal/js/config.js"></script>
+<script>
+	topNavSelect = 2;
+</script>
+<script type="text/javascript" src="/portal/js/public.js"></script>
+<script type="text/javascript" src="/portal/js/user.js"></script>
+<script type="text/javascript" src="/portal/js/highcharts.js"></script>
+<script type="text/javascript" src="/portal/js/pub/widget-table.js"></script>
+<script type="text/javascript" src="/portal/js/pub/app.js"></script> -->
+
+<script>
+
+	
+
+</script>
+</body>
+</html>

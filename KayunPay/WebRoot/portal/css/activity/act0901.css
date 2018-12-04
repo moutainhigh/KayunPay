@@ -1,0 +1,215 @@
+@CHARSET "UTF-8";
+body {
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	background: #0b090c;
+	scrollbar-base-color:red;
+}
+
+#topic {
+	background: url(/portal/images/activity/act0901/topic.jpg) no-repeat center top;
+	height: 980px;
+	width: 100%;
+}
+
+#bg1 {
+	background: url(/portal/images/activity/act0901/bg1.jpg) no-repeat center top;
+	height: 355px;
+	width: 100%;
+}
+
+#bg2 {
+	background: url(/portal/images/activity/act0901/bg2.jpg) no-repeat center top;
+	height: 440px;
+	width: 100%;
+}
+
+#content {
+	height: 803px;
+	width: 1186px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 0 auto;
+}
+
+#bg3 {
+	background: url(/portal/images/activity/act0901/bg3.jpg) no-repeat center top;
+	height: 1098px;
+	width: 100%;
+}
+
+#bg4 {
+	background: url(/portal/images/activity/act0901/bg4.jpg) no-repeat center top;
+	height: 438px;
+	width: 100%;
+}
+
+#bg5 {
+	background: url(/portal/images/activity/act0901/bg5.jpg) no-repeat center top;
+	height: 75px;
+	width: 100%;
+}
+
+#myBox {
+	width: 453px;
+	height: 734px;
+	display: inline-block;
+	background-color: #1f1d20;
+	margin: 0 auto;
+}
+
+#listBox {
+	width: 733px;
+	height: 734px;
+	display: inline-block;
+	background-color: #171618;
+	margin: 0 auto;
+}
+
+#phone {
+	height: 282px;
+	text-align: center;
+	margin: 0 auto;
+	position: relative;
+	top: 30px;
+}
+
+#textNum {
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	font-family: "microsoft yahei";
+	font-size: 20px;
+	color: #d4be8c;
+	position: relative;
+	top: 60px;
+}
+
+#peoNum,
+#phoneNum {
+	color: ghostwhite;
+	font-size: 24px;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+#myInfo {
+	height: 61px;
+	line-height: 61px;
+	text-align: center;
+	position: relative;
+	top: 110px;
+	color: #d4be8c;
+	font-size: 18px;
+	font-weight: bold;
+	letter-spacing: 1px;
+	font-family: "microsoft yahei";
+}
+
+#myAmt {
+	height: 100px;
+	line-height: 100px;
+	position: relative;
+	top: 100px;
+	color: white;
+	font-size: 16px;
+	text-align: center;
+}
+
+#amt {
+	font-size: 46px;
+	color: white;
+	margin-right: 8px;
+	font-style: inherit;
+}
+
+#tzPic {
+	position: relative;
+	top: 120px;
+	text-align: center;
+	height: 68px;
+}
+
+#top {
+	background: url(/portal/images/activity/act0901/bdt.png) no-repeat center;
+	height: 145px;
+}
+
+td {
+	text-align: center;
+	font-family: "microsoft yahei";
+}
+
+ul {
+	width: 724px;
+	height: 515px;
+	margin: 0 auto;
+	position: relative;
+	top: 15px;
+	list-style-type: none;
+	padding-left: 16px;
+	overflow-y: auto;
+}
+
+li {
+	color: #d4be8c;
+	float: left;
+	text-align: center;
+	font-family: "microsoft yahei";
+}
+
+.rank {
+	line-height: 40px;
+	height: 40px;
+	width: 74px;
+	display: inline-block;
+	font-family: "microsoft yahei";
+}
+
+.userName {
+	line-height: 40px;
+	height: 40px;
+	width: 124px;
+	display: inline-block;
+	font-family: "microsoft yahei";
+}
+
+.tzAmount {
+	line-height: 40px;
+	height: 40px;
+	width: 174px;
+	display: inline-block;
+	font-family: "microsoft yahei";
+}
+
+.jqAmount {
+	line-height: 40px;
+	height: 40px;
+	width: 174px;
+	display: inline-block;
+	font-family: "microsoft yahei";
+}
+
+.award {
+	line-height: 40px;
+	height: 40px;
+	width: 146px;
+	display: inline-block;
+	font-family: "microsoft yahei";
+}
+
+a {
+	color: #d4be8c;
+}
+
+#noOne {
+	margin: 0 260px;
+	height: 70px;
+	line-height: 70px;
+	color: white;
+	font-family: "microsoft yahei";
+	font-size: 22px;
+	
+}

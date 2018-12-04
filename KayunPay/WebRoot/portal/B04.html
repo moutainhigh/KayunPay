@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>易融恒信-安全可靠透明的投资平台,p2p网贷平台</title>
+<meta name="keywords" content="易融恒信,网贷平台,p2p网贷平台排名,p2b网贷,p2p投资平台,小投资,武汉贷款,武汉小额投资,武汉网贷公司,武汉易融恒信" />
+<meta name="description" content="易融恒信,致力于做华中地区最好的p2p网贷平台,为投资者提供最安全,最靠谱,最透明的互联网金融p2p投资平台,咨询电话400-027-0707" />
+<link href="/portal/css/public.css" rel="stylesheet" media="screen" type="text/css"  charset="utf-8" />
+<link type="text/css" href="/portal/css/user.css" rel="stylesheet">
+<!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+<body>
+<header id="header" class="header"></header>
+<nav class='user_index'></nav>
+<main class="user">
+	 <div class="user-main">
+        <div class="user-main-left">
+            <h2>资金管理</h2>
+            <div class="user-nav"></div>
+        </div>
+		<div class="user-main-right">
+			<div class='user-main-right-c'>
+			<div class='tabNav'>
+				<i></i>
+				<ul	class="menu">
+					<li class="selected"><a href="#">银行卡管理</a></li>
+				</ul>
+				<div class="clear"></div>
+			</div>
+			<div id="bankList" class="bank_list">
+				<div class="bank_card">
+					<img class="card_logo">
+					<!-- <div class="card_del"></div> -->
+					<div class="clear"></div>
+					<div class="card_num"></div>
+					<div class="card_name"></div>
+					<!-- <a class="card_default" href="">设为默认</a>
+					<a class="card_edit" href="">编辑</a> -->
+				</div>
+				<div id="addBank" class="add_bank"><a href="javascript:"></a></div>
+			</div>
+			
+			<div class="tip_text">
+				<h4>温馨提示</h4>
+				<ul>
+					<li>1、投资卡指出借人在易融恒信平台提现使用的银行卡，一个账户仅限绑定一张银行卡作为投资卡。请注意您的银行卡使用限制，以免造成不便。 </li>
+					<li>>快捷支付：无需开通网银，持银行储蓄卡（暂不支持交通银行、中国农业银行、中国邮政储蓄银行、浦发银行）即可快速完成充值。若使用快捷支付通道，则充值及提现均使用您在平台绑定的投资卡，投资资金同卡进出 </li>
+					<li>>连连支付：需开通网银，充值时跳转第三方平台完成支付，可支持银行范围更广，包括：交通银行、中国农业银行、中国邮政储蓄银行、浦发银行、中国工商银行、中国银行、中国建设银行、招商银行、交通银行、平安银行、中信银行、中国民生银行、广发银行、兴业银行、中国光大银行、华夏银行、宁波银行、南京银行、杭州银行等。提现时则使用您在平台绑定的投资卡。</li>
+					<li>2、如需更换银行卡需联系客服将原始的银行卡解绑后重新绑定新卡。</li>
+				</ul>　
+			</div>
+		</div>
+		</div>
+    </div>
+</main>
+<div id="yinying" class="yinying"></div>
+<div id="delCardBank" class="del_card_bank">
+	<div id="div_del_banklog" class="card_logo"></div>
+	<div class="card_del"></div>
+	<div class="clear"></div>
+	<div id="div_del_cardId" class="card_num"></div>
+	<div id="div_del_cardName" class="card_name"></div>
+	<span class="text" >是否确定删除该银行卡?</span>
+	<button id="btn_bank_del">确定</button>
+</div>
+<div id="addBankDialog" class="add_bank_dialog">
+	<div class="bank_dialog_header">
+		<h4>添加银行卡</h4>
+		<div class="del"></div>
+	</div>
+	<form>
+		<div class="addIterm">
+			<label>真实姓名</label>
+			<span id="span_trueName" class="input_panel disabled"></span>
+		</div>
+		<div class="addIterm">
+			<label>身份证号码</label>
+			<span id="span_cardId" class="input_panel disabled"></span>
+		</div>
+<!-- 		<div>
+			<label>开户银行</label>
+			<div class="select">
+				<span id="banNameHere">建设银行</span>
+				<input type="hidden" id="input_add_cardname" value="ccb" />
+				<div class="options"  style="height: 170px;overflow-y: scroll;">
+					<a href="javascript:" >建设银行</a>
+					<a href="javascript:">工商银行</a>
+					<a href="javascript:">邮政银行</a>
+					<a href="javascript:">农业银行</a>
+					<a href="javascript:" value="icbc">工商银行</a>
+					<a href="javascript:" value="boc">中国银行</a>
+					<a href="javascript:" value="abc">农业银行</a>
+					<a href="javascript:" value="ccb">建设银行</a>
+					<a href="javascript:" value="cmb">招商银行</a>
+					<a href="javascript:" value="comm">交通银行</a>
+					<a href="javascript:" value="postgc">邮储银行</a>
+					<a href="javascript:" value="pab">平安银行</a>
+					<a href="javascript:" value="spdb">浦发银行</a>
+					<a href="javascript:" value="citic">中信银行</a>
+					<a href="javascript:" value="cmbc">民生银行</a>
+					<a href="javascript:" value="gdb">广发银行</a>
+					<a href="javascript:" value="cib">兴业银行</a>
+					<a href="javascript:" value="ceb">光大银行</a>
+					<a href="javascript:" value="hxbc">华夏银行</a>
+					<a href="javascript:" value="nbcb">宁波银行</a>
+					<a href="javascript:" value="njcb">南京银行</a>
+					<a href="javascript:" value="hzcb">杭州银行</a>
+				</div>
+			</div>
+		</div> -->
+		<div class="addIterm">
+			<label>银行卡号</label>
+			<span>
+				<input id="input_add_cardno" type="text" value="" /> <span class="bankCardTips">银行卡开户名必须与真实姓名保持一致</span>
+			</span>
+		</div>
+		<div class="addIterm">
+			<label>开户银行</label>
+			<select id="bankname" class="bankname" style="width: 202px"></select>
+		</div>
+		<div class="addIterm">
+			<label>银行卡所在地</label>
+			<select id="Province" class="porvice"></select>
+			<select id="City" class="city"></select>
+		</div>
+		<div class="addIterm">
+			<label>短信校验</label>
+			<span><input type="text" id="input_add_msgmac" value="" maxlength="6" /></span>
+			<a id="sendMsgBtn" class="vail" href="javascript:" sendToggle="0">获取验证码</a>
+			<label id="msgCounter"></label>
+		</div>
+		<div class="cardSaveBtn addIterm">
+			<div id="btn_add_save">保存</div>
+			<label style="width:200px;" id="msgTips" class="red"></label>
+		</div>
+	</form>
+</div>
+<footer id="footer" class="footer">
+</footer>
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+<script type="text/javascript" src="/portal/js/config.js"></script>
+<script type="text/javascript" src="/portal/js/public.js"></script>
+<script type="text/javascript">window.userNavActive = 4;topNavSelect= '4'; </script>
+<script type="text/javascript" src="/portal/js/user.js"></script>
+<script type="text/javascript" src="/portal/js/pub/widget-table.js"></script>
+<script>
+setting(2,window.userNavActive);
+NavMenu(2);
+	//20170522 ws修改
+	var bankname=$("#bankname");
+	var province=$("#Province");
+	var city=$("#City");
+	function init_porvice(){
+		YRHX.ajax({
+			url:"/queryBankProvinceCodes",
+			success:function(sucData){
+				 province.html("");
+				 province.append("<option value='请选择省份' selected='selected'>请选择省份</option>");
+				 city.append("<option value='请选择城市' selected='selected'>请选择市区县</option>");
+				 for(var i=0;i<sucData.length;i++){
+					 var bankprovince=sucData[i];
+					 province.append("<option value='"+bankprovince.provinceCode+"'>"+bankprovince.provinceName+"</option>");
+				} 
+				
+			},
+			error:function(errorData){
+				$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+			}
+		});
+		$('#Province').change(function(){
+			var provinceCode = $(this).find('option:selected').val();
+			if("请选择省份"==provinceCode){
+				city.html("");
+				city.append("<option value='请选择城市' selected='selected'>请选择城市</option>");
+			}else{
+			YRHX.ajax({
+				url:"/queryBankCityCodes",
+				data:{"provinceCode":provinceCode},
+				success:function(sucData){
+					city.html("");
+					for(var i=0;i<sucData.length;i++){
+					var bankcity=sucData[i];
+					city.append("<option value='"+bankcity.cityCode+"'>"+bankcity.cityName+"</option>");}
+				},
+				error:function(errorData){
+				$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+			}
+			});
+			}
+			
+		});
+	}
+	function init_Bankname(){
+		bankname.append("<option value='请选择银行名称' selected='selected'>请选择银行名称</option>")
+		YRHX.ajax({
+			url:"/querBankName",
+			success:function(sucData){
+				for(var i=0;i<sucData.length;i++){
+					var bank=sucData[i];
+				bankname.append("<option value='"+bank.bankCode+"'>"+bank.bankName+"</option>");
+				}
+			}
+		});
+	}
+	init_Bankname();
+	init_porvice();
+
+	window.userCardName = "";
+	window.userMobile = "";
+	window.userCardId = "";
+
+	
+	//查询银行卡列表
+	$.queryCards = function(){
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("bankv2List"),
+			success : function( sucData ) {
+				
+				if( sucData.trueName ){
+					$(".bank_card").show();
+					$("#addBank").hide();
+					$(".card_num").text( sucData["bankNo"]);
+					var uName = sucData["trueName"];
+					var leftWordNum = uName.length-1;
+					var frontStr = "";
+					for(var i = 0; i<leftWordNum ;i++ ){
+						frontStr +="*";
+					}
+					var uNameAll = frontStr  + uName.charAt(leftWordNum );
+					$(".card_name").text( uNameAll );
+					$(".card_logo").attr("src","/portal/images/banks/" +  sucData["bankType"] + ".jpg");
+				}else{
+					$(".bank_card").hide();
+				}
+				
+				
+				
+			},
+			error : function( errorData ){
+				$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+			}
+		});
+	};
+	
+	$.queryCards();
+
+
+	//添加银行卡页面
+	$('#bankList').delegate('#addBank','click',function(){
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("queryUserInfo"),
+			success : function( sucData ) {
+				if( sucData.isAuthed == '2'){
+					var dataPath =  sucData;
+					$('#span_trueName').text( dataPath.userCardName);
+					$('#span_cardId').text( dataPath.userCardId );
+					$('#input_add_cardno').val("");
+					$('#input_add_cardcity').val("");
+					$('#input_add_msgmac').val("");
+					to_center($('#yinying').show());
+					$('body,html').css('overflow', 'hidden');
+					to_center($('#addBankDialog').show());
+				}else{
+					 $.popTips("popTipErr", "请先去[安全中心]实名认证！" );
+					/* window.location.href = 'C01'; */
+				} 
+			},
+			error : function( errData ){
+				 $.popTips("popTipErr", errData["return_info"] );
+			}
+		})
+	});
+	
+	
+	
+	
+	//添加银行卡点击事件
+	$('#btn_add_save').click(function(e){
+		var bankno = $('#input_add_cardno').val();
+		var bankcity = $('#Province').val() +"|"+ $('#City').val();
+		var msgMac = $('#input_add_msgmac').val();
+
+		if( bankno.length == 0 ){
+			$("#btn_add_save").popUp ("err","请输入银行卡号",function(){
+				//$('#input_add_cardno').focus();
+			});
+			return false;
+		}
+		if($('#bankname').val() == "请选择银行名称"){
+			$("#btn_add_save").popUp ("err","请认真输入银行名称");
+			return false;
+		}
+		if($('#Province').val() == "请选择省份" ||$('#City').val() == "请选择城市"){
+			$("#btn_add_save").popUp ("err","请认真输入银行卡所在地");
+			return false;
+		}
+		if( msgMac.length == 0 ){
+			$("#btn_add_save").popUp ("err","请输入验证码",function(){
+				$('#input_add_msgmac').focus();
+			});
+			return false;
+		}
+		
+		
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("bankv3Save"),
+			data : {
+				'bankNo':bankno,
+				'bankCode':$("#bankname").val(),
+				'bankName':$("#bankname").find("option:selected").text(), 
+				'CityCode': $("#City").val(),
+				'provinceName':$("#Province").find("option:selected").text(),
+				'CityName':$("#City").find("option:selected").text(),
+				'smsCode': msgMac,
+			},
+			success : function( sucAddData ) {
+				$('#yinying').hide();
+				$('body,html').css('overflow', 'auto');
+				$('#addBankDialog').hide();
+				$("#lab_send_msgTip").text("");
+//				$.popTips("popTipSuc","添加银行卡成功，您的存管支付密码默认为手机号后六位，请在安全中心页面及时修改");
+				$.queryCards();
+				YRHX.Cookie("loginId", sucAddData.loginId).set();
+				alert("添加银行卡成功，您的存管支付密码默认为手机号后六位，请在安全中心页面及时修改");
+				//重新加载数据
+			},
+			error : function( errorData ){
+				$("#lab_send_msgTip").text("");
+				 $.popTips("popTipErr",errorData.return_info || "添加银行卡失败,请确认银行卡信息是否正确");
+			}
+		});
+	});
+//end
+	
+	//设置银行卡为默认
+	$('#bankList').delegate('.card_default','click',function(){
+		var bankCode = $(this).attr('bankCode');
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("setBankDefault"),
+			data : {
+				'bankCode':bankCode
+			},
+			success : function( sucSetData ) {
+				
+				$('.card_default').text("设为默认");
+				$('#'+bankCode).text("默认银行卡");
+				
+				$.popTips("popTipSuc","设置成功!",function(){
+					window.location.reload();	
+				});
+				
+			},
+			error : function( errorSetData ){
+				$.popTips("popTipErr",errorData.return_info || "设置失败");
+			}
+		});
+		
+	});
+	
+	//删除银行卡页面
+	$('#bankList').delegate('.card_del','click',function(){
+		$('#div_del_cardName').text( window.userCardName);
+		$('#div_del_cardId').text($(this).attr('bankNo'));
+		$('#btn_bank_del').attr('bankCode',$(this).attr('bankCode'));
+		$('#div_del_banklog').css({
+			"background" : "url(" + CONFIG.IMGURL+"banks/"+$(this).attr('bankType')+".jpg)"
+		})
+		
+		to_center($('#yinying').show());
+		$('body,html').css('overflow', 'hidden');
+		to_center($('#delCardBank').show());
+	});
+	
+	//删除银行卡
+	$('#btn_bank_del').click(function(){
+		var bankCode = $(this).attr('bankCode');
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("delBank4user"),
+			data : {'bankCode':bankCode},
+			success : function( sucDelData ) {
+				$('#yinying').hide();
+				$('body,html').css('overflow', 'auto');
+				$('#delCardBank').hide();
+				$("#bankList").html('');
+				//重新加载数据
+				$.queryCards();
+			},
+			error : function( errorData ){
+				$.popTips("popTipErr",errorData.return_info || "删除银行卡失败");
+			}
+		});
+	});
+	
+	//发送验证码
+		$('#sendMsgBtn').click(function(){
+			if( $(this).attr("sendToggle") == 0){
+				captchaApiV2(function( capVal ){
+					$("#sendMsgBtn").sendMsg({
+						"msgCounter" : "#msgCounter",
+						"msgTips"    : "#msgTips",
+						"type"       : "0",
+						"urPhone"    : "",
+						"url"		 : "sendMsgMac",
+						"cv"		 : capVal
+					});
+				});
+			}
+		})
+	
+	
+	if( YRHX.queryString("chargeUrl") ){
+		$("#addBank").click();
+	}
+	
+	
+	
+</script>
+</body>
+</html>
+
+
+
+
+
+

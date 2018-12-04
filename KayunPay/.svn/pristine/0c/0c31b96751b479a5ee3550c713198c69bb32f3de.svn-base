@@ -1,0 +1,365 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>易融恒信-安全可靠透明的投资平台,p2p网贷平台</title>
+	<meta name="keywords" content="易融恒信,网贷平台,p2p网贷平台排名,p2b网贷,p2p投资平台,小投资,武汉贷款,武汉小额投资,武汉网贷公司,武汉易融恒信" />
+	<meta name="description" content="易融恒信,致力于做华中地区最好的p2p网贷平台,为投资者提供最安全,最靠谱,最透明的互联网金融p2p投资平台,咨询电话400-027-0707" />
+    <meta baidu-gxt-verify-token="29bd386392271a808880d0e2e39970ba">
+    <link href="/portal/css/public.css?v=1.0.1" rel="stylesheet" media="screen" type="text/css" charset="utf-8"/>
+    <link href="/portal/css/index.css?v=1.0.4" rel="stylesheet" media="screen" type="text/css" charset="utf-8"/>
+    <!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+<body class="indexPage" style="overflow-x:hidden;">
+<!-- 顶部伸展广告 start -->
+<DIV style="margin: 0px auto; width: 960px; display: block;" id="js_ads_banner_top"></DIV>
+<DIV style="margin: 0px auto; width: 100%; display: none;" id="js_ads_banner_top_slide">
+	<A href="/X00?id=1253" target="_blank"><IMG src="/portal/images/topAd03.jpg" width="100%"></A>
+</DIV>
+<!-- 顶部伸展广告 end -->
+<!-- 底部浮动广告 start -->
+<!-- 
+<div id="foot_swt">
+  <div id="foot_ad">
+    <div id="foot_adBox">
+    	<a href="javascript:$('#foot_swt').css('display','none')"><IMG src="/portal/images/bottom_banner01.png" width="100%"  usemap="#foot_map"></a>
+    </div>
+  </div>
+</div>
+-->
+<!-- 底部浮动广告 end -->
+<header id="header" class="header"></header>
+<main class="main_grey">
+	<div id="banner" class="banner">
+		<a href="http://topic.yrhx.com/zt/2017/20171117" style="background: url(/portal/images/banner86.jpg) 50% 50% no-repeat;" target="_blank" ></a>
+		<a href="/act20171118" style="background: url(/portal/images/banner87.jpg) 50% 50% no-repeat;" target="_blank" ></a>
+		<a href="http://topic.yrhx.com/zt/2017/20171111/" style="background: url(/portal/images/banner83.jpg) 50% 50% no-repeat;" target="_blank" ></a>
+		<a href="http://topic.yrhx.com/zt/2017/20171114" style="background: url(/portal/images/banner85.jpg) 50% 50% no-repeat;" target="_blank" ></a>
+		<a href="http://topic.yrhx.com/yk/2017/10yk" style="background: url(/portal/images/banner84.jpg) 50% 50% no-repeat;" target="_blank" ></a>
+		<a href="http://topic.yrhx.com/zt/2017/20171025/" style="background: url(/portal/images/banner81.jpg) 50% 50% no-repeat;" target="_blank" ></a>
+		<a href="http://topic.yrhx.com/zt/2017/20170815" style="background: url(/portal/images/banner70.jpg) 50% 50% no-repeat;" target="_blank" ></a>
+		<a href="http://topic.yrhx.com/zt/2017/20170814" style="background: url(/portal/images/banner69.jpg) 50% 50% no-repeat;" target="_blank" ></a>
+       	<div class="layout_center">
+            <div class="data">
+                <div class="bg"></div>
+                <div id="noLoginState">
+                	<!-- <p>安全运营：<span class='dayCount'></span>天</p> -->
+                   	<h5>预期最高年化收益</h5>
+					<div class="money_panel"><span class="money totalMoney">15</span><span>%</span></div>
+                     
+                    <div class="button_panel">
+                        <a class="button" href="/register" id="registerBtn"><i></i><span>注册领红包</span></a>
+                    </div>
+					<!-- <div class="a_panel"></div> -->
+                   <div class="a_panel">已有账号？<a class="red" href="javascript:show_login_dialog()">马上登录</a></div>
+                   <div class="a_tips">温馨提示:市场有风险 请合理安排资金</a></div>
+					
+                </div>
+                <div id="loginState" style="display:none;">
+                    <div class="user_data">
+                        <a href="A00"><img src="/portal/images/headIcon.jpg" alt="个性头像"></a>
+
+                        <div><a href="A00" class="red"><span class="red">
+								您好，
+								 <i class="indexUserName" id="indexUserName"></i>
+								 
+								</span></a>
+						</div>
+						
+						<div id="vipLevelName"></div>
+                        
+                        <div><a href="#" id="logOut">安全退出</a></div>
+                    </div>
+                    <ul>
+                        <li>
+                            	可用余额:
+                            <a href="A03"><span class="red" id="indexAvBalance">0</span></a></li>
+                        <li>
+                            	待收总额:
+                            <a href="A03"><span class="red" id="indexToBack">0</span></a></li>
+                        <li>
+                            	已累计为您赚取收益:
+                            <a href="A03"><span class="red" id="indexEarned">0</span></a></li>
+                    </ul>
+                </div>
+
+
+            </div>
+            <ul id="bannerButtons" class="buttons">
+                <li><i></i></li>
+                <li><i></i></li>
+                <li><i></i></li>
+                <li><i></i></li>
+                <li><i></i></li>
+                <li><i></i></li>
+                <li><i></i></li>
+                <li><i></i></li>
+        </div>
+    </div>
+ 	
+ 	<div class="list_table1">
+ 		<div class="list_table1_main">
+ 			<span class="notice">最新公告:</span>
+ 			<div class="marquee">
+	 			<ul id="indexNotice">
+	 				<li>加息活动<i>|</i><span>11.20</span></li>
+	 			</ul>
+ 			</div>
+ 			<a href="/X01" class="more">更多公告></a>
+ 		</div>
+ 	</div>
+ 	<div class="list_table2">
+ 		<ul>
+ 			<li><a href=''><i class="index_first04"></i><div><strong>银行存管</strong><span>平台实现合规化</span></div></a></li>
+	        <li><a href='http://topic.yrhx.com/zt/2016/20161213/'><i class="index_first01"></i><div><strong>电子签章</strong><span>携手CFCA打造电子安全锁</span></div></a></li>
+	        <li><a href='http://topic.yrhx.com/zt/2015/20150728/'><i class="index_first02"></i><div><strong>创始成员</strong><span>湖北P2P行业自律联盟“常青盟”</span></div></a></li>
+	        <!-- <li><a href="/Y02"><i class="index_first03"></i><div><strong>风险备付</strong><span>541万企业备付金保障资金安全</span></div></a></li> -->
+			<div class="clear"></div>
+        </ul>
+ 	</div>
+ 	<div class="list_center">
+ 		<!--实时数据  -->
+ 		<div class="list_panel now_data">
+ 			<div class="panel_mes nowData">
+ 				<strong>实时数据<i></i></strong>
+ 				<span>数据透明，实时查询</span>
+ 			</div>
+ 			<div class="index_data">
+ 				<div class="index_data_item">
+ 					<p><span class='million'>0</span>亿<span class='thousand'>0</span>万<span class='unit'>0</span>元</p>
+ 					<p class="p2">平台成交总额</p>
+ 				</div>
+ 				<div class="index_data_item item1">
+ 					<p><span class='thousand1'>0</span>万<span class='unit1'>0</span>元</p>
+ 					<p class="p2">本月成交额</p>
+ 				</div>
+ 				<div class="index_data_item last item2">
+ 					<p><span class='thousand2'>0</span>万</p>
+ 					<p class="p2">今日成交额</p>
+ 				</div>
+ 				<div class="index_data_item last item3">
+ 					<a href="/Z03">
+ 						<i></i>
+ 						<p class="p2">查看更多数据</p>
+ 					</a>
+ 				</div>
+ 			</div>
+ 		</div>
+ 		<!--新手福利  -->
+ 		<div class="list_panel new_bid">
+ 			<div class="panel_mes">
+ 				<strong>新手福利<i></i></strong>
+ 				<span class='other'>专享年化12%+4%高息标</span>
+ 				<a class='more_bid' >100元起投，限额一万</a>
+ 			</div>
+ 			<div class="index_data1" id="new_bid">
+ 				<div class="new_bid_mes">
+ 					<p class='bid_title'><strong>新手专享标</strong>(100元起投，限额1万)<a href='http://topic.yrhx.com/zt/2016/20160902_web/'></a></p>
+ 					<ul class="bid_detail">
+ 						<li><p><span class="bid_month">3</span>月</p>等额本息</li>
+ 						<li><p><span class="bid_rate">16</span>%</p>年化率</li>
+ 						<li><p><span class="bid_amount">5.4</span>万</p>项目总额</li>
+ 						<li class="last">
+ 							<div class="perCircleBox"><div class="circle-progress" data-progress="100" data-size="55" ></div></div>
+ 						</li>
+ 					</ul>
+ 				</div>
+ 				<div class="new_bid_action">
+ 					剩余时间：<span>02天14时49分</span>
+ 					<div class="new_bid_btn"><a href="/Z02_1">马上投资</a></div>
+ 				</div>
+ 			</div>
+ 		</div>
+ 		<!-- 自动投标 -->
+ 		<div class="auto_bid"><a href="/A04" target="_blank">开启自动投标<strong> ></strong></a></div>
+ 		<!-- 投资理财  -->
+ 		<div class="list_panel invest">
+ 			<div class="panel_mes loan">
+ 				<strong>精选项目<i></i></strong>
+ 				<span>投标期限灵活，收益高</span>
+ 				<ul class="loan_type">
+ 					<li class="selected" producttype=''>全部</li>
+ 					<li producttype='A'>质押宝</li>
+ 					<li producttype='B'>车稳盈</li>
+ 					<li producttype='C'>房稳赚</li>
+ 					<li producttype='G'>稳定投</li>
+ 				</ul>
+ 				<a href="/Z02?navTab=1" class="more_bid">查看更多精选项目</a>
+ 			</div>
+ 			<div class="index_loan">
+ 				<div class="index_loan_list" id='all_bid'>
+ 				</div>
+ 				<!--质押宝  -->
+ 				<div class="index_loan_list" id="bid_type1" style="display:none">
+ 					
+ 				</div>
+ 				<!--车稳盈  -->
+ 				<div class="index_loan_list" id="bid_type2" style="display:none">
+ 					
+ 				</div>
+ 				<!--房稳赚  -->
+ 				
+ 				<div class="index_loan_list" id="bid_type3" style="display:none">
+ 					
+ 				</div>
+ 				<!--稳定投  -->
+ 				
+ 				<div class="index_loan_list" id="bid_type4" style="display:none">
+ 					
+ 				</div>
+ 			</div>
+ 			
+ 			<div class="clear"></div>
+ 		</div>
+ 		
+ 		
+ 		
+ 		<!-- 债权转让  -->
+ 		<div class="list_panel transfer">
+ 			<div class="panel_mes trans">
+ 				<strong>债权转让<i></i></strong>
+ 				<span>不用担心资金周转问题</span>
+ 				
+ 				<a href="/Z02?navTab=2" class="more_bid">查看更多债权</a>
+ 			</div>
+ 			<div class="index_trans">
+ 				<table>
+ 					<thead><th width='190'>标题<span>|</span></th><th width='150'>年化率<span>|</span></th><th width='145'>转让价格<span>|</span></th><th width='145'>剩余期限<span>|</span></th><th width='145'>承接收益<span>|</span></th><th>状态</th></thead>
+ 					<tbody>
+ 						<!-- <tr><td>车稳盈1233322</td><td><span class="red"><strong>16.8</strong>%</span></td><td>216333.00元</td><td>3个月</td><td>255.00元</td><td ><a class='last' href="">转让中</a></td></tr>
+ 						<tr><td>车稳盈1233322</td><td><span class="red"><strong>16.8</strong>%</span></td><td>216333.00元</td><td>3个月</td><td>255.00元</td><td><a>已承接</a></td></tr>
+ 						<tr><td>车稳盈1233322</td><td><span class="red"><strong>16.8</strong>%</span></td><td>216333.00元</td><td>3个月</td><td>255.00元</td><td><a>已承接</a></td></tr> -->
+ 					</tbody>
+ 				</table>
+ 			</div>
+ 			
+ 			<div class="clear"></div>
+ 		</div>
+ 		
+ 		<!--易融月刊  -->
+ 		<div class="grid_list">
+ 			
+ 			<div class="newsList">
+ 				<p>公司新闻<a href="/X02">更多  ></a></p>
+				<ul class="articleList" id="indexNews">
+
+				</ul>
+			</div>
+			<!--排行  -->
+			<div class="paddingBox">
+				<p><span class="selected"><a href='/Z05'>总排行</a></span><span><a href='/Z05'>本月排行</a></span><span><a href='/Z05'>今日排行</a></span>
+					<i></i>
+				</p>
+				<div class="list_con">
+					<ul class="rankList" id="rank_all" >
+					</ul>
+					<ul class="rankList" id="rank_month" style="display:none" >
+					</ul>
+					<ul class="rankList" id="rank_day" style="display:none">
+					</ul>
+				</div>
+			</div>
+			
+			<!--月刊  -->
+			<div class="monthly grid" id="monthly">
+				<p>运营报告<a href="/X09">更多  ></a></p>
+				<div class="monthly_con">
+	    		<ul>
+	    			<li style="left: 0;"><a href="http://topic.yrhx.com/yk/2017/10yk/"><img src="/portal/yklist/201710.jpg" alt="2017年10月运营报告"></a></li>
+	    			<li style="left: 0;"><a href="http://topic.yrhx.com/yk/2017/9yk/"><img src="/portal/yklist/201709.jpg" alt="2017年9月运营报告"></a></li>
+	    			<li style="left: 0;"><a href="http://topic.yrhx.com/yk/2017/8yk/"><img src="/portal/yklist/201708.jpg" alt="2017年8月运营报告"></a></li>
+				</ul>
+	    		 </div>
+               
+    			<div class="month_icon">
+    				<span class="selected"></span><span></span><span></span>
+    			</div>
+    		</div>
+			<div class="clear"></div>
+ 		</div>
+ 	</div>
+</main>
+
+<div class="report grid">
+   	<span class="subTitle">媒体报道</span>
+   	<a href="/X04" target="_blank" class="subMore">更多></a>
+   	<ul class="report_con">
+   		<li><a href="http://hb.sina.com.cn/hezuo/shangxun/2015-03-12/1649220964.html" target="_blank"><img src="/portal/images/icons/report1.jpg"/></a></li>
+   		<li><a href="http://news.ifeng.com/a/20151216/46698288_0.shtml" target="_blank"><img src="/portal/images/icons/report2.jpg"/></a></li>
+   		<li><a href="http://news.163.com/15/0728/18/AVKMFA5D00014AED.html" target="_blank"><img src="/portal/images/icons/report3.jpg"/></a></li>
+   		<li><a href="http://whwb.cjn.cn/html/2015-07/29/content_5461652.htm" target="_blank"><img src="/portal/images/icons/report4.jpg"/></a></li>
+   		<li><a href="http://yrhx.p2peye.com/" target="_blank"><img src="/portal/images/icons/report5.jpg"/></a></li>
+   		<li class="last"><a href="http://bbs.wdzj.com/thread-610754-1-1.html" target="_blank"><img src="/portal/images/icons/report6.jpg"/></a></li>
+   	</ul>
+</div>
+<div class='web_enter' style="display:none"><a href="http://m.yrhx.com/m?goto=wap">手<br />机<br />版</a></div>
+<footer id="footer" class="footer"></footer>
+<div class="bid_show" style="left:30%">
+	<span class="pop_close"></span>
+	<img src="portal/images/activity1001.jpg">
+</div>
+<div class="yinying" id="yinying"></div>
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js?v=1.0.0" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js?v=1.0.0"></script>
+<script type="text/javascript" src="/portal/js/config.js?v=1.0.0" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/public.js?v=1.0.3" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/wylc.js?v=1.0.0" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/circleProgress.js?v=1.0.0" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/index.js?v=1.0.1" charset="utf-8"></script>
+<script>
+/*
+$(function(){
+	to_center($('#yinying').show());
+	to_center($('.bid_show').show());
+});
+
+$('.bid_show .pop_close').click(function(){
+	$('body,html').css('overflow', 'auto');
+	$('#yinying').hide();
+	$('.bid_show').hide();
+});
+*/
+//平台数据
+$(function(){
+	YRHX.ajax({
+		url : CONFIG.getRequestURI("queryCountData1"),
+	    success: function (sucData) {
+	    	var today_count=(YRHX.toDecimal2(sucData.today_count / 10.0 / 10.0 / 10.0 / 10.0 / 10.0 / 10.0).replace('.00','')).replaceAll(',','');
+	    	
+	    	var month_count=(YRHX.toDecimal2(sucData.month_count / 10.0 / 10.0).replace('.00','') +'').replaceAll(',','');
+	    	var riskTotal_count=(YRHX.toDecimal2(sucData.riskTotal_count / 10.0 / 10.0).replace('.00','')).replaceAll(',','');
+	    	var allTotal_count=(YRHX.toDecimal2(sucData.all_loanAmount / 10.0 / 10.0).replace('.00','') + '').replaceAll(',',''); 
+	    	
+	    	var all_len=allTotal_count.length,month_len=month_count.length,today_len=today_count.length;
+	    			
+	    	var all_millon = allTotal_count.substring(0,all_len-8),
+	    		all_thousand = allTotal_count.substring(all_len-8,all_len-4),
+	    		all_unit = allTotal_count.substring(all_len-4,all_len),
+	    		month_thousand = month_count.substring(0,month_len-4),
+	    		month_unit = month_count.substring(month_len-4,month_len);
+	    	$('.million').text(all_millon);
+	    	$('.thousand').text(all_thousand);
+	    	$('.unit').text(all_unit);
+	    	$('.thousand1').text(month_thousand);
+	    	$('.unit1').text(month_unit);
+	    	$('.thousand2').text(today_count);
+	    },
+	    error: function (errData) {
+
+	    }
+	});
+})
+//顶部伸展广告
+/*
+if ($("#js_ads_banner_top_slide").length){
+	var $slidebannertop = $("#js_ads_banner_top_slide"),$bannertop = $("#js_ads_banner_top");
+	setTimeout(function(){$bannertop.slideUp(1000);$slidebannertop.slideDown(1000);},2500);
+	setTimeout(function(){$slidebannertop.slideUp(1000,function (){$bannertop.slideDown(1000);});},8500);
+}
+*/
+</script>
+</body>
+</html>

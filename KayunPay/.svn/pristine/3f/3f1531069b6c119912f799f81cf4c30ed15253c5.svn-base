@@ -1,0 +1,575 @@
+package com.dutiantech.controller.portal;
+
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.dutiantech.Message;
+import com.dutiantech.anno.AuthNum;
+import com.dutiantech.controller.BaseController;
+import com.dutiantech.controller.FuiouController;
+import com.dutiantech.interceptor.AuthInterceptor;
+import com.dutiantech.interceptor.PkMsgInterceptor;
+import com.dutiantech.model.BankCode;
+import com.dutiantech.model.BankOreaCode;
+import com.dutiantech.model.BanksV2;
+import com.dutiantech.model.BizLog.BIZ_TYPE;
+import com.dutiantech.model.ChangeBankTrace;
+import com.dutiantech.model.Funds;
+import com.dutiantech.model.RecommendInfo;
+import com.dutiantech.model.SMSLog;
+import com.dutiantech.model.User;
+import com.dutiantech.model.UserInfo;
+import com.dutiantech.plugins.Memcached;
+import com.dutiantech.service.BanksService;
+import com.dutiantech.service.FuiouTraceService;
+import com.dutiantech.service.FundsServiceV2;
+import com.dutiantech.service.SMSLogService;
+import com.dutiantech.service.TicketsService;
+import com.dutiantech.service.UserInfoService;
+import com.dutiantech.service.UserService;
+import com.dutiantech.util.CommonUtil;
+import com.dutiantech.util.DateUtil;
+import com.dutiantech.util.IdCardUtils;
+import com.dutiantech.util.StringUtil;
+import com.dutiantech.util.SysEnum.FuiouTraceType;
+import com.dutiantech.util.UIDUtil;
+import com.fuiou.data.ChangeCard2ReqData;
+import com.fuiou.data.CommonRspData;
+import com.fuiou.data.QueryBalanceResultData;
+import com.fuiou.data.RegReqData;
+import com.fuiou.data.ResetPassWordReqData;
+import com.fuiou.service.FuiouService;
+import com.jfinal.aop.Before;
+import com.jfinal.core.ActionKey;
+import com.jfinal.plugin.activerecord.Db;
+
+public class BankV2Controller extends BaseController{
+
+	private BanksService banksService = getService(BanksService.class);
+	private FundsServiceV2 fundsServiceV2 = getService(FundsServiceV2.class);
+	private FuiouTraceService fuiouTraceService =getService(FuiouTraceService.class);
+	private UserInfoService userInfoService = getService(UserInfoService.class);
+	private UserService userService = getService(UserService.class);
+	private TicketsService ticketService = getService(TicketsService.class);
+	private SMSLogService smsLogService = getService(SMSLogService.class);
+	
+	@ActionKey("/bankv2_save")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message saveNewBankV2(){
+		
+		String smsCode = getPara("smsCode");
+		String userCode = getUserCode() ;
+		if( StringUtil.isBlank(smsCode) == true ){
+			return error("01", "短信验证码不能为空", "");
+		}
+		
+		//验证短信验证码
+		if(CommonUtil.validateSMS("SMS_MSG_BINDCARD_" + userCode, smsCode ) == false){
+			//记录日志
+			BIZ_LOG_ERROR(userCode, BIZ_TYPE.BANK, "绑定银行卡失败 ,短信验证码不正确", null);
+			return error("02", "短信验证码不正确", "");
+		}
+		
+		BanksV2 bankV2 = BanksV2.bankV2Dao.findFirst("select * from t_banks_v2 where userCode=?", userCode );
+		if( bankV2 != null ){
+			return error("03", "已绑定理财卡，无需重复绑定!",null);
+		}
+		
+		bankV2 = getModel( BanksV2.class ) ;
+		if( StringUtil.isBlank( bankV2.getStr("bankNo"))){
+			return error("11","未填写银行卡号","");
+		}
+		if( StringUtil.isBlank( bankV2.getStr("bankType"))){
+			return error("11","银行卡类型异常","");
+		}
+		
+		//查询卡信息
+		Map<String, String> bankInfo = banksService.queryBankInfoByBin(bankV2.getStr("bankNo"));
+		bankV2.set("bankName", bankInfo.get("bank_name") ) ;
+		bankV2.set("bankType", bankInfo.get("bank_code") ) ;
+		
+		UserInfo uinfo = UserInfo.userInfoDao.findById(userCode) ;
+		String cardId = uinfo.getStr("userCardId");
+		String trueName = uinfo.getStr("userCardName");
+//		String userName = uinfo.getStr("");
+//		String mobileNo = uinfo.getStr("");
+
+		bankV2.set("userCode", userCode ) ;
+		bankV2.set("trueName", trueName ) ;
+		bankV2.set("cardid", cardId ) ;
+		bankV2.set("mobile", "000" ) ;
+		bankV2.set("createDateTime", DateUtil.getNowDateTime() ) ;
+		bankV2.set("modifyDateTime", DateUtil.getNowDateTime() ) ;
+		bankV2.set("isDefault", "1" ) ;
+		bankV2.set("status", "0" ) ;
+		bankV2.set("agreeCode", UIDUtil.generate() ) ;
+		
+		if( bankV2.save() ){
+			// 绑卡成功，获取可用积分
+			fundsServiceV2.doPoints(userCode, 0 , 3000, "注册送积分") ;
+			return succ("ok", "添加成功") ;
+		}
+		
+		return error("11", "添加失败", null ) ;
+	}
+	
+	
+	//存管系统绑卡开户 20170523 ws
+	@ActionKey("/bankv3_save")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message saveNewBankV3(){
+		String userCode = getUserCode();
+		String bankNo = getPara("bankNo");
+		String bankName = getPara("bankName");
+		String cityName = getPara("CityName");
+		String provinceName = getPara("provinceName");
+		String bankCode = getPara("bankCode");
+		String cityCode = getPara("CityCode");
+		String smsCode = getPara("smsCode");
+		String trueName = getPara("trueName");//真实姓名
+		String cardId = getPara("cardId","");//身份证号
+		String payPwd = getPara("payPwd","");//平台支付密码
+		
+		String userCardName = null;
+		String userCardId = null;
+		String mobile = null;
+		
+		UserInfo userInfo = null;
+		BanksV2 banksV2 = null;
+		
+		// 验证短信验证码
+		if( StringUtil.isBlank(smsCode) == true ){
+			return error("01", "短信验证码不能为空", "");
+		}
+		if(CommonUtil.validateSMS("SMS_MSG_BINDCARD_" + userCode, smsCode ) == false){
+			//记录日志
+			BIZ_LOG_ERROR(userCode, BIZ_TYPE.BANK, "绑定银行卡失败 ,短信验证码不正确", null);
+			return error("02", "短信验证码不正确", "");
+		}
+		
+		// 验证用户是否已实名认证
+		userInfo = userInfoService.findById(userCode);
+		if (userInfo == null || !"2".equals(userInfo.getStr("isAuthed"))) {	// 如果用户未实名认证，则验证前台身份认证参数
+			if(!IdCardUtils.validateCard(cardId)){
+				return error("03", "身份证号不正确!", "");
+			}
+			//验证身份证是否已经被认证
+			UserInfo tmpUserInfo = userInfoService.findByCardId(cardId);
+			if (tmpUserInfo != null && "2".equals(tmpUserInfo.getStr("isAuthed"))) {
+				return error("05", "身份证号已被认证", "");
+			}
+			userCardName = trueName;
+			userCardId = cardId;
+		} else {
+			try {
+				userCardName = trueName;
+				userCardId = CommonUtil.decryptUserCardId(userInfo.getStr("userCardId"));
+			} catch (Exception e) {
+				return error("00", "解析用户身份证号错误", "");
+			}
+		}
+		
+		// 验证用户
+		User user = getUser();
+		if(null == user){
+			return error("07", "用户查询错误", "");
+		}
+		
+		// 验证银行卡是否已被绑定
+		banksV2 = banksService.findByBankNo(bankNo);
+		if (banksV2 != null) {
+			if (!userCode.equals(banksV2.getStr("userCode"))) {
+				return error("08", "该银行卡已被使用", "");
+			}
+		}
+		
+		// 验证银行代码
+		if (StringUtil.isBlank(bankCode)) {
+			bankCode = CommonUtil.checkBankCode(bankName);	// 银行代码为空，则通过银行名称查找银行卡代码
+			if (StringUtil.isBlank(bankCode)) {
+				return error("12", "绑定银行卡失败，银行代码错误", "");
+			}
+		}
+		
+		// 验证地区代码
+		if (StringUtil.isBlank(cityCode)) {
+			String[] cc = CommonUtil.checkCity(provinceName);
+			if (null == cc) {
+				return error("13", "绑定银行卡失败，地区代码错误", "");
+			}
+			cityName = cc[0];
+			cityCode = cc[1];
+		}
+		
+		//手机号与身份证号解密
+		try {
+			mobile = CommonUtil.decryptUserMobile(user.getStr("userMobile"));
+		} catch (Exception e) {
+			return error("09", "系统错误", "");
+		}
+		
+		// 查询是否已开存管户
+		FuiouController fuiouController = new FuiouController();
+		try {
+			boolean isExist = FuiouController.isFuiouAccount(user);
+			if (!isExist) {
+				// 设置开户信息
+				String traceCode = CommonUtil.genMchntSsn();
+				CommonRspData commonRspData = null;
+				RegReqData regReqData = new RegReqData();
+				regReqData.setVer(FuiouController.VER);
+				regReqData.setMchnt_cd(FuiouController.MCHNT_CD);//商户号
+				regReqData.setMchnt_txn_ssn(traceCode);//流水号
+				regReqData.setCust_nm(userCardName);//用户名
+				regReqData.setCertif_tp("0");//证件类型
+				regReqData.setCertif_id(userCardId);//身份证号
+				regReqData.setMobile_no(mobile);//手机号
+				regReqData.setCity_id(cityCode);//银行卡地区号
+				regReqData.setParent_bank_id(bankCode);//银行代码
+				regReqData.setCapAcntNo(bankNo);//银行卡号
+				String fuiouPayPwd = mobile.substring(mobile.length()-7, mobile.length()-1);//登录密码（默认loginid后6位）
+				try {
+					regReqData.setLpassword(CommonUtil.encryptPasswd(fuiouPayPwd));//登录密码密文
+				} catch (UnsupportedEncodingException e1) {
+					return error("14", "提交开户信息失败", "");
+				}
+				// 调用开户接口
+				commonRspData = FuiouService.reg(regReqData);
+				if("0000".equals(commonRspData.getResp_code()) || "5343".equals(commonRspData.getResp_code())){	// 存管账户开通成功
+					// 更新平台数据库存数据
+					banksV2 = BanksV2.bankV2Dao.findById(userCode);
+					if (banksV2 != null) { 
+						banksV2.set("trueName", userCardName);
+						banksV2.set("cardCity", provinceName+"|"+cityName);
+						banksV2.set("ssn", traceCode);
+						banksV2.set("modifyDateTime", DateUtil.getNowDateTime());
+						if(banksV2.update()){
+							user.set("loginId", user.getStr("userMobile"));
+							user.update();
+						}else{
+							return error("15", "激活银行卡失败，本地数据添加失败", null);
+						}
+					}else{	// 添加银行卡信息
+						BanksV2 bankV2 = getModel( BanksV2.class ) ;
+						bankV2.set("bankName",bankName ) ;
+						bankV2.set("bankNo", bankNo);
+						bankV2.set("bankType",bankCode ) ;
+						bankV2.set("cardCity", provinceName+"|"+cityName);
+						bankV2.set("userCode", userCode ) ;
+						bankV2.set("userName", user.getStr("userName") ) ;
+						bankV2.set("trueName", userCardName ) ;
+						bankV2.set("cardid", CommonUtil.encryptUserCardId(userCardId)) ;
+						bankV2.set("mobile", "000" ) ;
+						bankV2.set("createDateTime", DateUtil.getNowDateTime() ) ;
+						bankV2.set("modifyDateTime", DateUtil.getNowDateTime() ) ;
+						bankV2.set("isDefault", "1" ) ;
+						bankV2.set("status", "0" ) ;
+						bankV2.set("agreeCode", traceCode) ;
+						bankV2.set("ssn", traceCode);
+						if( bankV2.save() ){
+							user.set("loginId", user.getStr("userMobile"));
+							if(user.update()){
+								// 绑卡成功，获取可用积分
+								fundsServiceV2.doPoints(userCode, 0 , 3000, "注册送积分") ;
+							}
+						}else{
+							return error("16", "本地数据更新失败", null);
+						}
+					}
+					// 非借款人账户 转账
+					if(!"J".equals(user.getStr("userType"))){
+						Funds funds = fundsServiceV2.findById(userCode);
+						long avBalance = funds.getLong("avBalance");
+						long frozeBalance = funds.getLong("frozeBalance");
+						if (avBalance + frozeBalance > 0) {
+							QueryBalanceResultData queryBalanceResultData = fuiouController.queryBalance(user);
+							if (Long.parseLong(queryBalanceResultData.getCa_balance()) == 0) {
+								CommonRspData comm = fuiouController.transferBmu(avBalance + frozeBalance, user, FuiouTraceType.INCOME);
+								if ("0000".equals(comm.getResp_code())) {
+									if (frozeBalance > 0) {
+										fuiouController.freeze(user, frozeBalance);
+									}
+								} else {
+									user.set("loginId", "");
+									user.update();
+									return error("17", "开通失败，存管资金充入失败", null);
+								}
+							}
+							QueryBalanceResultData queryB = fuiouTraceService.BalanceFunds(user);
+							if(Long.parseLong(queryB.getCa_balance()) == 0){
+								CommonRspData comm = fuiouTraceService.gorefund(avBalance+frozeBalance, user, FuiouTraceType.E);
+								if("0000".equals(comm.getResp_code())){
+									if(frozeBalance>0){
+										fuiouTraceService.freeze(user, frozeBalance);
+									}
+								}else{
+									user.set("loginId", "");
+									user.update();
+									return error("17", "开通失败，存管资金充入失败", null);
+								}
+							}
+						}
+					}
+					
+					// 本地实名认证、支付密码补充
+					if (!"2".equals(userInfo.getStr("isAuthed"))) {
+						Message msgAuto = certificationAuto(userCode, trueName, CommonUtil.encryptUserCardId(userCardId));//实名认证
+						if(msgAuto!=null){
+							return msgAuto;
+						}
+					}
+					if (!StringUtil.isBlank(payPwd)) {
+						Message msgPayPwd = updatePayPwd(userCode,user, payPwd);//设置平台支付密码
+						if(msgPayPwd != null){
+							return msgPayPwd;
+						}
+					}
+					
+					BIZ_LOG_INFO(userCode , BIZ_TYPE.TLIVE , "激活账户成功 " );
+					Memcached.set("PORTAL_USER_" + userCode , user ) ;
+					return succ("ok", "激活开通成功");
+				}else{
+					return error("18", "添加失败", commonRspData.getResp_code());
+				}
+			}else{
+				return error("19", "存管账户已存在", "");
+			}
+			
+		} catch (Exception e) {
+			return error("20", "系统错误，添加失败", null ) ;
+		}	
+	}
+
+	@ActionKey("/bankv2_list")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message queryBankList(){
+		String userCode = getUserCode() ;
+		BanksV2 bankV2 = BanksV2.bankV2Dao.findFirst("select trueName,bankNo,bankType,bankName from t_banks_v2 where userCode=?", userCode );
+		if( bankV2 == null )
+			bankV2 = new BanksV2() ;
+		else{
+			bankV2.remove("modifyDateTime");
+			bankV2.remove("payType");
+			bankV2.remove("mobile");
+			bankV2.remove("cardid");
+			bankV2.remove("bankMac");
+			bankV2.remove("agreeCode");
+			bankV2.remove("createDateTime");
+			bankV2.remove("uid");
+			String bankNo = bankV2.getStr("bankNo") ;
+			//bankNo = "**** **** **** " + bankNo.substring(12);
+			bankV2.set("bankNo", bankNo ) ;
+		}
+		return succ("ok", bankV2 ) ;
+	}
+	
+	//20170522 ws 查询银行代码 地区代码
+	@ActionKey("/querBankName")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message querBankCodes(){
+		List<BankCode> tmp=  BankCode.bankCodeDao.find("select bankCode,bankName from t_bank_Code ");
+		return succ("bankcodes", tmp);
+	}
+	
+	@ActionKey("/queryBankProvinceCodes")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message queryBankProvinceCodes(){
+		List<BankOreaCode> tmp = BankOreaCode.bankOreaCodeDao.find("SELECT provinceCode,provinceName from t_bank_OreaCode GROUP BY provinceName ORDER BY provinceCode ");
+		return succ("province", tmp);
+	}
+	
+	@ActionKey("/queryBankCityCodes")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message queryBankCityCodes(){
+		String provinceCode= getPara("provinceCode");
+		List<BankOreaCode> tmp = BankOreaCode.bankOreaCodeDao.find("SELECT cityCode ,cityName from t_bank_OreaCode where provinceCode=? ORDER BY cityCode",provinceCode);
+		return succ("city", tmp);
+	}
+	
+	
+		//更换存管支付密码
+		@ActionKey("/changefuiouPayPwd")
+		@AuthNum(value=999)
+		@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+		public void changefuiouPayPwd(){
+			User user= getUser();
+			String loginId= user.getStr("loginId");
+			if(null!=loginId&&!"".equals(loginId)){
+				try {
+					loginId=CommonUtil.decryptUserMobile(loginId);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				ResetPassWordReqData resetPassWordReqData=new ResetPassWordReqData();
+				resetPassWordReqData.setLogin_id(loginId);
+				resetPassWordReqData.setMchnt_cd(CommonUtil.MCHNT_CD);
+				String ssn=CommonUtil.genShortUID();
+				resetPassWordReqData.setMchnt_txn_ssn(ssn);
+				resetPassWordReqData.setBusi_tp("3");
+				resetPassWordReqData.setBack_url(CommonUtil.ADDRESS+"/C01");
+				try {
+					FuiouService.resetPassWord(resetPassWordReqData, getResponse());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			renderNull();
+		}
+		//查询用户开通存管相关信息
+		@ActionKey("/checkUserBankInfor")
+		@AuthNum(value=999)
+		@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+		public Message checkUserBankInfor(){
+			String userCode=getUserCode();
+			BanksV2 bankv2 = BanksV2.bankV2Dao.findById(userCode);
+		//	User user = getUser();
+			Map<String,Object> result = new HashMap<String,Object>();
+			String cardid=bankv2.getStr("cardid");
+		//	String mobile = user.getStr("userMobile");
+			try {
+				cardid=CommonUtil.decryptUserCardId(cardid);
+		//		mobile=CommonUtil.decryptUserMobile(mobile);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			String cardNo=bankv2.getStr("bankNo");
+			result.put("trueName", bankv2.getStr("trueName"));
+	//		result.put("mobile", mobile);
+			result.put("userCardId", cardid);
+			result.put("cardNo", cardNo);
+			return succ("查询成功", result);
+		}
+		/**
+		 * 跳转富友更换银行卡页面
+		 * */
+		@ActionKey("/changeBankV2")
+		@AuthNum(value=999)
+		@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+		public void changeBankV2(){
+			String userCode=getUserCode();
+			User user=getUser();
+			BanksV2 banksV2=banksService.findBanks4User(userCode).get(0);
+			String loginId=user.getStr("loginId");
+			try {
+				loginId = CommonUtil.decryptUserMobile(user.getStr("loginId"));
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			if(null!=loginId&&!"".equals(loginId)){
+				ChangeCard2ReqData changeCard =new ChangeCard2ReqData();
+				changeCard.setLogin_id(loginId);
+				changeCard.setMchnt_cd(CommonUtil.MCHNT_CD);
+				String ssn=CommonUtil.genMchntSsn();
+				changeCard.setMchnt_txn_ssn(ssn);
+				changeCard.setPage_notify_url(CommonUtil.ADDRESS+"/index");
+				//添加修改银行卡信息记录
+				ChangeBankTrace changebankTrace = new ChangeBankTrace();
+				changebankTrace.set("userCode", userCode);
+				changebankTrace.set("ssn", ssn);
+				changebankTrace.set("state", "5");
+				changebankTrace.set("creatDate", DateUtil.getNowDateTime());
+				changebankTrace.set("upDate", DateUtil.getNowDateTime());
+				changebankTrace.set("oldBankCardId", banksV2.getStr("bankNo"));
+				if(changebankTrace.save()){
+					try {
+						FuiouService.changeCard2(changeCard, getResponse());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			renderNull();
+			
+		}
+	
+		
+		/**
+		 * 实名认证
+		 * @param userCode
+		 * @param trueName
+		 * @param cardId
+		 * @return
+		 */
+		private Message certificationAuto(String userCode,String trueName,String md5CardId){
+			//次数限制
+			Long count = Db.queryLong("select count(1) from t_auth_log where userCode = ?" ,userCode);
+			if(count > 3){
+				return error("01", "认证次数超限制", "");
+			}
+			
+			boolean update = userInfoService.userAuth(userCode,trueName, md5CardId, "","2");
+			if(!update){
+				BIZ_LOG_ERROR(userCode, BIZ_TYPE.USERINFO, "自动认证异常或重复认证", null);
+				return error("02", "已经认证,请勿重复提交!", "");
+			}
+			
+			//记录日志
+			BIZ_LOG_INFO(userCode, BIZ_TYPE.USERINFO, "用户自动认证成功");
+			
+			// 身份认证成功赠送可用积分
+			fundsServiceV2.doPoints(userCode, 0 , 2000, "注册送积分");
+			
+			// 身份认证后，邀请人添加30元现金抵用券  5月活动,9月继续，常态
+			try{
+				User user = userService.findById(userCode);
+				RecommendInfo rmd = RecommendInfo.rmdInfoDao.findFirst("select * from t_recommend_info where bUserCode = ?",user.getStr("userCode"));
+				if(rmd != null){
+					User shareUser = userService.findById(rmd.getStr("aUserCode"));
+					if(shareUser!=null){
+						//实名认证送券
+						boolean aa = ticketService.saveADV(shareUser.getStr("userCode"), "50元现金券【好友实名认证奖励】", DateUtil.addDay(DateUtil.getNowDate(), 15), 5000, 1000000);
+						if(aa){
+							String mobile = userService.getMobile(shareUser.getStr("userCode"));
+							String content = CommonUtil.SMS_MSG_TICKET.replace("[huoDongName]", "推荐好友实名认证").replace("[ticketAmount]", "50");
+							SMSLog smsLog = new SMSLog();
+							smsLog.set("mobile", mobile);
+							smsLog.set("content", content);
+							smsLog.set("userCode", shareUser.getStr("userCode"));
+							smsLog.set("userName", shareUser.getStr("userName"));
+							smsLog.set("type", "15");smsLog.set("typeName", "送现金券活动");
+							smsLog.set("status", 9);
+							smsLog.set("sendDate", DateUtil.getNowDate());
+							smsLog.set("sendDateTime", DateUtil.getNowDateTime());
+							smsLog.set("break", "");
+							smsLogService.save(smsLog);
+						}
+					}
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			return null;
+		}
+		
+		/**
+		 * 设置平台支付密码
+		 * @return
+		 */
+		private Message updatePayPwd(String userCode,User user,String payPwd) {
+			try {
+				payPwd = CommonUtil.encryptPasswd(payPwd);
+				user.set("payPasswd", payPwd);
+				user.update();
+			} catch (Exception e) {
+				//记录日志
+				BIZ_LOG_ERROR(userCode, BIZ_TYPE.USER, "修改支付密码异常", e);
+				return error("01", "修改支付密码异常", e.getMessage());
+			}
+			
+			//记录日志
+			BIZ_LOG_INFO(userCode, BIZ_TYPE.USER, "修改支付密码成功");
+			
+			return null;
+		}
+		
+}

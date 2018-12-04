@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>易融恒信-安全可靠透明的投资平台,p2p网贷平台</title>
+    <meta name="keywords" content="易融恒信,网贷平台,p2p网贷平台排名,p2p投资,p2b网贷,p2p投资平台,小投资,武汉贷款,武汉小额投资,武汉网贷公司,武汉易融恒信"/>
+    <meta name="description" content="易融恒信,致力于做华中地区最好的p2p网贷平台,为投资者提供最安全,最靠谱,最透明的互联网金融p2p投资平台,咨询电话400-027-0707"/>
+    <link type="text/css" href="/portal/css/public.css?v=1.2.35" rel="stylesheet">
+    <link type="text/css" href="/portal/css/aboutUs.css?v=1.1" rel="stylesheet">
+    <!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+<body>
+<div class="wrapper"><!--[if lt IE 9]>
+    <script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+    <header id="header" class="header"></header>
+    <div class="aboutUs">
+        <div class="aboutUs-main">
+            <div class="aboutUs-main-left"><h2>新闻中心</h2>
+
+                <div class="aboutUs-nav" id="news-nav"><i class='ico'></i></div>
+            </div>
+            <div class="aboutUs-main-right">
+                <div class="aboutUs-main-title">公司新闻</div>
+                <div class="notice_list">
+                	<ul id="notice"></ul>	
+                </div>
+                <div class="pages" id="pagination"></div>
+            </div>
+        </div>
+    </div>
+    <footer id="footer" class="footer"></footer>
+</div>
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/config.js?v=1.2.18" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js?v=1.2.18" charset="utf-8"></script>
+<script>   topNavSelect= '4';</script>
+<script type="text/javascript" src="/portal/js/public.js?v=1.8.27"></script>
+<script type="text/javascript" src="/portal/js/aboutUs.js?v=1.6"></script>
+<script type="text/javascript" src="/portal/js/pub/widget-table.js?v=1.6"></script>
+
+<script>
+//公司新闻
+$.queryNews = function( pageNumber ){
+	YRHX.ajax({
+		url : CONFIG.getRequestURI( "queryNewsByPage" ),
+		data:{
+			"pageNumber": pageNumber || 1,
+			"pageSize": 10,
+			"isContent": 1, //0为完整数据  1为简化数据
+			"type": 1 //0网站公告 1公司新闻 2行业动态3媒体报道4易融月刊5往期专题
+		},
+		success : function( sucData ){
+
+			var html_tab = "<li><a href='X00?id=#{id}' target='_blank'><img src='#{pic}'></a><h4><a href='X00?id=#{id}' target='_blank'>#{title}</a></h4><p class='years'>#{updateTime}</p><p>#{description}</p></li>";
+			var tableEle = $("#notice");
+			tableEle.html("");
+			var returnData = sucData.list ;
+			if( returnData.length > 0 ){
+				
+				for( var i = 0; i < returnData.length; i++ ){
+					var row = returnData[i];
+					row["description"] = row["description"] || "";
+					row["updateTime"] = row["upDateTime"].dateformat();
+					row["pic"] = row["pic"]?row["pic"]:"/portal/images/defaultPic.jpg";
+					var tmpHtml = html_tab.makeHtml( row );
+					
+					tableEle.append( tmpHtml );
+				}
+				
+				//分页
+				$("#pagination").pag(sucData["pageNumber"], sucData["pageSize"],sucData["totalRow"], function() {
+					var reqIndex = $(this).attr("index");
+					$.queryNews( reqIndex || 1);
+				});
+				
+			}else{
+				$("#notice").html("<h1 class='noData'>暂无数据</h1>")
+			}
+		},
+		error: function( errData ){
+			
+		}
+	});
+}
+
+$.queryNews();
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="stylesheet" href="../assets/plugin/ztree/css/zTreeStyle.css">
+</head>
+<body>
+	<!-- iframe body start -->
+	<form id="info-form" action="" data-am-validator>
+		<div class="am-tabs am-margin" data-am-tabs="{noSwipe: 1}">
+			<ul class="am-tabs-nav am-nav am-nav-tabs">
+				<li class="am-active"><a href="#tab1">基本信息</a></li>
+				<li class="am-active"><a href="#tab2">配置项目</a></li>
+			</ul>
+			<div class="am-tabs-bd">
+				<div
+					class="am-tab-panel am-fade am-in am-active am-form am-form-inline"
+					id="tab1">
+					<div class="am-g am-margin-top field" name="cfgCode" type="text"
+						text="配置编号" desc="" minlength=2 maxlength=2 mod="disabled"></div>
+					<div class="am-g am-margin-top field" name="cfgName"
+						type="text" text="配置名称"  desc="" ></div>
+					<div class="am-g am-margin-top field" name="cfgModifyDateTime" type="text"
+						text="最后操作时间" desc="" add="hide" minlength=3></div>
+					<div class="am-g am-margin-top field" name="cfgDesc" type="text"
+						text="配置备注" desc="" ></div>
+				</div>
+				<div class="am-tab-panel am-fade am-in am-active am-form am-form-inline" id="tab2">
+					<div class="am-g">
+						<div class="am-u-sm-8">
+							<table class="am-table am-table-bd am-table-striped admin-content-table" id="settingTabel">
+								<thead>
+									<tr>
+										<th>配置项-KEY</th>
+										<th>配置项-VALUE</th>
+										<th>配置项-DESC</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+							<button type="button" class="am-btn am-btn-primary am-btn-xs addMore" addNo=0>添加</button>
+							<!-- 分页 -->
+							<!-- <div class="am-cf pad-div">
+								<span>共 0条记录</span>
+								<div class="am-fr">
+									<ul class="am-pagination">
+										<li class="am-disabled"><a href="#">首页</a></li>
+										<li class="am-disabled"><a href="#">上一页</a></li>
+										<li><a href="#">下一页</a></li>
+										<li><a href="#">尾页</a></li>
+									</ul>
+								</div>
+							</div> -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="am-margin">
+			<button id="subBtn" type="button"
+				class="am-btn am-btn-primary am-btn-xs submit-btn">提交</button>
+			<button id="cancelBtn" type="button"
+				class="am-btn am-btn-primary am-btn-xs back-btn">返回</button>
+		</div>
+	</form>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script>
+		//---init
+		//biz code
+		$(".back-btn").click(function() {
+			window.history.go(-1);
+		});
+		
+		$(".submit-btn").click(function() {
+			var form = $("#info-form") ;
+			if( form.validateForm() ){
+				var reqData = form.formSerialize("sysConfig");
+				
+				var tmpKV = [];
+				var cfgTotal = $(".addMore").attr("addNo");
+				for(var index = 1 ; index <= cfgTotal ; index ++ ){
+					var tk = $("#key_"+ index).val() ;
+					var tv = $("#value_"+ index).val() ;
+					var td = $("#desc_"+ index).val() ;
+					if( tk && tv ){
+						var tmpObj = {
+							"key":tk,
+							"value":tv,
+							"desc":td
+						};
+						tmpKV.push(tmpObj);
+					}
+				}
+				reqData["sysConfig.cfgContent"] = JSON.stringify(tmpKV);
+				YRHX.ajax({
+					url : form.attr("action") ,
+					data : reqData ,
+					success : function(){
+						YRHX.alert("提示","操作成功!");
+					},error:function( res){
+						YRHX.alert("警告",res.return_info || "获取信息失败");
+					}
+				});
+			}
+		});
+
+		var formType = YRHX.queryString("opType");
+		if("view" == formType ){
+			$(".addMore").hide();
+		}else{
+			$(".addMore").show();
+		}
+		var op4form = {
+			"add" : {
+				"formType" : "add",
+				"request" : "/addNewConfig"
+			},
+			"mod" : {
+				"formType" : "mod",
+				"request" : "/modNewConfig"
+			},
+			"view" : {
+				"formType" : "view",
+				"request" : "hah"
+			}
+		};
+		
+
+		function initFormData(keyCode) {
+			YRHX.ajax({
+				url : "/querySysConfigByCode",
+				data : {
+					key : keyCode
+				},
+				success : function(sucData) {
+					sucData["cfgModifyDateTime"] = sucData["cfgModifyDateTime"].dateformat();
+					$("#info-form").formUnSerialize(sucData); 
+					var cfgArray = JSON.parse(sucData["cfgContent"]);
+					for(var obj in cfgArray){
+						$.creatHtml(obj,formType=="view"?true:false,cfgArray[obj]);
+					}
+				},
+				error : function(data) {
+					YRHX.alert("警告",data|| "获取信息失败");
+				}
+			});
+		}
+
+		$("#info-form").formInit(op4form[formType||"view"]);
+		$(".addMore").on("click",function(){
+			var curAddNo = $(this).attr("addNo");
+			//curAddNo++;
+			//addAPI  success:
+			//$(this).attr("addNo",curAddNo);
+			$.creatHtml( curAddNo );
+			//error alert
+		})
+		
+		$.creatHtml = function( addNo , isView , data){
+			addNo++;
+			isView = (isView || false)?"disabled":"" ;
+			data = data ||{key:"",value:"",desc:""};
+			var addHtml = '<tr>';
+			addHtml += '<td><input class="am-form-field" '+isView+' id="key_' + addNo + '" placeholder="键" maxLength=20 value="'+data["key"]+'"></td>';
+			addHtml += '<td><input class="am-form-field" '+isView+' id="value_' + addNo + '" placeholder="值" value="'+data["value"]+'"></td>';
+			addHtml += '<td><input class="am-form-field" '+isView+' id="desc_' + addNo + '" placeholder="描述" maxLength=100 value="'+data["desc"]+'"></td></tr>';
+			$("#settingTabel tbody").append( addHtml );
+			$(".addMore").attr("addNo",addNo);
+		}
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		var setting = {
+			check : {
+				enable : true
+			},
+			data : {
+				simpleData : {
+					enable : true
+				}
+			}
+		};
+		$("#info-form").validatorInit();
+		var keyCode = YRHX.queryString("key");
+		if (keyCode) {
+			initFormData(keyCode);
+		}else{
+		}
+	</script>
+</body>
+</html>

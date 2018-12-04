@@ -1,0 +1,1038 @@
+package com.dutiantech.controller.portal;
+
+import java.io.BufferedOutputStream;
+import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson.JSONObject;
+import com.dutiantech.CACHED;
+import com.dutiantech.Message;
+import com.dutiantech.anno.AuthNum;
+import com.dutiantech.anno.ResponseCached;
+import com.dutiantech.controller.BaseController;
+import com.dutiantech.controller.FuiouController;
+import com.dutiantech.exception.BaseBizRunTimeException;
+import com.dutiantech.interceptor.AuthInterceptor;
+import com.dutiantech.interceptor.PkMsgInterceptor;
+import com.dutiantech.model.Funds;
+import com.dutiantech.model.FundsTrace;
+import com.dutiantech.model.LoanTrace;
+import com.dutiantech.model.LoanTransfer;
+import com.dutiantech.model.Market;
+import com.dutiantech.model.MarketUser;
+import com.dutiantech.model.PrizeRecords;
+import com.dutiantech.model.Prizes;
+import com.dutiantech.model.Tickets;
+import com.dutiantech.model.User;
+import com.dutiantech.model.UserInfo;
+import com.dutiantech.service.FuiouTraceService;
+import com.dutiantech.service.FundsServiceV2;
+import com.dutiantech.service.FundsTraceService;
+import com.dutiantech.service.LoanTraceService;
+import com.dutiantech.service.LoanTransferService;
+import com.dutiantech.service.MarketService;
+import com.dutiantech.service.MarketUserService;
+import com.dutiantech.service.PrizeRecordsService;
+import com.dutiantech.service.PrizesService;
+import com.dutiantech.service.RechargeTraceService;
+import com.dutiantech.service.TicketsService;
+import com.dutiantech.service.UserInfoService;
+import com.dutiantech.service.UserService;
+import com.dutiantech.util.CommonUtil;
+import com.dutiantech.util.DateUtil;
+import com.dutiantech.util.Number;
+import com.dutiantech.util.StringUtil;
+import com.dutiantech.util.SysEnum;
+import com.dutiantech.util.UIDUtil;
+import com.dutiantech.util.SysEnum.FuiouTraceType;
+import com.dutiantech.vo.Award;
+import com.fuiou.data.CommonRspData;
+import com.jfinal.aop.Before;
+import com.jfinal.core.ActionKey;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.tx.Tx;
+
+/**
+ * 活动专题相关接口
+ * 
+ * @author shiqingsong
+ *
+ */
+public class ActivityController extends BaseController {
+
+	private FundsTraceService fundsTraceService = getService(FundsTraceService.class);
+	private UserService userService = getService(UserService.class);
+	private UserInfoService userInfoService = getService(UserInfoService.class);
+	private TicketsService ticketService = getService(TicketsService.class);
+	private FundsServiceV2 fundsServiceV2 = getService(FundsServiceV2.class);
+	private MarketService marketService = getService(MarketService.class);
+	private MarketUserService marketUserService = getService(MarketUserService.class);
+	private PrizesService prizesService = getService(PrizesService.class);
+	private TicketsService ticketsService = getService(TicketsService.class);
+	private PrizeRecordsService prizeRecordsService = getService(PrizeRecordsService.class);
+	private LoanTraceService loanTraceService = getService(LoanTraceService.class);
+    private LoanTransferService loanTransferService=getService(LoanTransferService.class);
+    private FuiouTraceService fuiouTraceService=getService(FuiouTraceService.class);
+    private RechargeTraceService rechargeTraceService = getService(RechargeTraceService.class);
+	/**
+	 * 一战到底活动
+	 * 
+	 * @return
+	 */
+	@ActionKey("/activity4month201603")
+	@ResponseCached(cachedKey = "activity4month201603", cachedKeyParm = "", mode = "remote", time = 5 * 60)
+	@Before(PkMsgInterceptor.class)
+	public Message activity4month201603() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<FundsTrace> month = fundsTraceService.countToubiao(
+				"20160416000000", "20160515235959", 1, 40);
+		result.put("month", month);
+		String x3 = DateUtil.getNowDate();
+		List<FundsTrace> day = fundsTraceService.countToubiao(x3 + "000000", x3
+				+ "235959", 1, 20);
+		result.put("day", day);
+		long today_payAmount = fundsTraceService.countPayAmount(x3 + "000000",
+				x3 + "235959");
+		result.put("today_payAmount", today_payAmount);
+		long month_payAmount = fundsTraceService.countPayAmount(
+				"20160416000000", "20160515235959");
+		result.put("month_payAmount", month_payAmount);
+		return succ("查询成功", result);
+	}
+
+	/**
+	 * 3月活动数据导出
+	 * 
+	 * @return
+	 */
+	@ActionKey("/activity4month201603_down")
+	@ResponseCached(cachedKey = "activity4month201603_down", cachedKeyParm = "", mode = "remote", time = 5 * 60)
+	public void activity4month201603_down() {
+		String date = getPara("date");
+		List<FundsTrace> day = fundsTraceService.countToubiao(date + "000000",
+				date + "235959", 1, 20);
+		long today_payAmount = fundsTraceService.countPayAmount(
+				date + "000000", date + "235959");
+		char c = 0x09;
+		String str = "时间" + c + "用户唯一标识" + c + "用户昵称" + c + "投资金额" + c + c
+				+ "总投资金额\n";
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < day.size(); i++) {
+			FundsTrace r = day.get(i);
+			String outDate = r.getStr("traceDateTime");
+			outDate = outDate.substring(0, 4) + "-" + outDate.substring(4, 6)
+					+ "-" + outDate.substring(6, 8) + " "
+					+ outDate.substring(8, 10) + ":"
+					+ outDate.substring(10, 12) + ":"
+					+ outDate.substring(12, 14);
+			sb.append(outDate);
+			sb.append(c);
+			sb.append(r.getStr("userCode"));
+			sb.append(c);
+			sb.append(r.getStr("userName"));
+			sb.append(c);
+			sb.append(r.getBigDecimal("traceAmount"));
+			sb.append(c);
+			sb.append(c);
+			if (i == 0) {
+				sb.append(today_payAmount);
+				sb.append(c);
+			}
+			sb.append("\n");
+		}
+
+		str += sb.toString();
+
+		try {
+			String userAgent = getRequest().getHeader("USER-AGENT");
+			String fileName = "3月份活动获奖名单_" + date + ".xls";
+			if (userAgent.contains("MSIE")) {// IE浏览器
+				fileName = URLEncoder.encode(fileName, "UTF8");
+			} else if (userAgent.contains("Mozilla")) {// google,火狐浏览器
+				fileName = new String(fileName.getBytes(), "ISO8859-1");
+			} else {
+				fileName = URLEncoder.encode(fileName, "UTF8");// 其他浏览器
+			}
+
+			HttpServletResponse response = getResponse();
+			response.reset();
+			response.addHeader("Content-Disposition", "attachment;filename="
+					+ fileName);
+			response.addHeader("Content-Length", "" + str.getBytes().length);
+			response.setContentType("application/vnd.ms-excel;charset=UTF-8;");
+			OutputStream os = new BufferedOutputStream(getResponse()
+					.getOutputStream());
+			os.write(str.getBytes("gbk"));
+			os.flush();
+			os.close();
+		} catch (Exception e) {
+		}
+		renderNull();
+	}
+
+	/**
+	 * 现金券内部测试
+	 * 
+	 * @return
+	 */
+	@ActionKey("/xjq_test")
+	@Before(PkMsgInterceptor.class)
+	public Message xjq_test() {
+		String mobile = getPara("mobile");
+		// String smsMsg = getPara("smsMsg","");
+		if (StringUtil.isBlank(mobile)) {
+			return error("01", "手机号为空", "");
+		}
+		// if(StringUtil.isBlank(smsMsg)){
+		// return error("01", "短信验证码为空", "");
+		// }
+		// //验证短信验证码
+		// if(CommonUtil.validateSMS("SMS_MSG_TEST_" + mobile, smsMsg) ==
+		// false){
+		// return error("02", "短信验证码不正确", "");
+		// }
+
+		// 验证手机号是否存在
+		User user = userService.find4mobile(mobile);
+		if (null == user) {
+			return error("03", "用户不存在", "");
+		}
+		String userCode = user.getStr("userCode");
+		UserInfo userInfo = userInfoService.findById(userCode);
+
+		// 验证并限制同一种券同一用户可以领取数量
+		String ticketName = "内部测试现金券";
+		List<Tickets> listTicket = ticketService.queryTickets(userCode,
+				ticketName);
+		if (null != listTicket && listTicket.size() > 0) {
+			return error("04", "您已经领取过了哦!", "");
+		}
+
+		// 添加现金券
+		Tickets tickets = new Tickets();
+		tickets.set("tCode", UIDUtil.generate());
+		tickets.set("userMobile", mobile);
+		tickets.set("userName", user.getStr("userName"));
+		tickets.set("userTrueName", userInfo.getStr("userCardName"));
+		tickets.set("userCode", userCode);
+		tickets.set("tname", ticketName);
+		tickets.set("expDate", "20160331");
+		tickets.set("makeSource", SysEnum.makeSource.D.val());
+		tickets.set("usedDateTime", "00000000000000");
+		tickets.set("makeSourceDesc", SysEnum.makeSource.D.desc());
+		tickets.set("makeDateTime", DateUtil.getNowDateTime());
+		tickets.set("tMac", "1111");
+		tickets.set("makeSourceUser", "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+		String tmpKey = "TT.A_";
+		int amount = CACHED.getInt(tmpKey + "payAmount");
+		int exAmount = CACHED.getInt(tmpKey + "exAmount");
+		int exRate = CACHED.getInt(tmpKey + "exRate");
+		int exLimit = CACHED.getInt(tmpKey + "exLimit");
+		String exType = CACHED.getStr(tmpKey + "type");
+		JSONObject useExObj = new JSONObject();
+		useExObj.put("amount", exAmount);
+		useExObj.put("rate", exRate);
+		useExObj.put("limit", exLimit);
+		tickets.set("amount", amount);
+		tickets.set("useEx", useExObj.toJSONString());
+		tickets.set("rate", 0);
+		tickets.set("ttype", exType);
+
+		boolean save = tickets.save();
+		// ticketService.save(userCode, user.getStr("userName"), mobile,
+		// userInfo.getStr("userCardName"), "内部测试现金体验券", "20160331", "A", null,
+		// SysEnum.makeSource.A);
+		if (save == false) {
+			return error("05", "发放现金券有问题,胖揍豆豆去!", "");
+		}
+		return succ("恭喜您,捡到10块钱!快邀朋友一起来捡钱吧!", "");
+	}
+
+	/**
+	 * 积分兑换商品(5月中秋活动)
+	 */
+	@ActionKey("/exchange4five")
+	@AuthNum(value = 999)
+	@Before({ AuthInterceptor.class, Tx.class, PkMsgInterceptor.class })
+	public Message exchange4five() {
+		String mCode = getPara("mCode");
+		if (StringUtil.isBlank(mCode)) {
+			return error("01", "参数错误!", "");
+		}
+
+		// 验证是否存在此商品
+		Market market = marketService.queryMarketDetail(mCode);
+		if (null == market) {
+			return error("02", "商品不存在!", "");
+		}
+
+		// 获取用户信息
+		String userCode = getUserCode();
+		User user = User.userDao.findById(userCode);
+
+		// 封装对象 添加兑换记录
+		UserInfo userInfo = UserInfo.userInfoDao.findById(userCode);
+
+		String address = userInfo.get("userAdress");
+		if (StringUtil.isBlank(address)) {
+			return error("11", "兑换失败，请您先进入个人中心补填收货地址！", "");
+		}
+
+		// //验证代收情况 代收 > 3万
+		// Funds funds = fundsServiceV2.findById(userCode);
+		// long beRecyPrincipal = funds.getLong("beRecyPrincipal");
+		// long beRecyInterest = funds.getLong("beRecyInterest");
+		// if(3000000 > (beRecyPrincipal + beRecyInterest )){
+		// return error("03", "兑换失败，请核对您的投资金额是否满足条件" , "");
+		// }
+
+		// 验证商品发布 截至日期
+		String startDateTime = market.getStr("startDateTime");
+		String endDateTime = market.getStr("endDateTime");
+		String nowDateTime = DateUtil.getNowDateTime();
+		int start = "00000000000000".equals(startDateTime) ? 0 : DateUtil
+				.compareDateByStr("yyyyMMddHHmmss", nowDateTime, startDateTime);
+		int end = "99999999999999".equals(endDateTime) ? 0 : DateUtil
+				.compareDateByStr("yyyyMMddHHmmss", endDateTime, nowDateTime);
+		if (start != 0 && start != 1) {
+			return error("04", "商品兑换时间还没到呢!", "");
+		}
+
+		if (end != 0 && end != 1) {
+			return error("05", "商品兑换时间已经截至了!", "");
+		}
+
+		// 验证是否已经兑换过 (临时活动就不将就啦，查3次数据库)
+		String[] mCodeArr = new String[] { "b3281ea5b01a419dbf07bbf9ec16e597",
+				"8bccbb4af04b4e2f8093e728f5282cde",
+				"6954c13c699c44fb934c299f898f5bd5" };
+		for (int i = 0; i < mCodeArr.length; i++) {
+			MarketUser ismarket = marketUserService.queryDetail(userCode,
+					mCodeArr[i]);
+			if (null != ismarket) {
+				return error("07", "兑换失败，每个账号仅限进行一次兑换!", "");
+			}
+		}
+
+		// 递减商品剩余数量
+		boolean hasMarket = marketService.updateRemainCountNoStatus(mCode);
+		if (hasMarket == false) {
+			return error("09", "商品已经被抢光啦,试试其它商品吧!", "");
+		}
+
+		// 扣除可用积分
+		Long mPoint = market.getLong("point");
+
+		try {
+			fundsServiceV2.doPoints(userCode, 1, mPoint, "商品兑换支出");
+		} catch (BaseBizRunTimeException e) {
+			return error("10", "兑换失败，请核对您的可用积分是否满足条件", "");
+		}
+
+		MarketUser marketUser = new MarketUser();
+		marketUser.set("userCode", userCode);
+		marketUser.set("userName", user.getStr("userName"));
+		marketUser.set("userCardName", userInfo.getStr("userCardName"));
+		marketUser.set("userAddress", address);
+		try {
+			marketUser.set("userMobile",
+					CommonUtil.decryptUserMobile(user.getStr("userMobile")));
+		} catch (Exception e) {
+			marketUser.set("userMobile", "");
+		}
+		marketUser.set("mCode", mCode);
+		marketUser.set("mName", market.getStr("mName"));
+		marketUser.set("point", market.getLong("point"));
+		boolean save = marketUserService.save(marketUser);
+		if (save == false) {
+			return error("08", "兑换失败，商品已经被抢光啦！", "");
+		}
+		return succ("恭喜您，兑换成功！礼盒将于6月6日发放！", "");
+	}
+
+	/**
+	 * 5月投资排名活动
+	 * 
+	 * @return
+	 */
+	@ActionKey("/activity4month201605")
+	@ResponseCached(cachedKey = "activity4month201605", cachedKeyParm = "", mode = "remote", time = 5 * 60)
+	@Before(PkMsgInterceptor.class)
+	public Message activity4month201605() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<FundsTrace> month = fundsTraceService.countToubiao(
+				"20160530000000", "20160630235959", 1, 5);
+		result.put("month", month);
+		return succ("查询成功", result);
+	}
+
+	/**
+	 * 投资用户手机号数据导出
+	 * 
+	 * @return
+	 */
+	// @ActionKey("/exportMobile")
+	public void exportMobile() {
+
+		List<Object> query = Db
+				.query("select userMobile,userName,userCode from t_user t1 where (select SUM(beRecyPrincipal + beRecyInterest ) from t_funds t2 where t1.userCode = t2.userCode) > 0");
+
+		char c = 0x09;
+		String str = "手机号" + c + "用户昵称" + c + "用户编号\n";
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < query.size(); i++) {
+			Object[] o = (Object[]) query.get(i);
+			String userMobile = "";
+			try {
+				userMobile = CommonUtil.decryptUserMobile(o[0].toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			sb.append(userMobile);
+			sb.append(c);
+			sb.append(o[1]);
+			sb.append(c);
+			sb.append(o[2]);
+			sb.append(c);
+			sb.append("\n");
+		}
+
+		str += sb.toString();
+
+		try {
+			String userAgent = getRequest().getHeader("USER-AGENT");
+			String fileName = "投资用户手机号.xls";
+			if (userAgent.contains("MSIE")) {// IE浏览器
+				fileName = URLEncoder.encode(fileName, "UTF8");
+			} else if (userAgent.contains("Mozilla")) {// google,火狐浏览器
+				fileName = new String(fileName.getBytes(), "ISO8859-1");
+			} else {
+				fileName = URLEncoder.encode(fileName, "UTF8");// 其他浏览器
+			}
+
+			HttpServletResponse response = getResponse();
+			response.reset();
+			response.addHeader("Content-Disposition", "attachment;filename="
+					+ fileName);
+			response.addHeader("Content-Length", "" + str.getBytes().length);
+			response.setContentType("application/vnd.ms-excel;charset=UTF-8;");
+			OutputStream os = new BufferedOutputStream(getResponse()
+					.getOutputStream());
+			os.write(str.getBytes("gbk"));
+			os.flush();
+			os.close();
+		} catch (Exception e) {
+		}
+		renderNull();
+	}
+
+	/**
+	 * 查询商品数量
+	 */
+	@ActionKey("/queryMarketCount")
+	@AuthNum(value = 999)
+	@Before({ PkMsgInterceptor.class })
+	public Message queryMarketCount() {
+
+		Market market1 = marketService
+				.queryMarketDetail("b3281ea5b01a419dbf07bbf9ec16e597");
+		Market market2 = marketService
+				.queryMarketDetail("8bccbb4af04b4e2f8093e728f5282cde");
+		Market market3 = marketService
+				.queryMarketDetail("6954c13c699c44fb934c299f898f5bd5");
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("b3281ea5b01a419dbf07bbf9ec16e597",
+				market1.getInt("remainCount"));
+		map.put("8bccbb4af04b4e2f8093e728f5282cde",
+				market2.getInt("remainCount"));
+		map.put("6954c13c699c44fb934c299f898f5bd5",
+				market3.getInt("remainCount"));
+
+		return succ("查询成功", map);
+	}
+
+	/**
+	 * 7/8至7/31活动投资金额排行
+	 * 
+	 * @return
+	 */
+	@ActionKey("/act0708")
+	@ResponseCached(cachedKey = "act0708", cachedKeyParm = "", mode = "remote", time = 2 * 60)
+	@Before(PkMsgInterceptor.class)
+	public Message act0708() {
+		String x1 = "20170708";
+		String x2 = "20170731";
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<FundsTrace> month = fundsTraceService.countToubiao(x1 + "000000",
+				x2 + "235959", 1, 15);
+		result.put("month", month);
+		return succ("查询成功", result);
+	}
+
+	/**
+	 * 用于活动排名 20170707 by WCF
+	 */
+	@ActionKey("/actRank")
+	@ResponseCached(cachedKey = "actRank", cachedKeyParm = "", mode = "remote", time = 2 * 60)
+	@Before(PkMsgInterceptor.class)
+	public Message actRank() {
+		String x1 = getPara("startTime"); // 月排行起始日期
+		String x2 = getPara("endTime"); // 月排行截止日期
+		int mSize = getParaToInt("mSize"); // 月排行获取前N名条数
+		int dSize = getParaToInt("dSize"); // 日排行获取前N名条数
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<FundsTrace> month = fundsTraceService.countToubiao(x1 + "000000",
+				x2 + "235959", 1, mSize);
+		result.put("month", month);
+		if (dSize > 0) {
+			String x3 = DateUtil.getNowDate();
+			List<FundsTrace> day = fundsTraceService.countToubiao(
+					x3 + "000000", x3 + "235959", 1, dSize);
+			result.put("day", day);
+		}
+		return succ("查询成功", result);
+	}
+
+	/**
+	 * 201708抽奖活动接口——剩余奖品
+	 * 
+	 * @return
+	 */
+	@ActionKey("/remain4active201708")
+	@Before(PkMsgInterceptor.class)
+	public Message remainPrize4active201708() {
+		return succ(
+				"查询成功",
+				prizesService
+						.getRemainPrizesByActive("c5c1d52bae054b4fb539dd9ee98a7011"));
+	}
+
+	/**
+	 * 201708抽奖活动中奖名单
+	 * 
+	 * @return
+	 */
+	@ActionKey("/list4active201708")
+	@Before(PkMsgInterceptor.class)
+	public Message list4Active201708() {
+		return succ("查询成功", prizeRecordsService.findByActive(
+				"c5c1d52bae054b4fb539dd9ee98a7011", 1, 20));
+	}
+
+	/**
+	 * 201708抽奖活动接口——查询用户个人抽奖记录
+	 * 
+	 * @return
+	 */
+	@ActionKey("/findRecords4User")
+	@AuthNum(value = 999)
+	@Before({ AuthInterceptor.class, PkMsgInterceptor.class })
+	public Message activeRecord4User() {
+		String userCode = getUserCode();
+		String activeCode = "c5c1d52bae054b4fb539dd9ee98a7011";
+		if (userCode == null || "".equals(userCode)) {
+			return error("01", "用户未登录", false);
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		PrizeRecords prizeRecords = prizeRecordsService.getByUserAndActive(
+				userCode, activeCode, DateUtil.getNowDate());
+		map.put("count", prizeRecords == null ? 1 : 0);
+		map.put("list", prizeRecordsService.findByUser(userCode, activeCode));
+		return succ("", map);
+	}
+
+	/**
+	 * 201708抽奖活动接口——抽奖
+	 * 
+	 * @return
+	 */
+	@ActionKey("/activity4month201708")
+	@AuthNum(value = 999)
+	@Before({ AuthInterceptor.class, PkMsgInterceptor.class })
+	public Message activity4month201708() {
+		// 是否在活动时间内
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+		boolean isInTime = DateUtil.isInTime("10:00-24:00",sdf.format(new Date()));
+		if (!isInTime) {
+			return error("01", "活动尚未开始", false);
+		}
+		String activeCode = "c5c1d52bae054b4fb539dd9ee98a7011";
+		String userCode = getUserCode();
+		if (userCode == null || "".equals(userCode)) {
+			return error("02", "用户未登录", false);
+		}
+		User user = userService.findById(userCode);
+		UserInfo userInfo = userInfoService.findById(userCode);
+		Funds funds = fundsServiceV2.findById(userCode);
+		if (userInfo == null || funds == null || user == null) {
+			return error("03", "获取用户信息失败", false);
+		}
+		// 查询今日是否已抽奖
+		PrizeRecords prizeRecords = prizeRecordsService.getByUserAndActive(userCode, activeCode, DateUtil.getNowDate());
+		if (prizeRecords == null) {
+			// 是否还有剩余奖品
+			long remainPrizes = prizesService.getRemainPrizesByActive(activeCode);
+			if (remainPrizes != 0) {
+				List<Prizes> prizes = prizesService.findPrizesByActive(activeCode);
+				// 设置奖品及概率
+				float probability = 100 / prizes.size();
+				BigDecimal bg = new BigDecimal(probability);
+				probability = bg.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
+				List<Award> awards = new ArrayList<Award>();
+				for (Prizes prize : prizes) {
+					awards.add(new Award(prize.getStr("prizeCode"),probability, prize.getInt("total")- prize.getInt("count")));
+				}
+				// 抽奖
+				Award award = Award.lottery(awards);
+				Prizes prize = prizesService.getById(award.id);
+				// 调整奖品库存
+				prizesService.updatePrizeCount(award.id,
+						prize.getInt("count") + 1);
+				// 添加抽奖记录
+				prizeRecordsService.save(UIDUtil.generate(), userCode,
+						user.getStr("userName"), activeCode, "抢点现金买西瓜",
+						award.id, prize.getStr("prizeName"), 0l, 0,
+						prize.getStr("prizeType"), "1",
+						prize.getLong("amount"), "活动奖励【抢点现金买西瓜】",
+						"20171031235959");
+				// 发放抵用券
+				long limitAmount = 0l;
+				switch (String.valueOf(prize.getLong("amount"))) {
+				case "100":
+					limitAmount = 10000;
+					break;
+				case "500":
+					limitAmount = 50000;
+					break;
+				case "1000":
+					limitAmount = 100000;
+					break;
+				case "2000":
+					limitAmount = 300000;
+					break;
+				case "5000":
+					limitAmount = 1000000;
+					break;
+				case "10000":
+					limitAmount = 2000000;
+					break;
+				default:
+					break;
+				}
+				boolean result = ticketsService.saveADV(userCode, "抢点现金买西瓜",
+						"20171031", prize.getLong("amount"), limitAmount,
+						"12-18-24", "Y");
+				if (result) {
+					int flag = -1;
+					switch (new Long(prize.getLong("amount")).intValue()) {
+					case 100:
+						flag = 1;
+						break;
+					case 500:
+						flag = 2;
+						break;
+					case 1000:
+						flag = 3;
+						break;
+					case 2000:
+						flag = 4;
+						break;
+					case 5000:
+						flag = 5;
+						break;
+					case 10000:
+						flag = 0;
+						break;
+					default:
+						flag = -1;
+						break;
+					}
+					return succ("恭喜您获得" + prize.getStr("prizeName") + "抵用券1张",
+							flag);
+				}
+			} else {
+				return error("04", "奖品剩余数不足", false);
+			}
+		} else {
+			return error("05", "用户今日已抽奖", false);
+		}
+		return error("02", "奖品发放失败", false);
+	}
+
+
+	/**
+	 * 201709 送苹果活动接口——个人投资信息
+	 * 
+	 * @return
+	 */
+	@ActionKey("/activity5User")
+	@AuthNum(value = 999)
+	@Before({ AuthInterceptor.class, PkMsgInterceptor.class })
+	public Message activity5User() {
+		String userCode = getUserCode();
+		if (userCode == null || "".equals(userCode)) {
+			return error("01", "用户未登录", false);
+		}
+		String beginDateTime = "20170901000000";
+		String endDateTime = "20170930235959";
+		String beginDate = "20170901";
+		String endDate = "20170930";
+		int loanTimeLimit = 0;// 投标期限
+
+		List<LoanTrace> loanTraces = loanTraceService.userTenderAmount(beginDateTime, endDateTime, userCode);
+
+		Map<String, Map<String, Object>> map = new HashMap<String, Map<String, Object>>();
+		if (null != loanTraces) {
+			for (int i = 0; i < loanTraces.size(); i++) {
+				long loanAmount = 0;
+				long loanAmountJQ = 0;
+				LoanTransfer loanTransfer = null;
+				LoanTrace loanTrace = loanTraces.get(i);
+				String userName = loanTrace.getStr("payUserName");
+				String traceCode = loanTrace.getStr("traceCode");
+				if ("C".equals(loanTrace.getStr("isTransfer"))) { // 不是债权
+
+					loanTimeLimit = loanTrace.getInt("loanTimeLimit");
+					loanAmount = loanTrace.getLong("payAmount");
+					loanAmountJQ = loanAmount * loanTimeLimit / 12;
+				}  else if ("A".equals(loanTrace.getStr("isTransfer"))) {// 转让中
+					loanTransfer = loanTransferService.queryLoanTransferByUser(traceCode, "B", userCode,
+							beginDate, endDate);
+					if (null == loanTransfer) {
+						loanTimeLimit = loanTrace.getInt("loanTimeLimit");
+						loanAmount = loanTrace.getLong("payAmount");
+						loanAmountJQ = loanAmount * loanTimeLimit / 12;
+					} 
+				}
+
+				Map<String, Object> usermap =map.get(userCode);
+				if(null==usermap){
+					
+					usermap=new HashMap<String, Object>();
+					usermap.put("loanAmount", loanAmount);
+					usermap.put("loanAmountJQ", loanAmountJQ);
+					usermap.put("userName", userName);
+					map.put(userCode, usermap);
+				}else {
+					usermap.put("loanAmount",
+							Long.valueOf(map.get(userCode).get("loanAmount").toString()) + loanAmount);
+					usermap.put("loanAmountJQ",
+							Long.valueOf(map.get(userCode).get("loanAmountJQ").toString()) + loanAmountJQ);
+				}
+			}
+		}
+
+		Map<String, Object> result1 = new HashMap<String, Object>();
+		for (Iterator<String> i = map.keySet().iterator(); i.hasNext();) {
+			String key = i.next();
+			result1.put("loanAmountJQ",
+					Number.longToString(Long.valueOf(map.get(key).get("loanAmountJQ").toString()) / 10000));
+		}
+		return succ("success", result1);
+	}
+
+	
+   
+	/**
+	 * 201709 送苹果活动接口——所有投资信息
+	 * 
+	 * @return
+	 */
+	@ActionKey("/activity5All")
+	@AuthNum(value = 999)
+	@Before(PkMsgInterceptor.class)
+	public Message activity5All() {
+		String beginDateTime = "20170901000000";
+		String endDateTime = "20170930235959";
+		String beginDate = "20170901";
+		String endDate = "20170930";
+		int loanTimeLimit = 0;// 投标期限
+		int countPerson = 0;
+		long countIphone = 0;
+		List<LoanTrace> loanTraces = loanTraceService.allTenderAmount(beginDateTime, endDateTime);
+
+		Map<String, Map<String, Object>> map = new HashMap<String, Map<String, Object>>();
+		if (null != loanTraces) {
+			for (int i = 0; i < loanTraces.size(); i++) {
+				long loanAmount = 0;
+				long loanAmountJQ = 0;
+				LoanTransfer loanTransfer = null;
+				LoanTrace loanTrace = loanTraces.get(i);
+				String userName = loanTrace.getStr("payUserName");
+				String traceCode = loanTrace.getStr("traceCode");
+				String userCode = loanTrace.getStr("payUserCode");
+				if ("C".equals(loanTrace.getStr("isTransfer"))) { // 不是债权
+
+					loanTimeLimit = loanTrace.getInt("loanTimeLimit");
+					loanAmount = loanTrace.getLong("payAmount");
+					loanAmountJQ = loanAmount * loanTimeLimit / 12;
+				} else if ("A".equals(loanTrace.getStr("isTransfer"))) {// 转让中
+					loanTransfer = loanTransferService.queryLoanTransferByUser(traceCode, "B", userCode,beginDate, endDate);
+					if (null == loanTransfer) {
+						loanTimeLimit = loanTrace.getInt("loanTimeLimit");
+						loanAmount = loanTrace.getLong("payAmount");
+						loanAmountJQ = loanAmount * loanTimeLimit / 12;
+					} 
+				}
+				Map<String, Object> usermap =map.get(userCode) ;
+				if ( null==usermap) {
+					usermap = new HashMap<String, Object>();
+					usermap.put("loanAmount", loanAmount);
+					usermap.put("loanAmountJQ", loanAmountJQ);
+					usermap.put("userName", userName);
+					usermap.put("userCode", userCode);
+					map.put(userCode, usermap);
+				} else {
+					usermap.put("loanAmount",Long.valueOf(map.get(userCode).get("loanAmount").toString()) + loanAmount);
+					usermap.put("loanAmountJQ",Long.valueOf(map.get(userCode).get("loanAmountJQ").toString()) + loanAmountJQ);
+				}
+			}
+		}
+
+		Map<String, Object> result1 = new HashMap<String, Object>();
+		List<Map<String, Object>> newList = new ArrayList<Map<String, Object>>();
+		for (Iterator<String> i = map.keySet().iterator(); i.hasNext();) {
+			String key = i.next();
+			if (Integer.parseInt(map.get(key).get("loanAmountJQ").toString()) >= 40000000) {
+
+				long personIphone = (long) (Math.floor(Double.valueOf(Long.valueOf(map.get(key).get("loanAmountJQ").toString())) / 40000000));
+				countIphone += personIphone;
+				countPerson++;
+				map.get(key).put("personIphone", personIphone);
+				map.get(key).put("loanAmount",
+						Long.valueOf(map.get(key).get("loanAmount").toString()));
+				map.get(key).put("loanAmountJQ",
+						Long.valueOf(map.get(key).get("loanAmountJQ").toString()));
+				newList.add(map.get(key));
+			}
+		}
+		Collections.sort(newList, new Comparator<Map>() {
+			public int compare(Map o1, Map o2) {
+				Long award1 = (Long) o1.get("loanAmountJQ");// award1是从你list里面拿出来的一个
+				Long award2 = (Long) o2.get("loanAmountJQ"); // award2是从你list里面拿出来的第二个name
+				return award2.compareTo(award1);
+			}
+		});
+		result1.put("newList", newList);
+		result1.put("countIphone", countIphone);
+		result1.put("countPerson", countPerson);
+		System.out.println(newList.size());
+		return succ("success", result1);
+	}
+	/**
+	 * 查询用户资金流水信息
+	 * 
+	 * @return
+	 */
+	@ActionKey("/tmpQueryFundsTrace4User")
+	@AuthNum(value = 999)
+	@Before({ AuthInterceptor.class, PkMsgInterceptor.class })
+	public Message tmpQueryFundsTrace4User() {
+		String beginDateTime = getPara("beginDate") + "000000";
+		String endDateTime = getPara("endDate") + "235959";
+
+		// 获取用户标识
+		String userCode = getUserCode();
+
+		// 获取用户资金流水
+		Map<String, Object> result = new HashMap<String, Object>();
+		BigDecimal rs = fundsTraceService.countToubiao4One(beginDateTime,
+				endDateTime, userCode);
+		result.put("sumTraceAmount", rs);
+		// 返回
+		return succ("查询成功", result);
+	}
+	/**
+	 * 2017 10月 翻牌活动  ws
+	 * */
+	@ActionKey("/TurnAroundCard")
+	@AuthNum(value = 999)
+	@Before({ AuthInterceptor.class, PkMsgInterceptor.class })
+	public Message TurnAroundSbCard(){
+		int date=Integer.parseInt(DateUtil.getNowDate());
+		if(date<20171001||date>20171031){
+			return error("01", "不在活动时间内", false);
+		}
+		String activeCode = "88563a221ed51a4ef8ef0cfbf1057578";
+		String userCode = getUserCode();
+		if (userCode == null || "".equals(userCode)) {
+			return error("02", "用户未登录", false);
+		}
+		User user = userService.findById(userCode);
+		UserInfo userInfo = userInfoService.findById(userCode);
+		Funds funds = fundsServiceV2.findById(userCode);
+		if (userInfo == null || funds == null || user == null) {
+			return error("03", "获取用户信息失败", false);
+		}
+		if(!FuiouController.isFuiouAccount(user)){
+			return error("02","用户未开通存管",false);
+		}
+		long num = turnAroundCardNum(userCode,"P",activeCode);
+		if(num==0){
+			return error("04", "您的剩余抽奖次数为0", false);
+		}
+		//计算抽到什么奖
+		if(num>0){
+			List<Prizes> prizes = prizesService.findPrizesByActive(activeCode);
+			// 设置奖品及概率
+			float probability = 100 / prizes.size();
+			BigDecimal bg = new BigDecimal(probability);
+			probability = bg.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
+			List<Award> awards = new ArrayList<Award>();
+			int totle=100;
+			String fillCode="";
+			for (Prizes prize : prizes) {
+				if(prize.getInt("total")>0){
+					if(prize.getInt("total")- prize.getInt("count")>0){
+						awards.add(new Award(prize.getStr("prizeCode"),probability, prize.getInt("total")));
+					}else{
+						awards.add(new Award(prize.getStr("prizeCode"),probability, 0));
+						totle=totle+prize.getInt("total");
+					}
+				}else{
+					fillCode=prize.getStr("prizeCode");
+				}
+			}
+			awards.add(new Award(fillCode,probability, totle));
+			// 抽奖
+			Award award = Award.lottery(awards);
+			Prizes prize = prizesService.getById(award.id);
+			Long amount=prize.getLong("amount");
+			String remark="10月翻牌有礼活动";
+			// 调整奖品库存
+			prizesService.updatePrizeCount(award.id,prize.getInt("count") + 1);
+			// 添加抽奖记录
+			boolean a=prizeRecordsService.save(UIDUtil.generate(), userCode,
+					user.getStr("userName"), activeCode, "翻牌有礼",
+					award.id, prize.getStr("prizeName"), 0l, prize.getInt("prizeLevel"),
+					prize.getStr("prizeType"), "1",
+					prize.getLong("amount"), "活动奖励【翻牌有礼】",
+					"20171031235959");
+			if(a){
+			if(prize.getInt("prizeLevel")==2) {
+				fundsServiceV2.doPoints(userCode, 0, amount, remark);
+			}
+			if(prize.getInt("prizeLevel")==6) {
+				User outUser=userService.findByMobile(CommonUtil.OUTCUSTNO);
+				CommonRspData commonRspData= fuiouTraceService.refund(amount,FuiouTraceType.Q,outUser,user);
+				if ("0000".equals(commonRspData.getResp_code())) {
+					fundsServiceV2.recharge(userCode, amount,0, remark,SysEnum.traceType.D.val());
+					rechargeTraceService.saveRechargeTrace(null,commonRspData.getMchnt_txn_ssn(), amount, "B", remark, userCode, "", "", "", "B", "SYS", remark);
+				}
+			}
+			return succ("翻牌成功", prize);
+			}
+		}
+		return error("05", "翻牌失败", false);
+	}
+	/**
+	 * 10月剩余抽奖次数
+	 * */
+	private long turnAroundCardNum(String userCode,String traceType,String activeCode){
+		String nowdate=DateUtil.getNowDate();
+		long amount = fundsTraceService.sumTraceAmount(nowdate,nowdate,traceType,"D",userCode);
+		long num=0;
+		if(amount>=500000&&amount<2000000){
+			num=1;
+		}
+		if(amount>=2000000&&amount<5000000){
+			num=2;
+		}
+		if(amount>=5000000){
+			num=3;
+		}
+		long numBeused = prizeRecordsService.findNum8User(userCode,activeCode,DateUtil.getNowDate());
+		num=num-numBeused;
+		if(num<0){
+			num=0;
+		}
+		return num;
+	}
+	
+	/** 201710抽奖活动接口——查询未登录下抽奖记录
+	 * 
+	 * @return
+	 */
+	@ActionKey("/findRecord6All")
+	@AuthNum(value = 999)
+	@Before({ PkMsgInterceptor.class })
+	public Message activeRecord6User() {
+		return succ("查询成功", prizeRecordsService.findByActive("88563a221ed51a4ef8ef0cfbf1057578", 1, 20));
+	}
+	
+	/**
+	 * 201710翻牌活动接口——查询用户个人抽奖记录
+	 * @return
+	 */
+	@ActionKey("/activity6User")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message activity6User(){
+		String userCode=getUserCode();
+		String activeCode="88563a221ed51a4ef8ef0cfbf1057578";   //活动编号
+		String traceType="P";	//交易类型   P:投标成功
+		String fundsType="D";	//资金类型   D:支出
+		String date=DateUtil.getNowDate();
+		//判断用户是否登录
+		if(userCode==null||"".equals(userCode)){
+			return error("01", "用户未登录", false);
+		}
+		
+		Map<String , Object> result=new HashMap<>();
+		//查询用户当天剩余的抽奖次数
+		long leftNum=turnAroundCardNum(userCode, traceType, activeCode);
+		result.put("leftNum",leftNum);
+		
+		//查询用户抽奖记录
+		List<PrizeRecords> list = prizeRecordsService.findByUser(userCode, activeCode);
+		result.put("list", list);
+		
+		//统计用户抽到‘易’、‘融’、‘恒’、‘信’的数量
+		int y=0 ,r=0 ,h=0 ,x=0;
+		for (PrizeRecords prizeRecord : list) {
+			String prizeType=prizeRecord.getStr("prizeType");
+			switch (prizeType) {
+			case "R":
+				y++;
+				break;
+			case "S":
+				r++;
+				break;
+			case "T":
+				h++;
+				break;
+			case "U":
+				x++;
+				break;
+			default:
+				break;
+			}
+		}
+		result.put("y", y);
+		result.put("r", r);
+		result.put("h", h);
+		result.put("x", x);
+		
+		//查询用户当天的投资金额
+		Long nowDayAmount=fundsTraceService.sumTraceAmount(date, date, traceType, fundsType, userCode);
+		result.put("nowDayAmount", nowDayAmount);
+		
+		return succ("success", result);
+	}
+	
+	
+	
+}

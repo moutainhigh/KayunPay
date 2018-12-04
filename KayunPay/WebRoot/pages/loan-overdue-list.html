@@ -1,0 +1,311 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+	<div class="am-g">
+		<!-- 标准功能按钮 Start  -->
+		 <div class="am-u-sm-12 am-u-md-4">
+			<div class="am-btn-toolbar">
+				 <h1>逾期列表</h1>
+				<div class="am-btn-group am-btn-group-xs "  id="seletorActive">
+					<button type="button" class="am-btn am-btn-default am-active" queryType=n>
+						<span class="am-icon-archive"></span>逾期未归还
+					</button>
+					<button type="button" class="am-btn am-btn-default" queryType=y style="margin-left:5px">
+						<span class="am-icon-archive mod-btn"></span>逾期已归还
+					</button>
+				</div>
+			</div>
+		</div> 
+		<!-- 标准功能按钮  End -->
+		
+		<!-- 条件区 Start -->
+		<div class="am-u-sm-12 am-u-md-3">
+			<form class="am-form-inline ext-form" role="form" data-am-validator>
+				<div class="am-form-group">
+				</div>
+			</form>
+		</div>
+		<div class="am-u-sm-12 am-u-md-3"></div>
+		<div class="am-u-sm-12 am-u-md-3">
+			<div class="am-input-group am-input-group-sm">
+				<input type="text" class="am-form-field allkey"><span
+					class="am-input-group-btn">
+					<button class="am-btn am-btn-default query-btn" type="button">搜索</button>
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- 条件区  End -->
+	<!-- Table -->
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 15 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- prompt start -->
+	<div class="am-modal am-modal-prompt am-modal-active" tabindex="-1" id="promptDiv" style="display: none;">
+		<div class="am-modal-dialog">
+			<div class="am-modal-hd title">逾期标</div>
+			
+			<div class="am-modal-bd content">
+				编号
+				<div id="curLoanNo"></div>
+				状态
+				<select class="am-modal-prompt-input am-form-field" id="curLoanState" style="margin-bottom:10px;">
+					<option value="n">未归还</option>
+					<option value="y">已归还</option>
+				</select>
+				备注
+				<textarea id="remarkInfo" name="content" rows="6" class="am-modal-prompt-input"  style="width:100%;height:400px;visibility:hidden;"></textarea>
+			</div>
+			<div class="am-modal-footer">
+				<span class="am-modal-btn" data-am-modal-cancel="">取消</span>
+				<span class="am-modal-btn" data-am-modal-confirm="">提交</span>
+			</div>
+		</div>
+	</div>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/kindeditor-min.js"></script>
+	<script src="../app/js/zh_CN.js"></script>
+	<script>
+		var editor;
+		KindEditor.ready(function(K) {
+			editor = K.create('textarea[name="content"]', {
+				uploadJson : "/upload?z=loan",
+				allowFileManager : true
+			});
+			
+		});
+		
+		var maxQueryNum = 10 ;
+		//查询列表
+		function queryData( pNum , pSize, allkey  ){
+			YRHX.ajax({
+				url : "/getLoanOverdueList",
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize || 10   ,
+					disposeStatus : $("#seletorActive .am-active").attr("queryType"),
+					allkey : allkey || ""
+				},
+				success : function(sucData){
+					makeTable(sucData.list , {
+						index : sucData["pageNumber"] , 
+						max : sucData["pageSize"] ,
+						size : sucData["totalRow"]
+					}); 
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+			
+		}
+		
+		//分页
+		
+		$("div.pad-div").initPagEvent( queryData );
+		
+		function makeTable( tableData ,pageData){
+			$(".am-g").table({
+						dataFormat : function(rowObj) {
+						
+							rowObj["overdueDate"] = rowObj["overdueDate"] .dateformat() ;
+							rowObj["loanAmount"] = YRHX.toDecimal2(rowObj["loanAmount"]/10.0/10.0 , "￥");
+							rowObj["overdueAmount"] = YRHX.toDecimal2(rowObj["overdueAmount"]/10.0/10.0 , "￥");
+							rowObj["disposeDateTime"] = rowObj["disposeDateTime"].substr(0, 8);
+							return rowObj;
+						},
+						max : 10,
+						pag : pageData,
+						header : [
+								{
+									name : "",type : "checkbox",key : "id"
+								},
+								{
+									name : "",text : "编号",html : "#{loanNo}"
+								},
+								{
+									name : "",text : "标题",html : "#{loanTitle}"
+								},
+								{
+									name : "",text : "借款金额",html : "#{loanAmount}"
+								},
+								{
+									name : "",text : "借款人",html : "#{loanUserName}"
+								},
+								{
+									name : "",text : "逾期时间",html : "#{overdueDate}"
+								},
+								{
+									name : "",text : "逾期金额",html : "#{overdueAmount}"
+								},
+								{
+									name : "",text : "借款期数",html : "#{loanTimeLimit}"
+								},
+								{
+									name : "",text : "当前期数",html : "#{repayIndex}"
+								},
+								{
+									name : "",text : "设置待还逾期时间",html : "#{disposeDateTime}"
+								},
+								{
+									name : "",text : "操作",html : $.makeButtons([
+                          //                  	{"text":"编辑","url":"javascript:remarkOp('#{overdueCode}','#{disposeStatus}');","ico":"am-icon-pencil-square-o"},
+                                            	{"text":"取消","url":"javascript:cancelOverdue('#{loanCode}');","ico":"am-icon-pencil-square-o"}
+	                                            ])
+								}],
+						data : tableData
+					});
+			}
+		
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		queryData(1, 10);
+		
+		$("#seletorActive button").click(function(){
+			$(this).siblings().removeClass("am-active");
+			$(this).addClass("am-active");
+			queryData(1, 10);
+		});
+		
+		
+		$(".query-btn").click(function(){
+			queryData(1, 10, $(".allkey").val());
+		});
+		
+/* 		function deleteOp( overdueCode ){
+			var confirmOp = confirm("确定删除?");
+			if( confirmOp ){
+				if(overdueCode){
+					YRHX.ajax({
+						url : "/deleteLoanOverdue",
+						data : {
+							overdueCode : overdueCode,
+						},
+						success : function(sucData){
+							YRHX.alert("提示","删除成功" );
+						},
+						error : function(data) {
+							YRHX.alert("警告",data.return_info || "获取信息失败");
+						}
+					});
+				}else{
+					alert("参数错误" );
+				}
+			}
+			
+		} */
+		
+		
+/* 		function remarkOp( overdueCode ,disposeStatus ){
+			$("#curLoanState").val( disposeStatus );
+			$("#curLoanNo").text( overdueCode );
+			
+			YRHX.ajax({
+				url : "/getLoanOverdueById",
+				data : {
+					overdueCode : $("#curLoanNo").text(),
+				},
+				success : function(sucData){
+					editor.html( sucData.remark ); 
+					
+					$('#promptDiv').modal({
+						relatedTarget: this,
+						onConfirm: function(){
+							YRHX.ajax({
+								url : "/disposeOverdue",
+								data : {
+									overdueCode : $("#curLoanNo").text(),
+									disposeStatus   : $("#curLoanState").val(),
+									remark :  editor.html()
+								},
+								success : function(sucData){
+									YRHX.alert("提示","提交成功" );
+								},
+								error : function(data) {
+									YRHX.alert("警告",data.return_info || "获取信息失败");
+								}
+							});
+						} ,
+						onCancel: function(e) {
+							
+						}
+					});
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+
+		} */
+		function cancelOverdue(loanCode){
+			var confirmOp = confirm("确定取消?");
+			if(confirmOp){
+				if(loanCode){
+					YRHX.ajax({
+					url:"/cancelOverdue",
+					data:{loanCode:loanCode},
+					success:function(sucData){
+						YRHX.alert("提示","设置成功");
+					},
+					error:function(errData){
+						YRHX.alert("警告",data.return_info || "获取信息失败");
+					}
+					});
+				}
+			}
+		}
+		
+	</script>
+</body>
+</html>

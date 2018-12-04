@@ -1,0 +1,1 @@
+INSERT INTO `t_menu_v2` VALUES (0037, 26, '当日还款', 'A', '/repaymentDay', 'com.dutiantech.controller.admin.ActionController', 'repaymentDay', 'A', '自动生成');

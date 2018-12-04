@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>积分商城</title>
+    <link type="text/css" href="/portal/css/public.css" rel="stylesheet">
+    <link type="text/css" href="/portal/css/user.css" rel="stylesheet">
+    <link type="text/css" href="/portal/css/datapicker/datepicker.css" rel="stylesheet">
+    <!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+<body>
+<div class="wrapper">
+    <header id="header" class="header"></header>
+    <nav class='user_index'></nav>
+    <main class="user">
+        <div class="user-main">
+            <div class="user-main-left"><h2>账户管理</h2>
+
+                <div class="user-nav"></div>
+            </div>
+            <div class="user-main-right">
+                <div class="user-main-right-c">
+                    <div class="tabNav">
+                    	<i></i>
+                        <ul>
+                            <li class="active">积分商城</li>
+                            <li id="scoreToggle">积分明细</li>
+                            <li id="exchangeToggle">兑换明细</li>
+                        </ul>
+                    </div>
+                    <div id="tab-content">
+                        <div class="tab-content-list creditShop">
+                            <div class="tip_text" style="margin:20px 0; ">
+                            	<h4>积分商城兑换规则</h4>
+                            	<ul>
+                                	<li>1、商品兑换成功后，将扣除相应积分，工作人员将在5个工作日内处理发放奖品；</li>
+	                                <li>2、积分商城产品数量有限，兑完即止，除严重质量问题影响到使用时，兑出的产品不能退换；</li>
+	                                <li>3、虚拟奖品以手机短信形式发放，实物奖励需填写相关信息以邮寄方式发放；</li>
+	                                <li>4、兑换的实物奖励，需在“我的账户”——中的“个人资料”当中填写住址，将以邮寄方式发放；</li>
+	                                <li>5、兑换的现金红包直接发放至出借人平台账户中，可用于投标；</li>
+	                                <li>6、积分兑换会扣除您相应积分，请您合理选择避免影响后续债权转让操作；</li>
+                                	<li>7、此次积分兑换，每件商品每人仅限兑换一次；</li>
+                                	<li>8、积分商城将不定期更新商品类型；</li>
+                                	<li>9、未经手机认证或未实名认证用户不享受积分兑换；</li>
+                                	<li>10、因奖品市场价格波动，积分兑换所需分值受其影响也会略微调整，感谢您一直以来的支持；</li>
+                                	<li>备注：兑换的实物由官方旗舰店发货；</li>
+                                </ul>
+                                
+                            </div>
+                            <div class="curPoints">您的积分:<b id="currntScore"></b></div>
+                            <div class="itemList">
+                                <ul id="itemList">
+                       
+                                </ul>
+                            </div>
+                            <div class="itemMore">更多商品，敬请期待...</div>
+                        </div>
+                        <div class="tab-content-list creditDetail" style="display: none;">
+                            <div class="my-money">
+                                <div class="my-money-li"><p><i>活跃积分</i></p>
+
+                                    <p><b id="hyjf"></b></p></div>
+                                <div class="my-money-li"><p><i>积分</i></p>
+
+                                    <p><b id="kyjf"></b></p></div>
+                            </div>
+                            <div class="search" style="margin:0;background:#fff;padding: 35px 0;">
+                            
+                            	<!-- <label>类型</label>
+                                <div class="select">
+                                	<span>所有</span> 
+                                	<input type="hidden" id="dropDownValue">
+                                    <div class="options">
+                                    	<a href="javascript:" value="">所有</a> <a href="javascript:" value="0">失败</a> 
+                                    	<a href="javascript:" value="1">无效</a> <a href="javascript:" value="2">充值中</a>
+                                        <a href="javascript:" value="3">待确认</a> <a href="javascript:" value="4">充值成功</a>
+                                    </div>
+                                </div> -->
+                                
+                                	从 <span class="input_panel"><input class="time_input" type="text" id="startTime"></span>
+                                <i class="clear_text"></i> 到 
+                                <span class="input_panel"><input class="time_input" type="text" id="endTime"></span>
+                                <i class="clear_text"></i>
+                                <button id="scoreQueryBtn">查询</button>
+                            </div>
+                            <div class="finance-table" style="  margin-top: 10px;">
+                                <table id="scoreDetail">
+                                    <thead>
+	                                    <tr class="h">
+	                                        <th>时间</th>
+	                                        <th>类型</th>
+	                                        <th>积分</th>
+	                                        <th>备注</th>
+	                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                                
+                                <div class="page_panel" id="scoreDetailPage"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content-list exchangeDetail" style="display: none;">
+
+							<div class="finance-table" style="  margin-top: 10px;">
+								<table id="exchangeDetail">
+									<thead>
+										<tr class="h">
+											<th>时间</th>
+											<th>兑换</th>
+											<th>积分</th>
+											<th>状态</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+                                <div class="page_panel" id="exchangeDetailPage"></div>
+                            </div>
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+    	</div>
+    </main>
+    <footer id="footer" class="footer"></footer>
+</div>
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+<script type="text/javascript" src="/portal/js/config.js"></script>
+<script type="text/javascript" src="/portal/js/public.js"></script>
+<script type="text/javascript">window.userNavActive = 1;topNavSelect= '4';</script>
+<script type="text/javascript" src="/portal/js/user.js"></script>
+<script type="text/javascript" src="/portal/js/pub/widget-table.js"></script>
+<script type="text/javascript" src="/portal/js/pub/app.js"></script>
+<script type="text/javascript" src="/portal/css/datapicker/bootstrap-datepicker.js"></script>
+<script>
+setting(3,window.userNavActive);
+NavMenu(3);
+$('.time_input').datepicker({
+	'format' : 'yyyy-mm-dd'
+});
+
+YRHX.ajax({
+    url: CONFIG.getRequestURI("querySumScore"),
+    success: function (sucData) {
+    	$("#hyjf").text( sucData["scores"] / 100 );
+    	$("#kyjf").text( sucData["points"] / 100 );
+    	$("#currntScore").text( sucData["points"] / 100  );
+    },
+    error: function (errData) {
+        $.popTips("popTipErr",errData.return_info);
+    }
+});
+
+$.queryMarket = function( pageNumber , pageSize){
+	YRHX.ajax({
+	    url: CONFIG.getRequestURI("queryMarketByPage"),
+	    data: {
+	    	"pageNumber": pageNumber || 0,
+	    	"pageSize": pageSize || 30
+	    },
+	    success: function (sucData) {
+	    	var html_tab = "<li>";
+	    	html_tab += "<div class='cardInfo'><img src='#{mPic}'>";
+	    	html_tab += "<p>#{mName}</p></div>";
+	    	html_tab += "<p class='needCondition'>需要积分：<b>#{point}</b>数量<c>#{remainCount}/#{count}</c><span class='exchangeBtn #{curStateClass}' mCode='#{mCode}'>兑换</span></p></li>";
+			var tableEle = $("#itemList");
+			tableEle.html("");
+			var returnData = sucData.market.list ;
+			if( returnData.length > 0 ){
+				for( var i = 0; i < returnData.length; i++ ){
+					var row = returnData[i];
+					row["point"] = row["point"] / 100; 
+					
+					if( row["remainCount"] <= 0 ){
+						row["curStateClass"]= "grayBtn";
+					}else{
+						row["curStateClass"]= "";
+					}
+					var tmpHtml = html_tab.makeHtml( row );
+					
+					tableEle.append( tmpHtml );
+				}
+				
+			}
+			
+	    },
+	    error: function (errData) {
+	        $.popTips("popTipErr",errData.return_info);
+	    }
+	});
+
+};
+
+$.queryMarket();
+
+
+$("#scoreToggle").on("click",function(){
+	$.scoreDetail();
+});
+
+$("#scoreQueryBtn").on("click",function(){
+	$.scoreDetail();
+});
+$("#exchangeToggle").on("click",function(){
+	$.exchangeDetail();
+});
+
+
+$.scoreDetail = function( pageNumber, pageSize){
+	var beginDate = $("#startTime").val().replaceAll("-", "");
+	var endDate = $("#endTime").val().replaceAll("-", "");
+	
+	YRHX.ajax({
+	    url: CONFIG.getRequestURI("queryFundsTrace4User"),
+	    data: {
+	    	"pageNumber": pageNumber || 1,
+	    	"pageSize": pageSize || 10,
+	    	"beginDate" : beginDate ,
+			"endDate" : endDate,
+	    	"traceType":"J,Z"
+	    },
+	    success: function (sucData) {
+	    	
+	    	var html_tab = "<tr><td>#{traceDate}</td>";
+	    	html_tab += "<td><i class='#{traceTypeCode}'>#{traceType}</i></td>";
+	    	html_tab += "<td>#{traceAmount}</td>";
+	    	html_tab += "<td>#{traceRemark}</td>";
+			var tableEle = $("#scoreDetail tbody");
+			tableEle.html("");
+			var returnData = sucData.list ;
+			if( returnData.length > 0 ){
+				for( var i = 0; i < returnData.length; i++ ){
+					var row = returnData[i];
+					row["traceDate"] = row["traceDate"].dateformat();
+					row["traceAmount"] = row["traceAmount"] / 100; 
+					if( row["traceType"] == "J"){
+						row["traceType"] = "收入";
+						row["traceTypeCode"] = "green";
+					}else if( row["traceType"] == "Z"){
+						row["traceType"] = "支出";
+						row["traceTypeCode"] = "red";
+					}
+					var tmpHtml = html_tab.makeHtml( row );
+					
+					tableEle.append( tmpHtml );
+				}
+				
+				//分页
+				$("#scoreDetailPage").pag(sucData["pageNumber"], sucData["pageSize"],sucData["totalRow"], function() {
+					var reqIndex = $(this).attr("index");
+					$.scoreDetail( reqIndex || 1);
+				});
+			}else{
+				//暂无数据
+				$("#scoreDetail").noData();
+			}
+	    	
+	    },
+	    error: function (errData) {
+	        $.popTips("popTipErr",errData.return_info);
+	    }
+	});
+};
+
+$.exchangeDetail = function( pageNumber, pageSize){
+
+	YRHX.ajax({
+	    url: CONFIG.getRequestURI("queryExchange"),
+	    data: {
+	    	"pageNumber": pageNumber || 1,
+	    	"pageSize": pageSize || 10
+	    },
+	    success: function (sucData) {
+	    	
+	    	var html_tab = "<tr><td>#{addDateTime}</td>";
+	    	html_tab += "<td>#{mName}</td>";
+	    	html_tab += "<td><i class='red'>#{point}</i></td>";
+	    	html_tab += "<td>#{issue}</td>";
+			var tableEle = $("#exchangeDetail tbody");
+			var tableFootEle = $("#exchangeDetail tfoot");
+			tableEle.html("");
+			tableFootEle.html("");
+			var returnData = sucData["list"] ;
+			if( returnData.length > 0 ){
+				for( var i = 0; i < returnData.length; i++ ){
+					var row = returnData[i];
+					row["addDateTime"] = row["addDateTime"].dateformat();
+					row["point"] = row["point"] / 100;
+
+					switch ( row["issue"] ){
+						case "0":
+							row["issue"] = "处理中";
+							break;
+						case "1":
+							row["issue"] = "已处理";
+							break;
+					}
+					var tmpHtml = html_tab.makeHtml( row );
+					
+					tableEle.append( tmpHtml );
+				}
+				
+				 //分页
+				/* $("#exchangeDetailPage").pag(sucData["marketUser"]["pageNumber"], sucData["marketUser"]["pageSize"],sucData["marketUser"]["totalRow"], function() {
+					var reqIndex = $(this).attr("index");
+					$.exchangeDetail( reqIndex || 1);
+				});  */
+				$("#exchangeDetailPage").pag(sucData["pageNumber"], sucData["pageSize"],sucData["totalRow"], function() {
+					var reqIndex = $(this).attr("index");
+					$.exchangeDetail( reqIndex || 1,10);
+				});
+			}else{
+				//暂无数据
+				$("#exchangeDetail").noData();
+			}
+	    	
+	    },
+	    error: function (errData) {
+	        $.popTips("popTipErr",errData.return_info);
+	    }
+	});
+}
+
+var isAddress = 0;
+
+$(function(){
+	YRHX.ajax({
+	    url: CONFIG.getRequestURI("queryUserInfo"),
+	    success: function (sucData) {
+	    	var address=sucData.userAddress;
+	    	if(address && "" != address){
+	    		isAddress = 1;
+	    	}
+	    },
+	    error: function (errData) {
+	        //$.popTips("popTipErr",errData.return_info);
+	    }
+	});
+});
+
+
+$("body").delegate(".exchangeBtn","click",function(){
+	if( !$(this).hasClass("grayBtn") ){
+		if(isAddress==0){
+			$.popTips("popTipErr","您还未填写联系地址，请补全联系地址",function(){
+	    		window.location.href='/C04';
+	    	},2000);
+			return false;		
+		}
+		
+		var ready2Go = confirm( "确定兑换？");
+		if( ready2Go ){
+
+			YRHX.ajax({
+			    url: CONFIG.getRequestURI("exchange"),
+			    data: {
+			    	"mCode" : $(this).attr("mCode") 
+			    },
+			    success: function (sucData) {
+			    	$.popTips("popTipSuc","兑换成功!工作人员会尽快给您处理,请耐心等待,谢谢!",function(){
+			    		window.location.reload();
+			    	},3000);
+			    },
+			    error: function (errData) {
+			        $.popTips("popTipErr",errData.return_info);
+			    }
+			});
+		}
+	}
+	
+});
+
+</script>
+
+
+</body>
+</html>

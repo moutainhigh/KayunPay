@@ -1,0 +1,334 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body onkeydown="zhazha(event)">
+	<div class="am-g">
+		<!-- 标准功能按钮 Start  -->
+		<div class="am-u-sm-12 am-u-md-3">
+			<div class="am-btn-toolbar">
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default del-btn">
+						<span class="am-icon-trash-o"></span> 删除
+					</button>
+					<button type="button" class="am-btn am-btn-default del-btn">
+						<span class="am-icon-trash-o"></span> 停用
+					</button>
+					<button type="button" class="am-btn am-btn-default del-btn">
+						<span class="am-icon-trash-o"></span> 恢复可用
+					</button>
+				</div>
+			</div>
+		</div>
+		<!-- 标准功能按钮  End -->
+		<!-- 条件区 Start -->
+		<div class="am-u-sm-12 am-u-md-1">
+			<form class="am-form-inline ext-form" role="form" data-am-validator>
+				<div class="am-form-group">
+					<select data-am-selected="{btnSize: 'sm',btnWidth:'105%'}" name="ttype" id="ttypeSel">
+					</select>
+				</div>
+			</form>
+		</div>
+		<div class="am-u-sm-12 am-u-md-1">
+			<form class="am-form-inline ext-form" role="form" data-am-validator>
+				<div class="am-form-group">
+					<select data-am-selected="{btnSize: 'sm',btnWidth:'105%'}" name="tstate" id="tstateSel">
+					</select>
+				</div>
+			</form>
+		</div>
+		<div class="am-u-sm-12 am-u-md-1">
+			<form class="am-form-inline ext-form" role="form" data-am-validator>
+				<div class="am-form-group">
+					<select data-am-selected="{btnSize: 'sm',btnWidth:'105%'}" name="makeSource" id="makeSourceSel">
+					</select>
+				</div>
+			</form>
+		</div>
+		<div class="am-u-sm-12 am-u-md-3">
+			<div class="am-u-sm-6" style="padding: 0;">
+					<div class="am-input-group am-datepicker-date" data-am-datepicker="{format: 'yyyy-mm-dd', viewMode: 'days'}">
+						<input type="text" class="am-form-field" id="make-startDate" placeholder="开始生成日期" readonly style="width: 71%;">
+							<span class="am-input-group-btn am-datepicker-add-on">
+								<button class="am-btn am-btn-default" type="button">
+									<span class="am-icon-calendar"></span>
+								</button>
+					  		</span> 
+					</div>
+				</div>
+				
+				<div class="am-u-sm-6" style="padding: 0;">
+					<div class="am-input-group am-datepicker-date" data-am-datepicker="{format: 'yyyy-mm-dd', viewMode: 'days'}">
+						<input type="text" class="am-form-field" id="make-endDate" placeholder="结束生成日期" readonly style="width: 71%;">
+							<span class="am-input-group-btn am-datepicker-add-on">
+								<button class="am-btn am-btn-default" type="button">
+									<span class="am-icon-calendar"></span>
+								</button>
+							</span>
+					</div>
+				</div>
+		</div>
+		<div class="am-u-sm-12 am-u-md-1">
+			<div class="am-input-group am-input-group-sm"><span
+					class="am-input-group-btn">
+					<button class="am-btn am-btn-default query-btn" type="button">搜索</button>
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- 条件区  End -->
+	<!-- Table -->
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 15 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+						<li id="not"><input type="text" size="5" id="goValue" onkeypress="return IsNum(event)" value="1"/></li>
+						<li id="go"><input type="button" value="GO" onclick="$('#go').attr('index',$('#goValue').val())"/></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script>
+	
+	
+	function zhazha(e){
+		var keynum = 0;
+		if(window.event){
+			keynum = e.keyCode
+		}
+		else if(e.which){
+			keynum = e.which
+		}
+		if(keynum==13){
+			queryData(1);
+		}
+	}
+	
+		var maxQueryNum = 10 ;
+		var queryUrl = "/getTicketsByPage";
+		var size=0;//总页数
+				
+		//查询实现
+		function queryData( pNum , pSize ){
+			//对页码参数验证
+			if(isNaN(pNum)){
+				alert("GO栏请输入数字！");
+				return;
+			}
+			if(size<1){
+				size=1;
+			}
+			if(pNum > size && size != 0){
+				pNum=size;
+				$("#goValue").val(pNum);
+			}
+			YRHX.ajax({
+				url : queryUrl,
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize ||maxQueryNum ,
+					ttype : $("#ttypeSel").val() || "" ,
+					tstate : $("#tstateSel").val() || "",
+					makeSource : $("#makeSourceSel").val() || "",
+					beginDate_make : $("#make-startDate").val().replaceAll("-",""),
+					endDate_make : $("#make-endDate").val().replaceAll("-","")
+					
+				},
+				success : function(sucData){
+					size=Math.ceil(sucData["totalRow"]/maxQueryNum);//总页数
+					makeTable(sucData.list , {
+						index : sucData["pageNumber"] ,
+						max : sucData["pageSize"] ,
+						size : sucData["totalRow"]
+					});
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+			
+		}
+		
+		$(".query-btn").click(function(){
+			queryData(1);
+			$("#goValue").val(1);//设置GO栏默认页码为1
+		});
+		
+		$("div.pad-div").initPagEvent( queryData );
+		
+		//init 
+		var ttypeData = YRHX.sortData(RES["DATA_MAP"]["ttype"]) ;
+		var tstateData = YRHX.sortData(RES["DATA_MAP"]["tstate"]) ;
+		var makeSourceData = YRHX.sortData(RES["DATA_MAP"]["makeSource"]);
+		$("#ttypeSel").makeSelect4s(ttypeData);
+		$("#ttypeSel").val("A");
+		$("#tstateSel").makeSelect4s(tstateData);
+		$("#tstateSel").val("A");
+		$("#makeSourceSel").makeSelect4s(makeSourceData);
+		$("#makeSourceSel").val("D");
+		
+		function makeTable( tableData ,pageData){
+			$(".am-g").table({
+						thtdcls : "font-size:13px;padding:8px 1px",
+						dataFormat : function(rowObj) {
+							rowObj["amountOrRate"] = rowObj["ttype"] == "C" ? YRHX.toDecimal2(rowObj["rate"]/10.0/10.0," ")+"%" : YRHX.toDecimal2(rowObj["amount"]/10.0/10.0,"￥");
+							rowObj["ttype"] = ttypeData[rowObj["ttype"]];
+							rowObj["tstate"] = tstateData[rowObj["tstate"]];
+							rowObj["makeSource"] = makeSourceData[rowObj["makeSource"]];
+							rowObj["makeDateTime"] = rowObj["makeDateTime"].dateformat();
+							rowObj["usedDateTime"] = rowObj["usedDateTime"] ? rowObj["usedDateTime"].dateformat() : " ";
+							rowObj["expDate"] = rowObj["expDate"].dateformat();
+							rowObj["userTrueName"] = rowObj["userTrueName"] ? rowObj["userTrueName"] : " ";
+							return rowObj;
+						},
+						max : 10,
+						pag : pageData,
+						header : [
+								{
+									name : "",type : "checkbox",key : "tid"
+								},
+								{
+									name : "",text : "奖券名",html : "#{tname}"
+								},
+								{
+									name : "",text : "奖券类型",html : "#{ttype}"
+								},
+								{
+									name : "",text : "奖励",html : "#{amountOrRate}"
+								},
+								{
+									name : "",text : "用户姓名",html : "#{userTrueName}"
+								},
+								{
+									name : "",text : "生成日期",html : "#{makeDateTime}"
+								},
+								{
+									name : "",text : "过期日期",html : "#{expDate}"
+								},
+								{
+									name : "",text : "使用日期",html : "#{usedDateTime}"
+								},
+								{
+									name : "",text : "生成方式",html : "#{makeSource}"
+								},
+								{
+									name : "",text : "奖券状态",html : "#{tstate}"
+								}
+								,
+								/** 
+								{
+									name : "",text : "操作",html : $.makeButtons([{"text":"查看","url":"pageJiangQuanForm?opType=view&tid=#{tid}","ico":"am-icon-pencil-square-o"},
+													{"text":"修改","url":"pageJiangQuanForm?opType=edit&tid=#{tid}","ico":"am-icon-pencil-square-o"}
+									])
+								}*/
+								],
+						data : tableData
+					});
+			}
+		
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		queryData(1);
+		setTimeout(function(){
+			$("#ttypeSel").change(function(){
+				queryData(1);
+				$("#goValue").val(1);//设置GO栏默认页码为1
+			});
+			$("#tstateSel").change(function(){
+				queryData(1);
+				$("#goValue").val(1);//设置GO栏默认页码为1
+			});
+			$("#makeSourceSel").change(function(){
+				queryData(1);
+				$("#goValue").val(1);//设置GO栏默认页码为1
+			});
+			
+		} , 2000 );
+		$(".del-btn").click(function(){
+			var row = window.getCheckedRow() ;
+			if( row.length == 0){
+				YRHX.alert("提示","请勾选需要删除的标！");
+				return ;
+			}
+			if( row.length == 1){
+				if( confirm("确定执行操作？") ){
+					YRHX.ajax({
+						url : "/deleteLoanById",
+						data : {
+							loanCode : row.attr("key")
+						},
+						success : function(sucData){
+							if(sucData!=null && sucData==true){
+								YRHX.alert("提示","删除完成！");
+								//window.location.reload();
+							}
+						},
+						error : function(data) {
+							if(data.return_code=="-315"){
+								var error_Msg = "";
+								$.each(data.return_data,function(key,value){
+									error_Msg = error_Msg + value+"<br>";
+								});
+								YRHX.alert("警告",error_Msg);
+							}else{
+								YRHX.alert("警告",data.return_info || "获取信息失败");
+							}
+						}
+					});
+				}
+			}else{
+				YRHX.alert("慎选","一次最多只删除一个标！");
+				return ;
+			}
+		});
+		
+	</script>
+</body>
+</html>

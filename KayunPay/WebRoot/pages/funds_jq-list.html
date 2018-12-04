@@ -1,0 +1,144 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+<style type="text/css">
+	#userAmount thead th {
+		margin-right: 20px;
+		margin-left: 20px;
+		width: 150px;
+		height: 30px;
+		line-height: 30px;
+	}
+	#JQtotal {
+		margin-left: 20px;
+		font-size: 23px;
+		color: red;
+	}
+</style>
+</head>
+<body>
+	<div class="am-g">
+		<!-- 标准功能按钮 Start  -->
+		
+			<div class="am-u-sm-12 am-u-md-3">
+			<div class="am-input-group am-input-group-sm">
+				<input type="text" class="am-form-field userMobile"><span
+					class="am-input-group-btn">
+					<button class="am-btn am-btn-default query-btn" type="button">搜索</button>
+				</span>
+			</div>
+		</div>
+		</div>
+		
+		<div id="total2">
+			总加权金额:<span id="JQtotal"></span>
+		</div>
+	<!-- Table -->
+	<table id="userAmount">
+							<thead><th>用户名</th><th>期限</th><th>投资金额</th><th>投资加权金额</th></thead>
+							<tbody>
+							</tbody>
+						</table>
+
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script>
+		
+		
+		function showAwardList() {
+		alert($(".userMobile").val());
+			YRHX.ajax({
+				url: "/getUserJq",
+				data: {
+				"userMobile" :$(".userMobile").val()
+				},
+				success: function(sucData) {
+				var html_tab = "<tr><td>#{userName}</td>";
+				html_tab += "<td>#{loanTimeLimit}</td>";
+				html_tab += "<td>#{loanAmount}</td>";
+				html_tab += "<td>#{loanAmountJQ}</td></tr>";
+				
+				var tableEle = $("#userAmount tbody");
+					tableEle.html("");
+					var rsData = sucData.list;
+					var JQtotal = sucData.loanAmountTotalJQ;
+					$("#JQtotal").text(JQtotal);
+					if(rsData.length > 0) {
+						for(var i = 0; i < rsData.length; i++) {
+							var row = rsData[i];
+							var tmpHtml = html_tab.makeHtml(row);
+							tableEle.append(tmpHtml);
+						}
+						
+					} 
+				},
+			});
+		}
+
+		
+     $(".query-btn").click(function(){
+			showAwardList();
+		});
+		
+		//var queryUrl = "/getUserJq";
+
+		//查询实现
+//		function queryData(){
+//			YRHX.ajax({
+//				url : queryUrl,
+//				data : {
+//					userCode : $(".userCode").val() 
+//				},
+//				success : function(sucData){
+//				makeTable(sucData.list , {
+//						index :1 , 
+//						max :100 ,
+//						size :100
+//					});
+//				
+//				},
+//				error : function(data) {
+//					YRHX.alert("警告",data.return_info || "获取信息失败");
+//				}
+//			});
+//			
+//		}
+		
+		
+		
+		
+		
+		
+		
+		
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	
+</body>
+</html>

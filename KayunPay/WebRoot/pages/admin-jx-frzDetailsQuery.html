@@ -1,0 +1,211 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<!-- <body onkeydown="zhazha(event)"> -->
+<body>
+		<h3 style="color: green; margin-left: 20px">账户资金冻结明细查询</h3>
+		
+		<div class="am-u-md-3" style="width: 300px">
+		  <span>查询记录状态：</span>
+		    <select id = "selectType">
+		       <option value ="0" >正常</option>
+		       <option value ="9" >所有</option>
+		    </select>
+		</div>
+		
+		<div style="width: :1200px" >
+		  
+		  <div style="width: 116px;display: inline;">
+		        <span>标号：</span>
+		    </div>
+		    <div  style="display: inline;">
+				<input type="text" id="productId">
+			</div>
+		    <div style="width: 116px;display: inline;">
+		        <span>电子/手机账户：</span>
+		    </div>
+		    <div  style="display: inline;">
+				<input type="text" class="allkey">
+				
+					<button class="querybutton" type="button" value="查询">查询</button>
+				
+			</div>
+		</div>
+
+<div class="am-g">
+		<div class="am-u-sm-12">
+			<table class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<div>
+			   <button class = "rtnInd" type="button" style="display: none;">翻页</button>
+			</div>	
+		</div>
+	</div>
+		
+		
+
+
+	<!-- prompt start -->
+
+	
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script type="text/javascript" src="/portal/js/jxErr.js"></script>
+	<script>
+			
+		
+		var rtnInd = "";
+		var frzDate = "";
+		var lastOrderId = "";
+		var fuissuerPage = "";
+		var productIdPage = "";
+		
+		
+		function makeTable(tableData,countData,name){
+			$(".am-g").table({
+				count_info : countData,
+				dataFormat:function(rowObj){
+					rowObj["fuissuerPage"] =rowObj["fuissuerPage"]; 
+					rowObj["frzDate"] =rowObj["frzDate"].dateformat("yyyy-MM-dd"); 
+					rowObj["orderId"] =rowObj["orderId"]; 
+					rowObj["amount"] =rowObj["amount"];
+					rowObj["state"] =rowObj["state"];
+					rowObj["productId"] =rowObj["productId"];
+
+					return rowObj;
+				},
+				max : 10,
+				pag :{index:1,max : 10 ,size : 10},
+				header:[
+				        {name:"",text:"姓名",html:name},
+				        {name:"",text:"产品发行方",html:"#{fuissuerPage}"},
+				        {name:"",text:"还款冻结日期",html:"#{frzDate}"},
+				        {name:"",text:"订单号",html:"#{orderId}"},
+				        {name:"",text:"冻结金额",html:"#{amount}"},
+				        {name:"",text:"状态",html:"#{state}"},
+				        {name:"",text:"标号",html:"#{productId}"},
+				],
+				data : tableData
+			});
+		}
+		
+		function jxquery(rtnInd){
+			var accountId = $(".allkey").val();
+			var state = $("#selectType").val();
+			var productId = $("#productId").val();
+			if(accountId == ''){
+				alert("请填写电子账号");
+				return;
+			}
+			if(state == ''){
+				alert("查询的记录状态不能为空");
+				return;
+			}
+			if(rtnInd == ''){
+				frzDate = "";
+				lastOrderId = "";
+				fuissuerPage = "";
+				productIdPage = "";
+			}
+			YRHX.ajax({
+				url : "/frzDetailsQuery",
+				data:{
+					"accountId":accountId,
+					"state":state,
+					"productId":productId,
+					"rtnInd":rtnInd,
+					"frzDate":frzDate,
+					"lastOrderId":lastOrderId,
+					"fuissuerPage":fuissuerPage,
+					"productIdPage":productIdPage
+				},
+				success:function(data){
+					var ind = data.rtnInd;
+					if(ind == 0){
+						$(".rtnInd").attr("disabled","disabled");
+					}
+					var name = data.name;
+					var list = data.subPacks;
+					var tmpTotalData = {};
+					tmpTotalData["电子账号"] = data["accountId"];
+					tmpTotalData["本次返回交易条数"] = data["currNum"];
+					if(data.rtnInd == 0){
+						tmpTotalData["查询情况"] = "查询完毕";
+					} else if(data.rtnInd == 1){
+						tmpTotalData["查询情况"] = "需继续翻页查询";
+					}
+					if(list.length==0){
+						alert("没有记录 ");
+						return;
+					}
+					if(list.length>0){
+						 $(".rtnInd").css('display','block');
+						 var length = list.length;
+						 frzDate = list[length-1].frzDate;
+						 lastOrderId = list[length-1].lastOrderId;
+						 fuissuerPage = list[length-1].fuissuerPage;
+						 productIdPage = list[length-1].productIdPage;
+						 
+					}
+					makeTable(list,tmpTotalData,name);
+					
+					   
+					    
+				},error:function(data){
+					
+					if(data.return_info == ''){
+						  var returnCode = data.return_code;
+						  var message = jxErr(returnCode);
+						  YRHX.alert1(message || "获取信息失败");
+						  
+						}else{
+							YRHX.alert1(data.return_info||"获取信息失败");
+						}
+				}
+				
+			})
+		}
+		
+		$(".rtnInd").click(function(){
+			
+			jxquery(1);
+			
+			
+		})
+		
+		$(".querybutton").click(function(){
+			rtnInd = "";
+			jxquery(rtnInd);
+			
+		})
+
+		
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+	</script>
+</body>
+</html>

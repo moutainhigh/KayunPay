@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>找回密码—易融恒信—做华中最大的网贷平台</title>
+    <link type="text/css" href="/portal/css/login.css" rel="stylesheet">
+    <link type="text/css" href="/portal/css/public.css" rel="stylesheet">
+    <link type="text/css" href="/portal/css/joc.css" rel="stylesheet">
+    <!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+<body>
+
+<div class="wrapper">
+	<header id="header" class="header"></header>
+    <div class="main" style="position:relative;">
+        <main class="g-bd">
+            <div class="rows m-crumbs">
+				您所在的位置：<a href="/">首页</a>&nbsp;&nbsp;<i class="f-ffst">
+                &gt;</i>&nbsp;&nbsp;<strong>找回密码</strong>
+			</div>
+            <div class="rows g-mn f-cb">
+				<div class="m-form formw">
+					<div class="u-tt f-cb">
+						<h2 class="f-fl">找回密码</h2>
+						<span class="f-fr">您也可以咨询<a target="_blank" href="http://crm2.qq.com/page/portalpage/wpa.php?uin=4000270707&amp;f=1&amp;ty=1&amp;aty=0&amp;a=&amp;from=6" class="s-red" title="点击咨询">在线客服</a></span>
+					</div>
+					<div class="u-ct">
+						<div class="item">
+							<label class="u-lab" for="account">登录账号：</label>
+							<div class="u-inp"><i class="find_some find_tel"></i><input id="getpwd_account" errcls="form-inp-error" name="account" type="text" maxlength="30" class="inp" placeholder="输入手机号码"></div>
+							<p id="getpwd_account_ok" class="tips-right u-tips"><i class="iconfont"></i></p>
+							<p id="getpwd_account_err" class="tips-error u-tips"><i class="iconfont"></i></p>
+						</div>
+					</div>
+                </div>
+				<div class="m-form formw">
+                    <div class="u-ct">
+                        <div id="getpwd_password_box" class="item hide"><label class="u-lab" for="password">登录密码：</label>
+
+							<div class="u-inp"><i class="iconfont"></i><input id="getpwd_password" class="inp" errcls="form-inp-error" name="password" type="password" placeholder="输入登录密码"></div>
+							<p id="getpwd_password_ok" class="tips-right u-tips"><i class="iconfont"></i></p>
+
+							<p id="getpwd_password_err" class="tips-error u-tips"><i class="iconfont"></i></p>
+						</div>
+						<div class="item"><label class="u-lab" for="newpassword">新密码：</label>
+
+							<div class="u-inp"><i class="find_some find_pwd"></i><input id="getpwd_newpassword" class="inp" errcls="form-inp-error" name="newpassword" type="password" placeholder="输入6位以上的密码"></div>
+							<p id="getpwd_newpassword_ok" class="tips-right u-tips"><i class="iconfont"></i></p>
+
+							<p id="getpwd_newpassword_err" class="tips-error u-tips"><i class="iconfont"></i></p>
+						</div>
+						<div class="item"><label class="u-lab" for="newpassword2">确认密码：</label>
+
+							<div class="u-inp"><i class="find_some find_pwd"></i><input id="getpwd_newpassword2" class="inp" errcls="form-inp-error" name="newpassword2" type="password" placeholder="重复输入密码"></div>
+							<p id="getpwd_newpassword2_ok" class="tips-right u-tips"><i class="iconfont"></i></p>
+
+							<p id="getpwd_newpassword2_err" class="tips-error u-tips"><i class="iconfont"></i></p>
+						</div>
+                            
+						<div class="item"><input type="hidden" name="mobile" value=""><label class="u-lab" for="smscode">短信校验：</label>
+
+							<div class="u-inp" style="width:150px;"><i class="find_some find_code"></i><input id="getpwd_smscode" errcls="form-inp-error" type="text" value="" name="smscode" maxlength="6" class="inp" placeholder="输入验证码" style="width:100px;">
+							</div>
+							<div id="sendMsgBtn" sendToggle="0" class="u-inp" style="width:80px;margin-left:20px;  background-color: #f2f9fc;  border: 1px solid #048fd4;text-align: center;cursor:pointer;">获取验证码</div>
+							<label id="msgCounter" style="text-align: left; color: red;line-height:40px;margin-left:10px"></label>
+							<p id="getpwd_smscode_ok" class="tips-right u-tips"><i class="iconfont"></i></p>
+
+							<p id="getpwd_smscode_err" class="tips-error u-tips"><i class="iconfont"></i></p>
+						</div>
+                            
+						<p id="msgTips" style="margin-bottom:10px"></p>
+						<div class="item btns">
+							<button class="btn btn-red" type="submit" id="getpwd_submit_do">提交</button>
+						</div>
+                    </div>
+                </div>
+                
+            </div>
+        </main>
+    </div>
+	<footer id="footer" class="footer"></footer>
+</div>
+
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+<script type="text/javascript" src="/portal/js/config.js"></script>
+<script type="text/javascript" src="/portal/js/public.js"></script>
+<script type="text/javascript" src="/portal/js/user.js"></script>
+<script type="text/javascript">
+
+	(function(){
+		var $account = $("#getpwd_account");
+		var $smsCode = $("#getpwd_smscode");
+		var $newPwd = $("#getpwd_newpassword");
+		var $confirmPws = $("#getpwd_newpassword2");
+		
+		//发送验证码
+		$("#sendMsgBtn").click(function(){
+			
+			
+				if( $account.val() == ''){
+					$.popTips("popTipErr","请输入手机号码!",function(){
+						$account.focus();
+					}) ;
+					return false;
+				}
+				if( $account.val().length != 11 ||  isNaN( $account.val() ) == true  ){
+					$.popTips("popTipErr","手机号码不合法!",function(){
+						$account.focus();
+					}) ;
+					return false;
+				}
+				
+				captchaApiV2(function( capVal ){
+					$("#sendMsgBtn").sendMsg({
+						"msgCounter" : "#msgCounter",
+						"msgTips"    : "#msgTips",
+						"type"       : "1",
+						"urPhone"    : $account.val(),
+						"url"        : "nSendMsgMobile",
+							"cv"		 : capVal
+					});
+				});
+			
+			
+			
+		});
+		//提交新密码
+		$("#getpwd_submit_do").click(function(){
+			
+			if( $account.val() == ''){
+				$.popTips("popTipErr","请输入登录帐号!",function(){
+					$account.focus();
+				}) ;
+				return false;
+			}
+			if( $newPwd.val() == ''){
+				$.popTips("popTipErr","请输入新密码!",function(){
+					$newPwd.focus();
+				}) ;
+				return false;	
+			}
+			if( $confirmPws.val() == ''){
+				$.popTips("popTipErr","请输入确认密码!",function(){
+					$confirmPws.focus();
+				}) ;
+				return false;
+			}
+			if( $smsCode.val() == ''){
+				$.popTips("popTipErr","请输入短信验证码!",function(){
+					$smsCode.focus();
+				}) ;
+				return false;
+			}
+			if( $newPwd.val() != $confirmPws.val()){
+				$.popTips("popTipErr","新密码与确认密码不一致!",function(){
+					$newPwd.focus();
+				}) ;
+				return false;
+			}
+			
+			YRHX.ajax({
+				url : CONFIG.getRequestURI("findPwd4user"),
+				data : {
+					userMobile   : $account.val(),
+					newPwd  : $newPwd.val() ,
+					smsmsg  : $smsCode.val()
+				},
+				success : function( sucData ) {
+					 $.popTips("popTipSuc","修改密码成功") ;
+					 setTimeout(function(){
+						window.location.href = "/index" ;
+					 },300); 
+				},
+				error : function( errorSendMsgData ){
+					$.popTips("popTipErr",errorSendMsgData.return_info) ;
+					//alert(errorSendMsgData.return_info || "发送失败");
+				}
+			});
+		});
+	}())
+
+</script>
+</body>
+</html>

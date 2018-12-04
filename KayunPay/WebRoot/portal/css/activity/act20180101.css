@@ -1,0 +1,85 @@
+@CHARSET "UTF-8";
+* {	margin: 0;padding: 0;}
+body {margin: 0;padding: 0; font-family: "Myriad Set Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif,"微软雅黑";}
+ul, ol, li {list-style: none;}
+:focus {outline: 0;}
+a { color: #000;text-decoration: none;}
+img { border: 0;}
+i {  font-style: normal;}
+table { border-collapse:collapse;}
+
+.money{ min-width: 1400px; width:100%; overflow:hidden;}
+.money_header{ width:100%; height:685px; background:url(/portal/images/activity/act20180101/money_top.jpg) top center no-repeat;}
+.money_suggest{ width:100%; height:767px; background:url(/portal/images/activity/act20180101/money_top1.jpg) top center no-repeat;}
+.money_warp{ width:100%; background:#feca1f; padding:45px 0;}
+.money_box{ width:895px; margin:0 auto; padding:40px 0 0 0; position:relative; }
+.money_title{ width:306px; height:68px; background:url(/portal/images/activity/act20180101/money_detail_title.png) no-repeat; position:absolute; top:0; left:50%; margin-left:-153px;}
+.money_box table{ width:100%; padding-bottom: 35px; min-height:350px; display: block; border-radius:3px; background:#ff3301;}
+.money_box table thead tr th{ height:70px; color: #fff; font-size: 18px; padding-top:22px;}
+.money_box table tbody tr{ height: 65px;}
+.money_box table tbody tr td{ text-align: center;}
+.money_box table tbody{ counter-reset:section; display:block;}
+.money_even,.money_th{ width:100%; background:#ff8800;}
+.money_tr1{ width:100%; background:#ff6b00;}
+.money_tr3{ width:100%; background:#ff6000;}
+.money_tr5{ width:100%; background:#ff5300;}
+.money_tr7{ width:100%; background:#ff4601;}
+.money_tr9{ width:100%; background:#ff3a01;}
+.money_first,.money_two,.money_three{ height:43px; display: block;}
+.money_first{ background:url(/portal/images/activity/act20180101/money_first.png) center no-repeat;}
+.money_two{ background:url(/portal/images/activity/act20180101/money_two.png) center no-repeat;}
+.money_three{ background:url(/portal/images/activity/act20180101/money_three.png) center no-repeat;}
+.m_font{ color: #fff; font-size: 18px;}
+.m_ico{ width:30px; height: 30px; border-radius:100%; background:#fff; margin: 0 auto; display: block;}
+.m_num{ font-size: 16px; text-align:center; line-height: 30px; font-weight: bold;color: #881b00;}
+.m_num:before{ counter-increment: section; content:"" counter(section);}
+.m_details{ width: 299px; height: 86px; background:url(/portal/images/activity/act20180101/money_detail_btn.png) no-repeat; margin: 28px auto 0; cursor: pointer;}
+
+.money_content{ width:100%; padding:30px 0; background:#ff8800;}
+.m_invitations{ width:980px; height:262px; margin:0 auto 30px; padding:12px; background:#fdc0a1; border-radius:10px;}
+.in_white{ width:100%; margin:0 auto; height:262px; position:relative; background:#fff;}
+.in_rightico{ position:absolute; top:0; right:0; width:29px; height:26px; background:url(/portal/images/activity/act20180101/money_right.jpg) no-repeat;}
+.in_leftico{ position:absolute; bottom:0; left:0; width:29px; height:26px; background:url(/portal/images/activity/act20180101/money_left.jpg) no-repeat;}
+.in_title{ width:293px; height:95px; margin:0 auto; background:url(/portal/images/activity/act20180101/money_invitation.jpg) 0 20px no-repeat;}
+.in_list{ padding-top:20px; overflow:hidden;}
+.in_ico{ float: left; margin:10px 16px 0 128px;}
+.act_ico1,.act_ico2,.act_ico3,.act_ico4{ display: block; width: 61px; height: 61px; margin: 0 auto; cursor: pointer;}
+#copy1{ display: none; width: 468px; padding:0 5px; height: 25px; line-height: 25px; background:#fff; border:1px solid #e9e9e9; color: #888; font-size: 12px; position: absolute; top: 93px; left: 122px;}
+#code2{ display: none; padding:5px; position: absolute; top: 5px; left: 330px; background:#fff; border:1px solid #eee;}
+#code3{ display: none; padding:5px; position: absolute; top: 5px; right: 332px; background:#fff; border:1px solid #eee;}
+.act_ico1{ background:url(/portal/images/activity/act20180101/money_in_01.jpg) no-repeat; border:none;}
+.act_ico2{ background:url(/portal/images/activity/act20180101/money_in_02.jpg) no-repeat;}
+.act_ico3{ background:url(/portal/images/activity/act20180101/money_in_03.jpg) no-repeat;}
+.act_ico4{ background:url(/portal/images/activity/act20180101/money_in_04.jpg) no-repeat;}
+.in_ico p{ color: #4f4f4f; margin-top: 8px;}
+.money_rule{ width:980px; height:400px; margin:0 auto; padding:12px; background:#fdc0a1; border-radius:10px;}
+.rule_white{ width:786px; margin:0 auto; height:400px; position:relative; background:#fff; padding:0 97px;}
+.rule_rightico{ position:absolute; top:0; right:0; width:29px; height:26px; background:url(/portal/images/activity/act20180101/money_right.jpg) no-repeat;}
+.rule_leftico{ position:absolute; bottom:0; left:0; width:29px; height:26px; background:url(/portal/images/activity/act20180101/money_left.jpg) no-repeat;}
+.rule_title{ width:293px; height:95px; margin:0 auto; background:url(/portal/images/activity/act20180101/money_rule.jpg) 0 20px no-repeat;}
+.rule_list{ overflow:hidden;}
+.rule_list li{ margin:16px 0; font-size:16px; color:#9a0000;}
+.rule_list li span{ width:22px; height:22px; line-height:22px; text-align:center; font-size:14px; color:#fff; background:#ff3201; border-radius:100%; display:inline-block; margin-right:10px;}
+.money_footer{ width:100%; height:74px; background:url(/portal/images/activity/act20180101/money_footer.jpg) top center no-repeat;}
+.blackBg{ width:100%; height: 100%; display: none; position:fixed; top: 0; left: 0; z-index: 9; background:#000; opacity: 0.7; -webkit-opacity: 0.7; -moz-opacity: 0.7; filter: Alpha(opacity=70); }
+.m_popup{ width:610px;height: 540px; z-index: 15; display: none; position:fixed; top: 50%; left: 50%; background:#ff6b00;}
+.m_popupClose{ height: 58px; padding:0 15px; text-align: center; line-height: 58px; font-size: 22px; color: #fff;}
+.m_popupClose span{ float: right; cursor: pointer; font-size: 46px; color: #fff;}
+.m_popupMain{ width:570px; height: 465px; margin:0 auto; overflow: hidden; position: relative;}
+.m_popup_title{ width: 570px; background:#feca1f; border-radius: 5px; padding:7px 0;}
+.m_popup_title1{ width: 553px; height: 20px; background:#ea9b04; border-radius: 25px; margin: 0 auto;}
+.m_popupList{ width: 526px; height: 450px; position: absolute; top: 15px; left: 23px; background:#fff; box-shadow:0px 5px 20px #e0e0e0 inset; overflow-y: auto; }
+.m_popupList table thead{ width: 100%;}
+.m_popupList table thead th{ height: 45px; font-size: 16px;}
+.m_popupList table tbody{ counter-reset:section;}
+.m_popupList table tbody tr td{ text-align: center; color: #2474bb; height: 40px; font-size: 14px;}
+.invest_login{ text-align: center; font-size: 18px; color:#fff; display: table; margin:15% auto 0;}
+.invest_login a{ text-decoration: underline; color: #8a0214; margin:0 3px;}
+.popup_first,.popup_two,.popup_three{ height:29px; display: block; line-height: 25px; padding-left: 2px;}
+.popup_first{ background:url(/portal/images/activity/act20180101/rank1.jpg) center no-repeat; color: #b89513;}
+.popup_two{ background:url(/portal/images/activity/act20180101/rank2.jpg) center no-repeat; color: #757982;}
+.popup_three{ background:url(/portal/images/activity/act20180101/rank3.jpg) center no-repeat; color: #95654f;}
+.popup_iconum{ width:20px; height: 20px; line-height: 20px; color: #fff; border-radius:3px; background:#ff8800; margin: 0 auto; display: block;}
+.popup_num{ font-size: 12px; text-align:center;}
+.popup_num:before{ counter-increment: section; content:"" counter(section);}
+

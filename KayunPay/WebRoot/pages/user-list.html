@@ -1,0 +1,449 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body onkeydown="zhazha(event)">
+	<div class="am-g">
+		<!-- 标准功能按钮 Start  -->
+		<div class="am-u-sm-12 am-u-md-4">
+			<div class="am-btn-toolbar">
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default froze-btn">
+						<span class="am-icon-archive"></span>冻结用户
+					</button>
+				</div>
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default unfroze-btn">
+						<span class="am-icon-archive mod-btn"></span>重置状态
+					</button>
+				</div>
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default view-btn reset-btn">
+						<span class="am-icon-archive "></span>初始化密码
+					</button>
+				</div>
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default view-btn create-btn">
+						<span class="am-icon-archive "></span>创建用户
+					</button>
+				</div>
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default view-btn sendWXTXCode-btn">
+						<span class="am-icon-archive "></span>发送提现验证码(微信)
+					</button>
+				</div>
+			</div>
+		</div>
+		<!-- 标准功能按钮  End -->
+		<!-- 条件区 Start -->
+		<div class="am-u-sm-12 am-u-md-3">
+			<form class="am-form-inline ext-form" role="form" data-am-validator>
+				<div class="am-form-group">
+				</div>
+			</form>
+		</div>
+		<div class="am-u-sm-12 am-u-md-3"></div>
+		<div class="am-u-sm-12 am-u-md-3">
+			<div class="am-input-group am-input-group-sm">
+				<input type="text" class="am-form-field allkey"><span
+					class="am-input-group-btn">
+					<button class="am-btn am-btn-default query-btn" type="button">搜索</button>
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- 条件区  End -->
+	<!-- Table -->
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 15 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+						<li id="not"><input type="text" size="5" id="goValue" onkeypress="return IsNum(event)" value="1"/></li>
+						<li id="go"><input type="button" value="GO" onclick="$('#go').attr('index',$('#goValue').val())"/></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script>
+	
+	function zhazha(e){
+		var keynum = 0;
+		if(window.event){
+			keynum = e.keyCode
+		}
+		else if(e.which){
+			keynum = e.which
+		}
+		if(keynum==13){
+			queryData(1);
+		}
+	};
+		var maxQueryNum = 10 ;
+		var queryUrl = "/getUserInfoByPage";
+		var size=0;//总页数
+
+		//查询实现
+		function queryData( pNum , pSize ){
+			//对页码参数验证
+			if(isNaN(pNum)){
+				alert("GO栏请输入数字！");
+				return;
+			}
+			if(size<1){
+				size=1;
+			}
+			if(pNum > size && size != 0){
+				pNum=size;
+				$("#goValue").val(pNum);
+			}
+			YRHX.ajax({
+				url : queryUrl,
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize ||maxQueryNum ,
+					allkey : $(".allkey").val() 
+				},
+				success : function(sucData){
+					size=Math.ceil(sucData["totalRow"]/maxQueryNum);//总页数
+					makeTable(sucData.list , {
+						index : sucData["pageNumber"] , 
+						max : sucData["pageSize"] ,
+						size : sucData["totalRow"]
+					});
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+			
+		}
+		
+		$(".query-btn").click(function(){
+			queryData(1);
+			$("#goValue").val(1);//设置GO栏默认页码为1
+		});
+		
+		$("div.pad-div").initPagEvent( queryData );
+		//init 
+		var userStateData = YRHX.sortData(RES["DATA_MAP"]["userState"]) ;
+		//$("#userStateSel").makeSelect4s( userStateData );
+		var userLevelData = YRHX.sortData(RES["DATA_MAP"]["vipLevel"]);
+		//$("#vipLevelSel").makeSelect4s( userLevelData );
+		function makeTable( tableData ,pageData){
+			$(".am-g").table({
+					
+						thtdcls : "font-size:13px;padding:8px 1px",
+						dataFormat : function(rowObj) {
+							rowObj["userState"] = userStateData[ rowObj["userState"] ] ;
+							rowObj["vipInterestRate"] = YRHX.toDecimal2(rowObj["vipInterestRate"]/10.0/10.0 )+"%";
+							rowObj["vipRiskRate"] = YRHX.toDecimal2(rowObj["vipRiskRate"]/10.0/10.0 )+"%";
+							rowObj["regDateTime"] = (rowObj["regDate"]+rowObj["regTime"]).dateformat() ;
+							rowObj["points"] = YRHX.toDecimal2( rowObj["points"] / 10.0/10.0, "");
+							rowObj["userName"] =rowObj["userName"] ? rowObj["userName"] : " ";
+							rowObj["userCardName"] = rowObj["userCardName"] || " ";
+							//rowObj["jxState"] = rowObj["jxAccountId"] === null ? "未开通" : "已开通";
+							//rowObj["fuiouState"] = rowObj["loginId"] === null ? "未开通" : "已开通";
+							rowObj["depositAccount"] = rowObj["depositAccount"] == null ? "未开通" : "已开通";
+							rowObj["userType"] = rowObj["userType"] == null ? "出借人" : "借款人";
+							rowObj["paymentState"] = rowObj["paymentState"] || " ";
+							rowObj["repayState"] = rowObj["repayState"] || " ";
+							return rowObj;
+						},
+						max : 10,
+						pag : pageData,
+						header : [
+								{
+									name : "",type : "checkbox",key : "userCode"
+								},
+								{
+									name : "",text : "昵称",html : "#{userName}"
+								},
+								{
+									name : "",text : "姓名",html : "#{userCardName}"
+								},
+								{
+									name : "",text : "可用积分",html : "#{points}"
+								},
+								{
+									name : "",text : "VIP等级",html : "#{vipLevelName}"
+								},
+								{
+									name : "",text : "用户状态描述",html : "#{userState}"
+								},
+								//{name:"",text:"江西存管",html:"#{jxState}"},
+								//{name:"",text:"恒丰存管",html:"#{fuiouState}"},
+								{name:"", text: "存管账户状态", html:"#{depositAccount}"},
+								{name:"",text:"用户类型",html:"#{userType}"},
+								{name:"",text:"缴费授权",html:"#{paymentState}"},
+								{name:"",text:"还款授权",html:"#{repayState}"},
+								{
+									name : "",text : "注册日期",html : "#{regDateTime}"
+								},
+								{
+									name : "",text : "系统备注",html : "#{sysDesc}"
+								},
+								{
+									name : "",text : "操作",html : $.makeButtons([
+                                            	{"text":"用户详情","url":"/pageUserForm?opType=view&pUserCode=#{userCode}","ico":"am-icon-pencil-square-o"},
+                                            	{"text":"资金明细","url":"/pageFundsTraceList?userCode=#{userCode}","ico":"am-icon-pencil-square-o"},
+                                            	{"text":"充值","url":"/pageRechargeTraceList?asuuu=#{userCode}","ico":"am-icon-pencil-square-o"},
+        										{"text":"提现","url":"/pageWithdrawTraceList?asuuu=#{userCode}","ico":"am-icon-pencil-square-o"},
+                                            	{"text":"投资","url":"/pageUserLoanTraceList?payUserCode=#{userCode}","ico":"am-icon-pencil-square-o"},
+        										{"text":"积分","url":"/pageUserScoreDetail?userCode=#{userCode}","ico":"am-icon-pencil-square-o"},
+                                            	{"text":"资金同步","url":"javascript:syncAccount('#{userCode}')","ico":"am-icon-pencil-square-o"},
+                                            	{"text":"自动投标","url":"/bizAutoLoanList?userCode=#{userCode}","ico":"am-icon-pencil-square-o"},
+                                            	{"text":"关闭缴费授权","url":"javascript:paymentAuthPage('#{userCode}')","ico":"am-icon-pencil-square-o"},
+                                            	{"text":"设置还款授权","url":"javascript:repayAuthCancel('#{userCode}','#{repayState}')","ico":"am-icon-pencil-square-o"}
+        										])
+								}],
+						data : tableData
+					});
+			}
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		function syncAccount(account) {
+			if (confirm("确定要同步用户资金信息吗？亲，检查清楚没有？")) {
+				YRHX.ajax({
+					url : "/syncDepositoryAccount" ,
+					data : {
+						"userCode" : account
+					},
+					success : function(sucData){
+						YRHX.alert("警告", sucData);
+					},
+					error : function(errData){
+						YRHX.alert("警告", errData.return_info);
+					}
+				});
+			}
+		}
+		
+		//关闭缴费授权
+		function paymentAuthPage(userCode){
+			if (confirm("确定要关闭缴费授权吗？亲，检查清楚没有？")) {
+				YRHX.ajax({
+					url : "/paymentAuthCancel" ,
+					data : {
+						"userCode" : userCode
+					},
+					success : function(sucData){
+						window.open('/paymentAuthCancel?userCode='+userCode+'&verifyOrderId='+sucData);
+					},
+					error : function(errData){
+						YRHX.alert("警告",errData.return_info || "获取信息失败");
+					}
+				});
+			
+			}
+		}
+		
+		//设置还款授权
+		function repayAuthCancel(userCode,repayState){
+			if(repayState.indexOf("到期") != -1){//开通状态
+				var myDate = new Date();
+				var nowDate = ""+myDate.getYear()+(myDate.getMonth()+1)+myDate.getDate();//当前日期
+				var repayDate = repayState.substring(5,15).replaceAll("-","");//到期日期
+				if(Number(nowDate) <= Number(repayDate)){
+					if (confirm("确定要关闭还款授权吗？亲，检查清楚没有？")) {
+					YRHX.ajax({
+						url : "/repayAuthCancel" ,
+						data : {
+							"userCode" : userCode
+						},
+						success : function(sucData){
+							window.open('/repayAuthCancel?userCode='+userCode+'&verifyOrderId='+sucData);
+							
+						},
+						error : function(errData){
+							YRHX.alert("警告", errData.return_info||"获取信息失败");
+						}
+					});
+					}
+					return;
+				}
+			}
+			
+			//开通还款授权
+			window.open("/repayAuthPage?userCode="+userCode);
+		}
+	
+		queryData(1);
+		$(".froze-btn").click(function(){
+			var row = window.getCheckedRow() ;
+			if( row.length == 0){
+				YRHX.alert("提示","未选中需要冻结的用户！");
+				return ;
+			}
+			
+			if( confirm("确定执行操作？") ){
+				YRHX.ajax({
+					url : "/updateUserState" ,
+					data :{
+						paraUserCode : row.attr("key"),
+						userState : "P"
+					},
+					success : function( sucData ){
+						YRHX.alert("操作成功","该用户已被冻结!");
+						queryData(1);
+					},
+					error :function(data){
+						if(data.return_code=="-315"){
+							var error_Msg = "";
+							$.each(data.return_data,function(key,value){
+								error_Msg = error_Msg + value+"<br>";
+							});
+							YRHX.alert("警告",error_Msg);
+						}else{
+							YRHX.alert("警告",data.return_info || "获取信息失败");
+						}
+					}
+				});
+			}
+			
+		});
+		$(".unfroze-btn").click(function(){
+			var row = window.getCheckedRow() ;
+			if( row.length == 0){
+				YRHX.alert("提示","未选中用户！");
+				return ;
+			}
+			
+			if( confirm("确定执行操作？") ){
+				YRHX.ajax({
+					url : "/updateUserState" ,
+					data :{
+						paraUserCode : row.attr("key"),
+						userState : "N"
+					},
+					success : function( sucData ){
+						YRHX.alert("操作成功","该用户状态已重置为【正常】!");
+						queryData(1);
+					},
+					error :function(data){
+						if(data.return_code=="-315"){
+							var error_Msg = "";
+							$.each(data.return_data,function(key,value){
+								error_Msg = error_Msg + value+"<br>";
+							});
+							YRHX.alert("警告",error_Msg);
+						}else{
+							YRHX.alert("警告",data.return_info || "获取信息失败");
+						}
+					}
+				});
+			}
+		});
+		$(".reset-btn").click(function(){
+			var row = window.getCheckedRow() ;
+			if( row.length == 0){
+				YRHX.alert("提示","未选中用户！");
+				return ;
+			}
+			if( confirm("确定执行操作？") ){
+				YRHX.ajax({
+					url : "/resetPasswd" ,
+					data :{
+						paraUserCode : row.attr("key")
+					},
+					success : function( sucData ){
+						YRHX.alert("操作成功","已重置用户密码【"+sucData+"】");
+						queryData(1);
+					},
+					error :function(data){
+						if(data.return_code=="-315"){
+							var error_Msg = "";
+							$.each(data.return_data,function(key,value){
+								error_Msg = error_Msg + value+"<br>";
+							});
+							YRHX.alert("警告",error_Msg);
+						}else{
+							YRHX.alert("警告",data.return_info || "获取信息失败");
+						}
+					}
+				});
+			}
+			
+		});
+		
+		$(".sendWXTXCode-btn").click(function(){
+			var row = window.getCheckedRow() ;
+			if( row.length == 0){
+				YRHX.alert("提示","未选中用户！");
+				return ;
+			}
+			if( confirm("确定执行操作？") ){
+				YRHX.ajax({
+					url : "/sendTiXianCode2WeiXin" ,
+					data :{
+						paraUserCode : row.attr("key")
+					},
+					success : function( sucData ){
+						YRHX.alert("操作成功","验证码【"+sucData+"】");
+					},
+					error :function(data){
+						if(data.return_code=="-315"){
+							var error_Msg = "";
+							$.each(data.return_data,function(key,value){
+								error_Msg = error_Msg + value+"<br>";
+							});
+							YRHX.alert("警告",error_Msg);
+						}else{
+							YRHX.alert("警告",data.return_info || "获取信息失败");
+						}
+					}
+				});
+			}
+			
+		});
+		$(".create-btn").click(function(){
+			window.location.href="/pageCreatePlatformUser";
+		});
+	</script>
+</body>
+</html>

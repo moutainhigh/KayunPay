@@ -1,0 +1,217 @@
+/**
+ * admin.css
+ */
+
+* {	margin: 0;padding: 0;}
+body { margin: 0;padding: 0; font-family: "Myriad Set Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif,"微软雅黑";}
+ul, ol, li {list-style: none;}
+:focus {outline: 0;}
+a { color: #000;text-decoration: none;}
+img { border: 0;}
+i {  font-style: normal;}
+table { border-collapse:collapse;}
+
+.assess_top{ width:100%; padding-top:49.125%; background:url(/app/images/assess_top.jpg) no-repeat; background-size:100% 100%;}
+.assess_box{ padding:0 1.1em;}
+.assess_list{ margin-top:1.1em;}
+.assess_title{ font-size:0.9em;}
+.assessInput{ width:100%; margin-top:0.7em; overflow:hidden; border-bottom:1px solid #e5e5e5;}
+.assessInput .assess_label{ display:block; margin-bottom:0.8em; font-size:14px; }
+.assessInput .assess_label input{ width:15px; height:15px; margin:0 8px 0 0; vertical-align:text-bottom}
+.assess_submit{ margin:1.5em 2.1em; height:35px; cursor:pointer; line-height:35px; color:#fff; text-align:center; font-size:1.2em; background:#2894f7; border-radius:5px;}
+.assessResult{ padding:2.4em 0;}
+.result{ width:100%; padding-top:81.615%; background:url(/portal/images/result.png) top center no-repeat; background-size:85%; position:relative;}
+.result span{ position:absolute; top:50%; left:50%; text-align:center; font-size:1.6em; color:#fff; font-weight:bold; margin-left:-38px;}
+.assessResult p{ text-align:center; font-size:0.9em; margin:1.5em 2.0em;}
+.result_btn{ overflow:hidden; display:table; margin:0 auto;}
+.againAssess{ display:block; background:#bababa; padding:0 1.2em; height:35px; text-align:center; line-height:35px; color:#fff; font-size:16px;}
+.mui-toast-container{position:fixed;z-index:9999;top:50%; bottom:0!important;}
+.mui-toast-message{ display:table; margin:0 auto; background:#000!important; color:#fff!important; padding:12px 15px!important;}
+
+
+/*会员等级*/
+.g_header{ background:#202335; overflow: hidden;}
+.g_main{ background:#202335; overflow: hidden; padding:1.4rem 1.0rem 0 1.0rem; display: none;}
+.g_head_pic{ width: 100%; padding-top: 53.875%; background:url(/app/images/grade_bg_chart.jpg) no-repeat; background-size:contain; position: relative;}
+.g_loginBtn{ padding:0.15rem 1.1rem; cursor: pointer; font-size: 0.8rem; border:2px solid #f8e2b2; border-radius: 50px; background:rgba(255,255,255,0); color: #f8e2b2; text-align: center; position: absolute; bottom:10%; left: 50%; margin-left: -45px;}
+.g_warp_1{overflow: hidden; margin:1.9rem auto;}
+.g_1_title{ width:100%; padding-top:6.75%; background:url(/app/images/grade_title_1.jpg) no-repeat; background-size:100% 100%;}
+.g_1_list{ overflow: hidden; margin-top:1.5rem; padding:0 0.7rem;}
+.g_1_list ul li{ width:50%; float: left; margin:0 0 1.8rem;}
+@media only screen and (min-width:360px)  {
+	.g_1_list ul li{width:33.333%; float: left; margin:0 0 1.8rem;}
+}
+@media only screen and (min-width:400px)  {
+	.g_1_list ul li{ width:33.333%; float: left; margin:0 0 1.8rem;}
+}
+@media only screen and (min-width:760px)  {
+	.g_1_list ul li{ width:33.333%; float: left; margin:0 0 1.8rem;}
+}
+.g_ico,.g_ico1{ margin:0 auto; border-radius: 100%; padding:2.5rem 2.5rem; width:0%;}
+.g_font,.g_font1{ text-align: center; font-size:0.8rem; cursor: pointer; margin-top:7px;}
+
+.ico1{ background:#fff9ed url(/app/images/grade_ico_01.png) center center no-repeat;}
+.ico2{ background:#fff9ed url(/app/images/grade_ico_02.png) center center no-repeat;}
+.ico3{ background:#fff9ed url(/app/images/grade_ico_03.png) center center no-repeat;}
+.ico4{ background:#fff9ed url(/app/images/grade_ico_04.png) center center no-repeat;}
+.ico5{ background:#fff9ed url(/app/images/grade_ico_05.png) center center no-repeat;}
+.ico6{ background:#fff9ed url(/app/images/grade_ico_06.png) center center no-repeat;}
+.ico7{ background:#fff9ed url(/app/images/grade_ico_07.png) center center no-repeat;}
+.ico8{ background:#fff9ed url(/app/images/grade_ico_08.png) center center no-repeat;}
+
+.icoNo1{ background:#f5f4f4 url(/app/images/grade_ico_d_01.png) center center no-repeat;}
+.icoNo2{ background:#f5f4f4 url(/app/images/grade_ico_d_02.png) center center no-repeat;}
+.icoNo3{ background:#f5f4f4 url(/app/images/grade_ico_d_03.png) center center no-repeat;}
+.icoNo4{ background:#f5f4f4 url(/app/images/grade_ico_d_04.png) center center no-repeat;}
+.icoNo5{ background:#f5f4f4 url(/app/images/grade_ico_d_05.png) center center no-repeat;}
+.icoNo6{ background:#f5f4f4 url(/app/images/grade_ico_d_06.png) center center no-repeat;}
+.icoNo7{ background:#f5f4f4 url(/app/images/grade_ico_d_07.png) center center no-repeat;}
+.icoNo8{ background:#f5f4f4 url(/app/images/grade_ico_d_08.png) center center no-repeat;}
+.g_ico1{ width:100px; padding:0;}
+.g_ico{ background-size:60%;}
+.g_ico1 img{ width:40%; display: table; margin:0.7rem auto 0;}
+.g_font{ color: #000;}
+.g_font1{ font-size:0.8rem; color: #a9aaae; margin-top:0.3rem;}
+.g_icoHover{ height:63px; width:65px; border:2px solid #c8ae7d;}
+.g_icoHover img{ width:72%;}
+.g_fontHover{ color: #fff; font-size:1.0rem;}
+.g_warp_2{ width:100%;}
+.g_2_title{width:100%; padding-top:7.75%; background:url(/app/images/grade_title_2.jpg) no-repeat; background-size:100% 100%;}
+.g_2_pic{ height: 60px; background:url(/app/images/grade_2_pic.png) center no-repeat; background-size: 100%; margin:1.0rem 0.8rem 1.4rem 0.8rem;}
+.g_userList{ overflow-x:auto; overflow-y:hidden;-webkit-box-flex:1; flex:1; white-space:nowrap; padding-bottom:17px;}
+.g_userList ul{  white-space:nowrap; padding:0; display:flex;  margin-bottom:0; font-size:14px;}
+.g_userList ul li{  position: relative; display:inline-table; float:left; list-style:none; padding:0 13px;}
+.g_menu,.g_menu1{ width:78px; padding:0.2rem 0; text-align: center; cursor: pointer; border-radius: 50px; font-size: 0.9rem;}
+.g_menuHover{ background:#af9154!important; color: #f8e2b2!important;}
+.g_menu_p,.g_menu_p1{text-align: center; margin-top:10px; font-weight:bold; font-size: 1.0rem;}
+.g_moneyHover{ color: #d1bf9a!important;}
+.g_userList ul li span{ width:60%; float: left; border:1px solid #d3b15e; position: absolute; bottom:15px; left:71px;}
+.g_2_font{ overflow: hidden; margin:1.2rem 0;}
+.g_sp1{ padding:0.2rem 0.3rem; color: #fff; background:#dbc48b; font-weight: bold; border-radius: 100%; float: left; margin:0 10px;}
+.g_sp2{ width: 85%; font-size: 0.9rem; color: #000; float: left;}
+.g_listBox{ background:#282c40; padding:1.0rem 0 15px 0; display: none;}
+.g_menu1{ color: #d2d3d6; background:#3c4257;}
+.g_menu{ color: #fff; background:#d3b15e;}
+.g_menu_p1{ color: #5e6786; }
+.g_menu_p{ color: #d3b15e;}
+.g_listBox ul li span{ border:1px solid #3c4257; bottom:7px;}
+.g_userBox{ width: 100%; padding-top: 50.73%; position: relative; background:url(/app/images/grade_bg_login.png) center no-repeat; background-size: 100%;}
+.g_headerBox{ overflow: hidden; width: 100%; position: absolute; top:0.9rem; left:0;}
+.g_headName{ float: left; height:50px; margin-left:11px; font-size: 1.1rem; color: #fff; line-height: 35px; padding-left: 48px; background:url(/app/images/headpor.png) no-repeat; background-size: 37%;}
+.g_head_me{ float: right; margin-right:15px; font-size: 1.1rem; color: #fff; font-weight: bold; line-height: 3.2rem;}
+@media only screen and (max-width:340px)  {
+	.g_moneyBox{ position: absolute; bottom:0.7rem; left:0.7rem;}
+	.g_money{ color: #fff; margin-bottom: 6px; font-size: 1.0rem;}
+}
+.g_moneyBox{ position: absolute; bottom:1.0rem; left:0.7rem;}
+.g_money{ color: #fff; margin-bottom: 10px; font-size: 1.0rem;}
+.g_money span{ color: #fff; font-weight: bold;}
+.g_money1{ border:1px solid #e4d9cb; font-size: 0.9rem; color: #e4d9cb; padding:0.1rem 0.4rem;}
+.g_money1 span{ color: #e4d9cb;}
+
+.g_detailBox{ overflow-x:auto; overflow-y:hidden;-webkit-box-flex:1; flex:1; white-space:nowrap; background:#202335;  padding:1.0rem 0 1.5rem 0;}
+.g_detailBox ul{  white-space:nowrap; padding:0; display:flex;  margin-bottom:-5px; font-size:14px;}
+.g_detailBox ul li{ width:100px; position: relative; display:inline-table; float:left; list-style:none; padding:0 10px;}
+.g_ex{ padding:1rem 0.9rem;}
+.g_exTitle{ background:url(/app/images/grade_ico_09.png) no-repeat; background-size:6%; /* line-height: 1.4rem; */ padding-left: 26px; color: #9c9ca4; font-size:1.0rem;}
+.g_exTxt{ margin-top:0.8rem; font-size: 0.95rem;}
+.g_gray{ padding:0.8rem 0; background:#f3f3f3;}
+.g_detailBox1{/* padding:1rem 0.9rem; */}
+.g_exTitle1{ background:url(/app/images/grade_ico_10.png) 10px no-repeat; background-size:6%;/*  line-height: 1.3rem; */ padding-left: 37px; color: #9c9ca4; font-size:1.0rem; margin-top:1.0rem;}
+.g_table{ display: none; overflow: hidden;}
+.g_table ul{ padding:1rem 0.9rem;}
+.g_table ul li{ overflow: hidden; border-left:1px solid #ccc; }
+.g_tableTitle{ width:67%; float: left; text-align: center; color: #393b50; line-height: 2.0rem; background:#ebcb88; font-size: 1.0rem; border-right:1px solid #ccc;}
+.g_tableFont{ width:68%; height: 23px; text-align: center; float: left; border:1px solid #ccc; font-size: 0.9rem; border-left: none; border-top:none; padding:8px 0 8px 0;}
+.g_table ul li .g_tableFont:first-of-type{width:30%;}
+.g_table ul li .g_tableTitle:first-of-type{width:31%; border-right:none; padding-right: 1px;}
+
+
+.mess_warp{ margin-top:15px; background:#fff;}
+.mui-table-view-chevron .mui-media-object{ height:21px; margin-right:15px;}
+.mess_font{ color:#6e768f;}
+.mui-table-view-cell:after{ left:0!important;}
+.mui-table-view-cell{ padding:14px 15px!important;}
+.mess_img{ margin-bottom:35px;}
+.mess_img img{ width:100%;}
+.mess_img p{ font-size:16px; text-align:center; margin-top:13px; color:#3f4558; font-weight:bold;}
+.mess_title{ border-bottom:1px solid #eee; padding:15px 0; }
+.mess_title i{width:5px; height:20px; background:#4d7bfe; display:inline-block; border-radius:15px; }
+.mess_title span{color:#4d7bfe; font-size:16px; font-weight:bold; display:-webkit-box; margin-top:-25px; margin-left:15px; }
+.mess_list{ margin:10px 0; overflow:hidden;}
+.mess_list li{ padding:5px 0; overflow:hidden;}
+.mess_list_t{ font-size:14px; color:#6e768f; width:25%; float:left; }
+.mess_list_f{font-size:14px; color:#000; width:70%; float:left; margin-left:13px; }
+.mess_list_t1{ font-size:14px; color:#6e768f; width:75%; float:left; }
+.mess_list_f1{font-size:14px; color:#6e768f; width:20%; float:left; margin-left:13px; }
+.mess_list_t2{ font-size:14px; color:#3f4558; width:75%; float:left; }
+.mess_list_f2{font-size:14px; color:#3f4558; width:20%; float:left; margin-left:13px; }
+.mess_txt{ margin:15px 0; line-height:22px; font-size:14px;}
+.iterm_main{ overflow:hidden;}
+.iterm_main table{ width:100%; border:1px solid #e5e5e5;}
+.iterm_main table tbody tr{ height:45px; line-height:22px; border-bottom:1px solid #e5e5e5;}
+.iterm_main table tbody tr td{ font-size:14px; padding:10px 25px;}
+.iterm_main table tbody tr td:first-child{ width:80%; border-right:1px solid #e5e5e5;}
+.iterm_main table tbody tr td:nth-child(2){ padding:0; text-align:center;}
+.iterm_main table tbody tr:nth-child(6){ height:80px;}
+.iterm_main1 table{ width:100%; border:1px solid #e5e5e5;}
+.iterm_main1 table thead tr{ font-size:14px; height:45px; line-height:22px; border-bottom:1px solid #e5e5e5;}
+.iterm_main1 table thead tr th:first-child{ width:70%; border-right:1px solid #e5e5e5;}
+.iterm_main1 table tbody tr{ height:45px; line-height:22px; border-bottom:1px solid #e5e5e5;}
+.iterm_main1 table tbody tr td{ font-size:14px; padding:10px 15px;}
+.iterm_main1 table tbody tr td:first-child{ width:60%; border-right:1px solid #e5e5e5;}
+.iterm_main1 table tbody tr td:nth-child(2){ padding:0; text-align:center;}
+.iterm_main1 table tbody tr:nth-child(6){ height:80px;}
+.risk_head img{ width:100%;}
+.risk_warp{ padding:12px 20px; background:#fff; margin-top:-4px;}
+.risk_title{ text-align:center; color:#000; font-size:18px; font-weight:bold; margin-top:20px; }
+.risk_title i{ width:50px; height:2px; margin:11px auto 0; background:url(/app/images/risk_1.png) no-repeat; display:-webkit-box;}
+.risk_logo{ height:71px; background:url(/app/images/risk_logo.jpg) center center no-repeat; background-size:contain; margin:10px 0;}
+.risk_inside_title{ font-size:18px; font-weight:bold; text-align:center; color:#000;}
+.risk_inside_txt{ margin:15px 0 20px 0; font-size:14px; line-height:22px;}
+.risk_btn{ display:block; height:37px; line-height:37px; text-align:center; margin:0 65px 20px 65px; background:#438af0; color:#fff; font-size:16px; border-radius:25px;}
+.risk_gray{ padding:0 20px;}
+.risk_list li{ background:#fff; padding:10px; margin-bottom:15px; overflow:hidden;}
+.risk_list .mui-media-object{ max-width:24%; height:34px; margin-right:15px; float:left;}
+.risk_body{ color:#438af0; float:left; width:75%;}
+.risk_body p{ margin-top:5px; font-size:14px;}
+.risk_blue{ padding:20px; background:#003ea5;}
+.risk_blue p{ color:#fff;}
+.mui-table-view-cell>a:not(.mui-btn){ white-space:inherit!important;}
+.statute_font{ float:left; width:75%; font-size:14px;}
+
+.m7_new{ background:#fff; margin:50px auto 20px; padding:20px;}
+.m7_new h1{ font-size:16px; text-align:center;line-height:22px; font-weight:bold;}
+.m7_new p{ margin:8px 0; line-height:22px; font-size:12px;}
+.m7_new h2{ font-size:14px; margin:12px 0; font-weight:bold;}
+.statute_warp .mui-table-view-chevron .mui-media-object{ height:16px; margin-right:7px;}
+
+/* 帮助中心 */
+.help_head{ width:100%; height:182px; background:url(/app/images/help_bg.png) no-repeat; background-size:100% 100%;}
+.help_head_font{ color:#fff; font-size:16px; text-align:center; padding-top:30px;}
+.help_head_phone{ color:#fff; font-size:20px; margin:12px 0 20px 0; text-align:center;}
+.help_phone_btn{ color:#fff; font-size:14px; border:1px solid #fff; border-radius:25px; padding:3px 15px; display:table; margin:0 auto;}
+.help_menu{ overflow:hidden; background:#fff; padding:15px 10px; margin-bottom:10px;}
+.help_menu_title,.help_main_title{ font-size:16px; text-align:center; color:#000; font-weight:bold; margin-bottom:15px;}
+.help_menu_list{ overflow:hidden;}
+.help_menu .help_menu_list li{float:left;}
+.help_menu ul li .help_ico{ width:40px; height:40px; background:#628bff; border-radius:100%; display:table; margin:0 auto;}
+.help_menu ul li .help_ico img{width:20px; height:20px; display:table; margin:10px auto;}
+.help_menu ul li p{ font-size:14px; text-align:center; color:#6e768f; margin-top:10px;}
+.help_main{overflow:hidden; background:#fff; padding:15px 10px;}
+.help_main ul li{position:relative; margin-bottom:25px;}
+.help_table{ font-size:14px; cursor:pointer;}
+.help_text{ color:#6e768f; margin-top:5px; line-height:24px; font-size:14px; display:none;}
+.mui-navigate-right:after, .mui-push-left:after, .mui-push-right:after{ top:8%!important;}
+
+.banks_01{padding-top:135.5%; background:url(/app/images/banks_01.jpg) center center no-repeat; background-size:100% 100%;}
+.banks_02{padding-top:165.625%; background:url(/app/images/banks_02.jpg) center center no-repeat; background-size:100% 100%;}
+.banks_03{padding-top:136.75%; background:url(/app/images/banks_03.jpg) center center no-repeat; background-size:100% 100%;}
+.banks_04{padding-top:143.75%; background:url(/app/images/banks_04.jpg) center center no-repeat; background-size:100% 100%;}
+
+.quota{ overflow:hidden; border-top:1px solid #ccc; background:#fff;}
+.quota li{overflow:hidden; border-bottom:1px solid #ccc; border-left:1px solid #ccc;}
+.quota_title{ width:25%; height:32px; line-height:32px; float:left; text-align:center; font-size:12px; font-weight:bold; border-right:1px solid #ccc;}
+.quota_text{ width:25%; float:left; font-size:12px; height:32px; line-height:32px; text-align:center; border-right:1px solid #ccc;}
+.quota_font{ width:100%; float:left; font-size:12px;height:32px; line-height:32px; padding-left:20px; border-top:1px solid #ccc;border-right:1px solid #ccc;}
+.quota_bottom{font-size:12px;height:32px; line-height:32px; padding-left:20px;border-right:1px solid #ccc;}

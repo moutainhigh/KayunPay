@@ -1,0 +1,951 @@
+package com.dutiantech.controller.admin;
+
+import java.io.BufferedOutputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.dutiantech.anno.AuthNum;
+import com.dutiantech.controller.BaseController;
+import com.dutiantech.interceptor.AuthInterceptor;
+import com.dutiantech.interceptor.PkMsgInterceptor;
+import com.dutiantech.model.Contracts;
+import com.dutiantech.model.Funds;
+import com.dutiantech.model.FundsTrace;
+import com.dutiantech.model.LoanInfo;
+import com.dutiantech.model.LoanOverdue;
+import com.dutiantech.model.RechargeTrace;
+import com.dutiantech.model.WithdrawTrace;
+import com.dutiantech.plugins.ContractPDFReportV3;
+import com.dutiantech.plugins.PDFReport;
+import com.dutiantech.plugins.VehiclePledgeReport;
+import com.dutiantech.service.ContractsService;
+import com.dutiantech.service.FundsServiceV2;
+import com.dutiantech.service.FundsTraceService;
+import com.dutiantech.service.LoanInfoService;
+import com.dutiantech.service.LoanOverdueService;
+import com.dutiantech.service.RechargeTraceService;
+import com.dutiantech.service.TransferUserService;
+import com.dutiantech.service.WithdrawTraceService;
+import com.dutiantech.util.CommonUtil;
+import com.dutiantech.util.DateUtil;
+import com.dutiantech.util.StringUtil;
+import com.dutiantech.util.SysEnum;
+import com.jfinal.aop.Before;
+import com.jfinal.core.ActionKey;
+
+public class ExportFileController extends BaseController {
+	
+	private FundsServiceV2 fundsServiceV2 = getService(FundsServiceV2.class);
+	
+	private WithdrawTraceService withdrawTraceService = getService(WithdrawTraceService.class);
+	
+	private RechargeTraceService rechargeTraceService = getService(RechargeTraceService.class);
+	
+	private FundsTraceService fundsTraceService = getService(FundsTraceService.class);
+	
+	private LoanInfoService loanInfoService = getService(LoanInfoService.class);
+	
+	private ContractsService contractsService=getService(ContractsService.class);
+	private TransferUserService transferUserService = getService(TransferUserService.class);
+	private LoanOverdueService loanOverdueService = getService(LoanOverdueService.class);
+	
+	
+	@ActionKey("/exportExcel")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public void exportExcel(){
+		
+		try {
+			String beginDate = getPara("beginDate","");
+			String endDate = getPara("endDate","");
+			String output_html = "";
+			String output_extType = "text/html";
+			boolean ok = true;
+			String filename = "中文狗的文件名.xls";
+			HttpServletResponse response = getResponse();
+			if(StringUtil.isBlank(beginDate) || StringUtil.isBlank(endDate)){
+				ok = false;
+				output_html +="<p>开始时间、结束时间不可为空!";
+			}
+			if(beginDate.length()!=8 || endDate.length()!=8){
+				ok = false;
+				output_html +="<p>开始时间、结束时间不合法!";
+			}
+			long x = CommonUtil.compareDateTime(endDate, beginDate, "yyyyMMdd");
+			if(x>100){
+				ok = false;
+				output_html +="<p>最大时间范围不可超过100天，当前范围："+x+"天!";
+			}
+			if(!StringUtil.isBlank(beginDate))
+				beginDate = beginDate + "000000";
+			
+			if(!StringUtil.isBlank(endDate))
+				endDate = endDate + "235959";
+			if(ok){
+				response.setCharacterEncoding("utf-8");
+				output_extType = "application/vnd.ms-excel";
+				try {
+					String bb = getPara("bb","");
+					if(bb.equals("funds1")){
+						filename = "理财人账户";
+						output_html = funds1(beginDate,endDate);
+					}else if(bb.equals("funds2")){
+						filename = "借款人账户";
+						output_html = funds2(beginDate,endDate);
+					}else if(bb.equals("funds-tx")){
+						filename = "提现流水";
+						output_html = funds_tx(beginDate, endDate);
+					}else if(bb.equals("funds-cz")){
+						filename = "充值流水";
+						output_html = funds_cz(beginDate, endDate);
+					}else if(bb.equals("funds-trace")){
+						filename = "资金流水";
+						output_html = funds_trace(beginDate, endDate);
+					}else if(bb.equals("caiwuzhuanyong1")){
+						filename = "月还款统计";
+						output_html = caiwuzhuanyong1(beginDate, endDate);
+					}else if(bb.equals("overdueList")){
+						filename = "逾期中列表";
+						output_html = overdueList();
+					}
+				} catch (Exception e) {
+					filename = "导出异常:"+filename+DateUtil.getNowDateTime()+".xls";
+				}
+				filename= new String(filename.getBytes("utf-8"), "ISO_8859_1");
+				response.setHeader("Content-Disposition", "attachment;filename="+filename+"-"+DateUtil.getNowDateTime()+".xls");
+			}
+			renderText(output_html, output_extType);
+		} catch (Exception e) {
+			e.printStackTrace();
+			renderText("导出时异常:<br><p>"+e.getMessage());
+		}
+	}
+	
+	/**
+	 * 查询债权人信息
+	 */
+	@ActionKey("/queryTransferUser")
+	@AuthNum(value=999)
+	public void queryTransferUser(){
+		renderJson(succ("查询成功", VehiclePledgeReport.listTransferUser));
+	}
+	
+	@ActionKey("/queryTransferUserV2")
+	@AuthNum(value=999)
+	public void queryTransferUserV2() {
+		renderJson(succ("查询成功", transferUserService.queryTransferList()));
+	}
+	
+	/**
+	 * 生成借款电子合同
+	 */
+	@ActionKey("/vehicleReport")
+	@AuthNum(value=999)
+	public void downVehiclePDF(){
+		Map<String,String> map = new HashMap<String, String>();
+		map.put("transferUserNo",  getPara("transferUserNo","1"));
+		map.put("loanNo",   getPara("loanNo",""));
+		map.put("loanUserName",   getPara("loanUserName","测试"));
+		map.put("loanUserCardId",   getPara("loanUserCardId","420222199009152894"));
+		map.put("loanUserAddress",   getPara("loanUserAddress","            "));
+		map.put("loanUserMobile",   getPara("loanUserMobile","            "));
+		map.put("loanUserEmail",   getPara("loanUserEmail","            "));
+		map.put("emergencyName",   getPara("emergencyName","            "));
+		map.put("emergencyRelation",   getPara("emergencyRelation","            "));
+		map.put("emergencyMobile",   getPara("emergencyMobile","            "));
+		map.put("loanAmount",   getPara("loanAmount","10000"));
+		map.put("rateByMonth",   getPara("rateByMonth","300"));
+		map.put("loanUsed",   getPara("loanUsed","            "));
+		map.put("limit",   getPara("limit","3"));
+		map.put("refundType",   getPara("refundType","A"));
+		map.put("cars",   getPara("cars",""));
+		map.put("loanBankUserName",   getPara("loanBankUserName","            "));
+		map.put("loanBankNo",   getPara("loanBankNo","            "));
+		map.put("loanBankName",   getPara("loanBankName","            "));
+		map.put("loanDate",   getPara("loanDate",DateUtil.getNowDate()));
+		map.put("product",   getPara("product",""));
+		map.put("dbrs", getPara("dbrs",""));
+		
+		HttpServletResponse response = getResponse();
+		response.reset();
+//		response.setHeader("Content-type", "text/html;charset=UTF-8");
+		try {
+			String userAgent = getRequest().getHeader("USER-AGENT");
+			String fileName = map.get("loanNo") + "_"+ map.get("loanUserName") + "_"+map.get("product")+"合同.pdf";
+			if(userAgent.contains("MSIE")){//IE浏览器
+				fileName = URLEncoder.encode(fileName,"UTF8");
+            }else if(userAgent.contains("Mozilla")){//google,火狐浏览器
+            	fileName = new String(fileName.getBytes(), "ISO8859-1");
+            }else{
+            	fileName = URLEncoder.encode(fileName,"UTF8");//其他浏览器
+            }
+			response.addHeader("Content-Disposition", 
+					"attachment;filename=" + fileName);
+			response.setContentType("application/pdf");
+			response.setContentType("application/octet-stream;charset=UTF-8;");
+			PDFReport pdfReport = new VehiclePledgeReport(response.getOutputStream());
+			VehiclePledgeReport.mapLoan = map;
+			pdfReport.generatePDF();
+		} catch (Exception e) {
+			e.printStackTrace();
+			//renderJson(error("03", "非常抱歉，电子合同异常，请联系客服处理！", ""));
+		}
+		renderNull();
+	}
+	
+	/**
+	 * 预览、下载合同
+	 * @throws  
+	 */
+	@ActionKey("/preAndDownContractsPDF")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public void preAndDownContractsPDF() throws UnsupportedEncodingException{
+		String type = getPara("type");
+		String contractCode = getPara("key");
+		
+		if(StringUtil.isBlank(contractCode)){
+			renderJson(error("01", "参数错误", ""));
+			return;
+		}
+		//查询合同信息
+		Contracts contracts = contractsService.findById(contractCode);
+		
+		Map<String , Object> map = new HashMap<String, Object>();
+		
+		map.put("contracts", contracts);
+		
+		HttpServletResponse response = getResponse();
+		//清除空白行
+		response.reset();
+		
+		try {
+			if("1".equals(type)){
+			response.addHeader("Content-Disposition",
+					"attachment;filename=" + new String(( "易融恒信 _" +contracts.getStr("contractCode")+".pdf").getBytes("utf-8"),"iso8859-1"));
+			response.setContentType("application/pdf");
+			}
+			
+			ContractPDFReportV3 pdfReport = new ContractPDFReportV3(response.getOutputStream());
+			pdfReport.setContractMap(map);
+			pdfReport.generatePDF();
+		} catch (Exception e) {
+			renderJson(error("03", "文件处理异常，请联系客服处理！", ""));
+			return;
+		}
+		renderNull();
+	}
+	
+	/**
+	 * 整套合同预览下载
+	 * @throws  
+	 */
+	@ActionKey("/contractsFullPDF")
+	@AuthNum(value=999)
+	@Before({PkMsgInterceptor.class})
+	public void contractsFullPDF() throws UnsupportedEncodingException{
+		String type = getPara("type");
+		String contractsNum = getPara("contractsNum");//合同编号
+		
+		if(StringUtil.isBlank(contractsNum)){
+			renderJson(error("01", "参数错误", ""));
+			return;
+		}
+		//根据编号查询整套合同
+		List<Contracts> contractss = contractsService.findByContractNum(contractsNum);
+		Map<String , Object> map = new HashMap<String, Object>();
+		String content="";
+		for (Contracts contracts : contractss) {
+			content+=contracts.getStr("content");
+		}
+		map.put("contracts", contractss.get(0).set("content", content));
+		
+		HttpServletResponse response = getResponse();
+		//清除空白行
+		response.reset();
+		
+		try {
+			if("1".equals(type)){
+			response.addHeader("Content-Disposition",
+					"attachment;filename=" + new String(( "合同编号_" +contractsNum+".pdf").getBytes("utf-8"),"iso8859-1"));
+			response.setContentType("application/pdf");
+			}
+			
+			ContractPDFReportV3 pdfReport = new ContractPDFReportV3(response.getOutputStream());
+			pdfReport.setContractMap(map);
+			pdfReport.generatePDF();
+		} catch (Exception e) {
+			renderJson(error("03", "文件处理异常，请联系客服处理！", ""));
+			return;
+		}
+		renderNull();
+	}
+	
+	/**
+	 * 生成理财人账户table
+	 * @param beginDate
+	 * @param endDate
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private String funds1(String beginDate,String endDate){
+		int pageNumber = 1;
+		int pageSize = 4500;
+		String allkey = getPara("allkey","");
+		
+		String output_html = "<table border='1'>";
+		output_html+="<tr><td colspan='10' style='text-align:center;'><b>理财人资金账户</b></td></tr>";
+		output_html+="<tr><td><b>昵称</b></td><td><b>姓名</b></td><td><b>可用余额</b></td><td><b>积分</b></td><td><b>冻结余额</b></td><td><b>待收回期数</b></td><td><b>待收回本金</b></td><td><b>待收回利息</b></td><td><b>已回收本金</b></td><td><b>已回收利息</b></td></tr>";
+		
+		Map<String,Object> result_firstPage = fundsServiceV2.findByPage4Noob1(pageNumber, pageSize, beginDate, endDate,allkey);
+		int totalRow = (int) result_firstPage.get("totalRow");
+		if(totalRow>0){
+			output_html += funds1_makeHtml((List<Funds>) result_firstPage.get("list"));
+		}
+		boolean lastPage = (boolean) result_firstPage.get("lastPage");
+		while(!lastPage && totalRow>0){
+			pageNumber ++;
+			Map<String,Object> result_zhazha = fundsServiceV2.findByPage4Noob1(pageNumber, pageSize, beginDate, endDate,allkey);
+			output_html += funds1_makeHtml((List<Funds>) result_zhazha.get("list"));
+			lastPage = (boolean) result_zhazha.get("lastPage");
+			totalRow = (int) result_zhazha.get("totalRow");
+		}
+		if(totalRow > 0){
+			Map<String,Object> count_info = fundsServiceV2.findByPage4Noob1WithSum(beginDate, endDate, allkey);
+			output_html += "<tr>";
+			output_html += "<td><b>总计</b></td>";
+			output_html += "<td></td>";
+			output_html += "<td>"+"￥"+getMoneyStr(count_info.get("count_avBalance").toString())+"</td>";
+			output_html += "<td>"+getMoneyStr(count_info.get("count_points").toString())+"</td>";
+			output_html += "<td>"+"￥"+getMoneyStr(count_info.get("count_frozeBalance").toString())+"</td>";
+			output_html += "<td>"+count_info.get("count_beRecyCount").toString()+"</td>";
+			output_html += "<td>"+"￥"+getMoneyStr(count_info.get("count_beRecyPrincipal").toString())+"</td>";
+			output_html += "<td>"+"￥"+getMoneyStr(count_info.get("count_beRecyInterest").toString())+"</td>";
+			output_html += "<td>"+"￥"+getMoneyStr(count_info.get("count_reciedPrincipal").toString())+"</td>";
+			output_html += "<td>"+"￥"+getMoneyStr(count_info.get("count_reciedInterest").toString())+"</td>";
+			output_html += "</tr>";
+		}
+		output_html += "</table>";
+		return output_html;
+	}
+	
+	/**
+	 * 生成借款人账户table
+	 * @param beginDate
+	 * @param endDate
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private String funds2(String beginDate,String endDate){
+		int pageNumber = 1;
+		int pageSize = 4500;
+		String allkey = getPara("allkey","");
+		String output_html = "<table border='1'>";
+		output_html += "<tr><td colspan='7' style='text-align:center;'><b>借款人资金账户</b></td></tr>";
+		output_html += "<tr><td><b>昵称</b></td><td><b>姓名</b></td><td><b>借款总额</b></td><td><b>还款中期数</b></td><td><b>已还期数</b></td><td><b>待还本金</b></td><td><b>待还利息</b></td></tr>";
+		
+		Map<String,Object> result_firstPage = fundsServiceV2.findByPage4Noob2(pageNumber, pageSize, beginDate, endDate,allkey);
+		int totalRow = (int) result_firstPage.get("totalRow");
+		if(totalRow>0){
+			output_html += funds2_makeHtml((List<Funds>) result_firstPage.get("list"));
+		}
+		boolean lastPage = (boolean) result_firstPage.get("lastPage");
+		while(!lastPage && totalRow>0){
+			pageNumber ++;
+			Map<String,Object> result_zhazha = fundsServiceV2.findByPage4Noob2(pageNumber, pageSize, beginDate, endDate,allkey);
+			output_html += funds2_makeHtml((List<Funds>) result_zhazha.get("list"));
+			lastPage = (boolean) result_zhazha.get("lastPage");
+			totalRow = (int) result_zhazha.get("totalRow");
+		}
+		if(totalRow>0){
+			Map<String,Object> count_info = fundsServiceV2.findByPage4Noob2WithSum(beginDate, endDate, allkey);
+			output_html += "<tr>";
+			output_html += "<td><b>总计</b></td>";
+			output_html += "<td></td>";
+			output_html += "<td>"+"￥"+getMoneyStr(count_info.get("count_loanTotal").toString())+"</td>";
+			output_html += "<td>"+count_info.get("count_loanCount").toString()+"</td>";
+			output_html += "<td>"+count_info.get("count_loanSuccessCount").toString()+"</td>";
+			output_html += "<td>"+"￥"+getMoneyStr(count_info.get("count_beRecyPrincipal4loan").toString())+"</td>";
+			output_html += "<td>"+"￥"+getMoneyStr(count_info.get("count_beRecyInterest4loan").toString())+"</td>";
+			output_html += "</tr>";
+		}
+		output_html += "</table>";
+		return output_html;
+	}
+	
+	/**
+	 * 生成提现流水table
+	 * @param beginDate
+	 * @param endDate
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private String funds_tx(String beginDate,String endDate){
+		int pageNumber = 1;
+		int pageSize = 4500;
+		String allkey = getPara("allkey","");
+		String fuserCode = getPara("fuserCode","");
+		String status = getPara("status","");
+		String sharen = getPara("sharen","");
+		String withdrawType = getPara("withdrawType","");
+		String output_html = "<table border='1'>";
+		output_html += "<tr><td colspan='14' style='text-align:center;'><b>提现流水</b></td></tr>";
+		output_html += "<tr><td><b>提现方式</b></td><td><b>到账金额</b></td><td><b>提现金额</b></td><td><b>手续费</b></td><td><b>状态</b></td><td><b>操作员</b></td><td><b>用户昵称</b></td>"
+				+ "<td><b>银行名称</b></td><td><b>银行卡号</b></td><td><b>姓名</b></td><td><b>申请时间</b></td><td><b>成功时间</b></td><td><b>备注</b></td><td><b>地区</b></td></tr>";
+		
+		Map<String,Object> result_firstPage = withdrawTraceService.findByPage4Noob(fuserCode,pageNumber, pageSize,beginDate,endDate,allkey,status,sharen,withdrawType);
+		int totalRow = (int) result_firstPage.get("totalRow");
+		if(totalRow>0){
+			output_html += funds_tx_makeHtml((List<WithdrawTrace>) result_firstPage.get("list"));
+		}
+		boolean lastPage = (boolean) result_firstPage.get("lastPage");
+		while(!lastPage && totalRow >0){
+			pageNumber ++;
+			Map<String,Object> result_zhazha = withdrawTraceService.findByPage4Noob(fuserCode,pageNumber, pageSize,beginDate,endDate,allkey,status,sharen,withdrawType);
+			output_html += funds_tx_makeHtml((List<WithdrawTrace>) result_firstPage.get("list"));
+			lastPage = (boolean) result_zhazha.get("lastPage");
+			totalRow = (int) result_zhazha.get("totalRow");
+		}
+		
+		if(totalRow > 0){
+			Map<String,Object> count_info = withdrawTraceService.findByPage4NoobWithSum(fuserCode, beginDate, endDate, allkey, status, sharen, withdrawType);
+			
+			output_html +="<tr><td><b>总计</b></td>"
+					+ "<td>"+"￥"+getMoneyStr(count_info.get("count_dzje").toString())+"</td>"
+					+ "<td>"+"￥"+getMoneyStr(count_info.get("count_withdrawAmount").toString())+"</td>"
+					+ "<td>"+"￥"+getMoneyStr(count_info.get("count_sxf").toString())+"</td>"
+					+ "<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+		}
+		output_html += "</table>";
+		return output_html;
+	}
+	
+	/**
+	 * 生成充值流水table
+	 * @param beginDate
+	 * @param endDate
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private String funds_cz(String beginDate,String endDate){
+		int pageNumber = 1;
+		int pageSize = 4500;
+		String allkey = getPara("allkey","");
+		String fuserCode = getPara("fuserCode","");
+		String traceState = getPara("traceState","");
+		String sharen = getPara("sharen","");
+		String rechargeType = getPara("rechargeType","");
+		String output_html = "<table border='1'>";
+		output_html += "<tr><td colspan='9' style='text-align:center;'><b>充值流水</b></td></tr>";
+		output_html += "<tr><td></td><td><b>充值金额</b></td><td><b>充值方式</b></td><td><b>状态</b></td><td><b>用户昵称</b></td><td><b>姓名</b></td><td><b>充值时间</b></td><td><b>成功时间</b></td><td><b>备注</b></td>";
+		
+		Map<String,Object> result_firstPage = rechargeTraceService.findByPage4Noob(fuserCode, pageNumber, pageSize, beginDate, endDate, allkey, traceState,sharen,rechargeType);
+		int totalRow = (int) result_firstPage.get("totalRow");
+		if(totalRow>0){
+			output_html += funds_cz_makeHtml((List<RechargeTrace>) result_firstPage.get("list"));
+		}
+		boolean lastPage = (boolean) result_firstPage.get("lastPage");
+		while(!lastPage && totalRow>0){
+			pageNumber ++;
+			Map<String,Object> result_zhazha = rechargeTraceService.findByPage4Noob(fuserCode, pageNumber, pageSize, beginDate, endDate, allkey, traceState,sharen,rechargeType);
+			output_html += funds_cz_makeHtml((List<RechargeTrace>) result_firstPage.get("list"));
+			lastPage = (boolean) result_zhazha.get("lastPage");
+			totalRow = (int) result_zhazha.get("totalRow");
+		}
+		if(totalRow>0){
+			Map<String,Object> count_info = rechargeTraceService.findByPage4NoobWithSum(fuserCode, beginDate, endDate, allkey, traceState, sharen, rechargeType);
+			
+			output_html +="<tr><td><b>总计</b></td>"
+					+ "<td>"+"￥"+getMoneyStr(count_info.get("count_traceAmount").toString())+"</td>"
+					+ "<td></td><td></td><td></td><td></td><td></td><td></td><td></td>";
+		}
+		output_html += "</table>";
+		return output_html;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private String funds_trace(String beginDate, String endDate){
+		String traceType = getPara("traceType","");
+		
+		String fundsType = getPara("fundsType","");
+		
+		String userCode = getPara("userCode");
+		
+		int pageNumber = 1;
+		int pageSize = 4500;
+		String output_html = "<table border='1'>";
+		output_html += "<tr><td colspan='9' style='text-align:center;'><b>资金流水</b></td></tr>";
+		output_html += "<tr><td><b>昵称</b></td><td><b>手机号</b></td><td><b>姓名</b></td><td><b>交易类型</b></td><td><b>资金类型</b></td><td><b>交易金额</b></td><td><b>账户可用余额</b></td><td><b>账户冻结余额</b></td><td><b>交易额外费用</b></td><td><b>交易时间</b></td><td><b>说明</b></td>";
+		
+		Map<String, Object> result_firstPage = fundsTraceService.findByPage4Noob(pageNumber, pageSize,beginDate, endDate, traceType, fundsType , userCode);
+		ArrayList<Map<String, Object>> fundsTraces= (ArrayList<Map<String, Object>>) result_firstPage.get("list");
+		   
+		
+		for(int i=0;i<fundsTraces.size();i++){
+              FundsTrace fundstrace=(FundsTrace) fundsTraces.get(i);
+              try {
+				
+				fundstrace.put("userMobile", CommonUtil.decryptUserMobile(fundstrace.getStr("userMobile")));
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		
+			   
+			  }
+		result_firstPage.put("list", fundsTraces);
+		int totalRow = (int) result_firstPage.get("totalRow");
+		if(totalRow>0){
+			output_html += funds_trace_makeHtml((List<FundsTrace>) result_firstPage.get("list"));
+		}
+  
+		boolean lastPage = (boolean) result_firstPage.get("lastPage");
+		while(!lastPage&&totalRow>0){
+			pageNumber ++;
+			Map<String,Object> result_zhazha = fundsTraceService.findByPage4Noob(pageNumber, pageSize,beginDate, endDate, traceType, fundsType , userCode);
+			 fundsTraces= (ArrayList) result_zhazha.get("list");
+			   
+			
+			for(int i=0;i<fundsTraces.size();i++){
+	              FundsTrace fundstrace=(FundsTrace) fundsTraces.get(i);
+	              try {
+					
+					fundstrace.put("userMobile", CommonUtil.decryptUserMobile(fundstrace.getStr("userMobile")));
+					
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
+				   
+				  }
+			result_zhazha.put("list", fundsTraces);
+			System.out.println("aaa"+result_zhazha.get("list"));
+			output_html += funds_trace_makeHtml((List<FundsTrace>) result_zhazha.get("list"));
+			lastPage = (boolean) result_zhazha.get("lastPage");
+			totalRow = (int) result_zhazha.get("totalRow");
+		}
+		
+		if(totalRow > 0){
+			Map<String,Object> count_info =  fundsTraceService.findByPage4NoobWithSum(beginDate, endDate, traceType, fundsType, userCode);
+			output_html += "<tr><td><b>总计</b></td>";
+			output_html += "<td></td><td></td><td>￥"+getMoneyStr(count_info.get("count_traceAmount").toString())+"</td>";
+			output_html += "<td></td><td></td><td></td><td></td><td></td>";
+		}
+		output_html += "</table>";
+		return output_html;
+	}
+	
+	/**
+	 * 统计未来待还得
+	 * @param beginDate
+	 * @param endDate
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private String caiwuzhuanyong1(String beginDate, String endDate){
+		String allkey = getPara("allkey", "") ;
+		String loanState = getPara("loanState","O");
+		beginDate = beginDate.substring(0,8);
+		endDate = endDate.substring(0,8);
+		int pageNumber = 1;
+		int pageSize = 4500;
+		String output_html = "<table border='1'>";
+		output_html += "<tr><td colspan='13' style='text-align:center;'><b>还款详情</b></td></tr>";
+		output_html += "<tr><td><b>借款序号</b></td><td><b>标题</b></td><td><b>借款金额</b></td><td><b>已还/总期数</b></td><td><b>已还本金</b></td><td><b>已还利息</b></td><td><b>下期待还本金</b></td><td><b>下期待还利息</b></td><td><b>下期待还本金(包含加息活动)</b></td><td><b>下期待还利息(包含加息活动)</b></td><td><b>状态</b></td><td><b>还款日</b></td><td><b>借款人</b></td><td><b>来源</b></td></tr>";
+		Map<String,Object> result_firstPage = loanInfoService.findByPage4Noob(null,pageNumber, pageSize, beginDate, endDate, loanState,allkey,null);
+		
+		int totalRow = (int) result_firstPage.get("totalRow");
+		if(totalRow>0){
+			output_html += loan_info_makeHtml((List<LoanInfo>) result_firstPage.get("list"));
+		}
+		
+		boolean lastPage = (boolean) result_firstPage.get("lastPage");
+		while(!lastPage&&totalRow>0){
+			pageNumber ++;
+			Map<String,Object> result_zhazha = loanInfoService.findByPage4Noob(null,pageNumber, pageSize, beginDate, endDate, loanState,allkey,null);
+			output_html += loan_info_makeHtml((List<LoanInfo>) result_zhazha.get("list"));
+			lastPage = (boolean) result_zhazha.get("lastPage");
+			totalRow = (int) result_zhazha.get("totalRow");
+		}
+		
+		if(totalRow > 0){
+			Map<String,Object> count_info = loanInfoService.findByPage4NoobWithSum2(null,pageNumber, pageSize, beginDate, endDate, loanState,allkey,null);
+			Long count_nextAmount = (Long) count_info.get("count_nextAmount");
+			Long count_nextInterest = (Long) count_info.get("count_nextInterest");
+			Long count_nextBX = count_nextAmount + count_nextInterest;
+			output_html += "<tr><td><b>总计下期待还本息</b></td>";
+			output_html += "<td colspan='2'>￥"+getMoneyStr(count_nextBX.toString())+"</td>";
+			output_html += "<td><b>总计下期待还本金</b></td>";
+			output_html += "<td colspan='2'>￥"+getMoneyStr(count_nextAmount.toString())+"</td>";
+			output_html += "<td><b>总计下期待还利息</b></td>";
+			output_html += "<td colspan='2'>￥"+getMoneyStr(count_nextInterest.toString())+"</td>";
+			output_html += "<td colspan='4'></td></tr>";
+			
+			Long count_leftAmount = (Long) count_info.get("count_leftAmount");
+			Long count_leftInterest = (Long) count_info.get("count_leftInterest");
+			Long count_leftBx = count_leftAmount + count_leftInterest;
+			output_html += "<tr><td><b>总计待还本息</b></td>";
+			output_html += "<td colspan='2'>￥"+getMoneyStr(count_leftBx.toString())+"</td>";
+			output_html += "<td><b>总计待还本金</b></td>";
+			output_html += "<td colspan='2'>￥"+getMoneyStr(count_leftAmount.toString())+"</td>";
+			output_html += "<td><b>总计待还利息</b></td>";
+			output_html += "<td colspan='2'>￥"+getMoneyStr(count_leftInterest.toString())+"</td>";
+			output_html += "<td colspan='4'></td></tr>";
+			
+			Long count_settleInterest=(Long) count_info.get("count_settleInterest");
+			output_html += "<tr><td><b>提前结清 待还利息</b></td>";
+			output_html += "<td colspan='2'>￥"+getMoneyStr(count_settleInterest.toString())+"</td>";
+			output_html += "<td colspan='4'></td></tr>";
+		}
+		output_html += "</table>";
+		return output_html;
+	}
+	
+	
+	private String funds1_makeHtml(List<Funds> list){
+		String output_html = "";
+		for (int i = 0; i < list.size(); i++) {
+			Funds funds = list.get(i);
+			output_html += "<tr>";
+			output_html += "<td>"+funds.getStr("userName")+"</td>";
+			output_html += "<td>"+funds.getStr("userCardName")+"</td>";
+			output_html += "<td>"+getMoneyStr(funds.getLong("avBalance").toString())+"</td>";
+			output_html += "<td>"+getMoneyStr(funds.getLong("points").toString())+"</td>";
+			output_html += "<td>"+getMoneyStr(funds.getLong("frozeBalance").toString())+"</td>";
+			output_html += "<td>"+funds.getInt("beRecyCount")+"</td>";
+			output_html += "<td>"+getMoneyStr (funds.getLong("beRecyPrincipal").toString())+"</td>";
+			output_html += "<td>"+getMoneyStr(funds.getLong("beRecyInterest").toString())+"</td>";
+			output_html += "<td>"+getMoneyStr(funds.getLong("reciedPrincipal").toString())+"</td>";
+			output_html += "<td>"+getMoneyStr(funds.getLong("reciedInterest").toString())+"</td>";
+			output_html += "</tr>";
+		}
+		return output_html;
+	}
+	
+	private String funds2_makeHtml(List<Funds> list){
+		String output_html = "";
+		for (int i = 0; i < list.size(); i++) {
+			output_html += "<tr>";
+			Funds funds = list.get(i);
+			output_html += "<td>"+ funds.getStr("userName") +"</td>";
+			output_html += "<td>"+ funds.getStr("userCardName") +"</td>";
+			output_html += "<td>"+ getMoneyStr(funds.getLong("loanTotal").toString()) +"</td>";
+			output_html += "<td>"+ funds.getInt("loanCount").toString() +"</td>";
+			output_html += "<td>"+ funds.getInt("loanSuccessCount").toString() +"</td>";
+			output_html += "<td>"+ getMoneyStr(funds.getLong("beRecyPrincipal4loan").toString()) +"</td>";
+			output_html += "<td>"+ getMoneyStr(funds.getLong("beRecyInterest4loan").toString()) +"</td>";
+			output_html += "</tr>";
+		}
+		
+		return output_html;
+	}
+	
+	private String funds_tx_makeHtml(List<WithdrawTrace> list){
+		String output_html = "";
+		for (int i = 0; i < list.size(); i++) {
+			output_html += "<tr>";
+			WithdrawTrace withdrawTrace = list.get(i);
+			String wType = withdrawTrace.getStr("withdrawType");
+			if(StringUtil.isBlank(wType)){
+				wType = "未知";
+			}else{
+				if(wType.equals("SYS")){
+					wType = "人工";
+				}else if(wType.equals("LL")){
+					wType = "连连支付";
+				}else if(wType.equals("WYZX")){
+					wType = "网银在线";
+				}else if(wType.equals("BFZF")){
+					wType = "宝付支付";
+				}
+			}
+			output_html += "<td>"+ wType +"</td>";
+			long dzje = 0;
+			long withdrawAmount = withdrawTrace.getLong("withdrawAmount");
+			long sxf = withdrawTrace.getInt("sxf");
+			dzje = withdrawAmount - sxf;
+			output_html += "<td>"+ getMoneyStr(dzje+"") +"</td>";
+			output_html += "<td>"+ getMoneyStr(withdrawAmount+"") +"</td>";
+			output_html += "<td>"+ getMoneyStr(sxf+"") +"</td>";
+			String status = withdrawTrace.getStr("status");
+			
+			if(status.equals(SysEnum.withdrawTraceState.A.val())){
+				status = SysEnum.withdrawTraceState.A.desc();
+			}else if(status.equals(SysEnum.withdrawTraceState.B.val())){
+				status = SysEnum.withdrawTraceState.B.desc();
+			}else if(status.equals(SysEnum.withdrawTraceState.C.val())){
+				status = SysEnum.withdrawTraceState.C.desc();
+			}else if(status.equals(SysEnum.withdrawTraceState.D.val())){
+				status = SysEnum.withdrawTraceState.D.desc();
+			}else if(status.equals(SysEnum.withdrawTraceState.E.val())){
+				status = SysEnum.withdrawTraceState.E.desc();
+			}
+			output_html += "<td>"+ status +"</td>";
+			output_html += "<td>"+ withdrawTrace.getStr("opUserName") +"</td>";
+			output_html += "<td>"+ withdrawTrace.getStr("userName") +"</td>";
+			output_html += "<td>"+ withdrawTrace.getStr("bankName") +"</td>";
+			output_html += "<td>卡号"+ withdrawTrace.getStr("bankNo")+"" +"</td>";
+			output_html += "<td>"+ withdrawTrace.getStr("userTrueName") +"</td>";
+			String createDateTime = withdrawTrace.getStr("createDateTime");
+			createDateTime = DateUtil.parseDateTime(DateUtil.getDateFromString(createDateTime, "yyyyMMddHHmmss"), "yyyy-MM-dd HH:mm:ss");
+			output_html += "<td>"+ createDateTime +"</td>";
+			String okDateTime = withdrawTrace.getStr("okDateTime");
+			if(StringUtil.isBlank(okDateTime)){
+				okDateTime = " ";
+			}else{
+				okDateTime = DateUtil.parseDateTime(DateUtil.getDateFromString(okDateTime, "yyyyMMddHHmmss"), "yyyy-MM-dd HH:mm:ss");
+			}
+			output_html += "<td>"+ okDateTime +"</td>";
+			output_html += "<td>"+ withdrawTrace.getStr("withdrawRemark") +"</td>";
+			output_html += "<td>"+ withdrawTrace.getStr("cardCity") +"</td>";
+			output_html += "</tr>";
+		}
+		
+		return output_html;
+	}
+	
+	private String funds_cz_makeHtml(List<RechargeTrace> list){
+		String output_html = "";
+		for (int i = 0; i < list.size(); i++) {
+			output_html += "<tr><td></td>";
+			RechargeTrace rechargeTrace = list.get(i);
+			output_html += "<td>"+ getMoneyStr(rechargeTrace.getLong("traceAmount")+"") +"</td>";
+			
+			String rType = rechargeTrace.getStr("rechargeType");
+			if(StringUtil.isBlank(rType)){
+				rType = "未知";
+			}else{
+				if(rType.equals("SYS")){
+					rType = "人工";
+				}else if(rType.equals("LL")){
+					rType = "连连支付";
+				}else if(rType.equals("WYZX")){
+					rType = "网银在线";
+				}else if(rType.equals("BFZF")){
+					rType = "宝付支付";
+				}
+				else if(rType.equals("FAST")){
+					rType = "快捷支付";
+				}
+				else if(rType.equals("WY")){
+					rType = "网银支付";
+				}
+			}
+			output_html += "<td>"+ rType +"</td>";
+			String traceState = rechargeTrace.getStr("traceState");
+			if(traceState.equals("A")){
+				traceState = "充值提交";
+			}else if(traceState.equals("B")){
+				traceState = "充值成功";
+			}else if(traceState.equals("C")){
+				traceState = "充值失败";
+			}
+			output_html += "<td>"+ traceState +"</td>";
+			output_html += "<td>"+ rechargeTrace.getStr("userName") +"</td>";
+			output_html += "<td>"+ rechargeTrace.getStr("userTrueName") +"</td>";
+			String traceDateTime = rechargeTrace.getStr("traceDateTime");
+			traceDateTime = DateUtil.parseDateTime(DateUtil.getDateFromString(traceDateTime, "yyyyMMddHHmmss"), "yyyy-MM-dd HH:mm:ss");
+			output_html += "<td>"+ traceDateTime +"</td>";
+			String okDateTime = rechargeTrace.getStr("okDateTime");
+			if(StringUtil.isBlank(okDateTime)){
+				okDateTime = traceDateTime;
+			}else{
+				okDateTime = DateUtil.parseDateTime(DateUtil.getDateFromString(okDateTime, "yyyyMMddHHmmss"), "yyyy-MM-dd HH:mm:ss");
+			}
+			output_html += "<td>"+ okDateTime +"</td>";
+			output_html += "<td>"+ rechargeTrace.getStr("traceRemark") +"</td>";
+			output_html += "</tr>";
+		}
+		
+		return output_html;
+	}
+	
+	private String loan_info_makeHtml(List<LoanInfo> list){
+		String output_html = "";
+		for (int i = 0; i < list.size(); i++) {
+			output_html += "<tr>";
+			LoanInfo tmp = list.get(i);
+			output_html += "<td>"+tmp.getStr("loanNo")+"</td>";
+			output_html += "<td>"+tmp.getStr("loanTitle")+"</td>";
+			output_html += "<td>"+getMoneyStr(tmp.getLong("loanAmount").toString())+"</td>";
+			output_html += "<td>"+tmp.getInt("reciedCount")+"期/"+tmp.getInt("loanTimeLimit")+"期</td>";
+			output_html += "<td>"+getMoneyStr(tmp.getLong("yihuanbj").toString())+"</td>";
+			output_html += "<td>"+getMoneyStr(tmp.getLong("yihuanlx").toString())+"</td>";
+			
+//			Long xqbx = tmp.getLong("xqbj")+tmp.getLong("xqlx");
+//			output_html += "<td>"+getMoneyStr(xqbx.toString())+"</td>";
+			output_html += "<td>"+getMoneyStr(tmp.getLong("xqbj").toString())+"</td>";
+			output_html += "<td>"+getMoneyStr(tmp.getLong("xqlx").toString())+"</td>";
+			output_html += "<td>"+getMoneyStr(tmp.getLong("xqbj_jx").toString())+"</td>";
+			output_html += "<td>"+getMoneyStr(tmp.getLong("xqlx_jx").toString())+"</td>";
+			String loanState =  SysEnum.loanState.valueOf(tmp.getStr("loanState")).desc();
+			output_html += "<td>"+loanState+"</td>";
+			output_html += "<td>"+tmp.getStr("backDate")+"</td>";
+			output_html += "<td>"+tmp.getStr("userName")+"</td>";
+			output_html += "<td>"+(StringUtil.isBlank(tmp.getStr("loanArea")) ? " " : tmp.getStr("loanArea") )+"</td>";
+			
+			output_html += "</tr>";
+		}
+		return output_html;
+	}
+	
+private String funds_trace_makeHtml(List<FundsTrace> list){
+		
+		String output_html = "";
+		for (int i = 0; i < list.size(); i++) {
+			output_html += "<tr>";
+			FundsTrace tmp = list.get(i);
+			output_html += "<td>"+tmp.getStr("userName")+"</td>";
+			output_html += "<td>"+tmp.getStr("userMobile")+"</td>";
+			output_html += "<td>"+tmp.getStr("userCardName")+"</td>";
+			output_html += "<td>"+tmp.getStr("traceTypeName")+"</td>";
+			String fundsType =  SysEnum.fundsType.valueOf(tmp.getStr("fundsType")).desc();
+			output_html += "<td>"+fundsType+"</td>";
+			output_html += "<td>"+getMoneyStr(tmp.getLong("traceAmount").toString())+"</td>";
+			output_html += "<td>"+getMoneyStr(tmp.getLong("traceBalance").toString())+"</td>";
+			output_html += "<td>"+getMoneyStr(tmp.getLong("traceFrozeBalance").toString())+"</td>";
+			output_html += "<td>"+getMoneyStr(tmp.getInt("traceFee").toString())+"</td>";
+			String traceDateTime = tmp.getStr("traceDateTime");
+			if(!StringUtil.isBlank(traceDateTime)){
+				traceDateTime = DateUtil.parseDateTime(DateUtil.getDateFromString(traceDateTime, "yyyyMMddHHmmss"), "yyyy-MM-dd HH:mm:ss");
+			}else{
+				traceDateTime = " ";
+			}
+			output_html += "<td>"+traceDateTime+"</td>";
+			output_html += "<td>"+tmp.getStr("traceRemark")+"</td>";
+			output_html += "</tr>";
+		}
+		return output_html;
+	}
+	
+	
+	/**
+	 * 分子钱转元单位
+	 * @param fenziqian
+	 * @return
+	 */
+	private String getMoneyStr(String fenziqian){
+		if(fenziqian.length()==2){
+			return "0."+fenziqian;
+		}
+		if(fenziqian.length()==1){
+			return "0.0"+fenziqian;
+		}
+		String tmp1 = fenziqian.substring(0,fenziqian.length()-2);
+		String tmp2 = fenziqian.substring(fenziqian.length()-2,fenziqian.length());
+		return tmp1+"."+tmp2;
+	}
+	
+	/**
+	 * 当前逾期中列表
+	 * */
+	private String overdueList(){
+		String output_html = "<table border='1'>";
+		output_html += "<tr><td colspan='10' style='text-align:center;'><b>"+DateUtil.getNowDate()+"逾期中列表</b></td></tr>";
+		output_html += "<tr><td><b>标的号</b></td><td><b>出借人姓名</b></td><td><b>出借金额</b></td><td><b>标题</b></td><td><b>标的期数</b></td><td><b>开始逾期期数</b></td><td><b>已逾期金额</b></td><td><b>已逾期期数</b></td><td><b>设置时间</b></td><td><b>门店</b></td>";
+		List<LoanOverdue> loanOverdues = loanOverdueService.queryOverdueListIng();
+		if(loanOverdues.size()>0){
+			output_html += overdueList_makeHtml(loanOverdues);
+			output_html += "</table>";
+		}
+		return output_html;
+	}
+	private String overdueList_makeHtml(List<LoanOverdue> list){
+		String output_html = "";
+		for(int i=0;i<list.size();i++){
+			LoanOverdue loanOverdue = list.get(i);
+			output_html += "<tr>";
+			output_html += "<td>"+loanOverdue.getStr("loanNo")+"</td>";
+			output_html += "<td>"+loanOverdue.getStr("loanUserName")+"</td>";
+			output_html += "<td>"+loanOverdue.getInt("loanAmount")+"</td>";
+			output_html += "<td>"+loanOverdue.getStr("loanTitle")+"</td>";
+			output_html += "<td>"+loanOverdue.getInt("loanTimeLimit")+"</td>";
+			output_html += "<td>"+loanOverdue.getInt("repayIndex")+"</td>";
+			output_html += "<td>"+loanOverdue.getBigDecimal("sumOverdueAmount").longValue()+"</td>";
+			output_html += "<td>"+loanOverdue.getLong("overdueCount")+"</td>";
+			output_html += "<td>"+loanOverdue.getStr("overdueDate")+"</td>";
+			output_html += "<td>"+loanOverdue.getStr("loanArea")+"</td>";
+			output_html += "</tr>";
+		}
+		return output_html;
+	}
+	
+	/**
+	 * 导出取消逾期
+	 */
+	@ActionKey("/exportOverdue")
+	@Before({PkMsgInterceptor.class})
+	public void exportOverdue(){
+		String date = getPara("date",DateUtil.getNowDate());//日期
+		List<LoanOverdue> cancelLoanOverdues = loanOverdueService.queryCancelOverdueLoan(date);
+		JSONArray jsonArray = new JSONArray();
+		for(LoanOverdue loanOverdue : cancelLoanOverdues){
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("loanNo", loanOverdue.getStr("loanNo"));
+			jsonObject.put("loanUserName", loanOverdue.getStr("loanUserName"));
+			jsonObject.put("loanAmount", loanOverdue.getLong("loanAmount"));
+			jsonObject.put("loanTitle", loanOverdue.getStr("loanTitle"));
+			jsonObject.put("loanTimeLimit", loanOverdue.getInt("loanTimeLimit"));
+			jsonObject.put("repayIndex", loanOverdue.getInt("repayIndex"));
+			jsonObject.put("sumprincipal", loanOverdue.getBigDecimal("sumprincipal").longValue());
+			jsonObject.put("loanArea", loanOverdue.getStr("loanArea"));
+			jsonObject.put("num1", loanOverdue.getLong("num1"));
+			jsonArray.add(jsonObject);
+		}
+		
+		try{
+		String fileName = date+ "CancelOverdueList"+DateUtil.getNowDateTime()+".xls";
+//		fileName = new String(fileName.getBytes("utf-8"),"ISO_8859_1");
+		HttpServletResponse response = getResponse();
+		response.reset();
+		response.addHeader("Content-Disposition", "attachment;filename="
+				+ fileName);
+		response.addHeader("Content-Length", "" + cancelOverdueList_makeHtml(jsonArray).getBytes().length);
+		response.setContentType("application/vnd.ms-excel;charset=UTF-8;");
+		OutputStream os = new BufferedOutputStream(getResponse()
+				.getOutputStream());
+		os.write(cancelOverdueList_makeHtml(jsonArray).getBytes("gbk"));
+		os.flush();
+		os.close();
+	} catch (Exception e) {
+	}
+	renderNull();
+		
+}
+private String cancelOverdueList_makeHtml(JSONArray jsonArray){
+	String output_html = "<table border='1'>";
+	output_html += "<tr><td>标号</td><td>姓名</td><td>金额</td><td>标题</td><td>标期限</td><td>开始逾期期数</td><td>逾期金额</td><td>地区</td><td>逾期期数</td></tr>";
+	try{
+		for(int i=0;i<jsonArray.size();i++){
+			JSONObject loanOverdue = jsonArray.getJSONObject(i);
+			output_html += "<tr>";
+			output_html += "<td>"+loanOverdue.getString("loanNo")+"</td>";
+			output_html += "<td>"+loanOverdue.getString("loanUserName")+"</td>";
+			output_html += "<td>"+StringUtil.getMoneyYuan(loanOverdue.getLong("loanAmount"))+"</td>";
+			output_html += "<td>"+loanOverdue.getString("loanTitle")+"</td>";
+			output_html += "<td>"+loanOverdue.getInteger("loanTimeLimit")+"</td>";
+			output_html += "<td>"+loanOverdue.getInteger("repayIndex")+"</td>";
+			output_html += "<td>"+StringUtil.getMoneyYuan(loanOverdue.getBigDecimal("sumprincipal").longValue())+"</td>";
+
+			output_html += "<td>"+loanOverdue.getString("loanArea")+"</td>";
+			output_html += "<td>"+loanOverdue.getLong("num1")+"</td>";
+			output_html += "</tr>";
+		}
+	}catch(Exception e){
+		e.printStackTrace();
+	}
+	
+	return output_html;
+}
+
+}

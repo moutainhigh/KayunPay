@@ -1,0 +1,516 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body onkeydown="zhazha(event)">
+	<div class="am-g">
+		<!-- 标准功能按钮 Start  -->
+		<!-- <div class="am-u-sm-12 am-u-md-4">
+			<div class="am-btn-toolbar">
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default audit-btn">
+						<span class="am-icon-archive"></span> 定时发标
+					</button>
+				</div>
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default quick-pub-btn">
+						<span class="am-icon-archive"></span> 立即发标
+					</button>
+				</div>
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default fff-btn">
+						<span class="am-icon-archive">← →</span>
+					</button>
+				</div>
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default package-btn">
+						<span class="am-icon-archive">打包发布</span>
+					</button>
+				</div>
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default del-btn">
+						<span class="am-icon-trash-o"></span> <b style="color:red">删除</b>
+					</button>
+				</div>
+				
+			</div>
+		</div> -->
+		<!-- 标准功能按钮  End -->
+		<!-- 条件区 Start -->
+		<!-- <div class="am-u-sm-12 am-u-md-3">
+			<form class="am-form-inline ext-form" role="form" data-am-validator>
+				<div class="am-form-group">
+					<select data-am-selected="{btnSize: 'sm'}" name="loanLimit" id="loanLimitSel">
+					</select>
+				</div>
+			</form>
+		</div> -->
+		<div class="am-u-sm-12 am-u-md-3">
+			<div class="am-input-group am-input-group-sm">
+				<input type="text" class="am-form-field allkey"><span
+					class="am-input-group-btn">
+					<button class="am-btn am-btn-default query-btn" type="button">搜索</button>
+				</span>
+			</div>
+		</div>
+	</div>
+	<!-- Table -->
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 15 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+						<li id="not"><input type="text" size="5" id="goValue" onkeypress="return IsNum(event)" value="1"/></li>
+						<li id="go"><input type="button" value="GO" onclick="$('#go').attr('index',$('#goValue').val())"/></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- prompt start -->
+	<div id="promptDiv" style="width: 400px;height:150px;position: fixed;top: 200px;left: 45%;background-color: #E9E9E9;display: none">
+		<div id = 'close' style="position:relative;float: right"><button>关闭</button></div>
+		<div align = 'center'>
+		<div>您要承接的标号为：<i id = 'tCode'></i></div>
+		<h4>请选择承接帐号</h4>
+		<select id = "mobile">
+		<option value = '18372124604' selected="selected">18372124604</option>
+		</select>
+		<button id="btn-transfer">确认承接</button>
+		</div>
+	</div>
+	<!-- prompt end -->
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script>
+
+		var loanLimitData = YRHX.sortData(RES["DATA_MAP"]["loanTimeLimit"]);
+		$("#loanLimitSel").makeSelect4s(loanLimitData);
+		setTimeout(function(){
+			$("#loanLimitSel").change(function(){
+				queryData(1);
+			});
+		} , 2000 );
+	
+		function zhazha(e){
+			var keynum = 0;
+			if(window.event){
+				keynum = e.keyCode
+			}
+			else if(e.which){
+				keynum = e.which
+			}
+			if(keynum==13){
+				queryData(1);
+			}
+		}	
+	
+		var maxQueryNum = 10;
+		var queryUrl = "/getOverdueTransferList";
+		var size=0;//总页数
+				
+		//查询实现
+		function queryData( pNum , pSize ,mobile){
+			//对页码参数验证
+			if(isNaN(pNum)){
+				alert("GO栏请输入数字！");
+				return;
+			}
+			if(size<1){
+				size=1;
+			}
+			if(pNum > size && size != 0){
+				pNum=size;
+				$("#goValue").val(pNum);
+			}
+			YRHX.ajax({
+				url : queryUrl,
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize ||maxQueryNum ,
+					mobile : $(".allkey").val(),
+					transState : "A",
+					orderParam : "transDateTime",
+					orderType : "ASC"
+				},
+				success : function(sucData){
+					size=Math.ceil(sucData["totalRow"]/maxQueryNum);//总页数
+					/* var ct_info = "总计：&nbsp;";
+					ct_info = ct_info + "借款金额共"+ YRHX.toDecimal2(sucData["count_loanAmount"]/ 10.0/10.0, "￥"); */
+					
+					var tmpTotalData = {};
+					tmpTotalData["借款金额"] = YRHX.toDecimal2(sucData["count_loanAmount"]/ 10.0/10.0, "￥");
+					makeTable(sucData.list , {
+						index : sucData["pageNumber"] , 
+						max : sucData["pageSize"] ,
+						size : sucData["totalRow"]
+					},tmpTotalData);
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+			
+		};
+		
+		$(".query-btn").click(function(){
+			queryData(1);
+			$("#goValue").val(1);//设置GO栏默认页码为1
+		});
+
+		$("div.pad-div").initPagEvent( queryData );
+		
+		//init 
+		//var loanStateData = YRHX.sortData(RES["DATA_MAP"]["loanState"]) ;
+		//$("#loanStateSel").makeSelect4s(loanStateData);
+		var refundType = YRHX.sortData(RES["DATA_MAP"]["refundType"]);
+		var loanTypeData = YRHX.sortData(RES["DATA_MAP"]["loanType"]);
+		var productTypeData = YRHX.sortData(RES["DATA_MAP"]["productType"]);
+		function makeTable( tableData ,pageData,countData){
+			$(".am-g").table({
+						count_info : countData,
+						thtdcls : "font-size:13px;padding:8px 1px",
+						dataFormat : function(rowObj){
+							rowObj["payAmount"] = YRHX.toDecimal2(rowObj["payAmount"]/10.0/10.0 , "￥");
+							rowObj["leftAmount"] = YRHX.toDecimal2(rowObj["leftAmount"]/10.0/10.0 , "￥");
+							rowObj["transAmount"] = YRHX.toDecimal2(rowObj["transAmount"]/10.0/10.0 , "￥");
+							rowObj["overdueAmount"] = YRHX.toDecimal2(rowObj["overdueAmount"]/10.0/10.0 , "￥");
+							rowObj["transFee"] = YRHX.toDecimal2(rowObj["transFee"]/10.0/10.0 , "￥");
+							//rowObj["loanStateDesc"] = loanStateData[rowObj["loanState"] ];
+							rowObj["productType"] = productTypeData[rowObj["productType"] ];
+							rowObj["loanTypeDesc"] = loanTypeData[rowObj["loanType"]];
+							rowObj["refundTypeDesc"] = refundType[rowObj["refundType"] ];
+							rowObj["rateByYear"] = YRHX.toDecimal2(rowObj["rateByYear"]/10.0/10.0 , "");
+							rowObj["transRate"] = YRHX.toDecimal2(rowObj["transRate"]/10.0/10.0 , "");
+							rowObj["rewardRateByYear"] = YRHX.toDecimal2((rowObj["rewardRateByYear"]+rowObj["benefits4new"])/10.0/10.0, "")+" ";
+							if(rowObj["loanTitle"].length>20){
+								rowObj["loanTitle"] = rowObj["loanTitle"].substring(0,20)+"...";
+							}
+							return rowObj;
+						},
+						max : 10,
+						pag : pageData,
+						header : [
+								{
+									name : "",type : "checkbox",key : "transCode"
+								},
+								{
+									name : "",text : "借款编号",html : "#{loanNo}"
+								},
+								{
+									name : "",text : "标题",html : "#{loanTitle}"
+								},
+								{
+									name : "",text : "借款金额",html : "#{payAmount}"
+								},
+								{
+									name : "",text : "剩余本金",html : "#{leftAmount}"
+								},
+								{
+									name : "",text : "逾期本金",html : "#{overdueAmount}"
+								},
+								{
+									name : "",text : "承接价格",html : "#{transAmount}"
+								},
+								{
+									name : "",text : "借款利率",html : "#{rateByYear}%+让利年利率#{transRate}%"
+								},
+								{
+									name : "",text : "出借人昵称",html : "#{payUserName}"
+								},
+								{
+									name : "",text : "剩余期限",html : "#{loanRecyCount}"
+								},
+								{
+									name : "",text : "让利金额",html : "#{transFee}"
+								},
+								{
+									name : "",text : "发布时间",html : "#{transDate}"
+								},
+								{
+									name : "",text : "下一回款日",html : "#{nextRecyDay}"
+								},
+								{
+									name : "",text : "操作",html : $.makeButtons([{"text":"确认承接","url":"javascript:void(0)","ico":"am-icon-pencil-square-o"}
+									])
+								}],
+						data : tableData
+					});
+			}
+		
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		
+		function strDate2TimeStamp(strDate) {
+		    var ft = "";
+	        y = strDate.substr(0, 4);
+	        M = strDate.substr(4, 2);
+	        d = strDate.substr(6, 2);
+	        H = strDate.substr(8, 2);
+	        m = strDate.substr(10, 2);
+	        s = strDate.substr(12, 2);
+	        ft = y + "-" + M + "-" + d + " " + H + ":" + m + ":" + s
+	        return new Date(ft).getTime();
+		}
+	
+		queryData(1);
+		$(".audit-btn").click(function(){
+			var row = window.getCheckedRow() ;
+			if( row.length == 0){
+				YRHX.alert("提示","未选中需要审核的条目！");
+				return ;
+			}
+			var loanCodes = "";
+			if( row.length == 1){
+				loanCodes = row.attr("key");
+			}else{
+				var rowsChecked = window.getCheckedRow() ;
+				for(var i = 0; i < rowsChecked.length; i ++){
+					loanCodes += $(rowsChecked[i]).attr("key");
+					if(i<rowsChecked.length-1){
+						loanCodes += ",";
+					}
+				}
+			}
+			
+			
+			showPrompt("审核发标","请输入发标日期时间",function(e){
+				//定时发布时间必须当前时间2分钟后
+				
+				var timeStamp = new Date(strDate2TimeStamp(e.data[0] + e.data[1])).getTime();
+				var nowTimeStamp = new Date().getTime();
+				
+				if(timeStamp < (nowTimeStamp + 2*60*1000)){
+					YRHX.alert("警告","请确认定时发布时间是否正确！");
+					return;
+				}
+				if(e.data[0].length!=8 || e.data[1].length!=6){
+					YRHX.alert("警告","上点心，检查下发布日期和发布时间！");
+					return;
+				}
+				YRHX.ajax({
+					url : "/pubLoanByAudit",
+					data : {
+						loanCode : loanCodes,
+						pubDate : e.data[0],
+						pubTime : e.data[1]
+					},
+					success : function(sucData){
+							YRHX.alert("提示","发布完成！");
+							//window.location.reload();
+						
+					},
+					error : function(data) {
+						if(data.return_code=="-315"){
+							var error_Msg = "";
+							$.each(data.return_data,function(key,value){
+								error_Msg = error_Msg + value+"<br>";
+							});
+							YRHX.alert("警告",error_Msg);
+						}else{
+							YRHX.alert("警告",data.return_info || "获取信息失败");
+						}
+					}
+				});
+			});
+		});
+		$(".quick-pub-btn").click(function(){
+			var row = window.getCheckedRow() ;
+			if( row.length == 0){
+				YRHX.alert("提示","未选中需要审核的条目！");
+				return ;
+			}
+			var loanCodes = "";
+			if( row.length == 1){
+				loanCodes = row.attr("key");
+			}else{
+				var rowsChecked = window.getCheckedRow() ;
+				for(var i = 0; i < rowsChecked.length; i ++){
+					loanCodes += $(rowsChecked[i]).attr("key");
+					if(i<rowsChecked.length-1){
+						loanCodes += ",";
+					}
+				}
+			}
+			if( confirm("确定执行操作？") ){
+				YRHX.ajax({
+					url : "/pubLoanByQuick",
+					data : {
+						loanCode :loanCodes
+					},
+					success : function(sucData){
+						if(sucData!=null && sucData==true){
+							YRHX.alert("提示","发布完成！");
+						}
+					},
+					error : function(data) {
+						if(data.return_code=="-315"){
+							var error_Msg = "";
+							$.each(data.return_data,function(key,value){
+								error_Msg = error_Msg + value+"<br>";
+							});
+							YRHX.alert("警告",error_Msg);
+						}else{
+							YRHX.alert("警告",data.return_info || "获取信息失败");
+						}
+					}
+				});
+			}
+			
+			
+		});
+		$(".fff-btn").click(function(){
+			YRHX.alert1("警告","上点心别点错按钮了");
+		});
+		$(".del-btn").click(function(){
+			var row = window.getCheckedRow() ;
+			if( row.length == 0){
+				YRHX.alert("提示","请勾选需要删除的标！");
+				return ;
+			}
+			if( row.length == 1){
+				if( confirm("确定执行操作？") ){
+					YRHX.ajax({
+						url : "/deleteLoanById",
+						data : {
+							loanCode : row.attr("key")
+						},
+						success : function(sucData){
+							if(sucData!=null && sucData==true){
+								YRHX.alert("提示","删除完成！");
+								//window.location.reload();
+							}
+						},
+						error : function(data) {
+							if(data.return_code=="-315"){
+								var error_Msg = "";
+								$.each(data.return_data,function(key,value){
+									error_Msg = error_Msg + value+"<br>";
+								});
+								YRHX.alert("警告",error_Msg);
+							}else{
+								YRHX.alert("警告",data.return_info || "获取信息失败");
+							}
+						}
+					});
+				}
+			}else{
+				YRHX.alert("慎选","一次最多只删除一个标！");
+				return ;
+			}
+		});
+		function showPrompt(title , content , callback ){
+			$('#promptDiv').find("div.title").text(title);
+			$('#promptDiv').find("div.content").find("span").text(content);
+			$('#promptDiv').modal({
+				relatedTarget: this,
+				onConfirm: callback ,
+				onCancel: function(e) {
+				}
+			});
+		}
+		$(".package-btn").click(function(){
+			var row = window.getCheckedRow() ;
+			if( row.length == 0){
+				YRHX.alert("提示","请勾选需要打包发布的标！");
+				return ;
+			}else{
+				var loanCodes = "";
+				for(var i = 0; i < row.length; i ++){
+					loanCodes += $(row[i]).attr("key");
+					if(i<row.length-1){
+						loanCodes += ",";
+					}
+				}
+				if( confirm("确定执行操作？") ){
+					YRHX.ajax({
+						url:"/pubPackageLoan",
+						data:{loanCodes:loanCodes},
+						success:function(sucData){
+							if(sucData!=null && sucData==true){
+								YRHX.alert("提示","发布完成！");
+							}
+						},
+						error:function(errData){
+							if(errData.return_code=="-315"){
+								var error_Msg = "";
+								$.each(errData.return_data,function(key,value){
+									error_Msg = error_Msg + value+"<br>";
+								});
+								YRHX.alert("警告",error_Msg);
+							}else{
+								YRHX.alert("警告",data.return_info || "获取信息失败");
+							}
+						}
+					});
+				}
+			}
+		});
+		var transCode = "";
+		var loanNo = "";
+		$("body").delegate(".am-text-secondary", "click", function () {
+			var that = $(this);
+			var td = that.parent().parent().parent().parent().find("td");
+			transCode = td.eq(0).find("input").attr("key");
+			loanNo = td.eq(1).text();
+			$("#promptDiv").show();
+			$('#tCode').text(loanNo);
+			$('#tCode').attr("tCode",transCode);
+		});
+		$("#close").click(function(){
+			$("#promptDiv").hide();
+			transCode="";
+			loanNo = "";
+			$('#tCode').text("");
+			$('#tCode').attr("tCode","");
+		});
+		$("#btn-transfer").click(function(){
+			var mobile = $("#mobile option:selected").val();
+			if( confirm("确定承接此标？") ){
+			window.open("/inheritOverdueLoan?transCode="+transCode+"&mobile="+mobile);
+			}
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+	<div class="am-g">
+		<!-- 标准功能按钮 Start  -->
+		<div class="am-u-sm-12 am-u-md-4">
+			<div class="am-btn-toolbar">
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default upload-btn">
+						<input type="file" id="uploadFileName" name="fileName" />
+						<span class="am-icon-archive ">
+						</span> 上传图片
+					</button>
+					<button type="button" class="am-btn am-btn-default view-btn">
+						<span class="am-icon-archive "></span> 查看详情
+					</button>
+				</div>
+			</div>
+		</div>
+		<!-- 标准功能按钮  End -->
+		<!-- 条件区 Start -->
+		<form class="am-form-inline ext-form" role="form" data-am-validator>
+			<div class="am-form-group">
+				<input name="userCode" type="text" class="am-form-field"
+					placeholder="归属用户" >
+			</div>
+			<div class="am-form-group">
+				<select data-am-selected="{btnSize: 'sm'}" name="fileType" id="fileTypeSel">
+				</select>
+			</div>
+			<button type="button" class="am-btn am-btn-default query-btn">查询</button>
+		</form>
+		<div class="am-u-sm-12 am-u-md-3"></div>
+	</div>
+
+	<!-- 条件区  End -->
+	<!-- Table -->
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 15 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<script src="../app/js/ajaxfileupload.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script>
+		var maxQueryNum = 10 ;
+		var queryUrl = "/getFileByPage";
+				
+		//查询实现
+		function queryData( pNum , pSize ){
+			YRHX.ajax({
+				url : queryUrl,
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize ||maxQueryNum ,
+					fileType : $("#fileTypeSel").val()
+				},
+				success : function(sucData){
+					makeTable(sucData.list , {
+						index : sucData["pageNumber"] , 
+						max : sucData["pageSize"] ,
+						size : sucData["totalRow"]
+					});
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+			
+		}
+		
+		$(".query-btn").click(function(){
+			queryData(1);
+		});
+		
+
+		$("div.pad-div").initPagEvent( queryData );
+		
+		//init 
+		var fileType = YRHX.sortData(RES["DATA_MAP"]["fileType"]) ;
+		$("#fileTypeSel").makeSelect4s(fileType);
+		
+		function makeTable( tableData ,pageData){
+			$(".am-g").table({
+						dataFormat : function(rowObj) {
+							rowObj["fileType"] = fileType[rowObj["fileType"]];
+							return rowObj;
+						},
+						max : 10,
+						pag : pageData,
+						header : [
+								{
+									name : "",type : "checkbox",key : "remoteCode"
+								},
+								{
+									name : "",text : "文件名称",html : "#{fileName}"
+								},
+								{
+									name : "",text : "文件类型",html : "#{fileType}"
+								},
+								{
+									name : "",text : "文件大小",html : "#{fileSize}"
+								},
+								{
+									name : "",text : "文件地址",html : "#{fileSource}"
+								},
+								{
+									name : "",text : "文件描述",html : "#{fileRemark}"
+								}],
+						data : tableData
+					});
+			}
+		
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		queryData(1);
+		
+		setTimeout(function(){
+			$("#fileTypeSel").change(function(){
+				queryData(1);
+			});
+			
+			$("#uploadFileName").change(function(){
+				$.ajaxFileUpload({
+					url : '/uploadFile',//处理图片脚本
+					secureuri : false,
+					fileElementId : 'uploadFileName',//file控件id
+					success : function(data , status , code ) {
+						if( data.indexOf("500 Internal") == -1 ){
+							data = JSON.parse(data);
+							if( data && data.error == "0" ){
+								YRHX.alert("上传成功","" + data);
+								queryData(1);
+							}else{
+								YRHX.alert("上传失败!");
+							}
+						}else{
+							YRHX.alert("上传失败!500");
+						}
+					},
+					error : function(data, status, e) {
+						if(data.return_code==-2){
+							var error_Msg = "";
+							$.each(data.return_data,function(key,value){
+								error_Msg = error_Msg + value+"<br>";
+							});
+							YRHX.alert("警告",error_Msg);
+						}else{
+							YRHX.alert("警告",data.return_info || "获取信息失败");
+						}
+					}
+				});
+			});
+		}, 1500);
+
+		$(".view-btn")
+				.click(
+						function() {
+							var row = window.getCheckedRow();
+							if (row.length == 0) {
+								YRHX.alert("提示", "未选中需要查看的条目！");
+								return;
+							}
+							if (row.length == 1) {
+								window.location.href = "pageFundsForm?opType=view&key="
+										+ row.attr("key");
+							} else {
+								YRHX.alert("提示", "一次最多只可以查看一条信息！");
+								return;
+							}
+						});
+	</script>
+</body>
+</html>

@@ -1,0 +1,659 @@
+package com.dutiantech.controller.pay;
+
+import java.util.Map;
+import java.util.TreeMap;
+
+import com.alibaba.fastjson.JSONObject;
+import com.dutiantech.Message;
+import com.dutiantech.anno.AuthNum;
+import com.dutiantech.controller.BaseController;
+import com.dutiantech.controller.FuiouController;
+import com.dutiantech.exception.BaseBizRunTimeException;
+import com.dutiantech.interceptor.AuthInterceptor;
+import com.dutiantech.interceptor.PkMsgInterceptor;
+import com.dutiantech.model.BanksV2;
+import com.dutiantech.model.RechargeTrace;
+import com.dutiantech.model.SMSLog;
+import com.dutiantech.model.User;
+import com.dutiantech.model.UserInfo;
+import com.dutiantech.model.BizLog.BIZ_TYPE;
+import com.dutiantech.model.RechargeTrace.BANK_STATE;
+import com.dutiantech.model.RechargeTrace.TRACE_STATE;
+import com.dutiantech.plugins.Memcached;
+import com.dutiantech.service.FuiouTraceService;
+import com.dutiantech.service.FundsServiceV2;
+import com.dutiantech.service.RechargeTraceService;
+import com.dutiantech.service.SMSLogService;
+import com.dutiantech.service.UserInfoService;
+import com.dutiantech.service.UserService;
+import com.dutiantech.util.CommonUtil;
+import com.dutiantech.util.DateUtil;
+import com.dutiantech.util.StringUtil;
+import com.dutiantech.util.SysEnum;
+import com.dutiantech.util.SysEnum.FuiouTraceType;
+import com.fuiou.data.AppTransReqData;
+import com.fuiou.data.P2p500405ReqData;
+import com.fuiou.data.RechargeAndWithdrawalRspData;
+import com.fuiou.service.FuiouRspParseService;
+import com.fuiou.service.FuiouService;
+import com.jfinal.aop.Before;
+import com.jfinal.core.ActionKey;
+import com.jfinal.plugin.activerecord.Db;
+
+public class FuiouPayController extends BaseController {
+	private UserService userService = getService(UserService.class);
+	private UserInfoService userInfoService = getService(UserInfoService.class);
+	private SMSLogService smsLogService = getService(SMSLogService.class);
+	private FundsServiceV2 fundsServiceV2 = getService(FundsServiceV2.class);
+	@SuppressWarnings("unused")
+	private RechargeTraceService rechargeTraceService = getService(RechargeTraceService.class);
+	private FuiouTraceService fuiouTraceService = getService(FuiouTraceService.class);
+
+	@ActionKey("/fastByFuiou") // 快捷充值
+	@AuthNum(value = 999)
+	@Before({ AuthInterceptor.class, PkMsgInterceptor.class })
+	public Message fastByFuiou() {
+		long amt = 0;
+		try {
+			amt = getParaToLong("amt");
+			if (amt <= 0) {
+				return error("01", "参数异常", amt);
+			}
+			if (amt < 10000) {
+				return error("777", "最低充值金额100元", amt);
+			}
+		} catch (Exception e) {
+			return error("01", "参数异常," + e.getMessage(), null);
+		}
+
+		String userCode = getUserCode();
+		String login_id = User.userDao.findByIdLoadColumns(userCode, "loginId").getStr("loginId");
+		if (login_id == null || "".equals(login_id)) {
+			return error("02", "未激活存管账号,请到用户管理页面激活", null);
+		}
+		
+		BanksV2 bankV2 = BanksV2.bankV2Dao.findFirst("select * from t_banks_v2 where userCode=?", userCode);
+		if (bankV2 == null) {
+			return error("02", "未绑定理财卡", null);
+		}
+		String cardId = "";
+		String bankType = bankV2.getStr("bankType");
+		String trueName = bankV2.getStr("trueName");
+		String bankNo = bankV2.getStr("bankNo");
+		String bankName = bankV2.getStr("bankName");
+		try {
+			cardId = CommonUtil.decryptUserCardId(bankV2.getStr("cardid"));
+		} catch (Exception e) {
+		}
+		if (StringUtil.isBlank(cardId) == true) {
+			return error("10", "未做实名认证", null);
+		}
+
+		Map<String, String> payParam = initPayInfo();
+		payParam.put("user_id", userCode);
+		payParam.put("name_goods", "易融恒信用户充值");
+		payParam.put("info_order", "易融恒信理财充值-快捷充值.");
+		payParam.put("money_order", String.valueOf(amt));
+		payParam.put("userreq_ip", getRequestIP());
+		payParam.put("bank_code", bankType);
+		payParam.put("money_order", String.valueOf(amt / 10.00 / 10.00));
+		payParam.put("id_type", "0");
+		payParam.put("id_no", cardId);
+		payParam.put("acct_name", trueName);
+		payParam.put("userBankName", bankName);
+		payParam.put("card_no", bankNo);
+		String type = getPara("Type");
+		if("phone".equals(type)){
+			payParam.put("page_notify_url", CommonUtil.ADDRESS + "/fast_showResult4fuiouForP");
+		}else{
+			String url=getPara("url");
+			payParam.put("page_notify_url", url + "/showResult4fuiou");
+		}
+		
+		// 风控信息
+		User user = userService.findById(userCode);
+		payParam.put("risk_item", bindRiskInfo(user));
+		// 订单入库
+		RechargeTrace trace = map2trace(payParam);
+		trace.set("rechargeType", RechargeTrace.RECHARGE_TYPE.FAST.key());
+		trace.set("traceAmount", amt);
+		trace.set("bankRemark", "快捷支付,发起申请");
+		trace.set("traceRemark", "快捷支付,发起申请");
+		trace.set("userName", user.getStr("userName"));
+		trace.set("userBankNo", bankNo);
+
+		P2p500405ReqData p2p500405ReqData = new P2p500405ReqData();
+		AppTransReqData appTransReqData =new AppTransReqData();
+		try {
+			login_id = CommonUtil.decryptUserMobile(login_id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if("phone".equals(type)){//手机站快捷充值
+		appTransReqData.setAmt(String.valueOf(amt));
+		appTransReqData.setLogin_id(login_id);
+		appTransReqData.setMchnt_cd(FuiouController.MCHNT_CD);
+		appTransReqData.setMchnt_txn_ssn(payParam.get("no_order"));
+		appTransReqData.setPage_notify_url(payParam.get("page_notify_url"));
+		try {
+			FuiouService.app500002(appTransReqData, getResponse());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		}else{//PC端快捷充值
+		p2p500405ReqData.setAmt(String.valueOf(amt));
+		p2p500405ReqData.setLogin_id(login_id);
+		p2p500405ReqData.setMchnt_cd(FuiouController.MCHNT_CD);
+		p2p500405ReqData.setMchnt_txn_ssn(payParam.get("no_order"));
+		p2p500405ReqData.setPage_notify_url(payParam.get("page_notify_url"));
+		try {
+			FuiouService.p2p500405(p2p500405ReqData, getResponse());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		}
+
+		// 缓存订单
+		Memcached.set("fuiou_recharge_" + payParam.get("no_order"), payParam.get("info_order"), 10 * 60 * 1000);
+		if (trace.save()) {
+			return Message.succ("ok", payParam);
+		} else {
+			return Message.error("14", "生成充值订单失败!", null);
+		}
+	}
+
+	@ActionKey("/wyByFuiou") // 网银充值----免登陆跳转富友网银充值界面
+	@AuthNum(value = 999)
+	@Before({ AuthInterceptor.class, PkMsgInterceptor.class })
+	public Message wyByFuiou() {
+		long amt = 0;
+		try {
+			amt = getParaToLong("amt");
+			if (amt <= 0) {
+				return error("01", "参数异常", amt);
+			}
+			if (amt < 10000) {
+				return error("777", "最低充值金额100元", amt);
+			}
+		} catch (Exception e) {
+			return error("01", "参数异常," + e.getMessage(), null);
+		}
+		String userCode = getUserCode();
+		String url=getPara("url");
+		String login_id = User.userDao.findByIdLoadColumns(userCode, "loginId").getStr("loginId");
+		if (login_id == null || "".equals(login_id)) {
+			return error("02", "未激活存管账号,请到用户管理页面激活", null);
+		}
+		Map<String, String> payParam = initPayInfo();
+		payParam.put("user_id", userCode);
+		payParam.put("name_goods", "易融恒信用户充值");
+		payParam.put("info_order", "易融恒信理财充值-网银充值.");
+		payParam.put("userreq_ip", getRequestIP());
+		payParam.put("money_order", String.valueOf(amt / 10.00 / 10.00));		
+		payParam.put("page_notify_url", url + "/showResult4fuiou"); // 用户看的
+		//  风控信息
+		User user = userService.findById(userCode);
+		payParam.put("risk_item", bindRiskInfo(user));
+		// 订单入库
+		RechargeTrace trace = map2trace(payParam);
+		trace.set("rechargeType", RechargeTrace.RECHARGE_TYPE.WY.key());
+		trace.set("traceAmount", amt);
+		trace.set("bankRemark", "网银支付,发起申请");
+		trace.set("traceRemark", "网银支付,发起申请");
+		trace.set("userName", user.getStr("userName"));
+
+		AppTransReqData appTransReqData = new AppTransReqData();		
+		try {
+			login_id = CommonUtil.decryptUserMobile(login_id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		appTransReqData.setAmt(String.valueOf(amt));
+		appTransReqData.setLogin_id(login_id);
+		appTransReqData.setMchnt_cd(CommonUtil.MCHNT_CD);
+		appTransReqData.setMchnt_txn_ssn(payParam.get("no_order"));
+		appTransReqData.setPage_notify_url(payParam.get("page_notify_url"));
+		
+		if (trace.save()) {
+			try {
+				FuiouService.p2p500002(appTransReqData, getResponse());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return Message.succ("ok", payParam);
+		} else {
+			return Message.error("14", "生成充值订单失败!", null);
+		}
+	}
+
+	/**
+	 * 初始化充值信息 商户号，流水号 
+	 * @return
+	 */
+	private Map<String, String> initPayInfo() {
+		Map<String, String> payParam = new TreeMap<String, String>();
+		String nowDateTime = DateUtil.getNowDateTime();
+
+		payParam.put("version", "1.0");
+		payParam.put("charset_name", "UTF-8");
+		payParam.put("oid_partner", CommonUtil.MCHNT_CD); // 商户号
+		payParam.put("timestamp", nowDateTime);
+		payParam.put("sign_type", "RSA");
+		payParam.put("busi_partner", "101001");
+		payParam.put("no_order", CommonUtil.genMchntSsn()); // 流水号
+		payParam.put("dt_order", nowDateTime);
+		payParam.put("valid_order", "30"); // 默认30分钟
+		payParam.put("pay_type", "1"); // 默认只支持借记卡
+
+		return payParam;
+	}
+
+	private RechargeTrace map2trace(Map<String, String> map) {
+		RechargeTrace trace = new RechargeTrace();
+		String userCode = String.valueOf(map.get("user_id"));
+		UserInfo info = userInfoService.findById(userCode);
+		if (info != null) {
+			trace.set("userTrueName", info.getStr("userCardName"));
+		}
+		String tmpBankCode = String.valueOf(map.get("bank_code"));
+		trace.set("userBankCode", tmpBankCode);
+		trace.set("userBankName", map.get("userBankName"));
+		trace.set("traceCode", map.get("no_order"));
+		trace.set("bankTraceCode", map.get("no_order"));
+		trace.set("bankState", RechargeTrace.BANK_STATE.ACCEPT.key()); // A-已受理
+		trace.set("traceState", RechargeTrace.TRACE_STATE.DOING.key());
+		trace.set("userCode", userCode);
+		trace.set("traceDateTime", DateUtil.getNowDateTime());
+		trace.set("traceDate", DateUtil.getNowDate());
+		trace.set("modifyDateTime", DateUtil.getNowDateTime());
+		trace.set("modifyDate", DateUtil.getNowDate());
+
+		return trace;
+	}
+	
+	/**
+	 * PC充值接收通知
+	 */
+	@ActionKey("/showResult4fuiou")
+	@AuthNum(value = 999)
+	@Before({ AuthInterceptor.class, PkMsgInterceptor.class })
+	public void showResult4fuiou() {
+		try {			
+			String resp_code = getPara("resp_code");
+			String amt = getPara("amt");
+			String mchnt_cd = getPara("mchnt_cd");
+			String mchnt_txn_ssn = getPara("mchnt_txn_ssn");
+
+			RechargeTrace trace = RechargeTrace.rechargeTraceDao
+					.findById(mchnt_txn_ssn);
+
+			if (trace == null) {
+				redirect("/payFaild?err=" + resp_code, true);
+				return ;
+			}
+
+			String userCode = trace.getStr("userCode");
+			if (mchnt_cd == null || !mchnt_cd.equals(FuiouController.MCHNT_CD)) {
+				// 记录日志
+				BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "充值失败_商户号不符", null);
+				redirect("/payFaild?err=" + resp_code, true);
+				return ;
+			}
+
+			long payAmount = Long.parseLong(amt);
+			if (amt == null || payAmount != trace.getLong("traceAmount")) {
+				// 记录日志
+				BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "充值失败_充值金额不符", null);
+				redirect("/payFaild?err=" + resp_code, true);
+				return ;
+			}
+			
+			// 如果交易状态已更新，直接返回成功页面，针对网银充值有两次同步回调
+			if ("B".equals(trace.getStr("traceState"))) {
+				forward("/pay/paySuccess.html",false);
+				return ;
+				}
+			
+			//锁定订单,避免重复操作
+			int lockOrder = Db.update("update t_recharge_trace set traceState=? where traceCode=? and traceState=?" , 
+					TRACE_STATE.LOCKED.key() , mchnt_txn_ssn ,TRACE_STATE.DOING.key() );
+			if( lockOrder < 1 ){
+				return ;
+			}
+			
+			if ("0000".equals(resp_code)) {
+				// 更新订单状态
+				trace.set("bankState", BANK_STATE.SUCCESS.key());
+				trace.set("traceState", TRACE_STATE.SUCCESS.key());
+				if ("FAST".equals(trace.getStr("rechargeType"))) {
+					trace.set("traceRemark", "快捷支付,充值成功");
+					trace.set("bankRemark", "快捷支付,充值成功");
+				}
+				if ("WY".equals(trace.getStr("rechargeType"))) {
+					trace.set("traceRemark", "网银支付,充值成功");
+					trace.set("bankRemark", "网银支付,充值成功");
+				}
+				trace.set("okDateTime", DateUtil.getNowDateTime());
+				// 发送充值成功短信
+				try {
+					String mobile = userService.getMobile(userCode);
+					String content = CommonUtil.SMS_MSG_RECHARAGE_ONLINE.replace(
+							"[userName]", trace.getStr("userName")).replace(
+							"[payAmount]", amt.substring(0, amt.length() - 2) + "");
+					SMSLog smsLog = new SMSLog();
+					smsLog.set("mobile", mobile);
+					smsLog.set("content", content);
+					smsLog.set("userCode", userCode);
+					smsLog.set("userName", trace.getStr("userName"));
+					smsLog.set("type", "12");
+					smsLog.set("typeName", "在线充值");
+					smsLog.set("status", 9);
+					smsLog.set("sendDate", DateUtil.getNowDate());
+					smsLog.set("sendDateTime", DateUtil.getNowDateTime());
+					smsLog.set("break", "");
+					smsLogService.save(smsLog);
+				} catch (Exception e) {
+					// 记录日志
+					BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "充值短信发送失败", null);
+					return ;
+				}
+				if (trace.update()) {
+					// 修改资金账户
+					if ("FAST".equals(trace.getStr("rechargeType"))) {
+						fundsServiceV2.recharge(userCode, payAmount, 0,
+								"快捷支付,充值成功", SysEnum.traceType.C.val());
+					}
+					if ("WY".equals(trace.getStr("rechargeType"))) {
+						fundsServiceV2.recharge(userCode, payAmount, 0,
+								"网银支付,充值成功", SysEnum.traceType.C.val());
+					}
+					User user = userService.findById(userCode);
+					fuiouTraceService.fuiouTraceContent(mchnt_txn_ssn,
+							user, payAmount, FuiouTraceType.A);
+					BIZ_LOG_INFO(userCode, BIZ_TYPE.RECHARGE, "充值同步修改资金" + payAmount);
+					forward("/pay/paySuccess.html",false);
+					return ;
+				} else {
+					// 记录日志
+					BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "充值流水更新失败", null);
+					redirect("/payFaild?err=" + resp_code, true);
+					return ;
+				}
+			} else {
+				// 更新订单状态
+				trace.set("bankState", BANK_STATE.FAILD.key());
+				trace.set("traceState", TRACE_STATE.FAILD.key());
+				if ("FAST".equals(trace.getStr("rechargeType"))) {
+					trace.set("traceRemark", "快捷支付,充值失败");
+					trace.set("bankRemark", "快捷支付,充值失败");
+				}
+				if ("WY".equals(trace.getStr("rechargeType"))) {
+					trace.set("traceRemark", "网银支付,充值失败");
+					trace.set("bankRemark", "网银支付,充值失败");
+				}
+				// 记录日志
+				BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "充值失败" + resp_code, null);
+				if (trace.update()) {					
+					redirect("/payFaild?err=" + resp_code, true);
+					return ;
+				}
+				redirect("/payFaild?err=" + resp_code, true);
+				return ;
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 充值接收通知---异步
+	 */
+	@ActionKey("/rechargeAsync")
+	@AuthNum(value = 999)
+	public void rechargeAsync() {
+		try {
+			RechargeAndWithdrawalRspData rspData = FuiouRspParseService
+					.rechargeAndWithdrawalNotifyParse(getRequest());
+			String mchnt_cd = rspData.getMchnt_cd();
+			String mchnt_txn_ssn = rspData.getMchnt_txn_ssn();
+			String amt = rspData.getAmt();
+
+			RechargeTrace trace = RechargeTrace.rechargeTraceDao
+					.findById(mchnt_txn_ssn);
+			if (trace == null) {
+				System.out.println(FuiouRspParseService.notifyRspXml("0001",
+						mchnt_cd, mchnt_txn_ssn));
+				renderHtml(FuiouRspParseService.notifyRspXml("0001", mchnt_cd, mchnt_txn_ssn));
+				return ;
+			}
+			// 如果交易状态已更新，直接返回成功响应
+			if ("B".equals(trace.getStr("traceState"))) {
+				renderHtml(FuiouRspParseService.notifyRspXml("0000", mchnt_cd, mchnt_txn_ssn));
+				return ;
+			}
+			String userCode = trace.getStr("userCode");
+			if (mchnt_cd == null || !mchnt_cd.equals(CommonUtil.MCHNT_CD)) {
+				// 记录日志
+				BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "充值失败_商户号不符", null);
+				renderHtml(FuiouRspParseService.notifyRspXml("0002", mchnt_cd, mchnt_txn_ssn));
+				return ;
+			}
+			long payAmount = Long.parseLong(amt);
+			if (amt == null || payAmount != trace.getLong("traceAmount")) {
+				// 记录日志
+				BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "充值失败_充值金额不符", null);
+				renderHtml(FuiouRspParseService.notifyRspXml("0003", mchnt_cd, mchnt_txn_ssn));
+				return ;
+			}
+
+			// 更新订单状态
+			trace.set("bankState", BANK_STATE.SUCCESS.key());
+			trace.set("traceState", TRACE_STATE.SUCCESS.key());
+			if ("FAST".equals(trace.getStr("rechargeType"))) {
+				trace.set("traceRemark", "快捷支付,充值成功");
+				trace.set("bankRemark", "快捷支付,充值成功");
+			}
+			if ("WY".equals(trace.getStr("rechargeType"))) {
+				trace.set("traceRemark", "网银支付,充值成功");
+				trace.set("bankRemark", "网银支付,充值成功");
+			}
+			if ("PHONE".equals(trace.getStr("rechargeType"))) {
+				trace.set("traceRemark", "手机支付,充值成功");
+				trace.set("bankRemark", "手机支付,充值成功");
+			}
+			trace.set("okDateTime", DateUtil.getNowDateTime());
+			try {
+				String mobile = userService.getMobile(userCode);
+				String content = CommonUtil.SMS_MSG_RECHARAGE_ONLINE.replace(
+						"[userName]", trace.getStr("userName")).replace(
+						"[payAmount]", amt.substring(0, amt.length() - 2) + "");
+				SMSLog smsLog = new SMSLog();
+				smsLog.set("mobile", mobile);
+				smsLog.set("content", content);
+				smsLog.set("userCode", userCode);
+				smsLog.set("userName", trace.getStr("userName"));
+				smsLog.set("type", "12");
+				smsLog.set("typeName", "在线充值");
+				smsLog.set("status", 9);
+				smsLog.set("sendDate", DateUtil.getNowDate());
+				smsLog.set("sendDateTime", DateUtil.getNowDateTime());
+				smsLog.set("break", "");
+				smsLogService.save(smsLog);
+			} catch (Exception e) {
+				// 记录日志
+				BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "充值短信发送失败", null);
+				renderHtml(FuiouRspParseService.notifyRspXml("0004", mchnt_cd, mchnt_txn_ssn));
+				return ;
+			}
+			if (trace.update()) {
+				// 修改资金账户 添加资金流水
+				String remark="";
+				if ("FAST".equals(trace.getStr("rechargeType"))) {
+					remark="快捷支付,充值成功";
+				}
+				if ("WY".equals(trace.getStr("rechargeType"))) {
+					remark="网银支付,充值成功";
+				}
+				if ("PHONE".equals(trace.getStr("rechargeType"))) {
+					remark="手机支付,充值成功";
+				}
+				fundsServiceV2.recharge(userCode, payAmount, 0,remark, SysEnum.traceType.C.val());
+				User user = userService.findById(userCode);
+				fuiouTraceService.fuiouTraceContent(mchnt_txn_ssn,user, payAmount, FuiouTraceType.A);
+				BIZ_LOG_INFO(userCode, BIZ_TYPE.RECHARGE, "充值异步修改资金" + payAmount);
+				System.out.println(FuiouRspParseService.notifyRspXml(
+						"0000", mchnt_cd, mchnt_txn_ssn));
+				renderHtml(FuiouRspParseService.notifyRspXml("0000", mchnt_cd, mchnt_txn_ssn));
+				return ;
+			} else {
+				// 记录日志
+				BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "充值流水更新失败", null);
+				renderHtml(FuiouRspParseService.notifyRspXml("0005", mchnt_cd, mchnt_txn_ssn));
+				return ;
+			}
+
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		return ;
+	}
+	
+	/**
+	 * (手机)充值接受通知接口
+	 * */
+	@ActionKey("/fast_showResult4fuiouForP")
+	@AuthNum(value = 999)
+	@Before({ AuthInterceptor.class, PkMsgInterceptor.class })
+	public void fast_showResult4fuiouForP() {
+		try {			
+			String resp_code = getPara("resp_code");
+			String amt = getPara("amt");
+			String mchnt_cd = getPara("mchnt_cd");
+			String mchnt_txn_ssn = getPara("mchnt_txn_ssn");
+
+			RechargeTrace trace = RechargeTrace.rechargeTraceDao
+					.findById(mchnt_txn_ssn);
+
+			if (trace == null) {
+				redirect(CommonUtil.PHONEADRESS+"/ispaysucc.html?type=payerro",true);
+			}
+
+			String userCode = trace.getStr("userCode");
+			if (mchnt_cd == null || !mchnt_cd.equals(CommonUtil.MCHNT_CD)) {
+				// 记录日志
+				BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "充值失败_商户号不符", null);
+				redirect(CommonUtil.PHONEADRESS+"/ispaysucc.html?type=payerro",true);
+			}
+
+			long payAmount = Long.parseLong(amt);
+			if (amt == null || payAmount != trace.getLong("traceAmount")) {
+				// 记录日志
+				BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "充值失败_充值金额不符", null);
+				redirect(CommonUtil.PHONEADRESS+"/ispaysucc.html?type=payerro",true);
+			}
+			if ("0000".equals(resp_code)) {
+				// 更新订单状态
+				trace.set("bankState", BANK_STATE.SUCCESS.key());
+				trace.set("traceState", TRACE_STATE.SUCCESS.key());
+				if ("FAST".equals(trace.getStr("rechargeType"))) {
+					trace.set("traceRemark", "快捷支付,充值成功");
+					trace.set("bankRemark", "快捷支付,充值成功");
+				}
+				if ("WY".equals(trace.getStr("rechargeType"))) {
+					trace.set("traceRemark", "网银支付,充值成功");
+					trace.set("bankRemark", "网银支付,充值成功");
+				}
+				trace.set("okDateTime", DateUtil.getNowDateTime());
+				// 发送充值成功短信
+				try {
+					String mobile = userService.getMobile(userCode);
+					String content = CommonUtil.SMS_MSG_RECHARAGE_ONLINE.replace(
+							"[userName]", trace.getStr("userName")).replace(
+							"[payAmount]", amt.substring(0, amt.length() - 2) + "");
+					SMSLog smsLog = new SMSLog();
+					smsLog.set("mobile", mobile);
+					smsLog.set("content", content);
+					smsLog.set("userCode", userCode);
+					smsLog.set("userName", trace.getStr("userName"));
+					smsLog.set("type", "12");
+					smsLog.set("typeName", "在线充值");
+					smsLog.set("status", 9);
+					smsLog.set("sendDate", DateUtil.getNowDate());
+					smsLog.set("sendDateTime", DateUtil.getNowDateTime());
+					smsLog.set("break", "");
+					smsLogService.save(smsLog);
+				} catch (Exception e) {
+					// 记录日志
+					BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "充值短信发送失败", null);
+					return ;
+				}
+				if (trace.update()) {
+					// 修改资金账户
+					if ("FAST".equals(trace.getStr("rechargeType"))) {
+						fundsServiceV2.recharge(userCode, payAmount, 0,
+								"快捷支付,充值成功", SysEnum.traceType.C.val());
+					}
+					if ("WY".equals(trace.getStr("rechargeType"))) {
+						fundsServiceV2.recharge(userCode, payAmount, 0,
+								"网银支付,充值成功", SysEnum.traceType.C.val());
+					}
+					User user = userService.findById(userCode);
+					fuiouTraceService.fuiouTraceContent(mchnt_txn_ssn,
+							user, payAmount, FuiouTraceType.A);
+					redirect(CommonUtil.PHONEADRESS+"/ispaysucc.html?type=paysucc", true);
+				} else {
+					// 记录日志
+					BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "充值流水更新失败", null);
+					redirect(CommonUtil.PHONEADRESS+"/ispaysucc.html?type=payerro",true);
+				}
+			}else{
+				BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "充值失败"+resp_code, null);
+				redirect(CommonUtil.PHONEADRESS+"/ispaysucc.html?type=payerro",true);
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private String bindRiskInfo(User user) {
+		JSONObject params = new JSONObject();
+		if (user != null) {
+			String userCode = user.getStr("userCode");
+			UserInfo uInfo = UserInfo.userInfoDao.findById(userCode);
+			params.put("user_info_mercht_userno", userCode);
+			String tmpMobile = user.getStr("userMobile");
+			try {
+				String uMobile = CommonUtil.decryptUserMobile(tmpMobile);
+				params.put("user_info_bind_phone", uMobile);
+				params.put("user_info_mercht_userlogin", uMobile);
+				params.put("user_info_mail", user.getStr("userEmail"));
+			} catch (Exception e) {
+				params.put("user_info_bind_phone", "0000000");
+			}
+			params.put("user_info_dt_register", user.getStr("regDate") + user.getStr("regTime"));
+			params.put("user_info_dt_register", user.getStr("regIP"));
+			params.put("frms_ware_category", "2009");
+			params.put("user_info_full_name", uInfo.getStr("userCardName"));
+			try {
+				String tmpCardId = CommonUtil.decryptUserCardId(uInfo.getStr("userCardId"));
+				if (StringUtil.isBlank(tmpCardId) == false) {
+					params.put("user_info_id_no", tmpCardId);
+					params.put("user_info_identify_state", "1");
+					params.put("user_info_identify_type", "3");
+				} else {
+					params.put("user_info_identify_state", "0");
+				}
+			} catch (Exception e) {
+				params.put("user_info_id_no", "");
+			}
+		} else {
+			throw new BaseBizRunTimeException("11", "无法获取该用户的信息", null);
+		}
+		return params.toJSONString();
+	}
+
+}

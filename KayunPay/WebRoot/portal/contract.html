@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>借款合同生成工具</title>
+<link type="text/css" href="/portal/css/public.css" rel="stylesheet">
+<link type="text/css" href="/portal/css/user.css" rel="stylesheet">
+<link type="text/css" href="/portal/css/datapicker/datepicker.css" rel="stylesheet">
+<!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+<body>
+	<div class="wrapper">
+		<div style="height: 100px;font-size: 64px;text-align: center;">
+			<font>易融恒信威武</font>
+		</div>
+		<!--
+		<header id="header" class="header">
+			code here
+		</header>
+		-->
+		<main class="user">
+		<div class="user-main">
+			<div class="user-main-right" style="width: 100%">
+				<div class="user-main-right-c">
+					<div class="tabNav">
+						<ul>
+							<li class="active">借款合同生成工具</li>
+						</ul>
+					</div>
+
+					<div id="tab-content">
+						<div class="tab-content-list myInfo">
+							<div class="item">
+								<div class="write_text">
+									<label><i>*</i>债权人&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;：</label>
+									<div id="divTransferUser" class="select" style="width:270px;margin-left:20px;z-index: 10">
+										<span id="transferFirstUser" style="margin-left:0px;"> </span>
+										<div class="options" id="optTransferUser">
+										</div>
+									</div>
+								</div>
+							</div>					
+							<div class="item"><label><i>*</i>合同编号&nbsp;&nbsp;&nbsp;：</label><input type="text" id="loanNo"/></div>
+							<div class="item"><label><i>*</i>签订时间&nbsp;&nbsp;&nbsp;：</label><input class="time_input" type="text" id="loanDate"/></div>
+							<div class="dashedLine"></div>
+							<div class="item"><label><i>&nbsp;&nbsp;</i>借款人类型：
+								<input type="radio" value="0" name="loanUserType" checked="checked" id="loanUserType_personal" /><label for="loanUserType_personal">&nbsp;个人用户</label>
+								<input type="radio" value="1" name="loanUserType" id="loanUserType_company" /><label for="loanUserType_company">&nbsp;企业用户</label></label>
+							</div>
+							<div class="item"><label id="txtLoanUserName"><i>*</i>姓名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;：</label><input type="text" id="loanUserName"/><font color="red"> &nbsp;&nbsp;(多个名字使用顿号分割","，如：****,****)</font></div>
+							<div class="item"><label id="txtLoanUserCardId"><i>*</i>身份证&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;：</label><input type="text" id="loanUserCardId"/><font color="red">&nbsp;&nbsp;(多个身份证使用顿号分割","，如：****,****)</font></div>
+							<div class="item"><label><i>&nbsp;&nbsp;</i>家庭住址&nbsp;&nbsp;&nbsp;：</label><input type="text" id="loanUserAddress"/></div>
+							<div class="item"><label><i>&nbsp;&nbsp;</i>手机&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;：</label><input type="text" id="loanUserMobile"/></div>
+							<div class="dashedLine"></div>
+							
+							<div class="item">
+								<div class="write_text">
+									<label><i>&nbsp;&nbsp;</i>产品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;：</label>
+									<div id="divProduct" class="select" style="width:100px;margin-left:20px;">
+										<span id="spanFirstProduct" style="margin-left:0px;" product='全款车质押' >全款车质押</span>
+										<div class="options" id="product">
+											<a href='javascript:' product='全款车质押'>全款车质押</a>
+											<a href='javascript:' product='按揭车质押'>按揭车质押</a>
+											<a href='javascript:' product='全款车抵押'>全款车抵押</a>
+											<a href='javascript:' product='按揭车GPS'>按揭车GPS</a>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="item"><label><i>*</i>借款金额&nbsp;&nbsp;&nbsp;：</label><input type="text" id="loanAmount" onkeyup="this.value=this.value.replace(/\D/g,'')"  onafterpaste="this.value=this.value.replace(/\D/g,'')"/></div>
+							<div class="item"><label><i>*</i>借款利率&nbsp;&nbsp;&nbsp;：</label><input type="text" id="rateByMonth"/>&nbsp;&nbsp;%&nbsp;&nbsp;<font color="red">(实际借款月利率，如：2.5%则输入2.5即可)</font></div>
+							<div class="item"><label><i>&nbsp;&nbsp;</i>借款用途&nbsp;&nbsp;&nbsp;：</label><input type="text" id="loanUsed"/></div>
+							<div class="item"><label><i>*</i>借款期限&nbsp;&nbsp;&nbsp;：</label><input type="text" id="limit" style="width:80px;" onkeyup="this.value=this.value.replace(/\D/g,'')"  onafterpaste="this.value=this.value.replace(/\D/g,'')"/><font color="red">&nbsp;&nbsp;(如：3个月则输入3即可)</font></div>
+							
+							<div class="item">
+								<div class="write_text">
+									<label><i>&nbsp;&nbsp;</i>还款方式&nbsp;&nbsp;：</label>
+									<div id="divRefundType" class="select" style="width:100px;margin-left:20px;">
+										<span id="spanFirstRefund" style="margin-left:0px;" refundType='A' >等本等息</span>
+										<div class="options" id="refundType">
+											<a href='javascript:' refundType='A'>等本等息</a>
+											<a href='javascript:' refundType='B'>先息后本</a>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="item">
+									<label style="margin-right:23px"><i>&nbsp;&nbsp;</i>车辆信息&nbsp;&nbsp;：</label>品牌：<input type="text" style="width:60px;margin-left: 0px;margin-right: 10px;" id="car_pp"/>型号：<input type="text" style="width:80px;margin-left: 0px;margin-right: 10px;" id="car_xh"/>车牌号：<input type="text" style="width:80px;margin-left: 0px;margin-right: 10px;" id="car_cph"/>发动机号：<input type="text" style="width:120px;margin-left: 0px;margin-right: 10px;" id="car_fdjh"/>车架号：<input type="text" style="width:150px;margin-left: 0px;margin-right: 10px;" id="car_cjh"/>
+									<a href='javascript:' id="a_addCars" class="green">添加</a>
+									<a href='javascript:' id="a_delCars" class="red">删除</a>
+							</div>
+							<div id="carsDiv"></div>
+							<div class="dashedLine"></div>
+							<!-- 
+							<div class="item"><label><i>*</i>银行卡姓名：</label><input type="text" id="loanBankUserName"/></div>
+							 -->
+							<div class="item"><label><i>&nbsp;&nbsp;</i>银行卡卡号：</label><input type="text" id="loanBankNo"/></div>
+							<div class="item"><label><i>&nbsp;&nbsp;</i>银行全称&nbsp;&nbsp;&nbsp;：</label><input type="text" id="loanBankName"/></div>
+							<!-- 
+							<div class="dashedLine"></div>
+							<div class="item"><label><i>*</i>紧急联系人姓名：</label><input type="text" id="emergencyName"/></div>
+							<div class="item"><label><i>*</i>紧急联系人关系：</label><input type="text" id="emergencyRelation"/></div>
+							<div class="item"><label><i>*</i>紧急联系人手机：</label><input type="text" id="emergencyMobile"/></div>
+							 -->
+							<div class="dashedLine"></div>
+							<div style="margin-left: 40px;color: red;">备注：如果有担保人，姓名必须填写，其它可选填！</div>
+							<div class="item">
+								<label style="margin-right:23px">
+									<i>&nbsp;&nbsp;</i>担保人&nbsp;&nbsp;：
+								</label>
+								姓名：<input type="text" style="width:60px;margin-left: 0px;margin-right: 10px;" id="dbr_xm"/>
+								身份证号：<input type="text" style="width:125px;margin-left: 0px;margin-right: 10px;" id="dbr_sfzh"/>
+								联系电话：<input type="text" style="width:80px;margin-left: 0px;margin-right: 10px;" id="dbr_lxdh"/>
+								住所：<input type="text" style="width:300px;margin-left: 0px;margin-right: 10px;" id="dbr_zs"/>
+								<a href='javascript:' id="a_addDbr" class="green">添加</a>
+								<a href='javascript:' id="a_delDbr" class="red">删除</a>
+							</div>
+							<div id="dbrDiv"></div>
+							<div class="dashedLine"></div>
+							<form id="vehicleForm" action="/vehicleReport" method="post">
+								<!-- 
+								<div class="item"><label><i>*</i>是否担保&nbsp;&nbsp;&nbsp;：</label>
+									<input type="radio" name="isdanbao" value="1" />是
+									<input type="radio" name="isdanbao" value="0" checked="checked"/>否
+								</div>
+								 -->
+								<input type="hidden" name="transferUserNo">
+								<input type="hidden" name="loanNo">
+								<input type="hidden" name="loanUserName">
+								<input type="hidden" name="loanUserCardId">
+								<input type="hidden" name="loanUserAddress">
+								<input type="hidden" name="loanUserMobile">
+								<input type="hidden" name="emergencyName">
+								<input type="hidden" name="emergencyRelation">
+								<input type="hidden" name="emergencyMobile">
+								<input type="hidden" name="loanAmount">
+								<input type="hidden" name="rateByMonth">
+								<input type="hidden" name="loanUsed">
+								<input type="hidden" name="limit">
+								<input type="hidden" name="refundType">
+								<input type="hidden" name="cars">
+								<input type="hidden" name="loanBankUserName">
+								<input type="hidden" name="loanBankNo">
+								<input type="hidden" name="loanBankName">
+								<input type="hidden" name="loanDate">
+								<input type="hidden" name="product">
+								<input type="hidden" name="dbrs">
+								<div class="item buttonP"><button type="button" class="save" id="saveInfoBtn">保存</button></div><!-- <button type="reset" class="reset">修改</button> -->
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</main>
+		<footer id="aaa" class="footer"></footer>
+	</div>
+	<style>
+		.myInfo .item{
+			padding-left:10px;
+		}
+	</style>
+	
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+<script type="text/javascript" src="/portal/js/config.js"></script>
+<script type="text/javascript" src="/portal/js/public.js"></script>
+<script type="text/javascript">window.userNavActive = 11;topNavSelect= '4'; </script>
+<script type="text/javascript" src="/portal/js/user.js"></script>
+<script type="text/javascript" src="/portal/js/pub/widget-table.js"></script>
+<script type="text/javascript" src="/portal/js/pub/app.js"></script>
+<script type="text/javascript" src="/portal/css/datapicker/bootstrap-datepicker.js"></script>
+
+<script>
+	//初始化查询数据
+	$('.time_input').datepicker({
+		'format':'yyyy-mm-dd'
+	});
+	
+	var date = new Date();
+	var year = date.getFullYear();
+	var month = date.getMonth()+1 ;
+	var day = date.getDate();
+	$('#loanDate').val(year + "-" + (month > 9 ? month : "0"+ month) + "-" + (day > 9 ? day : "0"+day));
+	
+	
+	$('#refundType a').click(function(){
+		var html = $(this).html();
+		var refundType = $(this).attr("refundType");
+		var value = html;
+		var selectElement = $(this).parent().parent();
+		if($(this).attr('value')){
+			value = $(this).attr('value');
+		}
+		selectElement.children('span').html(html);
+		selectElement.children('span').attr("refundType",refundType);
+		$(this).parent().hide();
+	});
+	
+	$('#product a').click(function(){
+		var html = $(this).html();
+		var product = $(this).attr("product");
+		var value = html;
+		var selectElement = $(this).parent().parent();
+		if($(this).attr('value')){
+			value = $(this).attr('value');
+		}
+		selectElement.children('span').html(html);
+		selectElement.children('span').attr("product",product);
+		$(this).parent().hide();
+	});
+	
+	//查询债权人列表
+	YRHX.ajax({
+	    url: "queryTransferUser",
+	    success: function (sucData) {
+			var transferUserHtml = "";
+	    	
+	    	if(sucData){
+				for (var i = 0; i < sucData.length; i++) {
+					if(i < 1 ){
+						$("#transferFirstUser").html( sucData[i].name + "&nbsp;&nbsp;&nbsp;&nbsp;" + sucData[i].area);
+						$("#transferFirstUser").attr("transferUserNo",sucData[i].transferUserNo);
+					}
+					transferUserHtml += "<a href='javascript:' transferUserNo ='"+ sucData[i].transferUserNo +"'>"+ sucData[i].name + "&nbsp;&nbsp;&nbsp;&nbsp;" + sucData[i].area +"</a>";
+				}
+				
+				$("#optTransferUser").html( transferUserHtml );
+				$('#optTransferUser a').click(function(){
+					var html = $(this).html();
+					var transferUserNo = $(this).attr("transferUserNo");
+					var value = html;
+					var selectElement = $(this).parent().parent();
+					if($(this).attr('value')){
+						value = $(this).attr('value');
+					}
+					selectElement.children('span').html(html);
+					selectElement.children('span').attr("transferUserNo",transferUserNo);
+					$(this).parent().hide();
+				});
+			}
+	    },
+	    error: function (errData) {
+	    	$.popTips("popTipErr",errData.return_info);
+	    }
+	});
+
+		
+	$("#a_addCars").click(function(){
+		 var item = $("#carsDiv > div");
+		 var carLength = item.length + 1;
+		 var carsHtml = '<div id="carItem_'+ carLength +'" class="item" carsDiv="carsDiv"><label style="margin-right:23px"><i>*</i>车辆信息&nbsp;&nbsp;：</label>品牌：<input type="text" style="width:60px;margin-left: 0px;margin-right: 10px;" id="car_pp_' + carLength;
+		 carsHtml += '"/>型号：<input type="text" style="width:80px;margin-left: 0px;margin-right: 10px;" id="car_xh_'+carLength;
+		 carsHtml += '"/>车牌号：<input type="text" style="width:80px;margin-left: 0px;margin-right: 10px;" id="car_cph_'+carLength;
+		 carsHtml += '"/>发动机号：<input type="text" style="width:120px;margin-left: 0px;margin-right: 10px;" id="car_fdjh_'+carLength;
+		 carsHtml += '"/>车架号：<input type="text" style="width:150px;margin-left: 0px;margin-right: 10px;" id="car_cjh_'+carLength;
+		 carsHtml += '"/></div>';
+		 $('#carsDiv').append(carsHtml);
+	});
+	
+	$("#a_delCars").click(function(){
+		var item = $("#carsDiv > div");
+		if(item && item.length > 0){
+			$('div').remove('#carItem_'+item.length);
+		}
+	});
+	
+	$("#a_addDbr").click(function(){
+		 var item = $("#dbrDiv > div");
+		 var dbrLength = item.length + 1;
+		 var dbrHtml = '<div id="dbrItem_'+ dbrLength +'" class="item" carsDiv="carsDiv"><label style="margin-right:23px"><i>&nbsp;&nbsp;</i>担保人&nbsp;&nbsp;：</label>&nbsp;姓名：<input type="text" style="width:60px;margin-left: 0px;margin-right: 10px;" id="dbr_xm_' + dbrLength;
+		 dbrHtml += '"/>&nbsp;身份证号：<input type="text" style="width:125px;margin-left: 0px;margin-right: 10px;" id="dbr_sfzh_'+dbrLength;
+		 dbrHtml += '"/>&nbsp;联系电话：<input type="text" style="width:80px;margin-left: 0px;margin-right: 10px;" id="dbr_lxdh_'+dbrLength;
+		 dbrHtml += '"/>&nbsp;住所：<input type="text" style="width:300px;margin-left: 0px;margin-right: 10px;" id="dbr_zs_'+dbrLength;
+		 dbrHtml += '"/></div>';
+		 $('#dbrDiv').append(dbrHtml);
+	});
+	
+	$("#a_delDbr").click(function(){
+		var item = $("#dbrDiv > div");
+		if(item && item.length > 0){
+			$('div').remove('#dbrItem_'+item.length);
+		}
+	});
+	
+	$("input[name=loanUserType]").click(function() {
+		if ($(this).val() == 0) {
+			$("#txtLoanUserName").html("<i>*</i>姓名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;：");
+			$("#txtLoanUserCardId").html("<i>*</i>身份证&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;：");
+		} else if ($(this).val() == 1) {			
+			$("#txtLoanUserName").html("<i>*</i>公司名称&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;：")
+			$("#txtLoanUserCardId").html("<i>*</i>统一社会信用代码&nbsp;&nbsp;：");	
+		}
+	})
+	
+	
+	//提交修改数据
+	$("#saveInfoBtn").click(function(){
+		
+		if("" == $("#loanUserName").val()){
+			$.popTips("popTipErr","借款人姓名不能为空");
+			return;
+		}
+		if("" == $("#loanUserCardId").val()){
+			$.popTips("popTipErr","借款人身份证号不能为空");
+			return;
+		}
+		if("" == $("#loanAmount").val()){
+			$.popTips("popTipErr","借款金额不能为空");
+			return;
+		}
+		if("" == $("#rateByMonth").val()){
+			$.popTips("popTipErr","借款利率不能为空");
+			return;
+		}
+		if("" == $("#limit").val()){
+			$.popTips("popTipErr","借款期限不能为空");
+			return;
+		}
+		
+		var transferUserNo = $("#transferFirstUser").attr("transferUserNo");
+		var refundType = $("#spanFirstRefund").attr("refundType");
+		var product = $("#spanFirstProduct").attr("product");
+		var loanDate = $("#loanDate").val().replaceAll('-',"");
+		var loanAmount = $("#loanAmount").val()*10*10;
+		var rateByMonth = ($("#rateByMonth").val()*10*10).toFixed(0);
+		
+		
+		var cars = "";
+		var p = $("#car_pp").val();
+		var x = $("#car_xh").val();
+		var c = $("#car_cph").val();
+		var f = $("#car_fdjh").val();
+		var cjh = $("#car_cjh").val();
+		if(p && "" !=p && x && "" !=x && c && "" !=c && f && "" !=f && cjh && "" !=cjh){
+			cars = p + "|" + x + "|" + c + "|" + f + "|" + cjh + "," ;
+		}
+		var item = $("#carsDiv > div");
+		for (var i = 1; i <= item.length; i++) {
+			var pp = $("#car_pp_"+i).val();
+			var xh = $("#car_xh_"+i).val();
+			var cph = $("#car_cph_"+i).val();
+			var fdjh = $("#car_fdjh_"+i).val();
+			var cjh = $("#car_cjh_"+i).val();
+			if(pp && "" !=pp && xh && "" !=xh && cph && "" !=cph && fdjh && "" !=fdjh && cjh && "" !=cjh){
+				cars += pp + "|";
+				cars += xh + "|";
+				cars += cph + "|";
+				cars += fdjh + "|";
+				cars += cjh;
+				if(i < item.length){
+					cars += ","
+				}
+			}
+		}
+		
+		
+		var dbrs = "";
+		var dbr_xm = $("#dbr_xm").val();
+		var dbr_sfzh = $("#dbr_sfzh").val();
+		var dbr_lxdh = $("#dbr_lxdh").val();
+		var dbr_zs = $("#dbr_zs").val();
+		if(dbr_xm && "" != dbr_xm){
+			if("" == dbr_sfzh){
+				dbr_sfzh = "1111";
+			}
+			if("" == dbr_lxdh){
+				dbr_lxdh = "1111";
+			}
+			if("" == dbr_zs){
+				dbr_zs = "1111";
+			}
+			dbrs = dbr_xm + "|" + dbr_sfzh + "|" + dbr_lxdh + "|" + dbr_zs + "," ;
+		}
+		var item = $("#dbrDiv > div");
+		for (var i = 1; i <= item.length; i++) {
+			var dbr_xm_a = $("#dbr_xm_"+i).val();
+			var dbr_sfzh_a = $("#dbr_sfzh_"+i).val();
+			var dbr_lxdh_a = $("#dbr_lxdh_"+i).val();
+			var dbr_zs_a = $("#dbr_zs_"+i).val();
+			
+			if("" != dbr_xm_a){
+				if("" == dbr_sfzh_a){
+					dbr_sfzh_a = "1111";
+				}
+				if("" == dbr_lxdh_a){
+					dbr_lxdh_a = "1111";
+				}
+				if("" == dbr_zs_a){
+					dbr_zs_a = "1111";
+				}
+				dbrs += dbr_xm_a + "|" + dbr_sfzh_a + "|" + dbr_lxdh_a + "|" + dbr_zs_a;
+				if(i < item.length){
+					dbrs += ","
+				}
+			}
+		}
+		
+		$("input[name='transferUserNo']").val(transferUserNo);
+		$("input[name='loanNo']").val($("#loanNo").val());
+		$("input[name='loanUserName']").val($("#loanUserName").val());
+		$("input[name='loanUserCardId']").val($("#loanUserCardId").val());
+		$("input[name='loanUserAddress']").val($("#loanUserAddress").val());
+		$("input[name='loanUserMobile']").val($("#loanUserMobile").val());
+		
+		//$("input[name='emergencyName']").val($("#emergencyName").val());
+		//$("input[name='emergencyRelation']").val($("#emergencyRelation").val());
+		//$("input[name='emergencyMobile']").val($("#emergencyMobile").val());
+		
+		$("input[name='loanAmount']").val(loanAmount);
+		$("input[name='rateByMonth']").val(rateByMonth);
+		$("input[name='loanUsed']").val($("#loanUsed").val());
+		$("input[name='limit']").val($("#limit").val());
+		$("input[name='refundType']").val(refundType);
+		$("input[name='cars']").val(cars);
+		$("input[name='loanBankUserName']").val($("#loanBankUserName").val());
+		$("input[name='loanBankNo']").val($("#loanBankNo").val());
+		$("input[name='loanBankName']").val($("#loanBankName").val());
+		$("input[name='loanDate']").val(loanDate);
+		$("input[name='product']").val(product);
+		$("input[name='dbrs']").val(dbrs);
+		$("#vehicleForm").submit();
+	});
+</script>
+
+</body>
+</html>

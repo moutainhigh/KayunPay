@@ -1,0 +1,1363 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户中心 - 首页</title>
+    <link type="text/css" href="/portal/css/public.css?v=1.0.0" rel="stylesheet">
+    <link type="text/css" href="/portal/css/user.css?v=1.0.1" rel="stylesheet">
+    <!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+    <style>
+    	.clear{clear:both;}
+		.pop_b {
+			display: block;width: 624px;height:700px;position:absolute; 
+			top:0;left:0;bottom:0;right:0;margin:auto; z-index:130;border-radius:15px;
+		    background-color:#fff;box-shadow: 0 3px 18px rgba(100, 0, 0, .5);}
+		.pop-close{width:30px;height:30px;text-align: center;line-height: 30px;margin-top: 10px;
+			float: right;font-weight: bold;color:#fff;background-color: #D1D1D1;border-radius: 50%;margin-right: 20px;
+				}
+		.bgPop_a{display:block;position:absolute;z-index:129;left:0;top:0;width:100%;height:100%;background:rgba(73,73,73,.9);}
+		.pop_content{width:90%;margin:0 auto;}
+		.content_p2{font-size:16px;}
+		.pop_content p{line-height: 30px;    margin-top: 30px;}
+		.content_p1{color:#666;font-size: 14px;}
+		.pop_i{display:inline-block;width:23px;height:16px;background:url(portal/images/A00_1.jpg) no-repeat ;margin-bottom: 0px;margin-left: 20px;}
+		.pop_ii{display:inline-block;width:23px;height:16px;background:url(portal/images/A00_2.jpg) no-repeat ;margin-bottom: 0px;}
+		.pop_content .content_p3{font-size:18px;font-weight:bold;background:#4D79FF;color:#fff;width:300px;height:45px;line-height:45px;margin:0 auto;text-align: center;border-radius: 10px;}
+    </style>	
+</head>
+<body>
+<div class="wrapper">
+    <header id="header" class="header">
+        <!--code here-->
+    </header>
+    <nav class='user_index'></nav>
+    <main>
+    	<div class='user_module1'>
+    		<div class="user-indexTop">
+                   <div class="uHead"><i></i></div>
+                   <div class="userIndexInfo">
+                      <div class="user_assess">
+                      	<span>易融恒信为您量身打造了风险承受能力评估体系，以获得最佳的投资体验！</span>
+                      	<a href="/assessment" class="user_assessBtn">立即评估</a>
+                      </div>
+                      <div class="userIndexItem">
+                          <p></p>
+                          <div>
+                           		账户安全：<a href='/C01'><b class="uReal" title="身份证认证"></b></a><a href='/C01'><!-- <b class="uMail" title="邮箱认证"></b> --></a><a href='/C01'><b class="uPhone has" title="手机认证"></b></a>
+	                           	<!-- 安全等级：<i class="serLevel">低</i> --><span class='gap'>|</span>
+	                           	<a href="/grade">
+	                           		<i id="vipHead" class="uLevel"></i>
+	                           		<i class="uLevelFont"></i>
+	                           		<span class='gap1'>|</span>
+	                           	</a>
+	                           	积分：<span class="totalNum">9557.00</span>
+	                      </div>
+	                      <div class="u_levelBlock">
+	                      	<span class="u_levelBlock_f">距离下一个等级待收还差<i class="u_levelBlock_i"></i></span>
+	                      	<i class="u_levelIco"></i>
+	                      </div>
+                       </div>
+                   </div>
+                   <div class='clearfix'></div>
+			 </div>
+			 <div class="depository">
+			 	<div class="depository_not" datanum="0">
+			 		<div class="depository_font">江西银行存管账户：</div>
+			 		<!-- <a href="depositoryUser?step=1" class="depository_btn">未开通</a> -->
+			 		<a href="#" class="depository_btn">未开通</a>
+			 		<div class="depository_btn_box">
+			 			<div class="depository_btn1">已开通</div>
+			 			<div class="depository_bank">
+			 				<div class="depository_bank_font">存管电子账号：</div>
+			 				<div class="depository_bank_num"></div><span style="line-height:25px; margin-left:20px;">(该账户号不支持转账充值，转账请使用平台专户)</span>
+			 			</div>
+			 		</div>
+			 	</div>
+			 </div>
+			 <div class='basic_amount'>
+			 	<div class='basic_amount_item'>
+			 		<span>待收本金</span><span>易分期待收利息</span>
+			 		<!-- <span>待兑付</span><span>总充值</span><span>总提现</span> -->
+			 		<span>可用余额</span>
+			 	</div>
+			 	<div class='basic_amount_item real'>
+			 		<span class='recover_bj'><i></i>元</span><span class='recover_lx'><i></i>元</span>
+			 		<!-- <span class='recover_dui'><i></i>元</span><span class='c_amount'><i></i>元</span><span class='w_amount'><i></i>元</span> -->
+			 		<span class='use_amount'><i></i>元</span>
+			 	</div>
+			 	<div class='fast_href'><a href='#' class='recharge' id="cz">充值</a><a href='#' class='getMoney' id="tx">提现</a></div>
+			 </div>
+    	</div>
+    	<div class='user_module2'>
+    		<a href='/A04'><span>自动投标</span>自选优质标，资金不站岗，省时更省心，投标更轻松！<span class='zdtb'>状态：<i>关闭</i></span></a>
+    	</div>
+    	<div class='user_module3'>
+    		<div class='user_module3_left'>
+    			<p><span>回款日历</span><i class='icon_red'></i>今日<i class='icon_blue'></i>待回款日<i class='icon_gray'></i>已回款日<!-- <span class='reback_time'>每日早八点开始回款</span> --></p>
+    			<!-- <div id='tool' class='tool' style='dispaly:none;'>
+    				<i class='tool_right c' isNext='1'></i><i class='tool_left' isNext='0'></i>
+    			</div> -->
+    			<div class="tool2" id="tool2">
+			 	<i class="left" ></i><span id="year"></span>年<span id="month" ></span>月 <i class="right" ></i>
+				</div>
+    			<div id="calender"></div>
+			</div>
+    		<div class='user_module3_right'>
+    			<div class='user_date' date=''></div>
+    			<p>今日有<i class='reback_today'></i>笔回款，本月共有<i class='reback_month'></i>笔回款</p>
+    			<div >
+    				<p class='p1'>本月应回款总额:<span class='reback_allAmount4Month'><i>2358.0</i>元<span></p>
+    			</div>
+    			<div class='reback_mes'>
+    				<p class='p2' style="display:none">今日没有回款，赶紧去<a href='/Z02?navTab=1'>投资</a>吧</p>
+    				<p class='p1' style="display:none">本日应回款总额:<span class='reback_allAmount'><i>2358.0</i>元<span></p>
+    				<p class='p1' style="display:none">回收本金：<span class='calendar_bj'>11444元</span>回收利息：<span class='calendar_lx'>2222元<span></span></p>	
+    			</div>
+    			<!-- <a href="/A01?navTab=1" class='reback_detail'>近期回款详情</a>
+    			<a id='back_detail' class='reback_detail' style="cursor:pointer;">当日回款详情</a> -->
+    		</div>
+    		<div class='clearfix'></div>
+    	</div>
+    	<div class='user_module4'>
+    		<div class='user_module4_left'>
+	    		<h2  id='recentLoanPage'>最近的投资
+	    		<span class="uArrowRight" indexpage="2" totalpage="1"></span>
+	    		<span class="uArrowLeft" indexpage="0" totalpage="1"></span>
+	    		</h2>
+	    		<div id='recentLoan'>
+		    		<table>
+		               <thead>
+		               	 <tr class="t-head">
+		                          <th>投资日期</th>
+		                          <th>投资金额</th>
+		                          <th>预期待赚利息</th>
+		                    </tr>
+		               </thead>
+		                  <tbody></tbody>
+		              </table>
+	              </div>
+              </div>
+              <div class='user_activity' >
+              	<p>
+	              	<a href="/grade"><img src='/portal/images/index/user_activity1.jpg'/></a>
+	              	<a href="/grade"><img src='/portal/images/index/user_activity1.jpg'/></a>
+	              	<!-- <a href="http://topic.yrhx.com/zt/2017/20170308/"><img src='/portal/images/index/user_activity.jpg'/></a> -->
+              	</p>	
+              </div>
+              
+              <div class='clearfix'></div>
+    	</div>
+    </main>
+  	<footer id="footer" class="footer"></footer>
+</div>
+<div id="yinying" class="yinying"></div>
+<div id="backDetil">
+	<div class="finance-table" style="margin-top: 20px">
+	<div class="bank_dialog_header" style="padding: 0px 20px;">
+		<h4>回款详情</h4>
+		<div class="del"></div>
+	</div>
+	<table id="list_table">
+		<thead>
+			<tr class="t-head">
+				<th width="10%">标编号</th>
+				<th width="15%">期数</th>
+				<th width="15%">回款本金</th>
+				<th width="15%">回款利息</th>
+				<th width="15%">状态</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+	</div>
+</div>
+<div id="DJDialog" class="dj_dialog">
+	<h3>会员等级规则<span class="del" onClick="hide_dj()"></span></h3>
+	<table>
+		<tr>
+			<th width="140">现会员等级</th>
+			<th width="135">所需活跃积分</th>
+			<th width="120">利息管理费</th>
+			<th width="230">利息管理费说明</th>
+			<th width="205">会员有效期</th>
+			<th>免提现手续费次数(每月)</th>
+		</tr>
+		<tr>
+			<td><span class="rating rating-0">少尉</span></td>
+			<td>≥0</td>
+			<td>3%</td>
+			<td>利息管理费<span class="blue">1%</span>归入风险备用金</td>
+			<td class="rowspan5" rowspan="5">永久</td>
+			<td class="rowspan5">0</td>
+		</tr>
+		<tr>
+			<td><span class="rating rating-1">中尉</span></td>
+			<td>≥300</td>
+			<td>3%</td>
+			<td>利息管理费<span class="blue">1%</span>归入风险备用金</td>
+			<td class="rowspan5">1</td>
+		</tr>
+		<tr>
+			<td><span class="rating rating-2">上尉</span></td>
+			<td>≥1000</td>
+			<td>3%</td>
+			<td>利息管理费<span class="blue">1%</span>归入风险备用金</td>
+			<td class="rowspan5">2</td>
+		</tr>
+		<tr>
+			<td><span class="rating rating-3">少校</span></td>
+			<td>≥3000</td>
+			<td>2%</td>
+			<td>利息管理费<span class="blue">1%</span>归入风险备用金</td>
+			<td class="rowspan5">3</td>
+		</tr>
+		<tr>
+			<td><span class="rating rating-4">中校</span></td>
+			<td>≥8000</td>
+			<td>2%</td>
+			<td>利息管理费<span class="blue">1%</span>归入风险备用金</td>
+			<td class="rowspan5">5</td>
+		</tr>
+		<tr>
+			<td><span class="rating rating-5">上校</span></td>
+			<td>≥16000</td>
+			<td>1%</td>
+			<td></td>
+			<td class="line2">当前待收本息低于10万，第二天自动降低一个等级</td>
+			<td class="rowspan5">8</td>
+			
+		</tr>
+		<tr>
+			<td><span class="rating rating-6">将军</span></td>
+			<td>≥60000</td>
+			<td>0%</td>
+			<td></td>
+			<td class="line2">当前待收本息低于20万，第二天自动降低一个等级</td>
+			<td class="rowspan5">无限</td>
+		</tr>
+	</table>
+</div>
+<div id="JFDialog" class="jf_dialog">
+	<h3>会员积分规则<span class="del" onClick="hide_jf()"></span></h3>
+	<table>
+		<tr>
+			<th>投标月份</th>
+			<th>投标金额（元）</th>
+			<th><span class="red">等额本息（积分）</span></th>
+			<th>到期还本（积分）</th>
+		</tr>
+		<tr>
+			<td>1个月标</td>
+			<td>100</td>
+			<td>1</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td>2个月标</td>
+			<td>100</td>
+			<td>1.3</td>
+			<td>1.7</td>
+		</tr>
+		<tr>
+			<td>3个月标</td>
+			<td>100</td>
+			<td>1.6</td>
+			<td>2.4</td>
+		</tr>
+		<tr>
+			<td>4个月标</td>
+			<td>100</td>
+			<td>1.9</td>
+			<td>3.1</td>
+		</tr>
+		<tr>
+			<td>5个月标</td>
+			<td>100</td>
+			<td>2.2</td>
+			<td>3.8</td>
+		</tr>
+		<tr>
+			<td>6个月标</td>
+			<td>100</td>
+			<td>2.5</td>
+			<td>4.5</td>
+		</tr>
+		<tr>
+			<td>7个月标</td>
+			<td>100</td>
+			<td>2.8</td>
+			<td>5.2</td>
+		</tr>
+		<tr>
+			<td>8个月标</td>
+			<td>100</td>
+			<td>3.1</td>
+			<td>5.9</td>
+		</tr>
+		<tr>
+			<td>9个月标</td>
+			<td>100</td>
+			<td>3.4</td>
+			<td>6.6</td>
+		</tr>
+		<tr>
+			<td>10个月标</td>
+			<td>100</td>
+			<td>3.7</td>
+			<td>7.3</td>
+		</tr>
+		<tr>
+			<td>11个月标</td>
+			<td>100</td>
+			<td>4</td>
+			<td>8</td>
+		</tr>
+		<tr>
+			<td>12个月标</td>
+			<td>100</td>
+			<td>4.3</td>
+			<td>8.7</td>
+		</tr>
+		<tr>
+			<td>18个月标</td>
+			<td>100</td>
+			<td>6.1</td>
+			<td>12.9</td>
+		</tr>
+	</table>
+</div>
+<div id="gofuiou">
+<div><img class='icon_close' src="/portal/images/icons/close05.png" style="position:relative;float: right;right:10px;top:10px;cursor:pointer;"></div>
+<div align='center'><img class='icon' style="position:relative;margin-top: 360px;cursor:pointer;"></div>
+</div>
+
+<!-- 开通存管弹窗 -->
+<div class="cg">
+	<div class="cg-bg">
+		<a href="javascript:void(0)" id="closeBtn"></a>
+		<a href="#" class="enter"></a>
+	</div>
+	<div class="shade"></div>
+</div>
+
+<!-- 设置密码弹窗 -->
+<div class="cg_auth_1">
+	<div class="cgAuth_title">
+		设置存管账户密码
+		<div class="cgAuth_close">×</div>
+	</div>
+	<div class="cgAuth_txt_1">请您进行密码设置后，才可以使用！</div>
+	<div class="cgAuth_submitBox">
+		<a href="#" class="cgAuth_submit" id="cgAuth_sub">立即开通</a>
+		<div class="cgAuth_submitClose">取消</div>
+	</div>
+</div>
+
+<!-- 开通授权弹窗 -->
+<div class="cg_auth">
+	<div class="cgAuth_title">
+		开通缴费授权
+		<div class="cgAuth_close">×</div>
+	</div>
+	<div class="cgAuth_txt">开通缴费授权才能正常进行提现、还款、债权转让等操作</div>
+	<div class="cgAuth_submitBox">
+		<a href="/depositoryUser?step=3" class="cgAuth_submit" id="cgAuth_a">立即开通</a>
+		<div class="cgAuth_submitClose">取消</div>
+	</div>
+</div>
+<!-- 债权选择弹框 -->
+<div class="pop_b" style = 'display:none'>
+	<p class="pop-close">Ｘ</p>
+		<div class="clear"></div>
+		<div class="pop_content">
+			<p class="content_p1">	出借人需根据自身情况慎重选择对自身利益最大化的方案，上述方案的选择不可撤销。选择方案一、二、三的出借人如出现特殊情况，可联系客服。以上方案需选择，方可进行相应回款。
+			</p>
+			<p class="content_p2">
+				方案一：按月支付
+				<i class="pop_i" ></i> 全部
+				<i class="pop_i pop_a"></i> 组合 (方案一和方案三组合)<br><br>
+				方案二：按季支付
+				<i class="pop_i"></i> 全部 
+				<i class="pop_i pop_a"></i> 组合 (方案二和方案三组合)<br><br>
+				方案三：5折转让 <i class="pop_i" style="margin-left:26px;"></i>&nbsp;全部<br><br>
+				方案四：债权置换 <i class="pop_i"></i><br><br>
+				方案五：自行承担 <i class="pop_i"></i><br><br>
+				<span class="content_p1">*方案一和方案二可选择全部，或者组合（组合可勾选）</span><br><br>
+			</p>
+			<div class='zzxy' style='display:none'><input type="checkbox" class = "xy" >&nbsp;&nbsp;<span class="span1">我已同意并阅读</span>&nbsp;<a href="/xy2"  class='jumpxy'  target="_blank" style="text-decoration:none;color:#0095FF;">《债权转让协议》</a></div>
+			<br>
+			<a><p class="content_p3" style = 'cursor:pointer'>确认方案</p></a>
+		</div>
+</div>
+
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js?v=1.0.0"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js?v=1.0.0"></script>
+<script type="text/javascript" src="/portal/js/config.js?v=1.0.0"></script>
+<script>topNavSelect = "4";</script>
+<script type="text/javascript" src="/portal/js/public.js?v=1.0.0"></script>
+<script type="text/javascript" src="/portal/js/user.js?v=1.0.1"></script>
+<script type="text/javascript" src="/portal/js/pub/widget-table.js"></script>
+<script type="text/javascript" src="/portal/js/pub/app.js"></script>
+<script type="text/javascript">
+<!-- 债权选择弹框 -->
+window.onload=function (){
+  $('.pop-close').click(function () {
+        $('.pop_b').hide();
+        $('.yinying').hide();
+	});
+	$('.pop_i').click(function(){
+		$(this).addClass("pop_ii").siblings().removeClass("pop_ii");
+		var index = $('.pop_i').index(this);
+		if(index==1){
+			$('.content_p3').attr("names","A");
+			$('.content_p3').attr("half","1");
+			$('.zzxy').hide();
+		}else if(index==3){
+			$('.content_p3').attr("names","B");
+			$('.content_p3').attr("half","1");
+			$('.zzxy').hide();
+		}
+		else if(index==0){
+			$('.content_p3').attr("names","A");
+			$('.content_p3').removeAttr("half");
+			$('.jumpxy').attr('href','/xy1');
+			$('.xy').attr('checked',false);
+			$('.zzxy').show();
+		}else if(index==2){
+			$('.content_p3').attr("names","B"); 
+			$('.content_p3').removeAttr("half");
+			$('.jumpxy').attr('href','/xy2');
+			$('.xy').attr('checked',false);
+			$('.zzxy').show();
+		}
+		else if(index==4){
+			$('.content_p3').attr("names","C");
+			$('.content_p3').attr("half","1");
+			$('.jumpxy').attr('href','/xy3');
+			$('.xy').attr('checked',false);
+			$('.zzxy').show();
+		}else if(index==5){
+			$('.content_p3').attr("names","D"); 
+			$('.content_p3').removeAttr("half");
+			$('.zzxy').hide();
+		}
+		else if(index==6){
+			$('.content_p3').attr("names","E");
+			$('.content_p3').removeAttr("half");
+ 			var  tzHtml  = `
+			 风险提示告知书
+			 致出借人：
+			 鉴于您选择债权调整中方案五，现将有关后果和可能风险告知您如下：
+			 1、借款人正常按期还款，平台按借款人还款情况定期向您回款；
+			 2、借款人逾期还款的，逾期风险由您自行承担，与平台无关；
+			 3、借款逾期还款的，由平台进行法催，法催费用由您自行承担（包括但不限于诉讼费、律师费、保全费、差旅费等），回款时间视借款人还款时间而定。`
+ 	      	alert(tzHtml)
+			$('.zzxy').hide();
+		}else{
+			$('.content_p3').attr("href","javascript:;'"); 
+			$('.content_p3').removeAttr("half");
+			$('.zzxy').hide();
+		}
+	});
+	$('.content_p3').click(function(){
+		if($('.content_p3').attr("names")==null&&$('.content_p3').attr("half")==null){
+			$.popTips("popTipErr","获取方案失败");
+			return false;
+		}
+		if(($('.content_p3').attr("names")=='A'&&$('.content_p3').attr("half")==null)
+		||($('.content_p3').attr("names")=='B'&&$('.content_p3').attr("half")==null)
+		||$('.content_p3').attr("names")=='C'){
+			if(!$('.xy').is(':checked')){
+				alert("请认真阅读协议并勾选");
+				return false;
+			}
+		}
+      	var yesToGo = confirm("您确定选择该方案?");
+		if(yesToGo){
+			YRHX.ajax({
+				url:'/setTransferWay',
+			 	data:{"transferWay":$('.content_p3').attr("names"),
+			 		"half":$('.content_p3').attr("half")
+			 		},
+				success:function(sucData){
+					$('.pop_b').hide();
+	      			$('.yinying').hide();
+	      			if($('.content_p3').attr("names") == 'D' ||$('.content_p3').attr("names") == 'E'){	
+	      			setTimeout(function () { 
+	      			alert("设置成功，可联系官方客服在线咨询。");
+       				 window.location.href = '/A00';
+    					}, 1000);
+	      			}else{
+					$.popTips("popTipErr","设置成功");
+	      			 setTimeout(function () { 
+       				 window.location.href = '/A01';
+    					}, 1000);
+	      			}
+	      		},
+				error:function(data){
+					$.popTips("popTipErr",data.return_info || "获取信息失败");
+				}
+			});
+		}
+	});
+};
+<!-- 债权选择弹框 end-->
+var lable_welcome = "";
+var nowDate = new Date();
+var hour = nowDate.getHours();
+var login=YRHX.queryString("login");
+$(".icon_close").click(function(){
+	$("#gofuiou").hide();
+	$("#yinying").hide();
+});
+function islogin(loginid){
+	if(login=='is'){
+		var userCode=YRHX.Cookie("userCode").get();
+		YRHX.ajax({
+			url:"/queryUserInfo",
+			data:{
+				"userCode":userCode
+			},
+			success:function(sucData){//已实名认证
+				/* YRHX.ajax({
+				url:"/isLogin",
+				data:{
+					"userCode":userCode
+				},
+				success:function(sucData){//开通存管
+					to_center($('#yinying').show());
+					to_center($('#gofuiou').show());
+					$('#gofuiou').css('background','url(/portal/images/icons/fu01.png) center no-repeat');
+					$('#gofuiou .icon').attr('src','/portal/images/icons/fu02.png');
+					$('#gofuiou .icon').click(function(){
+						window.location.href='Z02';
+					});
+				},
+				error:function(data){//未开通存管
+					 to_center($('#yinying').show());
+					 to_center($('#gofuiou').show());
+					 $('#gofuiou').css('background','url(/portal/images/icons/fu03.png) center no-repeat');
+					 $('#gofuiou .icon').attr('src','/portal/images/icons/fu04.png');
+					 $('#gofuiou .icon').click(function(){
+						 window.location.href="B04";
+						});
+				}
+			}) */
+			if(YRHX.Cookie("loginId").get()){//开通存管
+				to_center($('#yinying').show());
+				to_center($('#gofuiou').show());
+				$('#gofuiou').css('background','url(/portal/images/icons/fu01.png) center no-repeat');
+				$('#gofuiou .icon').attr('src','/portal/images/icons/fu02.png');
+				$('#gofuiou .icon').click(function(){
+					window.location.href='Z02';
+				});
+			}else{//未开通存管
+				 to_center($('#yinying').show());
+				 to_center($('#gofuiou').show());
+				 $('#gofuiou').css('background','url(/portal/images/icons/fu03.png) center no-repeat');
+				 $('#gofuiou .icon').attr('src','/portal/images/icons/fu04.png');
+				 $('#gofuiou .icon').click(function(){
+					 window.location.href="B04";
+					});
+			}
+			},
+			error:function(data){//未实名认证
+				to_center($('#yinying').show());
+				$('#gofuiou').css('background','url(/portal/images/icons/fu03.png) center no-repeat');
+				$('#gofuiou .icon').attr('src','/portal/images/icons/fu04.png');
+				to_center($('#gofuiou').show());
+				$('#gofuiou .icon').unbind("click");
+				$('#gofuiou .icon').click(function(){
+					window.location.href="C01";
+				});
+				
+			}
+		})		
+	}
+}
+
+if(hour < 4){
+	lable_welcome = "晚上好";
+	lable_welcome_word ='更好的我们总在明天！';
+}else if (hour < 9){
+	lable_welcome = "早上好";
+	lable_welcome_word ='开启一天的投资生活！';
+}else if (hour < 12){
+	lable_welcome = "上午好"; 
+	lable_welcome_word ='选中一天的美好时光！';
+}else if (hour < 17){
+	lable_welcome = "下午好";
+	lable_welcome_word ='享受下午茶小憩片刻！';
+}else{
+	lable_welcome = "晚上好";
+	lable_welcome_word ='更好的我们总在明天！';
+}
+NavMenu(0);
+
+$('.user_date').attr('date',today_date.toString().substr(0,6)); 
+/* function userlevel( userScore ){
+	var userScore = userScore / 10.0/10.0;
+	var urLever = "";
+	var totalNum = "";
+	
+	if( userScore >= 0 && userScore <= 299){
+		urLever = "level1";
+		totalNum = 300;
+	}else if( userScore >= 300 && userScore <= 999){
+		urLever = "level2";
+		totalNum = 1000;
+	}else if( userScore >= 1000 && userScore <= 2999){
+		urLever = "level3";
+		totalNum = 3000;
+	}else if( userScore >= 3000 && userScore <= 7999){
+		urLever = "level4";
+		totalNum = 8000;
+	}else if( userScore >= 8000 && userScore <= 15999){
+		urLever = "level5";
+		totalNum = 16000;
+	}else if( userScore >= 16000 && userScore <= 59999){
+		urLever = "level6";
+		totalNum = 60000;
+	}else if( userScore >= 60000 ){
+		urLever = "level7";
+		totalNum = userScore;
+	}
+	var levelBar = userScore / totalNum * 80;
+	var leftScore = ( totalNum*10 - userScore*10 ) / 10.0;
+	$(".myP").css("width",levelBar + "px");
+	$(".totalP").attr("title","您距离下一等级还需要"+ leftScore +"积分")
+	$(".uHead i").addClass( urLever );
+} */
+
+function usableLevel (usableLevel){
+	var urLever = "";
+	switch (usableLevel) {
+	case 1:
+		urLever = "level1";
+		break;
+    case 2:
+    	urLever = "level2";
+		break;
+    case 3:
+    	urLever = "level3";
+	    break;
+    case 4:
+    	urLever = "level4";
+	    break;
+   case 5:
+	    urLever = "level5";
+	    break;
+   case 6:
+	    urLever = "level6";
+	    break;
+   case 7:
+	   urLever = "level7";
+	   break;
+   case 8:
+	   urLever = "level8";
+	    break;
+   case 9:
+	   urLever = "level9";
+	   break;
+ 
+	default:
+		urLever = "level1";
+		break;
+	}
+	$("#vipHead").addClass( urLever );
+	
+}
+YRHX.ajax({
+	url : CONFIG.getRequestURI("queryMainPage"),
+	success : function(sucData) {
+		//var safeLevelCount = sucData[ 'payPwd' ] + sucData[ 'cardId' ] + sucData[ 'email' ];  //安全等级 = 支付密码 + 身份证验证 + 邮箱验证
+		/* var safeLevel = '';
+		if(  safeLevelCount <= 1){
+			safeLevel = "低";
+		}else if( safeLevelCount >1 && safeLevelCount <=2) {
+			safeLevel = "中";
+		}else{
+			safeLevel = "高";
+		}
+		
+		if( safeLevel == "高" ){
+			$("#upSafety").hide();
+		}
+		$(".serLevel").text( safeLevel ); */
+		/*欢迎  */
+		var Welcome = "<div>"+lable_welcome+",<span>"+sucData["userName"]+"</span>"+lable_welcome_word;
+		$('.userIndexItem p').append(Welcome);
+		YRHX.Cookie("userName",sucData["userName"]).set();
+		loginState();
+		$("#curUserName").text( sucData["userName"] );
+		$(".userName").text(lable_welcome+"， "+sucData["userName"]);
+		$(".uLevelFont").text(sucData["vipLevelName"]);
+		//userlevel( sucData["userScore"] );//用户等级图标
+		usableLevel(sucData["vipLevel"]);//用户等级图片改 
+		$(".totalNum").text( (sucData["points"]  / 10.0/10.0).toFixed(2) );
+		var vipLevel='level' +sucData["vipLevel"];
+		$(".uLevel").addClass( vipLevel );
+		
+		//认证图标
+		if(sucData["cardId"]=="1")
+			$(".uReal").addClass("has");
+		if(sucData["email"] == "1")
+			$(".uMail").addClass("has");
+		if(sucData["isAvailable"] && sucData["isAvailable"]==1)
+			$(".zdtb i").text("(已开启)");
+		/*总资产  */
+		$(".total_amount i").text(YRHX.toDecimal2((sucData["avBalance"]+sucData["frozeBalance"]+sucData["beRecyPrincipal"]+sucData["beRecyInterest"])/10.0/10.0));
+		/*待收本金  */
+		$(".recover_bj i").text(YRHX.toDecimal2(sucData["beRecyPrincipal"]/10.0/10.0));
+		/*待兑付 */
+		$(".recover_dui i").text(YRHX.toDecimal2(sucData["recoverDui"]/10.0/10.0));
+		/*总充值 */
+		$(".c_amount i").text(YRHX.toDecimal2(sucData["cAmount"]/10.0/10.0));
+		/*总提现 */
+		$(".w_amount i").text(YRHX.toDecimal2(sucData["wAmount"]/10.0/10.0));
+		/*待收利息  */
+		$(".recover_lx i").text(YRHX.toDecimal2(sucData["beRecyInterest"]/10.0/10.0));
+		/*可用余额  */
+		$(".use_amount i").text(YRHX.toDecimal2(sucData["avBalance"]/10.0/10.0));
+		// 最近的投资
+		$.queryInvest4MyA();
+		/* islogin(sucData["loginid"]); */
+	},
+	error : function(data) {
+		/* alert(data.return_info || "获取信息失败"); */
+	}
+});
+
+
+
+YRHX.ajax({
+	url:"/queryVIPCenterPage",
+	//dataType:"jsonp",
+	success:function(curData){
+		var leftAmount=curData.leftAmount;  //等级差金额
+		$(".u_levelBlock_i").text(leftAmount+"元");
+	}
+})
+
+
+
+
+function show_dj(){
+	to_center($('#DJDialog').show());
+	to_center($('#yinying').show());
+	$('html,body').css('overflow', 'hidden');
+}
+
+function hide_dj(){
+	$('#DJDialog').hide();
+	$('#yinying').hide();
+	$('html,body').css('overflow', 'auto');
+}
+
+function show_jf(){
+	to_center($('#JFDialog').show());
+	to_center($('#yinying').show());
+	$('html,body').css('overflow', 'hidden');
+}
+
+function hide_jf(){
+	$('#JFDialog').hide();
+	$('#yinying').hide();
+	$('html,body').css('overflow', 'auto');
+}
+
+	// 最近的投资
+	$.queryInvest4MyA = function( indexPage ){
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("queryInvest4Latest"),
+			data : {
+				"pageNumber" : indexPage || 1,
+				"pageSize" : 3
+			},
+			success : function(sucData) {
+		
+				var rowHtml = "<tr>" ;
+				rowHtml = rowHtml + "<td>#{loanDateTime}</td>";
+				rowHtml = rowHtml + "<td>#{payAmount}</td>";
+				rowHtml = rowHtml + "<td><span>#{leftInterest}</span></td>";
+				rowHtml = rowHtml + "</tr>";
+
+				var returnData = sucData.list ;
+
+				if ( returnData && returnData.length > 0) {
+					$("#recentLoanPage .uArrowRight").attr({
+						"indexPage":sucData.pageNumber + 1,
+						"totalPage":sucData.totalPage
+					});
+
+					$("#recentLoanPage .uArrowLeft").attr({
+						"indexPage":sucData.pageNumber -1,
+						"totalPage":sucData.totalPage
+					});
+
+					if( sucData.firstPage ){
+						$("#recentLoanPage .uArrowRight").addClass("c");
+					}else{
+						$("#recentLoanPage .uArrowRight").removeClass("c");
+					}
+
+					if( sucData.lastPage ){
+						$("#recentLoanPage .uArrowLeft").addClass("c");
+					}else{
+						$("#recentLoanPage .uArrowLeft").removeClass("c");
+					}
+
+					if( !sucData.firstPage && !sucData.lastPage){
+						$("#recentLoanPage .uArrowRight").addClass("c");
+						$("#recentLoanPage .uArrowLeft").addClass("c");
+					}
+					
+					if( sucData.firstPage && sucData.lastPage){
+						$("#recentLoanPage .uArrowRight").removeClass("c");
+						$("#recentLoanPage .uArrowLeft").removeClass("c");
+					}
+					
+					var tableEle = $("#recentLoan").find("tbody");
+			
+					tableEle.html("");
+					
+					//default 4 rows
+					for (var i = 0; i < returnData.length; i++) {
+						var row = returnData[i];
+						row["loanDateTime"] = row["loanDateTime"].dateformat().substr(0,10);
+						row["payAmount"] = YRHX.toDecimal2( row["payAmount"] / 10.0/10.0) +'元';
+						row["leftInterest"] = YRHX.toDecimal2( row["leftInterest"] / 10.0/10.0) +'元';
+						
+						var tempHtml = rowHtml.makeHtml(row);
+						tableEle.append(tempHtml);
+					}
+				} else {
+					//暂无数据
+					$("#list_table").noData();
+				}
+
+
+			},
+			error : function(data) {
+				 $.popTips("popTipErr",data.return_info || "获取信息失败");
+			}
+		})
+	};
+
+
+	$("#recentLoanPage span").on("click",function(){
+		var indexPage = Number($(this).attr("indexpage"));
+		var totalPage = Number($(this).attr("totalpage"));
+		if( indexPage <= totalPage && indexPage >0 ){
+			$.queryInvest4MyA( indexPage );
+		}
+	});
+
+	$.monthDataBacked = function(isDay,filter_date){
+	YRHX.ajax({
+		url:CONFIG.getRequestURI("haveBackDate4User"),
+		data:{"date":filter_date},
+		success:function(data){
+			var sucData = data["list"];
+			var filter_this = [];
+			var year = filter_date.substr(0,4);
+			var month = filter_date.substr(4,2);
+			var mlength = getDateLengthInMonth(year,month);
+			$('.reback_allAmount4Month i').text(data['monthBenXi']);
+			$(".reback_month").text(data['countRepayment']);
+			for(var i = 0; i < sucData.length; i++){
+				//var loantrace = sucData[i];
+				//var loanState = loantrace['loanState'];
+				//var loanDateTime = loantrace['effectDate'].substr(6,2);
+				var loanDateTime = sucData[i];
+				if(mlength < parseInt(loanDateTime)) {
+					filter_this.push(filter_date + mlength);
+				} else {
+					filter_this.push(filter_date + sucData[i]);
+				}
+			}
+			$('.calender-cell').each(function(){
+					if(!$(this).hasClass('calender-cell-dark')){
+						var that = $(this).find('span');
+						if(isDay){
+							if( parseInt(that.html()) == now_d&&filter_date==today_date.toString().substr(0,6)){
+								$(this).addClass('cur').siblings().removeClass('cur');
+							}
+						}
+						var filter_len=filter_this.length;
+						//console.log(that.html())
+						for(var i=0;i<filter_len;i++){
+							var curDateV = that.html();
+							// 小于10的补0，bug 修复
+							if( that.html() < 10){
+								curDateV = '0' + curDateV 
+							}
+							if(curDateV==filter_this[i].substr(6,2)){
+								if(today_date<parseInt(filter_this[i])){
+								$(this).addClass('has');
+								}else{
+								$(this).addClass('bas');
+								}
+							}
+						}
+					}
+				});
+		},
+		error:function(errData){
+			$.popTips("popTipErr",errData.return_info || "获取信息失败");
+		},
+	});
+	}
+	$.monthDataBacked(1,today_date.toString().substr(0,6));
+	
+	$('body').delegate('.calender-cell','click',function(){
+		if($(this).hasClass('has')||$(this).hasClass('bas')){
+			var dayDate =  $(this).find('span').html();
+			if(dayDate < 10){
+				dayDate='0' +dayDate;
+			}else{
+				dayDate=dayDate.toString();
+			}
+			var choose_date=$('.user_date').attr('date') + dayDate;
+			$('.calender-cell').removeClass('hasCur');
+			$(this).addClass('hasCur');
+//			$.anyDateBack(choose_date);
+			$.anyDateBackDetil(choose_date);
+		}
+	});
+	
+	$.anyDateBackDetil = function(Date){
+		var tableEle = $("#list_table").find("tbody");
+		var tfootEle = $("#list_table").find("tfoot");
+		tableEle.html("");
+		tfootEle.remove();
+		YRHX.ajax({
+			url :  CONFIG.getRequestURI("BackDetil8Day"),
+			data:{
+				day:Date
+			},
+			success : function(sucData) {
+				$('.user_date').text((Date+'').substr(0,4)+'年'+(Date+'').substr(4,2)+'月'+(Date+'').substr(6,2)+'日');
+				if (sucData != null) {
+					var list = sucData['list'];
+					var num=list.length;
+					$('.reback_today').text(num);
+					if(num>0){
+						$('.reback_mes .p2').css('display','none');
+						$('.reback_mes .p1').css('display','block');
+						$('.reback_today').text(sucData['count4Date']);
+						$('.calendar_bj').text(sucData['allben']+"元");
+						$('.calendar_lx').text(sucData['allxi']+"元");
+						$('.reback_allAmount i').text(sucData['allbx']);
+						var rowHtml="<tr><td>#{loanNo}</td><td>#{recyPeriod}</td><td>#{repaymentPrincipal}</td><td>#{repaymentInterest}</td><td>#{recyStatus}</td></tr>";
+						for(var i=0;i<num;i++){
+							var tempHtml = rowHtml.makeHtml(list[i]);
+							tableEle.append(tempHtml);
+						} 
+					}else{
+						$('.reback_mes .p1').css('display','none');
+					}
+				} else {
+					$('.reback_mes .p2').css('display','block');
+					$('.reback_mes .p1').css('display','none');
+					$('.reback_today').text("0");
+				}
+			},
+			error:function(errData){
+				$.popTips("popTipErr",errData.return_info || "获取信息失败");
+			}
+		});
+	}
+	$.anyDateBackDetil(today_date);
+	/*查询任意一天的回款情况  */
+	
+$(function(){
+	//初始化日历
+	buildCalender(now_y,now_m);
+	var year=now_y;
+	var month=now_m;
+})
+var private_Day_title=['日','一','二','三','四','五','六'];
+
+/* 获取某一月有多少天*/
+function getDateLengthInMonth(year,month){
+	return new Date(year,month,0).getDate();
+}
+/*获取某一月第一天是周几*/
+function getFirstDayInMonth(year,month){
+	return new Date(year,month-1,1).getDay();
+}
+
+/*绘制单月表格*/
+function PaintMonthTable(year,month){
+	var firstDay = getFirstDayInMonth(year,month),
+		length = getDateLengthInMonth(year,month),
+		lastMonthLength = getDateLengthInMonth(year,month-1),
+		i,
+		html = '<div class="calender-month">';
+
+	//构建星期
+	html += '<div class="calender-caption">';
+	for(i=0;i<7;i++){
+		html += '<div class="calender-cell">' + private_Day_title[i] + '</div>';
+	}
+	html += '</div>';//caption结尾的标签
+
+	//构建日期列表
+	html += '<div class="calender-content">';
+	//循环输出月前空格
+	 for(i=1;i<firstDay+1;i++){
+		html += '<div class="calender-cell calender-cell-dark"><span>' + ''+ '</span></div>';
+	} 
+	//循环输出当前月所有天
+	for(i = 1;i < length + 1; i++){
+		html += '<div class="calender-cell"><span>' + i + '</span></div>';
+	}
+	return html;
+}
+//绘制日历
+function buildCalender(year,month){
+	calender_html = PaintMonthTable(year,month);
+	document.getElementById('calender').innerHTML = calender_html;
+	var date=new Date();
+	var now_y=date.getFullYear();
+	var now_m=date.getMonth() + 1;
+	var now_d=date.getDate();
+	/* if(year == now_y && month == now_m){
+		$('.calender-cell').each(function(){
+			var that=$(this);
+			if(!that.hasClass('calender-cell-dark')){
+				if(that.find('span').html() < now_d){
+					that.addClass('calender-cell-dark');
+				}
+			}
+		});
+	} */
+
+	$('#year').html(year);
+	$('#month').html(month);
+}
+var year=now_y;
+var month=now_m;
+var tool=6;
+$('.tool2 .left').click(function(){
+		var mon;
+		if(tool>0){
+			tool--;
+		if(month == 1){
+			year=year-1;
+			month=12;
+			mon='12';
+			buildCalender(year,month);
+//			$.monthDataBack(1,year+mon);
+			$.monthDataBacked(1,year+mon);
+			$('.user_date').attr('date',year+mon);
+		}else{
+			month =month -1;
+			if(month < 10){
+				mon='0' + month;
+			}else{
+				mon=month.toString();
+			}
+			buildCalender(year,mon);
+//			$.monthDataBack(1,year+mon);
+			$.monthDataBacked(1,year+mon);
+			$('.user_date').attr('date',year + mon);
+		}
+		}
+});
+
+$('.tool2 .right').click(function(){
+		var mon;
+		if(tool<12){
+			tool++;
+		if(month == 12){
+			month = 1;
+			mon="01";
+			year = year + 1;
+			buildCalender(year,mon);
+//			$.monthDataBack(0,year+mon);
+			$.monthDataBacked(0,year+mon);
+			$('.user_date').attr('date',year+mon);
+		}else{
+			month=month + 1;
+			if(month < 10){
+				mon='0' + month;
+			}else{
+				mon=month.toString();
+			}
+			buildCalender(year,mon);
+//			$.monthDataBack(0,year+mon);
+			$.monthDataBacked(0,year+mon);
+			$('.user_date').attr('date',year+mon);
+		}
+		}
+});
+$('#back_detail').click(function(){
+	$('body,html').css('overflow', 'hidden');
+	to_center($("#yinying").show());
+	$('#backDetil').css('display','block');
+});
+$('.user_index .user_nav').find('li').eq(0).addClass('selected');
+function planTab(){
+	timer = setInterval(function(){
+		$('.user_activity p').animate({marginLeft:'-478px'},600,function(){
+			var f_child=$('.user_activity a').eq(0);			
+			$('.user_activity a').eq(0).remove();$('.user_activity p').append(f_child);
+			$('.user_activity p').css('margin-left','0');
+		});
+	},3000);
+}
+planTab();
+$(".del").click(function () {
+	$("#yinying").hide();
+	$("#backDetil").hide();
+	$('body,html').css('overflow', 'auto');
+});
+
+
+var bankname=$("#bankname");
+var province=$("#Province");
+var city=$("#City");
+//省份地区列表
+function provice(){
+	YRHX.ajax({
+		url:"/queryBankProvinceCodes",
+		success:function(sucData){
+			 province.html("");
+			 province.append("<option value='请选择省份' selected='selected'>请选择省份</option>");
+			 city.append("<option value='请选择城市' selected='selected'>请选择市区县</option>");
+			 for(var i=0;i<sucData.length;i++){
+				 var bankprovince=sucData[i];
+				 province.append("<option value='"+bankprovince.provinceCode+"'>"+bankprovince.provinceName+"</option>");
+			} 
+			
+		},
+		error:function(errorData){
+			$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+		}
+	});
+	$('#Province').change(function(){
+		var provinceCode = $(this).find('option:selected').val();
+		if("请选择省份"==provinceCode){
+			city.html("");
+			city.append("<option value='请选择城市' selected='selected'>请选择城市</option>");
+		}else{
+		YRHX.ajax({
+			url:"/queryBankCityCodes",
+			data:{"provinceCode":provinceCode},
+			success:function(sucData){
+				city.html("");
+				for(var i=0;i<sucData.length;i++){
+				var bankcity=sucData[i];
+				city.append("<option value='"+bankcity.cityCode+"'>"+bankcity.cityName+"</option>");}
+			},
+			error:function(errorData){
+			$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+		}
+		});
+		}
+		
+	});
+}
+//银行列表
+function bankName(){
+	bankname.append("<option value='请选择银行名称' selected='selected'>请选择银行名称</option>")
+	YRHX.ajax({
+		url:"/querBankName",
+		success:function(sucData){
+			for(var i=0;i<sucData.length;i++){
+				var bank=sucData[i];
+			bankname.append("<option value='"+bank.bankCode+"'>"+bank.bankName+"</option>");
+			}
+		}
+	});
+}
+
+//查询银行卡列表
+$.queryCards = function(){
+	YRHX.ajax({
+		url : CONFIG.getRequestURI("bankv2List"),
+		success : function( sucData ) {
+			
+			if( sucData.trueName ){
+				$(".bank_card").show();
+				$("#addBank").hide();
+				$(".card_num").text( sucData["bankNo"]);
+				var uName = sucData["trueName"];
+				var leftWordNum = uName.length-1;
+				var frontStr = "";
+				for(var i = 0; i<leftWordNum ;i++ ){
+					frontStr +="*";
+				}
+				var uNameAll = frontStr  + uName.charAt(leftWordNum );
+				$(".card_name").text( uNameAll );
+				$(".card_logo").attr("src","/portal/images/banks/" +  sucData["bankType"] + ".jpg");
+			}else{
+				$(".bank_card").hide();
+			}
+		},
+		error : function( errorData ){
+			$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+		}
+	});
+};
+
+
+$(function(){
+		YRHX.ajax({
+			url:CONFIG.getRequestURI("getAuthInfo"),
+			success:function(sucData){
+				var level = sucData.evaluationLevel;
+				if(level!=""){
+					$(".user_assess").hide();
+					$(".userIndexItem").css("margin-top","20px");
+				}
+			}
+		});
+		
+		$(".uLevelFont").mouseenter(function(){
+			$(this).parents(".userIndexItem").find(".u_levelBlock").show();
+		});
+		$(".uLevelFont").mouseleave(function(){
+			$(this).parents(".userIndexItem").find(".u_levelBlock").hide();
+		});
+		
+
+		//充值
+		$("#cz").click(function(){
+			if(!YRHX.Cookie("loginId").get()){
+				$(".cg").show();
+			}else if(YRHX.Cookie("verifyPwd").get()=="n"){
+				$(".cg").show();
+			}else{
+				window.location.href="B02";
+			}
+		});
+		
+		//提现
+		$("#tx").click(function(){
+			if(!YRHX.Cookie("loginId").get()){
+				$(".cg").show();
+			}else if(YRHX.Cookie("verifyPwd").get()=="n"){
+				$(".cg").show();
+				/* $(".cg_auth_1").show();
+				$(".yinying").show(); */
+			}else if(YRHX.Cookie("verifyAuth").get()=="n"){
+				$(".cg_auth").show();
+ 				$(".yinying").show();
+			}else{
+				window.location.href="B03";
+			}
+		});	
+		
+	 	
+	 	//关闭授权弹窗
+	 	$(".cgAuth_close").click(function(){
+	 		$(".cg_auth").hide();
+	 		$(".cg_auth_1").hide();
+			$(".yinying").hide();
+	 	});
+	 	$(".cgAuth_submitClose").click(function(){
+	 		$(".cgAuth_close").click();
+	 	});
+		
+		$("#closeBtn").click(function(){
+			$(".cg").hide();
+		});
+		
+		$(".enter").click(function(){
+			if(!YRHX.Cookie("loginId").get()){
+				window.location.href="depositoryUser?step=1";
+			}
+			else if(YRHX.Cookie("verifyPwd").get()=="n"){
+				//验证是否绑过卡
+				/* YRHX.ajax({
+			 		url : "/verifyBindCard",
+			 		dataType:'jsonp',
+			 		success : function( sucData ) {
+			 			if(sucData == "y"){
+			 				window.location.href="depositoryUser?step=2";
+			 			}else{
+			 				window.location.href="depositoryUserUsed?step=1";
+			 			}
+			 		},
+			 		error : function( errorData ){
+			 			$.popTips("popTipErr", errorData.return_info);
+			 		}
+			 	}); */ 
+			 	if(verifyCard == "y"){
+			 		window.location.href="depositoryUserUsed?step=2";
+			 	}else{
+			 		window.location.href="depositoryUserUsed?step=1";
+			 	}
+			}
+		});
+		
+		//判断开户情况
+		$(".depository_btn").click(function(){
+			if(!YRHX.Cookie("loginId").get()){
+				$(".cg").show();
+			}else if(YRHX.Cookie("verifyPwd").get()=="n" || verifyCard == "n"){
+ 				$(".cg").show();
+			}else if(YRHX.Cookie("verifyAuth").get()=="n"){
+				$(".cg_auth").show();
+ 				$(".yinying").show();
+			}
+		});
+		
+		var verifyCard = "n";
+		//江西银行存管户状态显示判断
+		if(YRHX.Cookie("loginId").get()){
+			//验证是否绑过卡
+			YRHX.ajax({
+		 		url : "/verifyBindCard",
+		 		dataType:'jsonp',
+		 		async: false,
+		 		success : function( sucData ) {
+		 			verifyCard = sucData;
+		 		},
+		 		error : function( errorData ){
+		 			$.popTips("popTipErr", errorData.return_info);
+		 		}
+		 	}); 
+			if(YRHX.Cookie("verifyPwd").get()=="y" && YRHX.Cookie("verifyAuth").get()=="y" && verifyCard == "y"){
+				$(".depository_not").attr("datanum","1");
+				$(".depository_btn").hide();
+				$(".depository_btn_box").show();
+				$(".depository_bank_num").text(YRHX.Cookie("loginId").get());
+			}else{
+				$(".depository_btn").text("未完成");
+			}
+		}
+		//首次设置交易密码
+		$("#cgAuth_sub").click(function(){
+			YRHX.ajax({
+				url : "/setDepositPwd",
+				success : function(sucData) {
+				window.location.href='/setDepositPwd?verifyOrderId='+sucData;
+				},
+				error : function(data) {
+					$.popTips("popTipErr",data.return_info || "获取信息失败");
+				}
+			});
+		});
+}); 
+
+YRHX.ajax({
+	url:"/queryTransferWay",
+	success:function(sucData){
+		$(".yinying").hide();
+		$(".pop_b").hide();
+	},
+	error:function(data){
+		$(".yinying").show();
+		$(".pop_b").show();
+	}
+});
+
+</script>
+
+</body>
+</html>

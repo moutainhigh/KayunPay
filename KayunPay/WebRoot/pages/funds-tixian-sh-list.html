@@ -1,0 +1,381 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body onkeydown="zhazha1(event)">
+	<div class="am-g">
+		<!-- 标准功能按钮 Start  -->
+		<div class="am-u-sm-12 am-u-md-4">
+			<div class="am-btn-toolbar">
+				<!-- 
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default view-btn">
+						<span class="am-icon-archive "></span> 连连支付提现
+					</button>
+				</div>
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default syx-view-btn">
+						<span class="am-icon-archive "></span> 商银信提现
+					</button>
+				</div>
+				 -->
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default fuck-all-btn">
+						<span class="am-icon-archive "></span> 人工提现
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="am-u-sm-12 am-u-md-3">
+			<form class="am-form-inline ext-form" role="form" data-am-validator>
+				<div class="am-form-group">
+				</div>
+				<div class="am-form-group">
+					<select data-am-selected="{btnSize: 'sm'}" name="status" id="statusSel">
+					</select>
+				</div>
+			</form>
+		</div>
+		<div class="am-u-sm-12 am-u-md-3">
+			<div class="am-input-group am-input-group-sm">
+				<input type="text" class="am-form-field allkey"><span
+					class="am-input-group-btn">
+					<button class="am-btn am-btn-default query-btn" type="button">搜索</button>
+				</span>
+			</div>
+		</div>
+	</div>
+	<!-- Table -->
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 15 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+						<li id="not"><input type="text" size="5" id="goValue" onkeypress="return IsNum(event)" value="1"/></li>
+						<li id="go"><input type="button" value="GO" onclick="$('#go').attr('index',$('#goValue').val())"/></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script>
+	function zhazha1(e){
+		var keynum = 0;
+		if(window.event){
+			keynum = e.keyCode
+		}
+		else if(e.which){
+			keynum = e.which
+		}
+		if(keynum==13){
+			queryData(1);
+		}
+	};
+	
+		var maxQueryNum = 15 ;
+		var queryUrl = "/getApplyWithdrawalsByPage";
+		var size=0;//总页数
+		
+		$(".query-btn").click(function(){
+			queryData(1);
+		});
+		//查询实现
+		function queryData( pNum , pSize ){
+			//对页码参数验证
+			if(isNaN(pNum)){
+				alert("GO栏请输入数字！");
+				return;
+			}
+			if(size<1){
+				size=1;
+			}
+			if(pNum > size && size != 0){
+				pNum=size;
+				$("#goValue").val(pNum);
+			}
+			YRHX.ajax({
+				url : queryUrl,
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize ||maxQueryNum,
+					allkey : $(".allkey").val(),
+					status : $("#statusSel").val() && $("#statusSel").val()!=""?$("#statusSel").val():""
+				},
+				success : function(sucData){
+					size=Math.ceil(sucData["totalRow"]/maxQueryNum);//总页数
+					var tmpTotalData = {};
+					var txje = 0;
+					for(var x in sucData.list){
+						txje = txje + sucData.list[x]["withdrawAmount"];
+					}
+					if(sucData["count_withdrawAmount"]){
+						tmpTotalData["总计提现金额"] = YRHX.toDecimal2(sucData["count_withdrawAmount"]/ 10.0/10.0, "￥");
+					}
+					tmpTotalData["当前页提现金额"] = YRHX.toDecimal2(txje/ 10.0/10.0, "￥");
+					makeTable(sucData.list , {
+						index : sucData["pageNumber"] , 
+						max : sucData["pageSize"] ,
+						size : sucData["totalRow"]
+					},tmpTotalData);
+				},
+				error : function(data) {
+					YRHX.alert("提示",data.return_info || "获取信息失败");
+				}
+			});
+		}
+		
+		$(".query-btn").click(function(){
+			queryData(1);
+			$("#goValue").val(1);//设置GO栏默认页码为1
+		});
+
+		$("div.pad-div").initPagEvent( queryData );
+		
+		//init 
+		var tixianStatusData = YRHX.sortData(RES["DATA_MAP"]["map_tixianStatus"]) ;
+		$("#statusSel").makeSelect4s(tixianStatusData);
+		$("#statusSel").val("0");
+		function makeTable( tableData ,pageData,countData){
+			$(".am-g").table({
+						thtdcls : "font-size:13px;padding:6px 1px",
+						count_info : countData,
+						dataFormat : function(rowObj) {
+							rowObj["withdrawAmount"] = YRHX.toDecimal2( rowObj["withdrawAmount"]/10.0/10.0, "￥");
+							rowObj["sxf"] = YRHX.toDecimal2( rowObj["sxf"]/10.0/10.0, "￥");
+							rowObj["createDateTime"] = rowObj["createDateTime"].dateformat();
+							rowObj["status"] = tixianStatusData[rowObj["status"]];
+							rowObj["userTrueName"] = rowObj["userTrueName"] || " ";
+							return rowObj;
+						},
+						max : 10,
+						pag : pageData,
+						header : [
+								{
+									name : "",type : "checkbox",key : "withdrawCode"
+								},
+								{
+									name : "",text : "昵称",html : "#{userName}"
+								},
+								{
+									name : "",text : "姓名",html : "#{userTrueName}"
+								},
+								{
+									name : "",text : "申请提现金额",html : "#{withdrawAmount}"
+								},
+								{
+									name : "",text : "手续费",html : "#{sxf}"
+								},
+								{
+									name : "",text : "申请时间",html : "#{createDateTime}"
+								},
+								{
+									name : "",text : "卡号",html : "#{bankNo}"
+								},
+								{
+									name : "",text : "银行",html : "#{bankName}"
+								},
+								{
+									name : "",text:"状态",html:"#{status}"
+								}],
+						data : tableData
+					});
+			}
+		
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		queryData(1);
+		setTimeout(function(){
+			$("#statusSel").change(function(){
+				queryData(1);
+			});
+			
+		} , 2000 );
+		var zhazha = "/withdrawalsByApplyCode";
+		$(".view-btn").click(function(){
+			var row = window.getCheckedRow() ;
+			if( row.length == 0){
+				YRHX.alert("提示","未选中需要审核的条目！");
+				return ;
+			}
+			var withdrawCodes = "";
+			var rows = window.getCheckedRow() ;
+			
+			if( row.length == 1){
+				withdrawCodes = row.attr("key");
+			}else{
+				var nimei = window.getCheckedRow() ;
+				for(var i = 0; i < nimei.length; i ++){
+					withdrawCodes += $(nimei[i]).attr("key");
+					if(i<nimei.length-1){
+						withdrawCodes += ",";
+					}
+				}
+			}
+			if( confirm("确定使用连连支付代付？") ){
+				YRHX.ajax({
+					url : zhazha,
+					data : {
+						withdrawCode : withdrawCodes
+					},
+					success : function(sucData){
+						if(sucData && sucData!=null && sucData==true){
+							YRHX.alert("提示","审核通过，提现中");
+						}else{
+							YRHX.alert("提示","操作未生效");
+						}
+					},
+					error : function(data) {
+						if(data.return_code=="-315"){
+							var error_Msg = "";
+							$.each(data.return_data,function(key,value){
+								error_Msg = error_Msg + value+"<br>";
+							});
+							YRHX.alert("警告",error_Msg);
+						}else{
+							YRHX.alert("警告",data.return_info || "获取信息失败");
+						}
+					}
+				});
+			}
+		});
+		
+		$(".syx-view-btn").click(function(){
+			var row = window.getCheckedRow() ;
+			if( row.length == 0){
+				YRHX.alert("提示","未选中需要审核的条目！");
+				return ;
+			}
+			var withdrawCodes = "";
+			var rows = window.getCheckedRow() ;
+			
+			if( row.length == 1){
+				withdrawCodes = row.attr("key");
+			}else{
+				var nimei = window.getCheckedRow() ;
+				for(var i = 0; i < nimei.length; i ++){
+					withdrawCodes += $(nimei[i]).attr("key");
+					if(i<nimei.length-1){
+						withdrawCodes += ",";
+					}
+				}
+			}
+			if( confirm("确定执行使用商银信代付？") ){
+				YRHX.ajax({
+					url : "/withdrawalsByApplyCode4SYX",
+					data : {
+						withdrawCode : withdrawCodes
+					},
+					success : function(sucData){
+						if(sucData && sucData!=null && sucData==true){
+							YRHX.alert("提示","审核通过，提现中");
+						}else{
+							YRHX.alert("提示","操作未生效");
+						}
+					},
+					error : function(data) {
+						if(data.return_code=="-315"){
+							var error_Msg = "";
+							$.each(data.return_data,function(key,value){
+								error_Msg = error_Msg + value+"<br>";
+							});
+							YRHX.alert("警告",error_Msg);
+						}else{
+							YRHX.alert("警告",data.return_info || "获取信息失败");
+						}
+					}
+				});
+			}
+		});
+		$(".fuck-all-btn").click(function(){
+			var row = window.getCheckedRow() ;
+			if( row.length == 0){
+				YRHX.alert("提示","未选中需要审核的条目！");
+				return ;
+			}
+			var withdrawCodes = "";
+			var rows = window.getCheckedRow() ;
+			
+			if( row.length == 1){
+				withdrawCodes = row.attr("key");
+			}else{
+				var nimei = window.getCheckedRow() ;
+				for(var i = 0; i < nimei.length; i ++){
+					withdrawCodes += $(nimei[i]).attr("key");
+					if(i<nimei.length-1){
+						withdrawCodes += ",";
+					}
+				}
+			}
+			if( confirm("确定执行操作？") ){
+				YRHX.ajax({
+					url : "/changeRengongTixian",
+					data : {
+						withdrawCode : withdrawCodes
+					},
+					success : function(sucData){
+						if(sucData && sucData!=null && sucData==true){
+							YRHX.alert("提示","转人工处理，账户冻结余额已扣除！");
+						}else{
+							YRHX.alert("提示","操作未生效");
+						}
+					},
+					error : function(data) {
+						if(data.return_code=="-315"){
+							var error_Msg = "";
+							$.each(data.return_data,function(key,value){
+								error_Msg = error_Msg + value+"<br>";
+							});
+							YRHX.alert("警告",error_Msg);
+						}else{
+							YRHX.alert("警告",data.return_info || "获取信息失败");
+						}
+					}
+				});
+			}
+		});
+	</script>
+</body>
+</html>

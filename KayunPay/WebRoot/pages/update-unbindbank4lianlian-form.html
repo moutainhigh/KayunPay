@@ -1,0 +1,105 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+<style>
+textarea {
+	width: 584px !important;
+}
+</style>
+</head>
+<body>
+	<!-- iframe body start -->
+	<form id="info-form" action="" data-am-validator>
+		<div class="am-tabs am-margin" data-am-tabs="{noSwipe: 1}">
+			<ul class="am-tabs-nav am-nav am-nav-tabs">
+				<li class="am-active"><a href="#tab1">取消用户理财卡绑定(连连支付)</a></li>
+			</ul>
+			<div class="am-tabs-bd">
+				<div class="am-tab-panel am-fade am-in am-active am-form am-form-inline" id="tab1">
+					<div class="am-g am-margin-top field mobile" id="mobile" name="mobile" type="text" text="手机号"></div>
+				</div>
+			</div>
+		</div>
+		</div>
+
+		<div class="am-margin" style="margin-left: 400px;">
+			<button id="submitBtn" type="button"
+				class="am-btn am-btn-primary am-btn-xs">提交</button>
+			<button id="cancelBtn" type="button"
+				class="am-btn am-btn-primary am-btn-xs">返回</button>
+		</div>
+
+	</form>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script>
+		
+		$("#cancelBtn").click(function(){
+			history.go(-1);
+		});
+		
+		$("#submitBtn").click(function(){
+			var mobile = $("input[name=mobile]").val();
+			
+			if("" == mobile){
+				YRHX.alert1("手机号为空");
+				return;
+			}
+			
+			if(confirm("确定要修改该用户理财卡吗?")){
+				var zz = {"mobile":mobile};
+				YRHX.ajax({
+					url : "/unbindBank4LianLian" ,
+					data : zz ,
+					success : function( sucData ){
+						if(sucData && sucData > 0){
+							YRHX.alert1("取消连连支付理财卡绑定完成");
+						}else{
+							YRHX.alert1("该用户暂未在连连支付绑定理财卡");
+						}
+					},
+					error : function(data){
+						YRHX.alert1("取消理财卡绑定失败",data.return_info || "发送失败");
+					}
+				});
+			}
+		});
+
+		//var formType = YRHX.queryString("opType");
+		$("#info-form").formInit({
+			"formType" : "add",
+			"request" : "http://www.qq.com"
+		});
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		$("#info-form").validatorInit();
+	</script>
+</body>
+</html>

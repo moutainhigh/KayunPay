@@ -1,0 +1,247 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<!-- 
+//                            _ooOoo_  
+//                           o8888888o  
+//                           88" . "88  
+//                           (| -_- |)  
+//                            O\ = /O  
+//                        ____/`---'\____  
+//                      .   ' \\| |// `.  
+//                       / \\||| : |||// \  
+//                     / _||||| -:- |||||- \  
+//                       | | \\\ - /// | |  
+//                     | \_| ''\---/'' | |  
+//                      \ .-\__ `-` ___/-. /  
+//                   ___`. .' /--.--\ `. . __  
+//                ."" '< `.___\_<|>_/___.' >'"".  
+//               | | : `- \`.;`\ _ /`;.`/ - ` : | |  
+//                 \ \ `-. \_ __\ /__ _/ .-` / /  
+//         ======`-.____`-.___\_____/___.-`____.-'======  
+//                            `=---='  
+//         .............................................  
+//                  佛祖保佑             永无BUG 
+ -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>后台</title>
+<meta name="description" content="后台首页">
+<meta name="keywords" content="index">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+<!--[if lte IE 9]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器啊，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
+  以获得更好的体验！</p>
+<![endif]-->
+	<header class="am-topbar admin-header">
+		<div class="am-topbar-brand">
+			<a href="/main"><strong>Title</strong></a>
+		</div>
+
+		<button
+			class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only"
+			data-am-collapse="{target: '#topbar-collapse'}">
+			<span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span>
+		</button>
+
+		<div class="am-collapse am-topbar-collapse" id="topbar-collapse">
+			<ul
+				class="am-nav am-nav-pills am-topbar-nav am-topbar-right admin-header-list">
+				<li class="am-dropdown" data-am-dropdown><a
+					class="am-dropdown-toggle" data-am-dropdown-toggle
+					href="javascript:;"> <span class="am-icon-users"></span><span id="lable_op_name">操作员</span> <span
+						class="am-icon-caret-down"></span>
+				</a>
+					<ul class="am-dropdown-content">
+
+						<!-- <li><a href="#"><span class="am-icon-user"></span> 资料</a></li>-->
+						<li><a href="javascript:" id="doc-prompt-toggle"><span class="am-icon-cog"></span> 设置</a></li> 
+						<li><a href="#" id="logOut"><span class="am-icon-power-off"></span> 退出</a></li>
+
+					</ul></li>
+				<li class="am-hide-sm-only"><a href="javascript:;"
+					id="admin-fullscreen"><span class="am-icon-arrows-alt"></span>
+						<span class="admin-fullText">开启全屏</span></a></li>
+			</ul>
+		</div>
+	</header>
+	<!--模态框-->
+	<div class="am-modal am-modal-prompt" tabindex="-1" id="my-prompt">
+	  <div class="am-modal-dialog">
+	    <div class="am-modal-hd">
+	    	修改资料
+	    	<a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+	    </div>
+	    <div class="am-modal-bd change_mes">	   
+	    	  <div><span>新呢称：</span> <input type="text" name="newName" id="newUserName" class="am-modal-prompt-input"></div>
+	    	  <div><span>新密码：</span> <input type="password" name="newPwd" id="oldPassword" class="am-modal-prompt-input"></div>
+	    	  <div><span>确认新密码：</span> <input type="password" name="newPwd1" id="newPassword" class="am-modal-prompt-input"></div>
+	    </div>
+	    <div class="am-modal-footer">
+	      <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+	      <span class="am-modal-btn" data-am-modal-confirm>提交</span>
+	    </div>
+	  </div>
+	</div>
+	
+	<div class="am-cf admin-main">
+		<!-- sidebar start -->
+		<div class="admin-sidebar am-offcanvas" id="admin-offcanvas">
+			<div class="am-offcanvas-bar admin-offcanvas-bar">
+				<!-- 导航的根节点选择Class名为 am-list-obj -->
+				<ul class="nav-root am-list admin-sidebar-list">
+				</ul>
+				<div class="am-panel am-panel-default admin-sidebar-panel notice">
+					<div class="am-panel-bd">
+						<p>
+							<span class="am-icon-bookmark title"></span> 
+						</p>
+						<p class="content"></p>
+					</div>
+				</div>
+				<div class="am-panel am-panel-default admin-sidebar-panel wiki">
+					<div class="am-panel-bd">
+						<p>
+							<span class="am-icon-tag title"></span>
+						</p>
+						<p class="content"></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- sidebar end -->
+
+		<!-- content start -->
+		<div class="admin-content">
+			<div class="am-cf am-padding">
+				<div class="am-fl am-cf">
+					<strong class="am-text-primary am-text-lg" id="goBack">返回</strong>
+				</div>
+			</div>
+			<!-- iframe body start -->
+			<iframe id="opBody" src="/first" style="width:100%;overflow:hidden;" >
+				
+			</iframe>
+			<!-- iframe body end -->
+		</div>
+		<!-- content end -->
+	</div>
+	<a class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu" href="#admin-offcanvas" data-am-offcanvas></a>
+	<footer>
+		<hr>
+		<p class="am-padding-left copy-right"></p>
+	</footer>
+	
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="assets/js/polyfill/rem.min.js"></script>
+	<script src="assets/js/polyfill/respond.min.js"></script>
+	<script src="assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="app/js/res.js"></script>
+	<script src="app/js/biz.js"></script>
+	<script src="app/js/nav-widget.js"></script>
+	<script src="app/js/table-widget.js"></script>
+	<script src="app/js/form-widget.js"></script>
+	<script src="assets/js/amazeui.min.js"></script>
+	<script src="app/js/app.js"></script>
+	<script>
+		
+	//查询实现
+	function queryOPName(){
+		YRHX.ajax({
+			url : "/getOPName",
+			data : {
+				ok : 'nicaizheshishenmecanshu'
+			},
+			success : function(sucData){
+				if( sucData && sucData["opUserName"]!=null ){
+					$("#lable_op_name").text(sucData["opUserName"]);
+				}
+			},
+			error : function(data) {
+				YRHX.alert("警告",data.return_info || "获取信息失败");
+			}
+		});
+		
+	}
+	
+	function modifyOPUser(p1,p2){
+		YRHX.ajax({
+			url : "/modifyOPUser",
+			data : {
+				userName : p1,
+				newPwd : p2
+			},
+			success : function(sucData){
+				if(p1=='' && p2==''){
+					YRHX.alert("提示","啥都没改");
+				}else{
+					queryOPName();
+					YRHX.alert("提示","操作完成");
+					$("#newUserName").val("");
+					$("#oldPassword").val("");
+					$("#newPassword").val("");
+				}
+				
+			},
+			error : function(data) {
+				YRHX.alert("警告",data.return_info || "获取信息失败");
+			}
+		});
+		
+	}
+	
+	queryOPName();
+	
+		var docHeight = $(document).height();
+		var footHeight = $("footer").height();
+		var headerHeight = $("header").height();
+		$("#opBody").height( (docHeight*0.9 - footHeight - headerHeight) + "px");
+		$("body").delegate(".admin-child","click",function(){
+			$(".admin-child").removeClass("am-btn-primary");
+			$(this).addClass("am-btn-primary");
+		})
+
+
+	  $('#doc-prompt-toggle').on('click', function() {
+	    $('#my-prompt').modal({
+	      relatedTarget: this,
+	      onConfirm: function(e) {
+	        if($("#oldPassword").val()==$("#newPassword").val()){
+	        	modifyOPUser($("#newUserName").val(),$("#newPassword").val());
+	        }else{
+	        	YRHX.alert("提示","别逗，两次密码搞一样好吗");
+	        }
+	      },
+	      onCancel: function(e) {
+	    	  YRHX.alert("提示","不改资料别点，低碳！");
+	      }
+	    });
+	  });
+
+		$("#logOut").click(function(){
+			YRHX.Cookie().clear();
+			window.location.href = "/login";
+		});
+		$("#goBack").on("click",function(){
+			window.frames.history.back()
+		});
+
+	</script>
+</body>
+</html>

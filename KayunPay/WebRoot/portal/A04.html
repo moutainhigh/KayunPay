@@ -1,0 +1,819 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>自动投标</title>
+	<link type="text/css" href="/portal/css/public.css" rel="stylesheet">
+	<link type="text/css" href="/portal/css/user.css?v=1.1" rel="stylesheet">
+	<!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+
+</head>
+
+<body>
+	<div class="wrapper">
+		<header id="header" class="header">
+			<!--code here-->
+		</header>
+		<nav class='user_index'></nav>
+		<main class="user">
+			<div class="user-main">
+				<div class="user-main-left">
+					<h2>投资管理</h2>
+					<div class="user-nav"></div>
+				</div>
+
+				<div class="user-main-right">
+					<div class="user-main-right-c">
+						<div class="tabNav">
+							<i></i>
+							<ul>
+								<li class="active">自动投标设置</li>
+							</ul>
+						</div>
+						
+						<!-- //content -->
+						<div class="auto-bid">
+							<div class="auto-bid-item">
+								<span>自动投标状态：</span>
+								<img src="/portal/images/autoff.png" class="bidSwitch" key="bid-off">
+								<b class="red">关闭</b>
+								<t class="red" id="aotoSetTips" style="display:none;position: absolute;margin-left:50px;font-size: 14px;">(请先设置自定义投标条件，保存成功后即可获得自动投标排名!)</t>
+							</div>
+							<div class="bidOpen" style="display: none">
+								<div class="auto-bid-item change_span">
+									<span style="width:130px">当前可用余额：</span>
+									<strong id="avBalance" style="color: #3BBE30;"></strong>
+									<!-- <span style="float:none;">当前排队金额（实时）：</span>
+									<strong id="RankTotal" style="color: #3BBE30;"></strong>
+									<span style="float:none;">您的排名编号为：</span>
+									<strong id="myRankNo" style="color: #3BBE30;"></strong> -->
+								</div>
+							</div>
+							
+							
+
+							<div id="optionSet" style="overflow: hidden; display:none;">
+								<div class="sLine"></div>
+								<!-- <div class="auto-bid-item">
+									<span>自定义投标：</span>
+									<div class="choose_box">
+										<input type="checkbox" name="product" value="A" checked/><span>质押宝</span>
+										<input type="checkbox" name="product" value="B" checked/><span>车稳盈</span>
+										<input type="checkbox" name="product" value="C" checked/><span>房稳赚</span>
+										<input type="checkbox" name="product" value="D" checked/><span>其它</span> 
+									</div>
+								</div> -->
+								<div id="diyOn">
+									<div class="auto-bid-item" >
+										<span>投标方式：</span>
+										<select id="autoType" style="width: 195px; height: 30px; ">
+											<option value="A">智能投标</option>
+											<option value="B">自定义投标</option>
+										</select>
+									</div>
+									
+									<div class="auto-bid-item">
+										<span>期限范围：</span>
+										<select id="autoMinLim" style="width: 82px; height: 30px; margin-right: 5px;">
+											<option value="1">1</option>
+											<option value="2">2</option>
+											<option value="3">3</option>
+											<option value="4">4</option>
+											<option value="5">5</option>
+											<option value="6">6</option>
+											<option value="7">7</option>
+											<option value="8">8</option>
+											<option value="9">9</option>
+											<option value="10">10</option>
+											<option value="11">11</option>
+											<option value="12">12</option>
+											<option value="18">18</option>
+											<option value="24">24</option>
+										</select> 月 -
+										<select id="autoMaxLim" style="width: 82px; height: 30px;margin-right: 5px;">
+											<option value="1">1</option>
+											<option value="2">2</option>
+											<option value="3">3</option>
+											<option value="4">4</option>
+											<option value="5">5</option>
+											<option value="6">6</option>
+											<option value="7">7</option>
+											<option value="8">8</option>
+											<option value="9">9</option>
+											<option value="10">10</option>
+											<option value="11">11</option>
+											<option value="12">12</option>
+											<option value="18">18</option>
+											<option value="24" selected="selected">24</option>
+										</select> 月 <i>(有效值是1~12,18,24)</i>
+									</div>
+									<div class="auto-bid-item">
+										<span>投资券：</span>
+										<select id="useTicket" style="width: 193px; height: 30px;">
+											<option value="N">会员专属加息</option>
+											<option value="A" selected = selected>现金券</option>
+											<option value="C" >加息券</option>
+											<option value="D" >加息额度</option>
+										</select>
+										<i id="useTicketNum" style="color:black;"></i>
+									</div>
+									<div class="auto-bid-item" id="priority">
+										<span>优先方式：</span>
+										<select id="priorityMode" style="width: 193px; height: 30px;">
+											<option value="A" >过期时间优先</option>
+											<option class="amount" value="B">金额优先</option>
+											<option class="rate" style="display: none" value="C">利率优先</option>
+										</select>
+	
+									</div>
+									
+									<!-- <div class="auto-bid-item" id="autoTypeA">
+										<span>智能投标：</span>
+										<div class="choose_box">
+											<input type="checkbox" name="product" value="A" checked/><span>余额全投</span>
+										</div>
+									</div> -->
+									
+									<div id="autoTypeB" style="display:none;">
+										<div class="auto-bid-item">
+											<span>单次最小投标金额：</span> <input type="text" value="50" class="inputM" id="onceMinAmount">元<i>(需为不小于50且不大于单次最大投标金额的整数)</i>
+										</div>
+										<div class="auto-bid-item">
+											<span>单次最大投标金额：</span> <input type="text" value="999999" class="inputM" id="onceMaxAmount">元<i>(需为不小于50且不小于单次最小投标金额的整数，实际以标的限额为准)</i>
+										</div>
+										<div class="auto-bid-item">
+											<span>还款方式：</span>
+											<select id="refundType" style="width: 193px; height: 30px;">
+												<option value="A">按月等额本息</option>
+												<option value="B">按月付息，到期还款</option>
+												<option value="D" selected = selected>不限</option>
+											</select>
+	
+										</div>
+									</div>
+									<div  class="auto-bid-item">
+										<span>过期时间：</span>
+										<select class="inputYY" ></select>年
+										<select class="inputMM" ></select>月
+										<select class="inputDD" ></select>日
+									</div>
+									<div class = "subJx">
+										<!-- <p class='autoBidCenter' style="line-height: 43px;">
+											<span style="float: left;text-align: right;margin-right: 10px;width: 130px">手机验证码：</span>
+											<input type="text" id= "msgAutoBid" name='msgMac' maxlength="6" style="width: 170px" />
+											<span class="getCode"><i id="MsgAutoBid" sendToggle="1">获取验证码</i><b id="msgCounter1"></b></span>
+										</p>
+										 -->
+										<div class="auto-bid-item">
+										<div style="margin: 10px 0 0 140px;">
+											<div class="submitDiyBtn">保存</div>
+										</div>
+									</div>
+									</div>
+								</div>
+	
+							</div>
+						</div>
+						
+						<div class="autoRank">
+							<div class="autoRankTitle">
+								<h2>排队详情</h2>
+							</div>
+							<div class="autoRank_table">
+								<table id="autoRank_table">
+									<thead>
+										<tr class="t-head">
+											<th>借款期限范围</th>
+											<th>排队资金</th>
+											<th>排队人数</th>
+										</tr>
+									</thead>
+									<tbody>
+	
+									</tbody>
+								</table>
+								<div class="page_panel autoRankPage"></div>
+							</div>
+						</div>
+						
+
+
+						<div class="auto-bid-tips diy-tips">
+							<div class="auto-top">
+								<h3>自动投标说明：</h3>
+								<span class="autoToggle"></span>
+							</div>
+							
+							<div class="auto-bid-rule">
+								<p>1）开启自动投标后，即进入当前排名，请您注意您的实时排名情况，以便合理的安排投资。</p>
+								<p>2）每个借款标自动投标占比80%，手动投标占比20%，开启自动投标后，仍可采用手动投标操作投资同一标或不同标。</p>
+								<p>3）账户余额≥50元，期限设置和还款方式不匹配时，该借款标会顺延向下寻找符合设置条件的用户，您的排名保留。</p>
+								<p>4）修改投标期限、还款方式、最大投标金额，过期时间将重新排名，修改最小投标金额、投资券设置不影响排名。注：修改最大投标金额、过期时间需先关闭自动投标设置。</p>
+								<p>5）借款标设有投资金额上限，自动投标满足设置成功投入后，则无论账户余额是否大于50元，都将重新排队。</p>
+								<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;投标限额方式：</p>
+								<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a.标的金额 ≤ 10万 限额 1 万</p>
+								<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b.标的金额＞10万 限额 2 万</p>
+								<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;备注：单标手动投标不限额</p>
+								<p>6）自动投标在开标前15分钟开启，当开标十分钟后标未满将开启第二轮自动。</p>
+								<p>7）自动投标可选择使用现金券，现金券设置项为：</p>
+								<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;优先期限：当有多张现金券符合使用条件时，优先选择即将到期的。</p>
+								<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;优先金额：当有多张现金券符合使用条件时，优先选择金额较大的。</p>
+								<p>8）自动投标可选择使用加息券，加息券设置项为：</p>
+								<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;优先期限：当有多张加息券符合使用条件时，优先选择即将到期的。</p>
+								<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;优先利率：当有多张加息券符合使用条件时，优先选择加息利率较大的。</p>
+								<p>9）现金抵用劵、加息劵不可同时设置使用，单类投资劵使用完后请及时切换投资劵种类，请仔细核对确认。</p>
+								<p>如有更多疑问，请联系客服，我们将为您耐心解答。</p>
+							</div>
+							
+						</div>
+
+					</div>
+
+
+
+				</div>
+
+
+			</div>
+		</main>
+	</div>
+<footer id="footer" class="footer"></footer>
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+<script type="text/javascript" src="/portal/js/config.js"></script>
+<script type="text/javascript" src="/portal/js/public.js"></script>
+<script type="text/javascript">window.userNavActive = 2;topNavSelect= '4'; </script>
+<script type="text/javascript" src="/portal/js/user.js"></script>
+<script type="text/javascript" src="/portal/js/pub/widget-table.js"></script>
+<script>
+setting(1,window.userNavActive);
+NavMenu(1);
+	var isPriority = false;
+	var interestCount = 0;	//加息券数量
+	var cashCount = 0;	//现金抵用券数量
+	var rewardRateAmount = 0;	//加息额度
+	var maxAmount = 0;
+	var deadDate ;
+	var autoType ;
+	var bidSwitch = "A";
+	//查询自定义设置信息
+	$.autoSetting = function(){
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("queryAutoLoanSettings"),     				
+			success : function(sucData ){
+				$(".autoBidCenter").hide();
+				var returnData = sucData["autoLoan"];
+				interestCount = sucData["interestCount"];
+				cashCount = sucData["cashCount"];
+				rewardRateAmount = sucData["rewardRateAmount"];
+				/*var smsTime = sucData["smsTime"];
+				if(smsTime){
+					$("#MsgAutoBid").addClass("disabled");
+					var interval = setInterval(function(){
+						var time = $("#msgCounter1").text() || smsTime;
+						if(time <= 0){
+							$("#msgCounter1").text("");
+							clearInterval(interval);
+							$("#MsgAutoBid").removeClass("disabled");
+						}else{
+							$("#msgCounter1").css({
+							"text-align":"left",
+							"color":"red"
+							})
+							$("#msgCounter1").text(time - 1);
+						}
+						},1000);
+				}*/
+				if(returnData){
+					/* $("#autoDetail").attr({
+						'autominlimit':returnData.autoMinLim,
+						'automaxlimit':returnData.autoMaxLim,
+// 					}) */
+
+					$("#autoType").val(returnData.autoType)
+					autoType = returnData.autoType;
+					if(returnData.autoType == "A"){
+						$("#autoTypeB").hide();
+					}else{
+						$("#autoTypeB").show();
+					}
+					$("#onceMinAmount").val( returnData.onceMinAmount / 100);
+					$("#onceMaxAmount").val( returnData.onceMaxAmount / 100);
+					maxAmount = returnData.onceMaxAmount / 100;
+					
+					 $("#autoMinLim").val( returnData.autoMinLim );
+					 $("#autoMaxLim").val( returnData.autoMaxLim);
+					 $("#refundType").val( returnData.refundType);
+					 $("#useTicket").val( returnData.useTicket);
+					 $("#priorityMode").val( returnData.priorityMode);
+					
+					 //$("#RankTotal").text( YRHX.toDecimal2( sucData.totalAmount / 100, "¥") );
+					 
+					 if(returnData.useTicket == "N"){ //不使用
+						$("#priority").hide();
+						$("#useTicketNum").html("");
+					 }else if(returnData.useTicket == "A"){ //现金券
+						$("#priority").show();
+						$(".amount").show();
+					 	$(".rate").hide();
+						isPriority = true;
+						$("#useTicketNum").html(cashCount+" 张");
+					 }else if(returnData.useTicket == "C"){ //加息券
+					 	$("#priority").show();
+					 	$(".amount").hide();
+					 	$(".rate").show();
+					 	isPriority = true;
+					 	$("#useTicketNum").html(interestCount+" 张");
+					 }else if(returnData.useTicket == "D"){ //加息额度
+						 $("#priority").hide();
+						 $("#useTicketNum").html(rewardRateAmount+" 元");
+					 }
+					 //过期日期
+					 var deadline = returnData.deadLine;
+					 if(deadline==null){
+					 	deadline = "20181231";
+					 }
+					 deadDate = deadline;
+					 var yy = parseInt(deadline.substr(0, 4));
+					 var mm = parseInt(deadline.substr(4, 2));
+					 var dd = parseInt(deadline.substr(6, 2));
+					 initDate(yy,mm,dd);
+					//sucData["autoLoan"]["autoState"] 为 A 已开启自动投标
+					if( returnData.autoState == "A" ){
+						//返回null为 - 未设置
+						$("#optionSet").show()
+						/* YRHX.ajax({
+							url : CONFIG.getRequestURI("queryAutoLoanRankNum"),     				
+							success : function(sucData ){
+								if(sucData){
+									$("#myRankNo").text( sucData );
+								}else{
+									$("#myRankNo").text( "排名刷新中..." );
+								}
+								
+							},
+							error : function(errData ){
+								 $.popTips("popTipErr","链接服务失败")
+							}
+						}); */
+						 
+						 YRHX.ajax({
+							url : CONFIG.getRequestURI("queryAvbalance"),     				
+							success : function(sucData ){
+								$("#avBalance").text( YRHX.toDecimal2( sucData / 100) + '元' );
+							},
+							error : function(errData ){
+								 $.popTips("popTipErr","链接服务失败")
+							}
+						});
+						 
+						 $(".bidSwitch").attr({"src": "/portal/images/auton.png", "key": "bid-on"});
+				        $(".bidSwitch").next().removeClass("red").addClass("green").text("已开启");
+				        bidSwitch="B";
+				        $(".bidOpen").show();
+				        $("#optionSet").slideDown();
+				        
+				        /* $(".submitDiyBtn").attr("updateData","1"); */
+					}
+				}else{
+					isPriority = true;
+					initDate(2018,12,31);
+				}
+				 
+				 /* var productType=returnData.productType;
+				 $.isCheck(productType,'A',0,'.choose_box input');
+				 $.isCheck(productType,'B',1,'.choose_box input');
+				 $.isCheck(productType,'C',2,'.choose_box input');
+				 $.isCheck(productType,'D',3,'.choose_box input'); */
+			
+			},
+			error : function(errData ){
+				 $.popTips("popTipErr","链接服务失败")
+			}
+		}); 
+	}
+	
+	$.autoSetting()
+
+	// 投标方式
+	$("#autoType").change(function() {
+		if($(this).val() == "A"){
+			$("#autoTypeB").hide();
+			if(999999!=maxAmount){
+				$(".autoBidCenter").show();
+			}else{
+				$(".autoBidCenter").hide();
+			}
+		} else if($(this).val() == "B"){
+			$("#autoTypeB").show();
+			if($("#onceMaxAmount").val()!=maxAmount){
+				$(".autoBidCenter").show();
+			}else{
+				$(".autoBidCenter").hide();
+			}
+		}
+		if(bidSwitch == "A"){
+			$(".autoBidCenter").show();
+		}
+	})
+	
+
+	//理财券
+	$("#useTicket").change(function() {
+		if($(this).val() == "N"){ //不使用
+			$("#priority").hide();
+			isPriority = false;
+			$("#useTicketNum").html("");
+		}else if($(this).val() == "A"){	//现金券
+			$("#priority").show();
+			var html="<option value='A' >过期时间优先</option><option class='amount' value='B'>金额优先</option>";
+			$("#priorityMode").html(html);
+			isPriority = true;
+			$("#useTicketNum").html(cashCount+" 张");
+		 }else if($(this).val() == "C"){ //加息券
+			$("#priority").show();
+			var html="<option value='A' >过期时间优先</option><option class='rate' value='C'>利率优先</option>";
+			$("#priorityMode").html(html);
+			isPriority = true;
+			$("#useTicketNum").html(interestCount+" 张");
+		}else if($(this).val() == "D"){ //加息额度
+			$("#priority").hide();
+			isPriority = false;
+			$("#useTicketNum").html(rewardRateAmount+" 元");
+		}
+	})
+	
+	
+	
+	/* $.isCheck=function(str,ele,index,source){
+		
+		if(str.indexOf(ele) !=-1){
+			$(source).eq(index).attr('checked',true);
+		}else{
+			$(source).eq(index).attr('checked',false);
+		}
+	} */
+ 	 
+     //提交自定义设置
+     $(".submitDiyBtn").click(function(){
+    	 /* //更新自定义设置
+    	 var autoState = "";
+    	 if( $(".submitDiyBtn").attr("updateData") == "1"){
+    		 autoState = "A";
+    	 } */
+   		
+    	//智能投标
+    	if( $("#autoType").val() == "A"){
+          	var refundType = "D";//还款方式-默认不限
+          	var onceMinAmount = "50";//单次最小投标金额-默认50
+       		var onceMaxAmount = "999999";//单次最大投标金额 -
+    	}else{
+		//自定义投标
+	      	var refundType = $("#refundType").val();//还款方式
+	      	var onceMinAmount = $("#onceMinAmount").val();//单次最小投标金额-默认50
+	   		var onceMaxAmount = $("#onceMaxAmount").val();//单次最大投标金额 -
+    	}
+    	
+    	
+    	var priorityMode = $("#priorityMode").val();//优先方式
+      	var useTicket = $("#useTicket").val();//优先方式 
+      	var autoMinLim = parseInt( $("#autoMinLim").val());//最小期限范围：
+      	var autoMaxLim = parseInt( $("#autoMaxLim").val());//最大期限范围：
+      	
+      	
+      	/* //选择产品类型
+      	var productType ='';
+		$('.choose_box input').each(function(){
+			if($(this).is(':checked')){
+				productType +=$(this).attr('value');
+			}
+		}); */
+      	
+      	//单次最大金额限制
+   		if( isNaN( onceMaxAmount) || onceMaxAmount < 50 || onceMaxAmount.indexOf(".") > 0   ){
+       		$(".submitDiyBtn").popUp("err","单次最大投标金额需为不小于50且不小于单次最小投标金额的整数",function(){
+       			 $("#onceMaxAmount").focus();
+       		 });
+       		return false;
+       	}
+      	//单次最小金额限制
+      	if( !onceMinAmount || onceMinAmount < 50 || onceMinAmount.indexOf(".") > 0 || isNaN( onceMinAmount) ){
+      		$(".submitDiyBtn").popUp("err","单次最小投标金额需为不小于50且不大于单次最大投标金额的整数",function(){
+      			 $("#onceMinAmount").focus();
+      		 });
+      		return false;
+      	}
+      	//期限范围限制
+      	if( autoMinLim > autoMaxLim){
+      		$(".submitDiyBtn").popUp("err","贷款期限范围最小期限不能大于最大期限");
+      		return false;
+      	}
+      	var yy = $(".inputYY").find("option:selected").val();
+      	var mm = $(".inputMM").find("option:selected").val();
+      	var dd = $(".inputDD").find("option:selected").val();
+      	if(mm<10){
+      		mm = "0"+mm;
+      	}
+      	if(dd<10){
+      		dd = "0"+dd;
+      	}
+      	var deadline = yy+mm+dd;
+      	//验证码
+      	/*var msg = $("#msgAutoBid").val();
+      	if((onceMaxAmount!=maxAmount||deadline!=deadDate)&&bidSwitch=="B"){
+	     	if(null == msg||msg == ""){
+//	     		$.popTips("popTipErr", "修改最大投标金额与过期时间需要先关闭自动再设置" );
+	     		alert("修改最大投标金额与过期时间需要先关闭自动再设置");
+	     		return;
+	     	}
+      	}*/
+        	YRHX.ajax({
+			url : CONFIG.getRequestURI("saveAutoLoanSettings"),
+			asycn:false,
+			data : {
+				"autoLoan.autoType" : $("#autoType").val(),
+				"autoLoan.onceMaxAmount" : onceMaxAmount * 100,
+	     		"autoLoan.onceMinAmount" : onceMinAmount * 100,				
+				"autoLoan.autoMinLim"     : autoMinLim,
+				"autoLoan.autoMaxLim"     : autoMaxLim,
+				"autoLoan.refundType" : refundType,
+				"useTicket":useTicket,
+				"priorityMode" : isPriority ? priorityMode : '', 
+				"autoLoan.deadLine"	:	deadline,
+				"type"	:	"y",
+				//"autoLoan.productType" : productType
+
+			},
+			success : function( sucData ){
+				if(sucData=="OK"){
+					$.popTips("popTipErr", "设置自动投标成功" )
+					deadDate =deadline;
+					autoType = $("#autoType").val();
+					bidSwitch = "B";
+					return;
+				}
+				var passData = {"autoLoan.autoType":$("#autoType").val(),
+							"autoLoan.onceMaxAmount" : onceMaxAmount * 100,
+				     		"autoLoan.onceMinAmount" : onceMinAmount * 100,				
+							"autoLoan.autoMinLim"     : autoMinLim,
+							"autoLoan.autoMaxLim"     : autoMaxLim,
+							"autoLoan.refundType" : refundType,
+							"useTicket":useTicket,
+							"priorityMode" : isPriority ? priorityMode : '', 
+							"autoLoan.deadLine"	:	deadline
+							};
+				post(CONFIG.getRequestURI("saveAutoLoanSettings"),passData);
+			},
+			error : function(errData ){
+				$.popTips("popTipErr", errData.return_info )
+				 if(errData.return_code=="F1"){
+	            	setTimeout("window.location.href ='/assessment'",2000);
+	            }
+			}
+		});  
+     });
+
+
+	//关闭自动投标接口
+	$.setAutoLoanState = function(){
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("setAutoLoanState"),
+			success : function(sucData ){
+				$(".subJx").show();
+				$.popTips("popTipErr","操作成功",function(){
+					window.location.reload();
+				},1500)
+				bidSwitch = "A";
+			},
+			error : function(errData ){
+				 $.popTips("popTipErr",errData.return_info||"操作失败")
+			}
+		});
+	}
+  	
+	//自动投标 事件
+	$(".bidSwitch").click(function () {
+		if ($(".bidSwitch").attr("key") == "bid-off") {
+			
+			$("#optionSet").slideDown();
+			$("#aotoSetTips").show();
+			$(".autoBidCenter").show();
+		   	   
+		}else if ($(".bidSwitch").attr("key") == "bid-on") {
+		          
+		      	//关闭事件
+			$.setAutoLoanState(  );
+			$(".autoBidCenter").hide();
+	   }
+	});
+
+
+	//投标中的贷款
+	$.queryAutoRank = function(  ){
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("queryAutoLoanRankDetail"),
+			data : {
+			},
+			success : function( sucData ) {
+				var rowHtml2 = "<tr class='#{isSelect}'><td>#{loanLimit}月标</td>";
+				rowHtml2 += "<td>#{amount}</td>";
+				rowHtml2 += "<td>#{quantity}</td></tr>";
+
+				//table
+				var tableEle = $("#autoRank_table").find("tbody");
+				var tfootEle = $("#autoRank_table").find("tfoot");
+				tableEle.html("");
+				tfootEle.remove();
+				
+				//var autoMinLimit = $("#autoDetail").attr("autominlimit") || '';
+				//var autoMaxLimit = $("#autoDetail").attr("automaxlimit") || '';
+				
+				
+				var returnData = sucData.rankDetail ;
+				
+				//default 4 rows
+				if ( returnData && returnData.length > 0) {
+					for (var i = 0; i < returnData.length; i++) {
+						var row = returnData[i];
+						if( (row["loanLimit"] >= 13 && row["loanLimit"] <= 17) || (row["loanLimit"] >= 19 && row["loanLimit"] <= 23) ){
+							
+						}else{
+							row["amount"] = YRHX.toDecimal2(row["amount"] / 100)+ '元';
+							/* if(row["loanLimit"] >= autoMinLimit && row["loanLimit"]<= autoMaxLimit ){
+								row["isSelect"] = "selected";
+								console.log(autoMinLimit)
+							} */
+							var tempHtml2 = rowHtml2.makeHtml(row);
+							tableEle.append(tempHtml2);
+						}
+						
+						
+					}
+				} else {
+					//暂无数据
+					$("#autoRank_table").noData();
+				}
+
+			},
+			error : function(data) {
+				 $.popTips("popTipErr",data.return_info || "获取信息失败");
+			}
+		})
+	};
+	
+	$.queryAutoRank()
+	
+	$(".auto-top").click(function(){
+		$(".auto-bid-rule").toggle()
+	})
+	
+ 	/*$("#MsgAutoBid").click(function(){
+ 		var that=$(this);
+ 		if(!that.hasClass("disabled")){
+ 			YRHX.ajax({
+				url:"/commonSmsCode",
+				data:{type:"2"},
+				success:function(sucData){
+					that.addClass("disabled");
+					var interval = setInterval(function(){
+								var time = $("#msgCounter1").text() || 60;
+								
+								if(time <= 0){
+									$("#msgCounter1").text("");
+									clearInterval(interval);
+									that.removeClass("disabled");
+								}else{
+									$("#msgCounter1").css({
+										"text-align":"left",
+										"color":"red"
+									})
+									$("#msgCounter1").text(time - 1);
+								}
+							},1000);
+						},
+				error:function(errData){
+					alert("发送失败");
+				}
+			});
+		}
+	}) */
+	//初始化年月日
+	$(function(){
+		var inputYY = $(".inputYY");
+		//初始化当前年份
+		var date=new Date;
+ 		var year=date.getFullYear();
+ 		var htmlYY = "";
+		for(var i = 2017;i<year+10;i++){
+			htmlYY += "<option value = "+i+">"+i+"</option>";
+		}
+		inputYY.html(htmlYY);
+		//初始化月份
+		var htmlMM = "";
+		for(var i = 1;i<13;i++){
+			htmlMM += "<option value = "+i+">"+i+"</option>";
+		}
+		var inputMM = $(".inputMM");
+		inputMM.html(htmlMM);
+	});
+     
+     $(".inputMM").change(function(){
+     	var yy = parseInt($(".inputYY").find("option:selected").val());
+     	var mm = parseInt($(".inputMM").find("option:selected").val());
+     	initDate(yy,mm,1);
+     });
+     
+     function initDate(YY,MM,DD){
+     	var optionYY = "option[value='"+YY+"']";
+     	var optionMM = "option[value='"+MM+"']";
+     	$(".inputYY").find(optionYY).attr("selected",true);
+     	$(".inputMM").find(optionMM).attr("selected",true);
+     	var d= new Date(YY,MM,0);
+		var days = d.getDate();
+		var htmlDD = "";
+		for(var i = 1;i<=days;i++){
+			htmlDD += "<option value = "+i+">"+i+"</option>";
+		}
+		$(".inputDD").html(htmlDD);
+		var optionDD = "option[value='"+DD+"']";
+		$(".inputDD").find(optionDD).attr("selected",true);
+     }
+     
+     function post(URL, PARAMS) { 
+     		var temp_form = document.createElement("form");      
+            temp_form .action = URL;      
+            temp_form .target = "_self";
+            temp_form .method = "post";      
+            temp_form .style.display = "none";
+            for (var x in PARAMS) { 
+            	var opt = document.createElement("textarea");      
+                opt.name = x;      
+                opt.value = PARAMS[x];      
+                temp_form .appendChild(opt);  
+            }      
+            document.body.appendChild(temp_form);     
+            temp_form .submit();     
+      }
+     /*  $("#onceMaxAmount").blur(function(){
+      	var onceMaxAmount = $("#onceMaxAmount").val();
+      	if(onceMaxAmount != maxAmount){
+      		$(".autoBidCenter").show();
+      	}else{
+      		$(".autoBidCenter").hide();
+      	}
+      	if(bidSwitch == "A"){
+			$(".autoBidCenter").show();
+		}
+      }) */
+      function getDeadLine(){
+      	var yy = $(".inputYY").find("option:selected").val();
+      	var mm = $(".inputMM").find("option:selected").val();
+      	var dd = $(".inputDD").find("option:selected").val();
+      	if(mm<10){
+      		mm = "0"+mm;
+      	}
+      	if(dd<10){
+      		dd = "0"+dd;
+      	}
+      	var deadline = yy+mm+dd;
+      	return deadline;
+      }
+     /*  $(".inputYY").change(function(){
+      	var deadDateNow = getDeadLine();
+      	if(deadDateNow != deadDate){
+      		$(".autoBidCenter").show();
+      	}else{
+      		$(".autoBidCenter").hide();
+      	}
+      	if(bidSwitch == "A"){
+			$(".autoBidCenter").show();
+		}
+      })
+      $(".inputMM").change(function(){
+      	var deadDateNow = getDeadLine();
+      	if(deadDateNow != deadDate){
+      		$(".autoBidCenter").show();
+      	}else{
+      		$(".autoBidCenter").hide();
+      	}
+      	if(bidSwitch == "A"){
+			$(".autoBidCenter").show();
+		}
+      })
+      $(".inputDD").change(function(){
+      	var deadDateNow = getDeadLine();
+      	if(deadDateNow != deadDate){
+      		$(".autoBidCenter").show();
+      	}else{
+      		$(".autoBidCenter").hide();
+      	}
+      	if(bidSwitch == "A"){
+			$(".autoBidCenter").show();
+		}
+      }) */
+</script>
+</body>
+
+</html>

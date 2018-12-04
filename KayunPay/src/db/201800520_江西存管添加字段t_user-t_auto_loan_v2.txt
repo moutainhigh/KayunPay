@@ -1,0 +1,8 @@
+//江西存管电子账户
+ALTER table t_user add jxAccountId CHAR(20);
+//自动投标设置订单号
+ALTER TABLE t_auto_loan_v2 add jxOrderId CHAR(30);
+//自动投标临时设置数据
+ALTER TABLE t_auto_loan_v2 add tempData VARCHAR(500);
+//自动投标过期日期
+ALTER TABLE t_auto_loan_v2 add deadLine CHAR(8);

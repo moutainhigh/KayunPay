@@ -1,0 +1,407 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="stylesheet" href="../assets/plugin/ztree/css/zTreeStyle.css">
+</head>
+<body>
+	<!-- iframe body start -->
+	<form id="info-form" action="" data-am-validator>
+		<div class="am-tabs am-margin" data-am-tabs="{noSwipe: 1}">
+			<ul class="am-tabs-nav am-nav am-nav-tabs">
+				<li class="am-active"><a href="#tab1">操作员详情</a></li>
+				<li><a href="#tab2">分公司资料</a></li>
+				<li><a href="#tab3">操作员权限(菜单&请求)</a></li>
+			</ul>
+			<div class="am-tabs-bd">
+				<div class="am-tab-panel am-fade am-in am-active am-form am-form-inline" id="tab1" >
+					<div class="am-g am-margin-top field" name="op_code" type="text" text="操作员编号" add="hide" edit="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="op_mobile" type="text" text="操作员手机号" edit="disabled" dtype="number" minlength="11" maxlength="11">
+					</div>
+					<div class="am-g am-margin-top field" name="op_name" type="text" text="操作员昵称" minlength=2 >
+					</div>
+					<div class="am-g am-margin-top field" name="op_pwd" type="text" text="操作员密码" minlength=6 edit="hide" view="hide">
+					</div>
+					<div class="am-g am-margin-top field" name="op_status" map="opUserState" type="select" text="操作员状态"  edit="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="role_code" type="text" text="角色模版编码" edit="disabled" add="disabled" view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="role_name" type="text" text="角色模版名称" view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="op_group" required="required" minlength=2 type="text" value="技术部" text="归属组织" >
+					</div>
+					<!-- 测试代码 -->
+					<div class="am-g am-margin-top field" name="update_datetime" type="text" edit="disabled" text="最后操作时间" 
+						add="hide">
+					</div>
+					<div class="am-g am-margin-top field" name="update_op_name" type="text" edit="disabled" text="最后操作管理员" 
+						add="hide">
+					</div>
+				</div>
+				<div class="am-tab-panel am-fade am-in am-form am-form-inline" id="tab2" >
+					<input type="hidden" id="transferUserNo"/>
+					<div class="am-g am-margin-top field loanUserInfo"
+						name="isBranch" map="map_isBranch" id = "isBranch" text="是否分公司" type="radio" defaultValue="n">
+					</div>
+					<div class="am-g am-margin-top field" name="branchArea" id="branchArea" type="text" value="文本框" text="分公司来源(地区或机构)" >
+					</div>
+					<div class="am-g am-margin-top field" name="creditorCardId" id="creditorCardId" type="text" value="文本框" text="债权人证件号码" maxlength=18 placeholder="请输入18位身份证号">
+					</div>
+					<div class="am-g am-margin-top field" name="creditorName" id="creditorName" type="text" value="文本框" text="债权人姓名" >
+					</div>
+				</div>
+				<div class="am-tab-panel am-fade am-in am-form am-form-inline" id="tab3" >
+					<ul id="menuMap" class="ztree">
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="am-margin">
+			<button id="submitBtn" type="button" class="am-btn am-btn-primary am-btn-xs submit-btn">提交</button>
+			<button id="cancelBtn" type="button" class="am-btn am-btn-primary am-btn-xs back-btn">返回</button>
+		</div>
+	</form>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<script src="../assets/plugin/ztree/js/jquery.ztree.all-3.5.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script src="../app/js/verify.js"></script>
+	<script>
+	
+	function clearMenu(){
+		queryMenu(function(menus){
+			var menusTreeData = [] ;
+			for(var mi in menus){
+				var menu = menus[mi];
+				menusTreeData.push({
+					id : menu.menu_id ,
+					pId : menu.menu_id_p ,
+					name : menu.menu_name ,
+					checked : false
+				});
+			}
+			$.fn.zTree.init($("#menuMap"), setting, menusTreeData);
+		});
+	}
+		
+		
+		
+	function getRoleInfoByRoleName(v){
+		if( v.length >= 3 ){
+			YRHX.ajax({
+				url : "/getRoleInfoByRoleName",
+				data : {
+					roleName : v
+				} , 
+				success : function(data){
+					if(data && data!=null){
+						var showData = {};
+						showData["role_code"] = data["role_code"]||" ";
+						showData["role_name"] = data["role_name"]||" ";
+						$("#info-form").formUnSerialize( showData );
+						var roleMap = data["role_map"];
+						queryMenu(function(menus){
+							var menusTreeData = [] ;
+							for(var mi in menus){
+								var menu = menus[mi];
+								menusTreeData.push({
+									id : menu.menu_id ,
+									pId : menu.menu_id_p ,
+									name : menu.menu_name ,
+									checked : roleMap.charAt(menu.menu_id) == "1"?true:false 
+								});
+							}
+							$.fn.zTree.init($("#menuMap"), setting, menusTreeData);
+						});
+					}else{
+						var showData = {};
+						showData["role_code"] =" ";
+						showData["role_name"] = " ";
+						$("#info-form").formUnSerialize( showData );
+						clearMenu();
+					}
+				},
+				error : function(data){
+					if(data.return_code=="BB"){
+						YRHX.alert("警告",data.return_info);
+					}else{
+						var showData = {};
+						showData["role_code"] =" ";
+						showData["role_name"] = " ";
+						$("#info-form").formUnSerialize( showData );
+					}
+					clearMenu();
+				}
+			});
+		}
+	}
+		
+		
+	$("body").delegate("input[name='role_name']","change",function(){
+		var that = $(this);
+		var v = that.val().trim();
+		
+		//获取用户信息
+		getRoleInfoByRoleName(v);
+		
+	});
+		//---init
+
+		function initFormData( key ){
+			YRHX.ajax({
+				url : "/getOPUserV2ById" ,
+				data : {
+					opUserCode : key 
+				},
+				success : function( sucData ){
+					//根据后台数据更改单选按钮
+					if(opType=='edit'){//修改
+						if(sucData["isBranch"]=='y'){
+							$("input[name='isBranch'][value='y']").click();
+						}else{
+							$("input[name='isBranch'][value='n']").click();
+						}
+					}else if(opType=='view'){//查看
+						if(sucData["isBranch"]=='y'){
+							$(".am-btn.am-btn-default.am-btn-xs").html('是');
+						}else{
+							$(".am-btn.am-btn-default.am-btn-xs").html('否');
+						}
+					}
+					sucData["update_datetime"] = sucData["update_datetime"].dateformat();
+					$("#info-form").formUnSerialize( sucData ); 
+					var opMap = sucData["op_map"];
+					queryMenu(function(menus){
+						var menusTreeData = [] ;
+						for(var mi in menus){
+							var menu = menus[mi];
+							//TODO 判断是否默认勾选
+							menusTreeData.push({
+								id : menu.menu_id ,
+								pId : menu.menu_id_p ,
+								name : menu.menu_name ,
+								checked : opMap.charAt(menu.menu_id) == "1"?true:false 
+							});
+						}
+						//console.log(menusTreeData);
+						$.fn.zTree.init($("#menuMap"), setting, menusTreeData);
+					});
+				},
+				error : function( data ){
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+		}
+		
+		function getTreeValue(tid ){
+			var chs = $.fn.zTree.getZTreeObj( tid ).getCheckedNodes( true ) ;
+			return formatTreeValue(chs);
+		}
+		
+		$(".submit-btn").click(function(){
+			//验证身份证卡号数据
+			 if(verifyTransfer(that)){//出现验证错误,禁止表单提交
+				 return;
+			 }
+			//表单提交
+			if( $("#info-form").validateForm() ){
+				var zz = $("#info-form").formSerialize();
+				zz["roleMap"] = getTreeValue("menuMap");
+				zz["transferUserNo"]=$("#transferUserNo").val();
+				YRHX.ajax({
+					url : $("#info-form").attr("action"),
+					data : zz,
+					success : function( sucData ){
+						YRHX.alert("操作成功！");
+						setTimeout('window.location.reload()',1000);//强制刷新页面
+					},error:function( data ){
+						if(data.return_code=="-315"){
+							var error_Msg = "";
+							$.each(data.return_data,function(key,value){
+								error_Msg = error_Msg + value+"<br>";
+							});
+							YRHX.alert("警告",error_Msg);
+						}else{
+							YRHX.alert("警告",data.return_info || "获取信息失败");
+						}
+					}
+				});
+			}
+		});
+		
+		function queryMenu(callback){
+			YRHX.ajax({
+				url : "/queryMenuListV2" ,
+				async : false ,
+				data : {
+				} ,
+				success : callback 
+			});
+		}
+		
+		function formatTreeValue( treeList ){
+			var menuVal = [];
+			var i = 0 ;
+			while( i < 500 ){
+				//init 
+				menuVal.push("0");
+				i ++ ;
+			}
+			for(var mi in treeList ){
+				var menu = treeList[ mi ];
+				menuVal[ menu["id"] ] = '1';
+			}
+			return menuVal.join("");
+		}
+		
+		$(".back-btn").click(function(){
+			window.history.go(-1);
+		});
+		var opMap = {} ;
+		opMap["add"] = {
+			"formType" : "add" , 
+			"request" : "/createOPUserV2"
+		};
+		opMap["edit"] = {
+			"formType" : "edit" , 
+			"request" : "/modOPUserV2"
+		};
+		opMap["view"] = {
+			"formType" : "view" , 
+			"request" : "www.qq.com"
+		};
+		var opType = YRHX.queryString("opType")||"view"  ;
+		//YRHX.queryString("opType")||"view" 
+		if( opType == "view"){
+			$(".submit-btn").hide();
+			setTimeout('$(".am-input-sm").removeAttr("placeholder")',10);//删除输入框提示语
+		}
+		$("#info-form").formInit(opMap[YRHX.queryString("opType")||"view" ]);	
+		
+		var setting = {
+			check: {
+				enable: true
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+		
+		$("#info-form").validatorInit();
+		var keyCode = YRHX.queryString("key");
+		if( keyCode ){
+			initFormData( keyCode );
+		}else{
+			queryMenu(function(menus){
+				//
+				var menusTreeData = [] ;
+				for(var mi in menus){
+					var menu = menus[mi];
+					//TODO 判断是否默认勾选
+					menusTreeData.push({
+						id : menu.menu_id ,
+						pId : menu.menu_id_p ,
+						name : menu.menu_name ,
+						checked : false 
+					});
+				}
+				//console.log(menusTreeData);
+				$.fn.zTree.init($("#menuMap"), setting, menusTreeData);
+			});
+		}
+		
+		//分公司单选按钮事件
+		$(".am-btn.am-btn-default.am-btn-xs").change(function(){
+			var isBranch=$("input[name='isBranch']:checked").val();
+			if(isBranch=='y'){//是
+				$("#branchArea").show();
+			}else{//否
+				$("input[name='branchArea']").val('');//清空分公司来源
+				$("#branchArea").hide();
+			}
+		})
+		
+		//默认是分公司
+		$("input[name='isBranch'][value='y']").click();
+		
+		//身份证号对象
+		var that=$("input[name='creditorCardId']");
+		
+		//债权人证件号码后增加span标签作为数据验证框
+		$(that).after("<span style='color:red'></span>");
+		
+		//验证身份证号数据合理性
+		function verifyTransfer(that){
+			 var name=$(that).attr("name");//获取当前标签name值
+			 var text=$(that).val();//获取输入框数据
+			 if(text.length!=18 && text.length!=0){
+				 var placeholder=$(that).attr("placeholder");//获取提示语
+				 $(that).next().html(placeholder);
+				 return true;
+			 }
+			 $(that).next().html('');
+			 return false;
+		}
+		
+		//债权人证件号码输入框失去焦点自动获取债权人信息
+		$(that).blur(function(){
+			verifyTransfer(this);//验证数据
+			
+			var cardId=$("input[name='creditorCardId']").val();//债权人身份证号
+			var name=$("input[name='creditorName']").val();//债权人姓名
+			var area=$("input[name='branchArea']").val();//债权人所属区域
+			if(cardId.length==0){
+				$("input[name='creditorName']").val('');//债权人姓名清空
+			}
+			if(cardId.length!=18){
+				return;
+			}
+			YRHX.ajax({
+				url:"/queryTransferByCardId",
+				data:{
+					cardId:cardId,
+					name:name,
+					area:area
+				},
+				success:function(sucData){
+					$("input[name='creditorName']").val(sucData["name"]);//设置债权人姓名
+					$("#transferUserNo").val(sucData["transferUserNo"]);//设置债权人code
+				},
+				error:function(data){
+					$("input[name='creditorCardId']").add($("input[name='creditorName']")).val('');//清空债权人身份证号姓名
+					YRHX.alert1("获取信息失败","请确认是否是分公司或填写错误！");
+				}
+			})
+		})
+		
+	</script>
+</body>
+</html>

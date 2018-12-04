@@ -1,0 +1,326 @@
+body {
+	width: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+#top {
+	background: url(/portal/images/activity/act201711/topBg.jpg) no-repeat center top;
+	height: 989px;
+}
+
+#white {
+	height: 193px;
+	width: 723px;
+	margin: 0 auto;
+	background: url(/portal/images/activity/act201711/white.png) no-repeat center top;
+	position: relative;
+	top: 160px;
+	z-index: 1;
+}
+
+#light {
+	height: 437px;
+	width: 1084px;
+	margin: 0 auto;
+	position: relative;
+	top: 5px;
+}
+
+#big3 {
+	background: url(/portal/images/activity/act201711/big3.png) no-repeat center top;
+	height: 325px;
+	width: 584px;
+	margin: 0 auto;
+	position: relative;
+	top: -130px;
+	z-index: 1;
+}
+
+#steps {
+	background: url(/portal/images/activity/act201711/step.jpg) no-repeat center top;
+	height: 312px;
+	text-align: center;
+}
+
+#step1 {
+	background: url(/portal/images/activity/act201711/step1off.png) no-repeat center top;
+}
+
+#step2 {
+	background: url(/portal/images/activity/act201711/step2off.png) no-repeat center top;
+}
+
+#step3 {
+	background: url(/portal/images/activity/act201711/step3off.png) no-repeat center top;
+}
+
+.step {
+	height: 253px;
+	width: 370px;
+	display: inline-block;
+	position: relative;
+	top: 18px;
+}
+
+#add4 {
+	background: url(/portal/images/activity/act201711/add4.jpg) no-repeat center top;
+	height: 1108px;
+}
+
+#lays {
+	background: url(/portal/images/activity/act201711/lays.jpg) no-repeat center top;
+	height: 909px;
+}
+
+#tip {
+	text-align: center;
+	height: 30px;
+	line-height: 30px;
+	color: #fff722;
+	font-size: 18px;
+	position: relative;
+	top: 700px;
+	letter-spacing: 2px;
+}
+
+#djs {
+	height: 58px;
+	text-align: center;
+	position: relative;
+	top: 710px;
+	font-size: 30px;
+	font-weight: bolder;
+	color: orange;
+}
+
+#actDjs {
+	height: 60px;
+	width: 1200px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.card {
+	height: 58px;
+	width: 49px;
+	line-height: 58px;
+	background: url(/portal/images/activity/act201711/time.png) no-repeat center top;
+	display: inline-block;
+	vertical-align: middle;
+	color: white;
+	font-size: 32px;
+	font-family: "microsoft yahei";
+}
+
+.colon {
+	width: 10px;
+	text-align: center;
+	height: 58px;
+	line-height: 58px;
+	display: inline-block;
+	vertical-align: middle;
+	opacity: 50%;
+	color: white;
+}
+
+#threeTime {
+	background: url(/portal/images/activity/act201711/threeTime.png) no-repeat center top;
+	width: 746px;
+	height: 118px;
+	margin: 0 auto;
+	position: relative;
+	top: 30px;
+}
+
+#congra {
+	height: 55px;
+	line-height: 55px;
+	font-size: 30px;
+	color: red;
+	position: relative;
+	top: 38px;
+	font-family: "microsoft yahei";
+}
+
+#happy {
+	background: url(/portal/images/activity/act201711/happy.jpg) no-repeat center top;
+	height: 1586px;
+}
+
+#happyWords {
+	height: 30px;
+	line-height: 30px;
+	color: #03c6f2;
+	font-size: 18px;
+	text-align: center;
+	position: relative;
+	top: 120px;
+	letter-spacing: 1px;
+}
+
+#cakeMsg {
+	width: 1067px;
+	height: 612px;
+	margin: 0 auto;
+	margin-top: 150px;
+}
+
+#cake {
+	width: 494px;
+	height: 615px;
+	margin: 0 auto;
+}
+
+#fixMsg {
+	width: 1067px;
+	height: 612px;
+	margin: 0 auto;
+	position: relative;
+	top: -612px;
+	z-index: 1;
+}
+
+#msgBoard {
+	height: 404px;
+	width: 1100px;
+	margin: 0 auto;
+	position: relative;
+	top: 40px;
+}
+
+#listBox {
+	width: 1000px;
+	height: 400px;
+	margin: 0 auto;
+	overflow: hidden;
+	padding: 0px;
+}
+
+ul {
+	height: 400px;
+	width: 1000px;
+	position: relative;
+	margin: 0 auto;
+	padding: 0px;
+}
+
+li {
+	height: 66px;
+	line-height: 66px;
+	list-style-type: none;
+	margin: 0 auto;
+	color: #03C6F2;
+	font-family: "microsoft yahei";
+	border-bottom: dashed #0863a1 1px;
+}
+
+.msgDiv {
+	height: 70px;
+}
+
+#showMsg span {
+	color: #03C6F2;
+	font-family: "microsoft yahei";
+	font-size: 18px;
+	display: inline-block;
+}
+
+#userName {
+	margin-left: 5px;
+	width: 150px;
+	text-align: left;
+}
+
+#msg {
+	width: 620px;
+	padding-left: 20px;
+}
+
+#time {
+	width: 190px;
+	text-align: right;
+}
+
+#writeMsg {
+	width: 1010px;
+	height: 140px;
+	margin: 0 auto;
+	position: relative;
+	top: 60px;
+}
+
+#textMsg {
+	width: 760px;
+	height: 88px;
+	border-radius: 5px;
+	background: #2d1a8e;
+	text-underline-color: red;
+	font-size: 16px;
+	color: white;
+	border: 0px;
+	font-family: "microsoft yahei";
+	display: inline-block;
+	letter-spacing: 1px;
+}
+
+input::-webkit-input-placeholder {
+	/* WebKit browsers*/
+	color: #FFFFFF;
+	font-size: 16px;
+	font-family: "microsoft yahei";
+}
+
+input:-moz-placeholder {
+	/* Mozilla Firefox 4 to 18*/
+	color: #FFFFFF;
+	font-size: 16px;
+	font-family: "microsoft yahei";
+}
+
+input::-moz-placeholder {
+	/* Mozilla Firefox 19+*/
+	color: #FFFFFF;
+	font-size: 16px;
+	font-family: "microsoft yahei";
+}
+
+input:-ms-input-placeholder {
+	/* Internet Explorer 10+*/
+	color: #FFFFFF;
+	font-size: 16px;
+	font-family: "microsoft yahei";
+}
+
+#sendMsg {
+	width: 234px;
+	height: 88px;
+	background: url(/portal/images/activity/act201711/btn.png) no-repeat center top;
+	display: inline-block;
+	float: right;
+	cursor: pointer;
+}
+
+#rights {
+	width: 1000px;
+	height: 30px;
+	margin: 0 auto;
+	color: #03C6F2;
+	font-family: "microsoft yahei";
+	font-size: 18px;
+	text-align: center;
+	position: relative;
+	top: 170px;
+}
+
+#only {
+	text-align: center;
+	height: 20px;
+	line-height: 20px;
+	width: 300px;
+	float: left;
+	font-size: 14px;
+	color: yellow;
+	margin-left: -60px;
+	margin-top: 10px;
+}

@@ -1,0 +1,1 @@
+alter table t_funds add oldBeRecyAmount bigint(20);

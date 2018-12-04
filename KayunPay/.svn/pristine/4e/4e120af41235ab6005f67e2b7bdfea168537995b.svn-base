@@ -1,0 +1,665 @@
+package com.jx.service;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.dutiantech.model.JXTrace;
+import com.dutiantech.service.BaseService;
+import com.dutiantech.service.JXTraceService;
+import com.dutiantech.util.Property;
+import com.dutiantech.util.SysEnum.jxTraceStatus;
+import com.jx.http.WebUtils;
+import com.jx.util.DateUtil;
+import com.jx.util.RetCodeUtil;
+import com.jx.util.SignUtil_lj;
+
+/**
+ * 联机接口
+ * 
+ */
+public class JXService extends BaseService {
+
+	public static Logger logger = Logger.getLogger(JXService.class);
+	public static JXTraceService jxTraceService = new JXTraceService();
+
+	// 访问接口地址（说明：平台需要根据实际访问环境进行修改，本测试地址直接连接即信端SIT环境）
+	public static final String ONLINE_URI;
+	// 划拨接口地址
+	public static final String TRANSFER_URI;
+	// 对账文件下载接口地址
+	public static final String TRANSFER_DOWNLOAN_URI;
+	// 版本号
+	public static final String VERSION;
+	// 银行代码
+	public static final String BANKCODE;
+	// 机构代码 （说明：平台需要根据即信端给定实际参数进行调整）
+	public static final String INSTCODE;
+	// 交易渠道
+	public static final String COINSTCHANNEL;
+	// 交易渠道app
+	public static final String APPCOINSTCHANNEL;
+	// 页面调用地址
+	public static final String PAGE_URI;
+	// 担保代偿账户
+	public static final String RISK_RESERVE;
+	// 红包账号
+	public static final String RED_ENVELOPES;
+	//手续费账户
+	public static final String FEES;
+	//红包账户手机号
+	public static final String RED_ACCOUNT_MOBILE;
+	//手续费账户手机号
+	public static final String FEES_ACCOUNT_MOBILE;
+	static {
+		ONLINE_URI = Property.getPropertyValueByKey("jx", "ONLINE_URI");
+		TRANSFER_URI = Property.getPropertyValueByKey("jx", "TRANSFER_URI");
+		TRANSFER_DOWNLOAN_URI = Property.getPropertyValueByKey("jx", "TRANSFER_DOWNLOAN_URI");
+		VERSION = Property.getPropertyValueByKey("jx", "VERSION");
+		BANKCODE = Property.getPropertyValueByKey("jx", "BANKCODE");
+		INSTCODE = Property.getPropertyValueByKey("jx", "INSTCODE");
+		COINSTCHANNEL = Property.getPropertyValueByKey("jx", "COINSTCHANNEL");
+		APPCOINSTCHANNEL = Property.getPropertyValueByKey("jx", "APPCOINSTCHANNEL");
+		PAGE_URI = Property.getPropertyValueByKey("jx", "PAGE_URI");
+		RISK_RESERVE = Property.getPropertyValueByKey("jx", "RISK_RESERVE");
+		RED_ENVELOPES = Property.getPropertyValueByKey("jx", "RED_ENVELOPES");
+		FEES = Property.getPropertyValueByKey("jx", "FEES");
+		RED_ACCOUNT_MOBILE = Property.getPropertyValueByKey("jx", "RED_ACCOUNT_MOBILE");
+		FEES_ACCOUNT_MOBILE = Property.getPropertyValueByKey("jx", "FEES_ACCOUNT_MOBILE");
+	}
+	/**
+	 * 投标申请页面表单提交
+	 * 
+	 * @param url
+	 *            提交地址
+	 * @param reqMap
+	 *            提交参数
+	 * @param response
+	 */
+	public static void formSubmit(String url, Map<String, String> reqMap, HttpServletResponse response,String remark) {
+		//根据请求时间和流水号生成jxTraceCode
+		String jxTraceCode = "" + reqMap.get("txDate") + reqMap.get("txTime") + reqMap.get("seqNo");
+		//保存请求报文信息
+		saveJxTrace(jxTraceCode.trim(), reqMap, JSON.toJSON(reqMap).toString().replace(",", ",\r\n"),"",remark);
+		
+		String result = WebUtils.genForwardHtml(url, reqMap, "utf-8");
+		OutputStream out;
+		try {
+			out = response.getOutputStream();
+			out.write(result.getBytes("utf-8"));
+			out.flush();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 页面表单提交
+	 * 
+	 * @param url
+	 *            提交地址
+	 * @param reqMap
+	 *            提交参数
+	 * @param response
+	 */
+	public static void formSubmit(String url, Map<String, String> reqMap, HttpServletResponse response) {
+		//根据请求时间和流水号生成jxTraceCode
+		String jxTraceCode = "" + reqMap.get("txDate") + reqMap.get("txTime") + reqMap.get("seqNo");
+		//保存请求报文信息
+		saveJxTrace(jxTraceCode.trim(), reqMap, JSON.toJSON(reqMap).toString().replace(",", ",\r\n"),"","");
+		
+		String result = WebUtils.genForwardHtml(url, reqMap, "utf-8");
+		OutputStream out;
+		try {
+			out = response.getOutputStream();
+			out.write(result.getBytes("utf-8"));
+			out.flush();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 通用部分统一管理
+	 * 
+	 * @param reqMap
+	 * @return
+	 */
+	public static Map<String, String> getHeadReq(Map<String, String> reqMap) {
+		reqMap.put("version", VERSION);
+		reqMap.put("instCode", INSTCODE);
+		reqMap.put("bankCode", BANKCODE);
+		reqMap.put("txDate", DateUtil.getDate());
+		reqMap.put("txTime", DateUtil.getTime());
+		reqMap.put("seqNo", DateUtil.getRandomStr(6));
+		reqMap.put("channel", COINSTCHANNEL);
+
+		return reqMap;
+	}
+	
+	/** WJW
+	 * 统一部分管理2.0(便于发送江西请求前,相关平台交易流水存入jxTraceCode进行关联)
+	 * @return
+	 */
+	public static Map<String, String> getHeadReq(){
+		Map<String, String> reqMap = new TreeMap<>();
+		reqMap.put("version", VERSION);
+		reqMap.put("instCode", INSTCODE);
+		reqMap.put("bankCode", BANKCODE);
+		reqMap.put("txDate", DateUtil.getDate());
+		reqMap.put("txTime", DateUtil.getTime());
+		reqMap.put("seqNo", DateUtil.getRandomStr(6));
+		reqMap.put("channel", COINSTCHANNEL);
+
+		return reqMap;
+		
+	}
+
+	/**
+	 * 通用部分统一管理
+	 * app使用
+	 * @param reqMap
+	 * @return
+	 */
+	public static Map<String, String> getHeadReq4App(Map<String, String> reqMap) {
+		reqMap.put("version", VERSION);
+		reqMap.put("instCode", INSTCODE);
+		reqMap.put("bankCode", BANKCODE);
+		reqMap.put("txDate", DateUtil.getDate());
+		reqMap.put("txTime", DateUtil.getTime());
+		reqMap.put("seqNo", DateUtil.getRandomStr(6));
+		reqMap.put("channel", APPCOINSTCHANNEL);
+
+		return reqMap;
+	}
+	
+	/** app使用
+	 * 统一部分管理2.0(便于发送江西请求前,相关平台交易流水存入jxTraceCode进行关联)
+	 * @return
+	 */
+	public static Map<String, String> getHeadReq4App(){
+		Map<String, String> reqMap = new TreeMap<>();
+		reqMap.put("version", VERSION);
+		reqMap.put("instCode", INSTCODE);
+		reqMap.put("bankCode", BANKCODE);
+		reqMap.put("txDate", DateUtil.getDate());
+		reqMap.put("txTime", DateUtil.getTime());
+		reqMap.put("seqNo", DateUtil.getRandomStr(6));
+		reqMap.put("channel", APPCOINSTCHANNEL);
+
+		return reqMap;
+		
+	}
+	/**
+	 * WJW 获取验签
+	 * 
+	 * @param reqMap
+	 */
+	public static String getSign(Map<String, String> reqMap) {
+		String requestMapMerged = JXService.mergeMap(reqMap);
+		return SignUtil_lj.sign(requestMapMerged);
+	}
+
+	/**
+	 * 组织参数发起请求
+	 * 
+	 * @param reqMap
+	 * @throws Exception
+	 */
+	@SuppressWarnings({ "serial", "rawtypes", "unchecked" })
+	public static Map<String, String> requestCommon(Map<String, String> reqMap) {
+		// 生成待签名字符串
+		String requestMapMerged = mergeMap(reqMap);
+		// 生成签名
+		String sign = SignUtil_lj.sign(requestMapMerged);
+
+		reqMap.put("sign", sign);
+
+		RestTemplate restTemplate = new RestTemplate(new ArrayList<HttpMessageConverter<?>>() {
+			{
+				add(new FastJsonHttpMessageConverter());
+			}
+		});
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("Accept-Charset", "UTF-8");
+		headers.set("contentType", "application/json");
+		try {
+			trustAllHttpsCertificates();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		HttpsURLConnection.setDefaultHostnameVerifier(hv);
+
+		HttpEntity entity = new HttpEntity(reqMap, headers);
+		logger.info("请求银行端流水号：" + reqMap.get("txDate") + reqMap.get("txTime") + reqMap.get("seqNo"));
+		logger.info("(P2P-->即信端)请求信息：\r\n" + JSON.toJSONString(reqMap).replace(",", ",\r\n"));
+
+		logger.info("\r\n(P2P-->即信端)发送请求至：" + ONLINE_URI + "\r\n");
+
+		// 生成t_jx_trace流水编号(jxTraceCode)
+		String jxTraceCode = reqMap.get("txDate") + reqMap.get("txTime") + reqMap.get("seqNo");
+
+		String[] queryTxCode = new String[]{"balanceQuery", "freezeAmtQuery", "accountDetailsQuery2", "creditDetailsQuery",
+				"cardBindDetailsQuery", "accountIdQuery", "debtDetailsQuery", "mobileMaintainace", "accountQueryByMobile",
+				"transactionStatusQuery", "batchQuery", "batchDetailsQuery", "creditInvestQuery", "bidApplyQuery",
+				"creditAuthQuery", "corprationQuery", "frzDetailsQuery", "passwordSetQuery", "balanceFreezeQuery",
+				"batchVoucherDetailsQuery", "fundTransQuery", "creditInvesDetailsQuery", "termsAuthQuery", "autoLendPayQuery"};
+		Arrays.sort(queryTxCode);
+
+		// 保存请求信息至本地数据库t_jx_trace		
+		if (Arrays.binarySearch(queryTxCode, reqMap.get("txCode")) < 0) {
+			saveJxTrace(jxTraceCode, reqMap, JSON.toJSONString(reqMap).replace(",", ",\r\n"),"","");
+		}
+		
+		// 请求到即信端
+		ResponseEntity<Map> response = restTemplate.exchange(ONLINE_URI, HttpMethod.POST, entity, Map.class);
+
+		// 响应报文
+		logger.info("(即信端-->P2P)响应报文：\r\n" + JSON.toJSONString(response.getBody()).replace(",", ",\r\n"));
+		Map<String, String> responseMap = (Map<String, String>) response.getBody();
+
+		// 更新响应信息至本地数据库t_jx_trace
+		if (Arrays.binarySearch(queryTxCode, reqMap.get("txCode")) < 0) {
+			updateJxTraceResponse(jxTraceCode, responseMap, JSON.toJSONString(response.getBody()).replace(",", ",\r\n"));
+		}
+
+		// 验签
+		String responseSign = (String) responseMap.get("sign");
+		responseMap.remove("sign");
+
+		String responseMapMerged = mergeMap(new TreeMap(responseMap));
+
+		boolean verifyResult = SignUtil_lj.verify(responseSign, responseMapMerged.toString());
+		if (!verifyResult) {
+			logger.info("(P2P-->即信端)验证签名失败...");
+			responseMap.put("retMsg", "存管接口请求失败");
+			return responseMap;
+//			return null;
+		} else {
+			logger.info("(P2P-->即信端)验证签名成功");
+		}
+		responseMap.put("jxTraceCode", jxTraceCode);
+		return responseMap;
+	}
+	
+	/**
+	 * 组织参数发起请求(划拨) WJW
+	 * 
+	 * @param reqMap
+	 * @throws Exception
+	 */
+	@SuppressWarnings({ "serial", "rawtypes", "unchecked" })
+	public static Map<String, String> requestCommonTransfer(Map<String, String> reqMap) {
+		// 生成待签名字符串
+		String requestMapMerged = mergeMap(reqMap);
+		// 生成签名
+		String sign = SignUtil_lj.sign(requestMapMerged);
+
+		reqMap.put("sign", sign);
+
+		RestTemplate restTemplate = new RestTemplate(new ArrayList<HttpMessageConverter<?>>() {
+			{
+				add(new FastJsonHttpMessageConverter());
+			}
+		});
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("Accept-Charset", "UTF-8");
+		headers.set("contentType", "application/json");
+		try {
+			trustAllHttpsCertificates();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		HttpsURLConnection.setDefaultHostnameVerifier(hv);
+
+		HttpEntity entity = new HttpEntity(reqMap, headers);
+		logger.info("请求银行端流水号：" + reqMap.get("txDate") + reqMap.get("txTime") + reqMap.get("seqNo"));
+		logger.info("(P2P-->即信端)请求信息：\r\n" + JSON.toJSONString(reqMap).replace(",", ",\r\n"));
+
+		logger.info("\r\n(P2P-->即信端)发送请求至：" + TRANSFER_URI + "\r\n");
+
+		// 生成t_jx_trace流水编号(jxTraceCode)
+		String jxTraceCode = reqMap.get("txDate") + reqMap.get("txTime") + reqMap.get("seqNo");
+
+		String[] queryTxCode = new String[]{"balanceQuery", "freezeAmtQuery", "accountDetailsQuery2", "creditDetailsQuery",
+				"cardBindDetailsQuery", "accountIdQuery", "debtDetailsQuery", "mobileMaintainace", "accountQueryByMobile",
+				"transactionStatusQuery", "batchQuery", "batchDetailsQuery", "creditInvestQuery", "bidApplyQuery",
+				"creditAuthQuery", "corprationQuery", "frzDetailsQuery", "passwordSetQuery", "balanceFreezeQuery",
+				"batchVoucherDetailsQuery", "fundTransQuery", "creditInvesDetailsQuery", "termsAuthQuery", "autoLendPayQuery"};
+		Arrays.sort(queryTxCode);
+
+		// 保存请求信息至本地数据库t_jx_trace		
+		if (Arrays.binarySearch(queryTxCode, reqMap.get("txCode")) < 0) {
+			saveJxTrace(jxTraceCode, reqMap, JSON.toJSONString(reqMap).replace(",", ",\r\n"),"","");
+		}
+		
+		// 请求到即信端
+		ResponseEntity<Map> response = restTemplate.exchange(TRANSFER_URI, HttpMethod.POST, entity, Map.class);
+
+		// 响应报文
+		logger.info("(即信端-->P2P)响应报文：\r\n" + JSON.toJSONString(response.getBody()).replace(",", ",\r\n"));
+		Map<String, String> responseMap = (Map<String, String>) response.getBody();
+
+		// 更新响应信息至本地数据库t_jx_trace
+		if (Arrays.binarySearch(queryTxCode, reqMap.get("txCode")) < 0) {
+			updateJxTraceResponse(jxTraceCode, responseMap, JSON.toJSONString(response.getBody()).replace(",", ",\r\n"));
+		}
+
+		// 验签
+		String responseSign = (String) responseMap.get("sign");
+		responseMap.remove("sign");
+
+		String responseMapMerged = mergeMap(new TreeMap(responseMap));
+
+		boolean verifyResult = SignUtil_lj.verify(responseSign, responseMapMerged.toString());
+		if (!verifyResult) {
+			logger.info("(P2P-->即信端)验证签名失败...");
+			responseMap.put("retMsg", "存管接口请求失败");
+			return responseMap;
+//			return null;
+		} else {
+			logger.info("(P2P-->即信端)验证签名成功");
+		}
+		responseMap.put("jxTraceCode", jxTraceCode);
+		return responseMap;
+	}
+	
+	/**
+	 * 代付代扣对账文件下载 WJW
+	 * 
+	 * @param reqMap
+	 */
+	public static String transferDownload(Map<String, String> reqMap) {
+		// 生成待签名字符串
+		String requestMapMerged = mergeMap(reqMap);
+		// 生成签名
+		String sign = SignUtil_lj.sign(requestMapMerged);
+
+		reqMap.put("sign", sign);
+
+		CloseableHttpClient httpclient = HttpClientBuilder.create().build();
+		HttpPost post = new HttpPost(JXService.TRANSFER_DOWNLOAN_URI);
+		String result = "";
+		try {
+			StringEntity s = new StringEntity(JSON.toJSONString(reqMap));
+			s.setContentEncoding("UTF-8");
+			s.setContentType("application/json");//发送json数据需要设置contentType
+			post.setEntity(s);
+			HttpResponse res = httpclient.execute(post);
+			if(res.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
+				result = EntityUtils.toString(res.getEntity());// 返回text格式
+           }
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return result;
+	}
+	
+	/**
+	 * WJW 保存请求流水
+	 * 
+	 * @param jxTraceCode
+	 *            流水编号
+	 * @param reqMap
+	 *            请求Map
+	 * @param requestMessage
+	 *            请求报文
+	 * @return
+	 */
+	public static boolean saveJxTrace(String jxTraceCode, Map<String, String> reqMap, String requestMessage,String jxTraceStatus,String remark) {
+		return jxTraceService.save(jxTraceCode, reqMap.get("version"), reqMap.get("instCode"), reqMap.get("bankCode"),
+				reqMap.get("txDate"), reqMap.get("txTime"), reqMap.get("seqNo"), reqMap.get("txCode"), reqMap.get("channel"),
+				reqMap.get("sign"), requestMessage, "",jxTraceStatus,remark);
+	}
+
+	/**
+	 * WJW 更新流水响应信息
+	 * 
+	 * @param jxTraceCode
+	 *            流水编号
+	 * @param responseMap
+	 *            响应Map
+	 * @param responseMessage
+	 *            响应报文
+	 * @return
+	 */
+	public static boolean updateJxTraceResponse(String jxTraceCode, Map<String, String> responseMap,
+			String responseMessage,String jxTraceStatus,String remark) {
+		return jxTraceService.updateResponse(jxTraceCode, responseMap.get("channel"), responseMap.get("sign"),
+				responseMap.get("retCode"), responseMap.get("retMsg"), responseMessage, "", jxTraceStatus, remark);
+	}
+	
+	/**
+	 * WJW 更新流水响应信息
+	 * 
+	 * @param jxTraceCode
+	 *            流水编号
+	 * @param responseMap
+	 *            响应Map
+	 * @param responseMessage
+	 *            响应报文
+	 * @return
+	 */
+	public static boolean updateJxTraceResponse(String jxTraceCode, Map<String, String> responseMap,
+			String responseMessage) {
+		return jxTraceService.updateResponse(jxTraceCode, responseMap.get("channel"), responseMap.get("sign"),
+				responseMap.get("retCode"), responseMap.get("retMsg"), responseMessage, "", "", "");
+	}
+	
+	public static boolean addJxTraceResponse(String jxTraceCode, Map<String, String> responseMap, String responseMessage){
+		return jxTraceService.saveResponse(jxTraceCode, responseMap.get("version"), responseMap.get("instCode"),
+				responseMap.get("bankCode"), responseMap.get("txDate"), responseMap.get("txTime"), responseMap.get("seqNo"),
+				responseMap.get("txCode"), responseMap.get("channel"), responseMap.get("sign"),
+				responseMessage, responseMap.get("acqRes"), responseMap.get("remark"));
+	}
+
+
+   /**
+	 * rain 更新流水响应信息
+	 * 
+	 * @param jxTraceCode
+	 *            流水编号
+	 * @param responseMap
+	 *            响应Map
+	 * @param responseMessage
+	 *            响应报文
+	 * @return
+	 */
+	public static boolean updateJxTraceResponse(String jxTraceCode, Map<String, String> responseMap,
+			String responseMessage,String remark) {
+		return jxTraceService.updateResponse(jxTraceCode, responseMap.get("channel"), responseMap.get("sign"),
+				responseMap.get("retCode"), responseMap.get("retMsg"), responseMessage, "","",remark);
+	}
+	static HostnameVerifier hv = new HostnameVerifier() {
+		public boolean verify(String urlHostName, SSLSession session) {
+			logger.info("Warning: URL Host: " + urlHostName + " vs. " + session.getPeerHost());
+			return true;
+		}
+	};
+
+	private static void trustAllHttpsCertificates() throws Exception {
+		javax.net.ssl.TrustManager[] trustAllCerts = new javax.net.ssl.TrustManager[1];
+		javax.net.ssl.TrustManager tm = new miTM();
+		trustAllCerts[0] = tm;
+		javax.net.ssl.SSLContext sc = javax.net.ssl.SSLContext.getInstance("SSL");
+		sc.init(null, trustAllCerts, null);
+		javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+	}
+
+	static class miTM implements javax.net.ssl.TrustManager, javax.net.ssl.X509TrustManager {
+		public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+			return null;
+		}
+
+		public boolean isServerTrusted(java.security.cert.X509Certificate[] certs) {
+			return true;
+		}
+
+		public boolean isClientTrusted(java.security.cert.X509Certificate[] certs) {
+			return true;
+		}
+
+		public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType)
+				throws java.security.cert.CertificateException {
+			return;
+		}
+
+		public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType)
+				throws java.security.cert.CertificateException {
+			return;
+		}
+
+	}
+
+	/**
+	 * 获取Map的待签名字符串
+	 * 
+	 * @param map
+	 * @return
+	 */
+	public static String mergeMap(Map<String, String> map) {
+		// 字典序排序后生成待签名字符串
+		Map<String, String> reqMap = new TreeMap<String, String>(map);
+
+		StringBuffer buff = new StringBuffer();
+
+		Iterator<Map.Entry<String, String>> iter = reqMap.entrySet().iterator();
+		Map.Entry<String, String> entry;
+		while (iter.hasNext()) {
+			entry = iter.next();
+			if (!"sign".equals(entry.getKey())) {
+				if (entry.getValue() == null) {
+					entry.setValue("");
+					buff.append("");
+				} else {
+					buff.append(String.valueOf(entry.getValue()));
+				}
+			}
+		}
+
+		String requestMerged = buff.toString();
+		return requestMerged;
+	}
+	
+	/**
+	 * 保存jxTrace请求信息 WJW
+	 * @param reqMap
+	 * @param remark
+	 * @param jxTraceStatus
+	 * @return
+	 */
+	public static boolean saveRequestCommon(Map<String, String> reqMap,String remark) {
+		// 生成待签名字符串
+		String requestMapMerged = mergeMap(reqMap);
+		// 生成签名
+		String sign = SignUtil_lj.sign(requestMapMerged);
+
+		reqMap.put("sign", sign);
+
+		// 生成t_jx_trace流水编号(jxTraceCode)
+		String jxTraceCode = reqMap.get("txDate") + reqMap.get("txTime") + reqMap.get("seqNo");
+
+		// 保存请求信息至本地数据库t_jx_trace		
+		return saveJxTrace(jxTraceCode, reqMap, JSON.toJSONString(reqMap),jxTraceStatus.A.val(),remark);
+	}
+	
+	/**
+	 * 根据jxTrace流水,组织参数发起请求 WJW
+	 * 
+	 * @param reqMap
+	 * @throws Exception
+	 */
+	@SuppressWarnings({ "serial", "rawtypes", "unchecked" })
+	public static Map<String, String> requestCommonByJxTrace(JXTrace jxTrace) {
+		String requestMessage = jxTrace.getStr("requestMessage");
+		JSONObject parseObject = JSONObject.parseObject(requestMessage);
+		Map<String,String> reqMap = JSONObject.toJavaObject(parseObject, Map.class);
+		RestTemplate restTemplate = new RestTemplate(new ArrayList<HttpMessageConverter<?>>() {
+			{
+				add(new FastJsonHttpMessageConverter());
+			}
+		});
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("Accept-Charset", "UTF-8");
+		headers.set("contentType", "application/json");
+		try {
+			trustAllHttpsCertificates();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		HttpsURLConnection.setDefaultHostnameVerifier(hv);
+
+		HttpEntity entity = new HttpEntity(reqMap, headers);
+		logger.info("请求银行端流水号：" + reqMap.get("txDate") + reqMap.get("txTime") + reqMap.get("seqNo"));
+		logger.info("(P2P-->即信端)请求信息：\r\n" + JSON.toJSONString(reqMap).replace(",", ",\r\n"));
+
+		logger.info("\r\n(P2P-->即信端)发送请求至：" + ONLINE_URI + "\r\n");
+
+		// 生成t_jx_trace流水编号(jxTraceCode)
+		String jxTraceCode = reqMap.get("txDate") + reqMap.get("txTime") + reqMap.get("seqNo");
+
+		// 请求到即信端
+		ResponseEntity<Map> response = restTemplate.exchange(ONLINE_URI, HttpMethod.POST, entity, Map.class);
+
+		// 响应报文
+		logger.info("(即信端-->P2P)响应报文：\r\n" + JSON.toJSONString(response.getBody()).replace(",", ",\r\n"));
+		Map<String, String> responseMap = (Map<String, String>) response.getBody();
+
+		// 更新响应信息至本地数据库t_jx_trace
+		String status = RetCodeUtil.isSuccRetCode(responseMap.get("retCode")) || "success".equals(responseMap.get("received")) ? jxTraceStatus.D.val():jxTraceStatus.F.val();
+		updateJxTraceResponse(jxTraceCode, responseMap, JSON.toJSONString(response.getBody()), status, "");
+
+		// 验签
+		String responseSign = (String) responseMap.get("sign");
+		responseMap.remove("sign");
+
+		String responseMapMerged = mergeMap(new TreeMap(responseMap));
+
+		boolean verifyResult = SignUtil_lj.verify(responseSign, responseMapMerged.toString());
+		if (!verifyResult) {
+			logger.info("(P2P-->即信端)验证签名失败...");
+			responseMap.put("retMsg", "存管接口请求失败");
+			return responseMap;
+//			return null;
+		} else {
+			logger.info("(P2P-->即信端)验证签名成功");
+		}
+		responseMap.put("jxTraceCode", jxTraceCode);
+		return responseMap;
+	}
+}

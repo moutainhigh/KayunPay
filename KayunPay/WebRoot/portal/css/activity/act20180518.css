@@ -1,0 +1,35 @@
+@CHARSET "UTF-8";
+* {	margin: 0;padding: 0;}
+body {margin: 0;padding: 0; font-family: "Myriad Set Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif,"微软雅黑";}
+ul, ol, li {list-style: none;}
+:focus {outline: 0;}
+a { color: #000;text-decoration: none;}
+img { border: 0;}
+i {  font-style: normal;}
+table { border-collapse:collapse;}
+
+.raise_head{ height:1111px; background:url(/portal/images/activity/act20180518/raise_1.jpg) center center no-repeat; background-size:100% 100%;}
+.raise_warp{ height:1471px; background:url(/portal/images/activity/act20180518/raise_2.jpg) center center no-repeat; background-size:100% 100%; position: relative;}
+.raise_main{ width:1004px; height:974px; margin:0 auto; padding-top:130px; background:url(/portal/images/activity/act20180518/raise_3.png) center center no-repeat;}
+.raise_txt{ font-size:16px; color:#aa1147; text-align:center; line-height:28px; font-weight:bold; margin-top:30px; letter-spacing:1px;}
+.raise_txt span{ color:#f2363b;}
+.raise_moneyBor{ width:830px; height:125px; margin:45px auto 75px; border:1px solid #aa1147; border-bottom:4px solid #aa1147; background:#e9e1df; border-radius:10px;}
+.raise_moneyFont{ font-size:16px; text-align:center; color:#aa1147; font-weight:bold; line-height:125px;}
+.raise_moneyFont span{ font-size:52px; font-weight:bold; color:#8a0214; margin:0 5px 0 25px;}
+.raise_pic{ width:875px; height:334px; margin:0 auto;}
+.raise_btn{ display:block; width:277px; height:58px; margin:60px auto 0;}
+.raise_listFont{ width:1004px; margin:0 auto;}
+.a_footerTitle{ font-size: 26px; color: #fff; letter-spacing: 1px; font-weight:bold; }
+.a_footerList{ counter-reset:section;}
+.a_footerList ul{ overflow: hidden;}
+.a_footer_li{ margin-top:20px; overflow: hidden;}
+.a_footerNum{ width:20px; height: 20px; line-height: 20px; margin-top:2px; font-size: 14px; text-align:center; color: #fff;border-radius:100%; background:#b4191e; float: left;}
+.a_footerNum:before{ counter-increment: section; content:"" counter(section);}
+.a_footerFont{ float: left; margin-left:10px; color: #fff; font-size: 16px;}
+.a_footer_p{ width:100%; color: #fff; display: inline-block; margin: 10px 0 0 30px;}
+.invest_login1{ text-align: center; font-size:16px; line-height:125px;}
+.invest_login1 a{ text-decoration: underline; color: #8a0214;}
+
+
+
+

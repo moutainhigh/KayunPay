@@ -1,0 +1,210 @@
+package com.dutiantech.controller.admin;
+
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.HashSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.Set;
+
+import com.dutiantech.Message;
+import com.dutiantech.anno.AuthNum;
+import com.dutiantech.controller.BaseController;
+import com.dutiantech.interceptor.AuthInterceptor;
+import com.dutiantech.interceptor.PkMsgInterceptor;
+import com.dutiantech.model.ContractTemplate;
+import com.dutiantech.model.TransferInfo;
+import com.dutiantech.service.ContractTemplateService;
+import com.dutiantech.service.TransferInfoService;
+import com.dutiantech.util.DateUtil;
+import com.dutiantech.util.NumberToCN;
+import com.jfinal.aop.Before;
+import com.jfinal.core.ActionKey;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.tx.Tx;
+
+public class ContractTemplateController extends BaseController {
+
+	private ContractTemplateService templateService = getService(ContractTemplateService.class);
+	private TransferInfoService TransferInfoService = getService(TransferInfoService.class);
+	
+	//查询合同模板列表
+	@ActionKey("/queryTemplateList")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message queryTemplateList(){
+		Integer pageNumber = getParaToInt("pageNumber",1);
+		Integer pageSize = getParaToInt("pageSize",10);
+		String allkey = getPara("allkey","");
+		Page<ContractTemplate> pageTemplate = templateService.findAllByPage(pageNumber, pageSize, allkey);
+		if(pageTemplate!=null){
+		if(pageNumber > pageTemplate.getTotalPage()&&pageTemplate.getTotalPage()>0){
+			pageNumber = pageTemplate.getTotalPage();
+			pageTemplate = templateService.findAllByPage(pageNumber, pageSize, allkey);
+		}
+		}
+		
+		return succ("操作完成",pageTemplate);
+	}
+	
+	//查询合同模板详情
+	@ActionKey("/findTemplateByCode")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message findTemplateByCode(){
+		String templateCode = getPara("templateCode");
+		ContractTemplate contractTemplate = templateService.findById(templateCode);
+		String content = contractTemplate.get("content");
+		String regex = "(\\[[^\\]]*\\])";//匹配中括号间内容，含中括号
+		Pattern pattern = Pattern.compile (regex);  
+		Matcher matcher = pattern.matcher (content);  
+		HashSet<String> hashSet = new HashSet<String>();
+		while (matcher.find ()){  
+			 hashSet.add(matcher.group ());
+		 }
+		 for (String set : hashSet) {
+			System.out.print(set+"\t");
+		}
+		 System.out.println();
+		return succ("查询成功",contractTemplate);
+		
+	}
+	
+	//修改合同模板
+	@ActionKey("/modTemplate")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message modTemplate() throws ParseException{
+
+		ContractTemplate contractTemplate = getModel(ContractTemplate.class,"contractTemplate");
+		
+		String updateDateTime = DateUtil.getDateStrFromDateTime(new Date());//获取更新时间
+		//String addDateTime = contractTemplate.getStr("addDateTime").replace("-","").replace(":","").replace(" ","");
+		//时间格式转化
+		 String addDateTime =contractTemplate.getStr("addDateTime");//获取添加时间
+		 SimpleDateFormat sdf =  new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+		 Date date = sdf.parse(addDateTime);
+		 addDateTime = DateUtil.getDateStrFromDateTime(date);
+		contractTemplate.put("updateDateTime",updateDateTime);
+		contractTemplate.put("addDateTime",addDateTime);
+		boolean result = templateService.changeByCode(contractTemplate);
+		if(result) return succ("修改成功",result);
+		return error("no","修改失败",null);
+	}
+	
+	//删除模板
+	@ActionKey("/deleteContractTemplate")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message deleteTemplate(){
+		String templateCode = getPara("templateCode");
+		boolean deleteByCode = templateService.deleteByCode(templateCode);
+		if(deleteByCode){
+			return succ("删除成功",true);
+		}else{
+			return error("no","删除失败",null);
+		}
+	}
+	
+	//新增模板
+	@ActionKey("/newTemplate")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message newTemplate(){
+		ContractTemplate contractTemplate = getModel(ContractTemplate.class,"contractTemplate");
+		
+		boolean saveTemplate = templateService.saveTemplate(contractTemplate);
+		if(saveTemplate) return succ("添加成功！",true);
+		return error("no","添加失败！",null);
+	}
+	
+	//禁用或解禁合同模板
+	@ActionKey("/disabledTemplate")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message disabledTemplate(){
+		
+		
+		String templateCode = getPara("unUsedTemplateCode");//拦截器验证不可为空
+		String status = getPara("TemplateStatus");//拦截器验证不可为空
+		String[] tem = templateCode.split(",");//传过来的字符串截取成Code
+
+			if(templateService.updateByCode(tem,status)){
+				return succ("ok",true);
+			};
+
+
+		return error("no","操作失败！",null);
+	}
+	
+	
+	@ActionKey("/queryContent")
+	public String queryContent(){
+		
+		String businessPlace = getPara("");//经营场所
+		String ensureCompany = getPara("");//保证人（公司版）
+		String companyPhone = getPara("");//保证人电话（公司版）
+		String companyCode = getPara("");//公司组织机构代码(公司版担保书)
+		String ensureAddress = getPara("");//保证人地址（个人版）
+		String ensureName = getPara("");//保证人姓名
+		String ensureNumber = getPara("");//保证人电话（个人）
+		String ensureCardId = getPara("");//保证人ID(个人)
+		
+		String carNumber = getPara("");//车牌号
+		String engineNumber = getPara("");//发动机牌
+		String carBrand = getPara("");//车的品牌
+		String carframe = getPara("");//车架
+		String carManager = getPara("");//车辆管理方式
+		
+		String lendMonth = getPara("");//借款期限
+		String borrowerAddress = getPara("");//借款人地址
+		String moneyLoan = getPara("");//现金支付金额
+		String zRate = getPara("");//综合利率
+		String borrowerName = getPara("");//借款人姓名
+		String lowerRMB = getPara("");//借款金额（小写）
+		String borrowerMobile = getPara("");//借款人电话
+		String bankLoan = getPara("");//银行卡支付金额
+		String useStatus = getPara("");//资金借贷用途
+		String monthRate = getPara("");//月利率
+		String borrowerCardId = getPara("");//借款人身份证
+		String repaymentStatus = getPara("");//还款方式
+		String transferUserNo = getPara("transferUserNo");//债权人标码
+		
+		
+		
+		TransferInfo transferInfo = TransferInfoService.findById(transferUserNo);
+		String repayCount = transferInfo.getStr("bankNo");//还款账户
+		String lenderMobile = transferInfo.getStr("mobile");//出借人电话
+		String lenderName = transferInfo.getStr("name");//出借人姓名
+		String bankName = transferInfo.getStr("bankName");//开户行
+		String contractCode;//合同编号
+		String court;//当地法院
+		String addressSign = transferInfo.getStr("companyAddress");//合同签署地
+		String lenderAddress = transferInfo.getStr("address");//出借人地址
+		String lenderCardId = transferInfo.getStr("cardId");//出借人身份证
+		String companyAddress = transferInfo.getStr("companyAddress");//公司地址
+		String sex = transferInfo.getStr("sex");//出借人性别
+		
+		String bigRMB = NumberToCN.number2CNMontrayUnit(new BigDecimal(Double.parseDouble(lowerRMB)));//将小写金额转成大写
+		Calendar cal = Calendar.getInstance();
+        int addYear = cal.get(Calendar.YEAR);//获取年份
+        int addMonth=cal.get(Calendar.MONTH);//获取月份
+        int addDay=cal.get(Calendar.DATE);//获取日
+		
+		
+		
+		
+		
+		
+		
+		
+		return null;
+	}
+	
+}

@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>易融恒信-安全可靠透明的投资平台,p2p网贷平台</title>
+<meta name="keywords" content="易融恒信,网贷平台,p2p网贷平台排名,p2b网贷,p2p投资平台,小投资,武汉贷款,武汉小额投资,武汉网贷公司,武汉易融恒信" />
+<meta name="description" content="易融恒信,致力于做华中地区最好的p2p网贷平台,为投资者提供最安全,最靠谱,最透明的互联网金融p2p投资平台,咨询电话400-027-0707" />
+<link href="/portal/css/public.css" rel="stylesheet" media="screen" type="text/css"  charset="utf-8" />
+<link type="text/css" href="/portal/css/user.css" rel="stylesheet">
+<script type="text/javascript" src="/portal/js/clipboard.min.js"></script>
+<link type="text/css" href="/portal/css/datapicker/datepicker.css" rel="stylesheet">
+<!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+<style type="text/css">
+.yinying{top:0px !important;}
+</style>
+</head>
+<body>
+<header id="header" class="header"></header>
+<nav class='user_index'></nav>
+<main class="user">
+	 <div class="user-main">
+        <div class="user-main-left">
+            <h2>资金管理</h2>
+            <div class="user-nav"></div>
+        </div>
+		<div class="user-main-right">
+			<div class='user-main-right-c'>
+			<div class='tabNav'>
+				<i></i>
+				<ul	class="menu">
+					<li class="active">在线充值</li>
+					<li id="rechargeHistory">充值记录</li>
+				</ul>
+				<div class="clear"></div>
+			</div>
+			<div id="tab-content">
+				<div class="tab-content-list">
+					<div class="menu2">
+						<label>选择充值方式</label>
+						<ul>
+							
+							<li class="red active" id="fastCard">快捷充值</li>
+							<li id="wyCard">银行转账</li>	
+							<li>银行卡管理</li>			
+						</ul>
+					</div>
+					<div id="tab-content2">		
+						<div class="tab-content2-list" style="display:none;">
+							<div id="bankList" class="bank_list">
+								<!-- <input type="checkbox" checked="" style="float: left;margin: 60px 10px 0 10px;"> -->
+								<!-- <div class="bank_card">
+									<img class="card_logo" src="/portal/images/banks/01050000.jpg">
+									<div class="clear"></div>
+									<div class="card_num"></div>
+									<div class="card_name"></div>
+								</div>
+								<div id="goBank" class="add_bank"><a href="/B04?chargeUrl=1"></a></div> -->
+								
+							</div>
+						</div>
+						
+						<div class="tab-content2-list"  style="display:none;">
+							<div class="tran_font1">请确保使用开通银行存管账户时绑定的实体银行卡，通过线下转账（柜台办理、网银转账、手机银行转账）的方式将资金充到江西银行开立的易融恒信存管账户，之后江西银行将资金清分到您在江西银行开立的账户中。转账时所需填写信息如下：</div>
+							<div class="tran_box">
+								<div class="tran_boxP">
+									<!-- <div class="tran_list">
+										<label>开户人姓名：</label>
+										<div class="tran_name"></div>
+									</div>
+									<div class="tran_list">
+										<div class="tran_boxNum"></div>
+									</div> -->
+									<div class="tran_list">
+										<label>开户名：</label>
+										<div class="tran_font2">武汉易融恒信金融信息服务有限公司</div>
+									</div>
+									<div class="tran_list">
+										<label>收款方开户行：</label>
+										<div class="tran_font2">江西银行南昌新华支行<br>(或江西银行股份有限公司南昌铁路支行)</div>
+									</div>
+									<div class="tran_list">
+										<label>银行开户账号：</label>
+										<div class="tran_font2" id="accountId">791913717300319</div>
+										<input class="icoCopy" type="button" data-clipboard-action="copy" data-clipboard-target="#accountId" value="复制账号" style="border: 0px none; width: 80px; height: 26px; color: #ffffff;    background: #fa9d1b;    line-height: 26px;    text-indent: 0px;    cursor: pointer;    border-radius: 5px;    -webkit-border-radius: 5px; margin-left: 10px;"></button>
+									</div>
+								</div>
+							</div>
+							<!-- <div class="tran_font3">1.使用转账方式充值后刷新可点击“我的账户”查询账户余额，相关记录可在资金明细中查询。<br>2.转账充值以银行实际到账时间为准。<br>3. 充值过程中如出现异常，可拨打江西银行全国统一客服热线400-789-6266。</div>
+							 -->
+						</div>
+						
+						<div class="tab-content2-list" style="display:none;">
+							<div id="bankList" class="bank_list">
+								<div class="bank_card">
+									<!-- <img class="card_logo"> -->
+									<!-- <div class="card_del"></div> -->
+									
+									<div class="clear"></div>
+									<div class="card_bankName" style="margin-left: 25px;font-size: 15px;margin-top: 15px;line-height: 30px;"></div>
+									<div class="card_num"></div>
+									<div class="card_name"></div>
+									<!-- <a class="card_default" href="">设为默认</a>
+									<a class="card_edit" href="">编辑</a> -->
+									<div class="btn_bank_del1" id="btn_bank_del1">解绑</div>
+								</div>
+								<div id="addBank" class="add_bank"><a href="#"  id="addbank_sub"></a></div>
+							</div>	
+						</div>
+
+					</div>
+					
+					<div class="add_money">
+						<div class="add_moneyForm">
+							<form action="">				
+								<div class="write_text3" id="write_text2"><label>绑定银行卡：</label><span class="card_num"></span></div>
+								<!-- <div class="write_text2"><label></label>充值后未投标，需收取未投标提现金额的1%为服务费。</div> -->
+								<div class="write_text3" id="write_text3"><label>剩余金额：</label><span id="avBalance">0</span>元</div>
+								<!-- <div class="write_text3"><label>充值后账户可用余额：</label><span id="afterCharge">0</span>元</div> -->
+								<!-- <div class="write_text" id="isHidden"><label><i>*</i>手机验证码：</label><span><input type="text" id="capCode" name="msgMac" maxlength="6" placeholder="验证码每分钟获取一次"></span><span class="text"><a class="vail" id="sendMsgBtn" href="javascript:" sendtoggle="0">获取验证码</a><label id="msgCounter"></label></span></div> -->							
+								<div class="write_text"><label>充值金额：</label><span><input type="text" id="chargeAmount" maxlength="8" /></span><span>元</span></div>
+								<div class="button_panel"><button type="button" id="recharge"  chargeType="fast">立即充值</button></div>
+							</form>
+						</div>
+						<div class="quota_box">
+							<table class="quota">
+								<thead>
+									<tr>
+										<th width="20%">银行列表</th>
+										<th width="15%">单笔限额</th>
+										<th width="15%">单日限额</th>
+										<th width="15%">单月限额</th>
+										<th width="35%">备注</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>工商银行</td>
+										<td>99万</td>
+										<td>99万</td>
+										<td>不限</td>
+										<td>最高限额，需要单笔超过5万元</td>
+									</tr>
+									<tr>
+										<td>建设银行</td>
+										<td>100万</td>
+										<td>200万</td>
+										<td>不限</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>招商银行</td>
+										<td>5万</td>
+										<td>20万</td>
+										<td>不限</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>中国银行</td>
+										<td>10万</td>
+										<td>20万</td>
+										<td>不限</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>交通银行</td>
+										<td>20万</td>
+										<td>20万</td>
+										<td>600万</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>光大银行</td>
+										<td>5万</td>
+										<td>5万</td>
+										<td>不限</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>兴业银行</td>
+										<td>5万</td>
+										<td>5万</td>
+										<td>不限</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>邮储银行</td>
+										<td>1万</td>
+										<td>1万</td>
+										<td>不限</td>
+										<td>需要开通银联在线</td>
+									</tr>
+									<tr>
+										<td>平安银行</td>
+										<td>100万</td>
+										<td>不限</td>
+										<td>不限</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>中信银行</td>
+										<td>5000</td>
+										<td>5万</td>
+										<td>15万</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>浦发银行</td>
+										<td>20万</td>
+										<td>20万</td>
+										<td>不限</td>
+										<td>需要开通银联在线</td>
+									</tr>
+									<tr>
+										<td>广发银行</td>
+										<td>100万</td>
+										<td>不限</td>
+										<td>不限</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>华夏银行</td>
+										<td>100万</td>
+										<td>不限</td>
+										<td>不限</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>恒丰银行</td>
+										<td>10万</td>
+										<td>50万</td>
+										<td>不限</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>上海银行</td>
+										<td>5000</td>
+										<td>1万</td>
+										<td>2万</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>北京银行</td>
+										<td>100万</td>
+										<td>100万</td>
+										<td>300万</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>广州银行</td>
+										<td>50万</td>
+										<td>100万</td>
+										<td>3000万</td>
+										<td></td>
+									</tr>
+									<tr class="quota_tr">
+										<td>江苏银行</td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td>目前不支持</td>
+									</tr>
+									<tr class="quota_tr">
+										<td>农业银行</td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td>目前不支持</td>
+									</tr>
+									<tr class="quota_tr">
+										<td>民生银行</td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td>目前不支持</td>
+									</tr>
+									<tr class="quota_tr">
+										<td>南京银行</td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td>目前不支持</td>
+									</tr>
+									<tr class="quota_tr">
+										<td>江西银行</td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td>目前不支持</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="quota_bottom">备注：充值限额以银行实际为准。</div>
+						</div>
+					</div>
+					
+					<div class="tip_text">
+						<h4>温馨提示</h4>
+						<ul>
+							<li>1.江西银行电子账户采用同卡进出设置，以保障用户资金安全。</li>
+							<li>2.使用转账方式充值后刷新可点击“我的账户”查询账户余额，相关记录可在资金明细中查询。</li>
+							<li>3.转账充值以银行实际到账时间为准。</li>
+							<li>4.充值过程中如出现异常，可拨打江西银行全国统一客服热线400-789-6266。</li>
+							<li>5.自2018年5月28日起，上线江西银行存管投资过的用户，接银行通知，无论是否有无待收，暂无法更换银行卡。</li>
+						</ul>　
+					</div>
+				</div>
+				<div class="tab-content-list" style="display: none;">
+					<div class="search">
+						<!-- <label>状态</label> -->
+						<div class="select" style="display:none">
+							<span>所有</span>
+							<input type="hidden" id="dropDownValue">
+							<div class="options">
+								<a href="javascript:" value="">所有</a>
+								<a href="javascript:" value="0">失败</a>
+								<a href="javascript:" value="1">无效</a>
+								<a href="javascript:" value="2">充值中</a>
+								<a href="javascript:" value="3">待确认</a>
+								<a href="javascript:" value="4">充值成功</a>
+							</div>
+						</div>
+						从
+						<span class="input_panel"><input class="time_input" type="text" id="startTime"/></span>
+						<i class="clear_text"></i>
+						到
+						<span class="input_panel"><input class="time_input" type="text" id="endTime"/></span>
+						<i class="clear_text"></i>
+						<button id="rechargeBtn">查询</button>
+					</div>
+					<div class="list_table">
+						<table  id="rechargeHistoryTable">
+							<thead>
+								<tr class="h">
+									
+									<th width="140">时间</th>
+									<th width="100">金额</th>
+									<th width="100">充值方式</th>
+									<!-- 
+									<th width="70">交易号</th>
+									 -->
+									<th width="50">状态</th>
+									<th width="120">说明</th>
+								</tr>
+							</thead>
+							<tbody>
+
+							</tbody>
+
+						</table>
+					</div>
+					<div class="page_panel">
+						
+					</div>
+				</div>
+			</div>
+
+		</div>
+    </div>
+    </div>
+</main>
+<div id="yinying" class="yinying"></div>
+<!-- 开通存管弹窗 -->
+<div class="cg">
+	<div class="cg-bg">
+		<a href="A00" id="closeBtn"></a>
+		<a href="#" class="enter"></a>
+	</div>
+	<div class="shade"></div>
+</div>
+<!-- 绑定银行卡弹窗 -->
+<div class="cg_auth_2">
+	<div class="cgAuth_title">
+		绑定银行卡
+		<div class="cgAuth_close">×</div>
+	</div>
+	<div class="cgAuth_txt_1">请您先绑定银行卡，才可以使用！</div>
+	<div class="cgAuth_submitBox">
+		<a href="depositoryUserUsed?step=1" class="cgAuth_submit" id="cgAuth_bank">立即绑卡</a>
+		<div class="cgAuth_submitClose">取消</div>
+	</div>
+</div>
+
+<!-- 设置密码弹窗 -->
+<div class="cg_auth_1">
+	<div class="cgAuth_title">
+		设置存管账户密码
+		<div class="cgAuth_close">×</div>
+	</div>
+	<div class="cgAuth_txt">请您进行密码设置后，才可以使用！</div>
+	<div class="cgAuth_submitBox">
+		<a href="C01" class="cgAuth_submit" id="cgAuth_sub">立即开通</a>
+		<div class="cgAuth_submitClose">取消</div>
+	</div>
+</div>
+<!-- 开通授权弹窗 -->
+<div class="cg_auth">
+	<div class="cgAuth_title">
+		开通缴费授权
+		<div class="cgAuth_close">×</div>
+	</div>
+	<div class="cgAuth_txt">开通缴费授权才能正常进行提现、还款、债权转让等操作</div>
+	<div class="cgAuth_submitBox">
+		<a href="depositoryUser?step=3" class="cgAuth_submit">立即开通</a>
+		<div class="cgAuth_submitClose">取消</div>
+	</div>
+</div>
+
+<!-- 银行卡 -->
+<div id="delCardBank" class="del_card_bank">
+	<div class="card_del"></div>
+	<div class="clear"></div>
+	<span class="text" >是否确定删除该银行卡?</span>
+	<button id="btn_bank_del">确定</button>
+</div>
+
+
+<!-- 充值 -->
+<div id="chargeDialog" class="dialogLayOut">
+	<div class="dialogHeader"><div class="dialogTitle">支付成功了吗？</div><div class="dialogClose"></div></div>
+	<div class="chargeDialogBar">
+		<a href="#" id="chargeSuccess">支付已完成</a>
+		<a href="#" id="chargeFaile">未成功，重新支付</a>
+	</div>
+	<div class="chargeTips">温馨提示：如果您在充值过程中有任何疑问请联系客服</div>
+</div>
+<footer id="footer" class="footer">
+</footer>
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+<script src="/assets/js/jquery.min.js"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+<script type="text/javascript" src="/portal/js/config.js"></script>
+<script type="text/javascript" src="/portal/js/public.js"></script>
+<script type="text/javascript">window.userNavActive = 2;topNavSelect= '4'; </script>
+<script type="text/javascript" src="/portal/js/user.js"></script>
+<script type="text/javascript" src="/portal/js/pub/widget-table.js"></script>
+<script type="text/javascript" src="/portal/css/datapicker/bootstrap-datepicker.js"></script>
+<script>
+var t_host=window.location.host;
+var t_pro=window.location.protocol;	
+t_host=t_pro+"//"+t_host;
+setting(2,window.userNavActive);
+NavMenu(2);
+	$("#chargeFaile").click(function(){
+		window.location.reload();
+	});
+
+	$("#chargeSuccess").click(function(){
+		$('body,html').css('overflow', 'auto');
+		$("#yinying").hide();
+		$("#chargeDialog").hide();
+		$("#rechargeHistory").click();
+	});
+	
+	
+	$("#chargeDialog .dialogClose").click(function(){
+		$('body,html').css('overflow', 'auto');
+		$('#yinying').hide();
+		$('#chargeDialog').hide();
+	});
+	
+	$('.time_input').datepicker({
+		'format':'yyyy-mm-dd'
+	});
+	
+	
+	
+	var cSet = YRHX.Cookie("navStatus","3",0)
+	cSet.set();
+	
+	YRHX.ajax({
+		url : CONFIG.getRequestURI("queryAvbalance"),
+		success : function( sucData ) {
+			$("#avBalance").attr("leftMoney",sucData / 100 ).text( YRHX.toDecimal2( sucData  / 100));
+		},
+		error : function( errorData ){
+			$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+		}
+	});
+
+	$("#wyCard").click(function(){
+		$("#recharge").attr("chargeType","wy");
+		$("#maxCharge").text("100");
+		$("#isHidden").hide();
+	});
+	$("#fastCard").click(function(){
+		$("#recharge").attr("chargeType","fast");
+		$("#maxCharge").text("5");
+		$("#isHidden").show();
+	});
+	
+	
+	//快捷理财卡查询
+	YRHX.ajax({
+		url : CONFIG.getRequestURI("bankv2List"),
+		success : function( sucData ) {
+			
+			if( sucData.trueName ){
+				$("#recharge").attr("isBindCard",'1');
+				$("#recharge").attr("isAuth",'1');
+				$(".bank_card").show();
+				$("#goBank").hide();
+				sucData["bankNo"]=sucData["bankNo"].substr(0,4)+"********"+sucData["bankNo"].substr(-4);
+				$(".card_num").text( sucData["bankNo"]);
+				
+				var uName = sucData["trueName"];
+				var leftWordNum = uName.length-1;
+				var frontStr = "";
+				for(var i = 0; i<leftWordNum ;i++ ){
+					frontStr +="*";
+				}
+				var uNameAll = frontStr  + uName.charAt(leftWordNum );
+				$(".card_name").text( uNameAll );
+				/* $(".card_logo").attr("src","/portal/images/banks/" +  sucData["bankType"] + ".jpg"); */
+				$(".card_bankName").text(sucData["bankName"]);
+			}else{
+				$(".bank_card").hide();
+			}
+			
+		},
+		error : function( errorData ){
+			$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+		}
+	});
+		
+	$('#chargeAmount').bind('input propertychange', function() {
+		var chargeAmount = $("#chargeAmount").val();
+		if( isNaN( chargeAmount ) == true ){
+			$("#recharge").popUp("err","充值金额非法");
+			$("#chargeAmount").val("");
+			return false;
+		}else{
+			var index=chargeAmount.indexOf('.');
+			if(index > 0){
+				chargeAmount=chargeAmount.substring(0,index);
+				$("#chargeAmount").val(chargeAmount);
+			}
+			var leftMoney = $("#avBalance").attr("leftMoney");
+			var afterCharge = leftMoney * 1 + chargeAmount * 1;
+			$("#afterCharge").text( YRHX.toDecimal2( afterCharge ));
+		}
+	});
+	
+	//充值按钮
+    $(document).on("click","#recharge","click",function(){
+		if(YRHX.Cookie("loginId").get()){
+			var chargeAmount = $("#chargeAmount").val();
+			if( chargeAmount > 0){
+				var leftMoney = $("#avBalance").attr("leftMoney");
+				var afterCharge = leftMoney * 1 + chargeAmount * 1;
+				$("#afterCharge").text( YRHX.toDecimal2( afterCharge));	
+				if( $(this).attr("chargeType")== 'wy'){
+					if( $("#recharge").attr("isAuth") == 1 ){
+						window.open("/wyByFuiou?amt="+(chargeAmount*100).toFixed(0)+"&url="+t_host, "_blank");
+						to_center($("#yinying").show());
+						to_center($("#chargeDialog").show());
+					} else {
+						$("#recharge").popUp("err","您还未实名认证");
+					}								
+				}else if($(this).attr("chargeType") == 'fast'){
+					if( chargeAmount > 99 ){
+						if( $("#recharge").attr("isBindCard") == 1 ){
+							YRHX.ajax({
+								url : "/quickRecharge",
+								data : {
+									"amt" : (chargeAmount*100).toFixed(0)
+								},
+								async: false,
+								success : function(sucData) {
+			 						//window.open("/fastByJX?amt="+(chargeAmount*100).toFixed(0)+"&url="+t_host, "_blank");
+			 						window.location.href="/quickRecharge?amt="+($("#chargeAmount").val()*100).toFixed(0)+"&verifyOrderId="+sucData;
+									/* to_center($("#yinying").show());
+									to_center($("#chargeDialog").show()); */
+								},
+								error : function(data) {
+									$.popTips("popTipErr",data.return_info || "获取信息失败");
+								}
+							});
+						}else{
+							$("#recharge").popUp("err","您还未绑定快捷充值银行卡！");
+						}
+					} else {
+						$("#recharge").popUp("err","最小充值金额不低于100元");
+					}				
+				}
+			} else {
+				$("#recharge").popUp("err","最小充值金额不低于100元");
+				//$.popTips("popTipErr","充值金额必须为大于零");
+			}
+		}else{
+			$.popTips("popTipErr","存管未激活");
+		}
+	});
+
+	//充值记录
+	$.rechargeHistory = function( pageNumber ){		
+		var beginDate = $("#startTime").val().replaceAll("-","");
+		var endDate = $("#endTime").val().replaceAll("-","");
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("queryRechargeTrace4User"),
+			data : {
+				"pageNumber" : pageNumber || 1,
+				"pageSize" : 10,
+				"beginDate" : beginDate,
+				"endDate" : endDate
+			},
+			success : function( sucData ) {				
+				var returnData = sucData.list ;
+				if (returnData && returnData.length > 0) {					
+					var rowHtml = "<tr>";
+					rowHtml += "<td>#{dateTime}</td>";
+					rowHtml += "<td>#{traceAmount}</td>";
+					rowHtml += "<td>#{traceTypeName}</td>";
+					rowHtml += "<td><span class='#{statusCode}'>#{statusName}</span></td>";
+					rowHtml += "<td>#{bankRemark}</td></tr>";
+					
+					//table
+					var tableEle = $("#rechargeHistoryTable").find("tbody");
+					var tfootEle = $("#rechargeHistoryTable").find("tfoot");
+					tableEle.html("");
+					tfootEle.remove();
+				
+					for (var i = 0; i < returnData.length; i++) {
+						var row = returnData[i];
+						
+						if (row) {
+							row["dateTime"] = row["traceDateTime"].dateformat();
+							row["traceAmount"] = YRHX.toDecimal2( row["traceAmount"] / 100) + '元';
+							switch ( row["traceState"] ){
+								case "A":
+									row["statusName"] = "已生成订单";
+									row["statusCode"] = "";
+									break;
+								case "B":
+									row["statusName"] = "充值成功";
+									row["statusCode"] = "success";
+									break;
+								case "C":
+									row["statusName"] = "充值失败";
+									row["statusCode"] = "red";
+									break;
+								case "D":
+									row["statusName"] = "充值回退";
+									row["statusCode"] = "red";
+									break;
+								case "E":
+									row["statusName"] = "其他";
+									row["statusCode"] = "";
+									break;
+								case "F":
+									row["statusName"] = "锁定订单";
+									row["statusCode"] = "red";
+									break;
+							}
+							
+							switch ( row["rechargeType"] ){
+								case "SYS":
+									row["traceTypeName"] = "系统充值";
+									break;
+								case "LL":
+									row["traceTypeName"] = "连连支付充值";
+									break;
+								case "SYX":
+									row["traceTypeName"] = "商银信支付充值";
+									break;
+								case "FAST":
+									row["traceTypeName"] = "快捷充值";
+									break;
+								case "WY":
+									row["traceTypeName"] = "网银充值";
+									break;
+								case "PHONE":
+									row["traceTypeName"] = "手机充值";
+									break;
+								case "OFL":
+									row["traceTypeName"] = "线下充值";
+									break;
+								default:
+									row["traceTypeName"] = "未知";
+									break;
+							}
+						}
+
+						var tempHtml = rowHtml.makeHtml(row);
+						tableEle.append(tempHtml); 
+					} 
+					//分页
+					$(".page_panel").pag(sucData["pageNumber"], sucData["pageSize"],sucData["totalRow"], function() {
+					
+						var reqIndex = $(this).attr("index");
+						$.rechargeHistory( reqIndex || 1);
+					}); 
+				}else{
+					//暂无数据
+					$("#rechargeHistoryTable").noData();
+					
+				}
+				
+			},
+			error : function( errorData ){
+				$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+			}
+		});
+	};
+	
+	$("#rechargeHistory").click(function(){
+		$.rechargeHistory();
+	});
+	
+	
+	
+	//选择日期查询
+	$("#rechargeBtn").click(function(){
+		
+		$.rechargeHistory(1);
+		
+	});
+	
+	//发送验证码
+	$('#sendMsgBtn').click(function(){
+		
+		$("#sendMsgBtn").sendMsg({
+			"msgCounter" : "#msgCounter",
+			"msgTips"    : "#msgTips",
+			"type"       : "4",
+			"urPhone"    : "",
+			"url"		 : "sendMsgMac"
+		});
+	})
+	
+	
+	
+
+	//20170522 ws修改
+	var bankname=$("#bankname");
+	var province=$("#Province");
+	var city=$("#City");
+	function init_porvice(){
+		YRHX.ajax({
+			url:"/queryBankProvinceCodes",
+			success:function(sucData){
+				 province.html("");
+				 province.append("<option value='请选择省份' selected='selected'>请选择省份</option>");
+				 city.append("<option value='请选择城市' selected='selected'>请选择市区县</option>");
+				 for(var i=0;i<sucData.length;i++){
+					 var bankprovince=sucData[i];
+					 province.append("<option value='"+bankprovince.provinceCode+"'>"+bankprovince.provinceName+"</option>");
+				} 
+				
+			},
+			error:function(errorData){
+				$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+			}
+		});
+		$('#Province').change(function(){
+			var provinceCode = $(this).find('option:selected').val();
+			if("请选择省份"==provinceCode){
+				city.html("");
+				city.append("<option value='请选择城市' selected='selected'>请选择城市</option>");
+			}else{
+			YRHX.ajax({
+				url:"/queryBankCityCodes",
+				data:{"provinceCode":provinceCode},
+				success:function(sucData){
+					city.html("");
+					for(var i=0;i<sucData.length;i++){
+					var bankcity=sucData[i];
+					city.append("<option value='"+bankcity.cityCode+"'>"+bankcity.cityName+"</option>");}
+				},
+				error:function(errorData){
+				$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+			}
+			});
+			}
+			
+		});
+	}
+	function init_Bankname(){
+		bankname.append("<option value='请选择银行名称' selected='selected'>请选择银行名称</option>")
+		YRHX.ajax({
+			url:"/querBankName",
+			success:function(sucData){
+				for(var i=0;i<sucData.length;i++){
+					var bank=sucData[i];
+				bankname.append("<option value='"+bank.bankCode+"'>"+bank.bankName+"</option>");
+				}
+			}
+		});
+	}
+	init_Bankname();
+	init_porvice();
+
+	window.userCardName = "";
+	window.userMobile = "";
+	window.userCardId = "";
+
+	
+	//查询银行卡列表
+	$.queryCards = function(){
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("bankv2List"),
+			success : function( sucData ) {
+				
+				if( sucData.trueName ){
+					$(".bank_card").show();
+					$("#addBank").hide();
+					sucData["bankNo"]=sucData["bankNo"].substr(0,4)+"********"+sucData["bankNo"].substr(-4);
+					$(".card_num").text( sucData["bankNo"]);
+					var uName = sucData["trueName"];
+					var leftWordNum = uName.length-1;
+					var frontStr = "";
+					for(var i = 0; i<leftWordNum ;i++ ){
+						frontStr +="*";
+					}
+					var uNameAll = frontStr  + uName.charAt(leftWordNum );
+					$(".card_name").text( uNameAll );
+					/* $(".card_logo").attr("src","/portal/images/banks/" +  sucData["bankType"] + ".jpg"); */
+					$(".card_bankName").text(sucData["bankName"]);
+				}else{
+					$(".bank_card").hide();
+				}
+				
+				
+				
+			},
+			error : function( errorData ){
+				$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+			}
+		});
+	};
+	
+	$.queryCards();
+
+	//设置银行卡为默认
+	$('#bankList').delegate('.card_default','click',function(){
+		var bankCode = $(this).attr('bankCode');
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("setBankDefault"),
+			data : {
+				'bankCode':bankCode
+			},
+			success : function( sucSetData ) {
+				
+				$('.card_default').text("设为默认");
+				$('#'+bankCode).text("默认银行卡");
+				
+				$.popTips("popTipSuc","设置成功!",function(){
+					window.location.reload();	
+				});
+				
+			},
+			error : function( errorSetData ){
+				$.popTips("popTipErr",errorData.return_info || "设置失败");
+			}
+		});
+		
+	});
+	
+	//删除银行卡页面
+	$('#bankList').delegate('.card_del','click',function(){
+		$('#div_del_cardName').text( window.userCardName);
+		$('#div_del_cardId').text($(this).attr('bankNo'));
+		//$('#btn_bank_del').attr('bankCode',$(this).attr('bankCode'));
+		$('#div_del_banklog').css({
+			"background" : "url(" + CONFIG.IMGURL+"banks/"+$(this).attr('bankType')+".jpg)"
+		})
+		
+		to_center($('#yinying').show());
+		$('body,html').css('overflow', 'hidden');
+		to_center($('#delCardBank').show());
+	});
+	
+	//删除银行卡
+	$('#btn_bank_del1').click(function(){
+		$("#yinying").show();
+		$("#delCardBank").show();
+	});
+	
+	$("#btn_bank_del").click(function(){
+		$("#yinying").hide();
+		$("#delCardBank").hide();
+		YRHX.ajax({
+			url : "/unbindCard",
+			success : function( sucData ) {
+				window.location.href='/unbindCard?verifyOrderId='+sucData;
+			},
+			error : function( errorData ){
+				$.popTips("popTipErr",errorData.return_info || "删除银行卡失败");
+			}
+		});	
+	});
+	
+	//发送验证码
+		$('#sendMsgBtn').click(function(){
+			if( $(this).attr("sendToggle") == 0){
+				captchaApiV2(function( capVal ){
+					$("#sendMsgBtn").sendMsg({
+						"msgCounter" : "#msgCounter",
+						"msgTips"    : "#msgTips",
+						"type"       : "0",
+						"urPhone"    : "",
+						"url"		 : "sendMsgMac",
+						"cv"		 : capVal
+					});
+				});
+			}
+		})
+	
+	if(!YRHX.Cookie("loginId").get()){
+		$(".cg").show();
+	}else if(YRHX.Cookie("verifyPwd").get()=="n"){
+		$(".cg").show();
+	}else{
+		//验证是否绑过卡
+		YRHX.ajax({
+	 		url : "/verifyBindCard",
+	 		dataType:'jsonp',
+	 		success : function( sucData ) {
+	 			if(sucData == "n"){
+	 				$(".bank_card").hide();
+	 				$(".cg_auth_2").show();
+	 				$(".yinying").show();
+	 			}
+	 		},
+	 		error : function( errorData ){
+	 			$.popTips("popTipErr", errorData.return_info);
+	 		}
+	 	}); 
+	}
+	
+	$(".enter").click(function(){
+		if(!YRHX.Cookie("loginId").get()){
+			window.location.href="depositoryUser?step=1";
+		}else if(YRHX.Cookie("verifyPwd").get()=="n"){
+			//验证是否绑过卡
+			YRHX.ajax({
+		 		url : "/verifyBindCard",
+		 		dataType:'jsonp',
+		 		success : function( sucData ) {
+		 			if(sucData == "y"){
+		 				window.location.href="depositoryUserUsed?step=2";
+		 			}else{
+		 				window.location.href="depositoryUserUsed?step=1";
+		 			}
+		 		},
+		 		error : function( errorData ){
+		 			$.popTips("popTipErr", errorData.return_info);
+		 		}
+		 	}); 
+		}
+	});
+	
+	//关闭授权弹窗
+ 	$(".cgAuth_close").click(function(){
+ 		window.location.href="A00";
+ 	});
+ 	$(".cgAuth_submitClose").click(function(){
+ 		window.location.href="A00";
+ 	});
+	
+ 	$("#addbank_sub").click(function(){
+ 		YRHX.ajax({
+			url : "/depositBindCard",
+			success : function(sucData) {
+				window.open('/depositBindCard?verifyOrderId='+sucData);
+			},
+			error : function(data) {
+				$.popTips("popTipErr",data.return_info || "获取信息失败");
+			}
+		});
+ 	});
+	
+ 	// 复制银行开户账号
+	$(function(){
+		var clipboard = new Clipboard('.icoCopy');
+		clipboard.on('success', function (e) {
+			alert("复制收款方(江西银行)开户账号成功，Ctrl+V 即可粘贴");
+			console.log(e);
+		});
+	})
+</script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>全名大闯关，三重关卡等你来</title>
+		<link href="app/css/act20171128.css" type="text/css" rel="stylesheet" />
+		<script type="text/javascript" src="app/js/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript" src="app/js/core.js"></script>
+	</head>
+	<body>
+		<div class="in_warp">
+			<div class="in_top"></div>
+			<div class="in_pass"></div>
+			<div class="in_content">
+				<div class="in_listbox">
+					<div class="in_title">
+						<div class="in_title1"></div>
+					</div>
+					<div class="in_list">
+						<table>
+							<thead>
+								<tr>
+									<th width="120px">被邀请人</th>
+									<th width="180px">投资金额</th>
+									<th width="120px">投资时间</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="in_money">
+					<div class="in_num1">邀请好友数<span></span>人</div>
+					<div class="in_num2">好友累计投资额<span></span>元</div>
+				</div>
+				<a href="actDetails20171128.html" class="in_but">查看邀请详情</a>
+			</div>
+			<div class="in_content2">
+				<div class="in_contentPic"><img src="/app/images/plate3_share.jpg"/></div>
+				<a href="javascript:invite();"><div class="in_share">马上邀请</div></a>
+			</div>
+			<div class="in_footer">
+				<div class="in_footerBox">
+					<div class="in_footTitle">活动规则</div>
+					<div class="in_footList">
+						<ul>
+							<li class="in_foot_li">
+								<div class="in_footNum"></div>
+								<div class="in_footFont">活动对象：易融恒信所有投资用户。</div>
+							</li>
+							<li class="in_foot_li">
+								<div class="in_footNum"></div>
+								<div class="in_footFont">活动时间：12月1日——结束时间以平台公告为准。</div>
+							</li>
+							<li class="in_foot_li">
+								<div class="in_footNum"></div>
+								<div class="in_footFont">推荐好友投资，现金抵用券、加息劵实时发放。</div>
+							</li>
+							<li class="in_foot_li">
+								<div class="in_footNum"></div>
+								<div class="in_footFont">现金抵用券、加息劵有效期自发放日30天内有效，50元现金抵用券满10000元可用，加息劵使用不限额度。</div>
+							</li>
+							<li class="in_foot_li">
+								<div class="in_footNum"></div>
+								<div class="in_footFont">对于恶意刷新人的用户，易融恒信有权取消其获奖资格。</div>
+								<p class="in_foot_p">*如有疑问，可致电易融恒信官方客服热线：400-027-0707。</p>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+<script type="text/javascript">
+	
+		function InvitationText(){
+		var userName = YRHX.Cookie("userName").get();
+		var loginCuur='<div class="invest_login1" id="login"><a href="javascript:login();">请登录后查看</a></div>';
+		var loginCuur2='<div class="invest_login2"><a href="javascript:login();">请登录后查看</a></div>';
+		if(userName != null) {
+			YRHX.ajax({
+				url : "/app_queryInviteDetailsByUserCode",
+				dataType:'jsonp',
+				data:{"beginDate":"20171201","endDate":""},
+				success : function(data) {
+					var numInvite=data.numInvite; //人数
+					var sumAmount=data.sumAmount; //投资金额
+					var html="<tr><td>#{userName}</td><td>#{traceAmount}</td><td>#{traceDate}</td></tr>";
+					var tableHtml = $(".in_list table tbody");
+					tableHtml.html();
+					$(".in_num1 span").text(numInvite);
+					$(".in_num2 span").text(sumAmount);
+					var listTxt = data["list"];
+					for (var i = 0; i < listTxt.length; i++) {
+						var row = listTxt[i];
+						var len = row["userName"].length;
+						if (0 == row["userName"].indexOf("*")) {
+							row["userName"] = row["userName"]
+						} 
+						else {
+							if (len < 3) {
+								row["userName"] = row["userName"] + "***";
+							} else if (len < 11) {
+								row["userName"] = row["userName"].substr(0,3)+ "***";
+							} else if (len == 11) {
+								row["userName"] = row["userName"].substr(0,3)+ "***" + row["userName"].substr(7);
+							} else {
+								row["userName"] = row["userName"].substr(0,3)+ "***";
+							}
+						}
+						//判断只显示前五个
+						if(i<5){
+							var tmpHtml = html.makeHtml(row);
+							tableHtml.append(tmpHtml);
+							$(".in_but").show();
+						}	
+					}
+				}
+			});
+			}
+			else{
+				$(".in_list").append(loginCuur); 
+				$(".in_but").hide();
+				$(".in_num1 span").append(loginCuur2);
+				$(".in_num2 span").append(loginCuur2);
+			}
+		}
+		
+		$(function(){
+			InvitationText();
+		});	
+		
+		//登录链接
+		function login() {
+		 //调用java中的方法   login
+		   window.WebViewJavascriptBridge.callHandler(
+		      'login'
+		      , ''
+		      , function(responseData) {
+		          	if(responseData==null){
+		          		alert("请登录");
+		          	}
+		      }
+		  );
+			}
+		
+		//邀请
+		function invite() {
+			var userCode = YRHX.Cookie("userCode").get();
+			//邀请时未登录跳转至登录页面
+			if(userCode==null){
+				login();
+				return;
+			}
+			var url="http://www.yrhx.com/share?u="+userCode;
+		 //调用java中的方法
+		   window.WebViewJavascriptBridge.callHandler(
+		      'invite'
+		      , url
+		      , function(responseData) {
+		          	if(responseData==null){
+		          		alert("邀请失败");
+		          	}
+		      }
+		  );
+		}
+		
+		//注册事件监听
+		function connectWebViewJavascriptBridge(callback) {
+		  if (window.WebViewJavascriptBridge) {
+		      callback(WebViewJavascriptBridge)
+		  } else {
+		      document.addEventListener(
+		          'WebViewJavascriptBridgeReady'
+		          , function() {
+		              callback(WebViewJavascriptBridge)
+		          },
+		          false
+		      );
+		  }
+		}
+		
+		//注册回调函数，第一次连接时调用 初始化函数
+		connectWebViewJavascriptBridge(function(bridge) {
+		    //初始化
+		  	bridge.init(function(message, responseCallback) {
+		      var data = {
+		          'Javascript Responds': 'Wee!'
+		      };
+		      responseCallback(data);
+		  	});
+			//接收安卓发来的消息   并返回给安卓通知
+		  	bridge.registerHandler("functionInJs", function(data, responseCallback) {
+		      var responseData = "我接受到了安卓的调用";
+		      responseCallback(responseData); 
+			    });
+			})
+				
+			//进入页面第一次强制刷新
+			window.onload = function(){
+			   if(location.search.indexOf("?")==-1){
+			      location.href += "?myurl";
+			   }
+			   else{
+			      if(location.search.indexOf("myurl")==-1) location.href += "&myurl";
+			   }
+			}
+</script>
+</html>

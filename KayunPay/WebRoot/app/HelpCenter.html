@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>帮助中心</title>
+<link rel="stylesheet" href="app/css/mui.min.css" type="text/css" />
+<link href="app/css/admin.css" type="text/css" rel="stylesheet" />
+<script src="app/js/jquery-1.8.3.min.js" type="text/javascript"></script>
+<script src="app/js/core.js" type="text/javascript"></script>
+<script src="app/js/mui.min.js" type="text/javascript"></script>
+<style>
+	.help_head_phone{ color:#fff;}
+</style>
+</head>
+<body>
+	<div class="help_head">
+		<div class="help_head_font">客服热线</div>
+		<div class="help_head_phone">400 027 0707</div>
+		<a href="javascript:;" class="help_phone_btn">立即咨询</a>
+	</div>
+	<div class="help_menu">
+		<div class="help_menu_title">-&nbsp;热门分类&nbsp;-</div>
+		<ul class="help_menu_list">
+			<li num="1" class="mui-col-xs-4 mui-col-sm-3">
+				<div class="help_ico"><img src="/app/images/help_ico_1.png" /></div>
+				<p>常见问题</p>
+			</li>
+			<li num="2" class="mui-col-xs-4 mui-col-sm-3">
+				<div class="help_ico"><img src="/app/images/help_ico_2.png" /></div>
+				<p>注册登录</p>
+			</li>
+			<li num="3" class="mui-col-xs-4 mui-col-sm-3">
+				<div class="help_ico"><img src="/app/images/help_ico_3.png" /></div>
+				<p>银行存管</p>
+			</li>
+			<li num="4" class="mui-col-xs-4 mui-col-sm-3">
+				<div class="help_ico"><img src="/app/images/help_ico_4.png" /></div>
+				<p>投标出借</p>
+			</li>
+			<li num="5" class="mui-col-xs-4 mui-col-sm-3">
+				<div class="help_ico"><img src="/app/images/help_ico_5.png" /></div>
+				<p>债权转让</p>
+			</li>
+			<li num="6" class="mui-col-xs-4 mui-col-sm-3">
+				<div class="help_ico"><img src="/app/images/help_ico_6.png" /></div>
+				<p>会员等级</p>
+			</li>
+			<li num="7" class="mui-col-xs-4 mui-col-sm-3">
+				<div class="help_ico"><img src="/app/images/help_ico_7.png" /></div>
+				<p>自助服务</p>
+			</li>
+		</ul>
+	</div>
+	<div class="help_warp">
+		<!-- <div class="help_main_title"></div> -->
+		<!-- <ul class="help_main_ul"> -->
+			<!-- <li class="mui-navigate-right">
+				<div class="help_table" code="">一个人可以注册多个账户吗？</div>
+				<div class="help_text">一个身份证、邮箱、手机信息只能注册一个账户。（提现必须是与身份认证一致户名的储蓄卡，请勿重复注册）。</div>
+			</li>
+			<li class="mui-navigate-right">
+				<div class="help_table" code="">一个人可以注册多个账户吗？</div>
+				<div class="help_text">一个身份证、邮箱、手机信息只能注册一个账户。（提现必须是与身份认证一致户名的储蓄卡，请勿重复注册）。</div>
+			</li> -->
+		<!-- </ul> -->
+	</div>
+</body>
+<script>
+$(function(){
+	var index = $(".help_menu ul li").eq(0).attr("num");
+	var txt=$(".help_menu ul li").eq(0).find("p").html();
+	getquestions(index,txt);
+	 	 
+	$(document).on("click",".help_menu ul li",function(){
+		var index = $(this).attr("num");
+		var txt=$(this).find("p").html();
+		
+		getquestions(index,txt);
+	});
+
+	$(".help_phone_btn").click(function(){
+		phone();
+	});
+	
+	
+	//判断android / ios
+	var u = navigator.userAgent, app=navigator.appVersion;
+	var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //android终端
+	var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+	if(isAndroid==true){
+		$(".help_phone_btn").show();
+	}
+	if(isiOS==true){
+		$(".help_phone_btn").hide();
+	}
+		
+});
+
+var msgHtml2 ='';
+msgHtml2+='<div class="help_main #{non}">';
+msgHtml2+='#{message}';
+msgHtml2+='</div>'; 
+
+function getquestions(index,txt){
+	var keyword = getClassify(index);
+	var txtlist = keyword[1];
+	$(".help_main").remove();
+	YRHX.ajax({
+		url:"http://app.yrhx.com/queryQuestion",
+		//url:"http://192.168.2.153/queryQuestion",
+		dataType:"jsonp",
+		data:{"type":txtlist},
+		async : false,
+		success:function(sucDate){
+			var questions = '<div class="help_main_title">-&nbsp;'+txt+'&nbsp;-</div>';
+				questions+='<ul class="help_main_ul">';
+				for(var i=0;i<sucDate.length;i++){
+					questions+='<li class="mui-navigate-right"><div class="help_table" onclick="answerQuestion(this)" code="'+
+					sucDate[i]["qCode"]+'">'+(i+1)+'.'+sucDate[i]["question"]+'</div></li>';
+				}
+				questions+='</ul>';
+			var answerMsg = msgHtml2.replace("#{message}",questions);
+				answerMsg = answerMsg.replace("#{non}","non2");
+			$(".help_warp").append(answerMsg);
+		},
+		error:function(errDate){
+			$.popTips("popTipErr",errDate.return_info || "获取信息失败");
+		}
+	});
+	//$('.service_news').scrollTop( $('.service_news')[0].scrollHeight );
+}
+
+
+
+function answerQuestion(aa){	
+	var code = $(aa).attr("code");
+	var indextxt=$(aa);
+	queryQuestionDetail(code,indextxt);
+	
+}
+
+function queryQuestionDetail(code,indextxt){
+	YRHX.ajax({
+		url:"http://app.yrhx.com/queryQuestionDetail",
+		//url:"http://192.168.2.153/queryQuestionDetail",
+		dataType:"jsonp",
+		data:{"qCode":code},
+		success:function(sucDate){
+			$(".mui-navigate-right").find(".help_text").remove();
+			var answerMsg2='<div class="help_text">'+sucDate["answer"]+'</div>';
+			$(indextxt).after(answerMsg2);
+			$(".mui-navigate-right").find(".help_text").slideToggle();
+		},
+		error:function(errDate){
+			$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+		}
+	});
+
+}
+
+function getClassify(txtlist){
+	var key=[];
+	switch(txtlist){
+	case "1":
+		txtlist="Y";//常见问题
+		break;
+	case "2":
+		txtlist="A";//注册
+		break;
+	case "3":
+		txtlist="B";//存管账户
+		break;
+	case "4":
+		txtlist="C";//投标
+		break;
+	case "5":
+		txtlist="D";//债权转让
+		break;
+	case "6":
+		txtlist="E";//自助服务
+		break;
+	case "7":
+		txtlist="G";//会员等级
+		break;
+	default:
+		key[0]=txtlist;
+		txtlist="N";
+	}
+	key[1]=txtlist;
+	return key;
+}
+
+
+
+function phone() {
+	 //调用java中的方法   phone
+	   window.WebViewJavascriptBridge.callHandler(
+	      'phone'
+	      , ''
+	      , function(responseData) {
+	          	if(responseData==null){
+	          		//alert("请登录");
+	          	}
+	      }
+	  );
+	}
+	
+//注册事件监听
+function connectWebViewJavascriptBridge(callback) {
+  if (window.WebViewJavascriptBridge) {
+      callback(WebViewJavascriptBridge)
+  } else {
+      document.addEventListener(
+          'WebViewJavascriptBridgeReady'
+          , function() {
+              callback(WebViewJavascriptBridge)
+          },
+          false
+      );
+  }
+}
+
+//注册回调函数，第一次连接时调用 初始化函数
+connectWebViewJavascriptBridge(function(bridge) {
+    //初始化
+  	bridge.init(function(message, responseCallback) {
+      var data = {
+          'Javascript Responds': 'Wee!'
+      };
+      responseCallback(data);
+  	});
+	//接收安卓发来的消息   并返回给安卓通知
+  	bridge.registerHandler("functionInJs", function(data, responseCallback) {
+      var responseData = "我接受到了安卓的调用";
+      responseCallback(responseData); 
+	    });
+	})
+		
+	//进入页面第一次强制刷新
+	window.onload = function(){
+	   if(location.search.indexOf("?")==-1){
+	      location.href += "?myurl";
+	   }
+	   else{
+	      if(location.search.indexOf("myurl")==-1) location.href += "&myurl";
+	   }
+	}
+
+</script>
+</html>

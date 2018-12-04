@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>肆无前例，FUN4嗨</title>
+		<link type="text/css" href="/portal/css/activity/act201711.css" rel="stylesheet">
+		<link type="text/css" href="/portal/css/public.css?v=1.0.0" rel="stylesheet">
+		<link type="text/css" href="/portal/css/user.css?v=1.0.1" rel="stylesheet">
+	</head>
+
+	<body>
+		<div id="top">
+			<div id="white">
+
+			</div>
+			<div id="light">
+				<img src="/portal/images/activity/act201711/light.gif" />
+			</div>
+			<div id="big3">
+
+			</div>
+		</div>
+		<div id="steps">
+			<div id="step1" class="step">
+
+			</div>
+			<div id="step2" class="step">
+
+			</div>
+			<div id="step3" class="step">
+
+			</div>
+		</div>
+		<div id="add4">
+
+		</div>
+		<div id="lays">
+			
+		</div>
+		<div id="happy">
+			<div id="happyWords">
+				11月11日，在活动页面留言板块留言，表达对易融恒信四周岁的生日祝福，即可获得111.1积分
+			</div>
+			<div id="cakeMsg">
+				<div id="cake">
+					<img src="/portal/images/activity/act201711/cake.gif" />
+				</div>
+				<div id="fixMsg">
+					<img src="/portal/images/activity/act201711/fixMsg.png" />
+				</div>
+			</div>
+			<div id="msgBoard">
+				<div id="listBox">
+					<ul id="showMsg">
+						<!--<li>
+							<span id="userName">王超飞***</span>
+							<span id="msg">易融恒信四周岁的生日快乐</span>
+							<span id="time">11-11 17:15</span>
+						</li>
+						<li>
+							<span id="userName">王超飞***</span>
+							<span id="msg">易融恒信四周岁的生日快乐</span>
+							<span id="time">11-11 17:15</span>
+						</li>
+						<li>
+							<span id="userName">王超飞***</span>
+							<span id="msg">易融恒信四周岁的生日快乐</span>
+							<span id="time">11-11 17:15</span>
+						</li>
+						<li>
+							<span id="userName">189****7342</span>
+							<span id="msg">易融恒信四周岁的生日快乐</span>
+							<span id="time">11-11 17:15</span>
+						</li>
+						<li>
+							<span id="userName">李源***</span>
+							<span id="msg">易融恒信四周岁的生日快乐</span>
+							<span id="time">11-11 17:15</span>
+						</li>
+						<li>
+							<span id="userName">wcf***</span>
+							<span id="msg">易融恒信四周岁的生日快乐</span>
+							<span id="time">11-11 17:15</span>
+						</li>
+						<li>
+							<span id="userName">wcf***</span>
+							<span id="msg">易融恒信四周岁的生日快乐易融恒信四周岁的生日快乐易融恒信四周岁的个</span>
+							<span id="time">11-11 17:15</span>
+						</li>
+						<li>
+							<span id="userName">wcf***</span>
+							<span id="msg">易融恒信四周岁的生日快乐</span>
+							<span id="time">11-11 17:15</span>
+						</li>-->
+					</ul>
+				</div>
+			</div>
+			<div id="writeMsg">
+				<input type="text" id="textMsg" placeholder="	#说出你对易融恒信4周年的祝福语#"></input>
+				<div id="sendMsg">
+
+				</div>
+				<div id="only">
+					留言活动仅限双十一当天
+				</div>
+			</div>
+			<div id="rights">
+				本次活动的最终解释权归易融恒信所有，如有疑问，可致电易融恒信官方客服热线：400-027-0707
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js?v=1.0.0" charset="utf-8"></script>
+	<script type="text/javascript" src="/portal/js/pub/core.js?v=1.0.0" charset="utf-8"></script>
+	<script type="text/javascript" src="/portal/js/config.js?v=1.0.0" charset="utf-8"></script>
+	<script type="text/javascript">
+		function close_login_dialog() {
+			if(window.closeLoginDialog) {
+				window.closeLoginDialog();
+			} else {
+				$("#loginDialog").hide();
+				$("#yinying").hide();
+				$('body,html').css('overflow', 'auto');
+			}
+		}
+
+		// 登录模态框
+		function show_login_dialog() {
+			if($("div").hasClass("login_dialog")) {
+				// 重复登录
+				$("#loginDialog").show();
+				$("#yinying").show();
+			} else {
+
+				var dislogElement = $('<div>').addClass('login_dialog').attr('id',
+					'loginDialog');
+				var closeElement = $('<div>').addClass('del').appendTo(dislogElement);
+				var h2Element = $('<h2>').html('用户登录');
+				var formElement = $('<div>').attr('id', 'login_form');
+				var accountElement = null;
+				accountElement = $('<input>')
+					.attr('name', 'account')
+					.attr('type', 'text')
+					.attr('maxlength', '30')
+					.attr('placeholder', '输入11位手机号码')
+					.blur(
+						function() {
+							if($(this).val() == '') {
+								$('#login_account_err').show();
+								$('#login_account_err').find('span').remove();
+								$('#login_account_err').append(
+									$('<span>').html('请输入用户名'));
+							} else if(!/^1\d{10}$/.test($.trim($(this).val()))) {
+								$('#login_account_err').show();
+								$('#login_account_err').find('span').remove();
+								$('#login_account_err').append(
+									$('<span>').html('用户名不合法'));
+							} else {
+								$('#login_account_err').hide();
+							}
+						});
+
+				if(typeof(autologin) != 'undefined') {
+					accountElement.val(autologin);
+				}
+
+				$('<div>').addClass('item').append(
+					$('<i>').addClass('iconUser').css('marginTop', '17px')).append(
+					accountElement).append(
+					$('<p>').attr('id', 'login_account_ok').addClass('tips-right')
+					.addClass('u-tips')).append(
+					$('<p>').attr('id', 'login_account_err').addClass('tips-error')
+					.addClass('u-tips')).appendTo(formElement);
+
+				$('<div>').addClass('item').append(
+						$('<i>').addClass('iconPwd').css('marginTop', '17px')).append(
+						$('<input>').attr('type', 'password').attr('name', 'password')
+						.addClass('inp').attr('maxlength', '30').val('').attr(
+							'placeholder', '输入密码'))
+					.append(
+						$('<p>').attr('id', 'login_password_ok').addClass(
+							'tips-right').addClass('u-tips').html(
+							$('<i>').addClass('iconfont'))).append(
+						$('<p>').attr('id', 'login_password_err').addClass(
+							'tips-error').addClass('u-tips').html(
+							$('<i>').addClass('iconfont'))).appendTo(
+						formElement);
+
+				$('<div>').addClass('button_panel').append(
+					$('<div>').addClass('loginBtn').attr('id', 'login_btn').html(
+						'登录').click(function() {
+						loginFnPop();
+					})).appendTo(formElement);
+
+				$('<div>').addClass('other')
+					.append('赶快加入易融恒信吧&nbsp;&nbsp;&nbsp;&nbsp;').append(
+						$('<a>').attr('href', '/register').html('立即注册'))
+					.append('！').appendTo(formElement);
+
+				closeElement.appendTo(dislogElement);
+				closeElement.click(close_login_dialog);
+				h2Element.appendTo(dislogElement);
+				formElement.appendTo(dislogElement);
+				init_yinying();
+
+				$('body,html').css('overflow', 'hidden');
+				to_center($('#yinying').show());
+				to_center(dislogElement.appendTo('body').show());
+
+				$("input[name='password']").focus(function() {
+					$(window).on("keydown", function(event) {
+						if(event.keyCode == 13) {
+							loginFnPop();
+						}
+					});
+				})
+			}
+		}
+
+		function init_yinying() {
+			if($('#yinying').length == 0) {
+				$('<div>').attr('id', 'yinying').addClass('yinying').appendTo('body');
+			}
+		}
+
+		// 居中
+		function to_center(obj) {
+			var width = $(window).width();
+			var height = $(window).height();
+			var top = $(window).scrollTop();
+			var eleWidth = obj.width();
+			var eleHeight = obj.height();
+			obj.css({
+				left: (width - eleWidth) / 2,
+				top: top + (height - eleHeight) * 2 / 5
+			});
+		}
+
+		function loginFnPop() {
+			var loginName = $('#login_form').find('input[name=account]').val();
+			var loginPwd = $('#login_form').find('input[name=password]').val();
+			YRHX.Cookie().clear();
+			YRHX.ajax({
+				url: CONFIG.getRequestURI("login"),
+				data: {
+					loginName: loginName,
+					loginPwd: loginPwd
+				},
+				success: function(sucData) {
+					setTimeout(function() {
+						YRHX.Cookie("loginName", loginName).set();
+						YRHX.Cookie("userCode", sucData.userCode).set();
+						YRHX.Cookie("userName", sucData.userName).set();
+						close_login_dialog();
+						if(window.loginSuccessCallback) {
+							window.loginSuccessCallback();
+						} else {
+							window.location.href = window.location.href;
+						}
+					}, 300);
+				},
+				error: function(errData) {
+					$.popTips("popTipErr", "用户名或密码错误");
+				}
+			});
+		}
+
+		function GetRTime() {
+			var EndTime1 = new Date('2017/11/11 10:00:00');
+			var EndTime2 = new Date('2017/11/11 15:00:00');
+			var EndTime3 = new Date('2017/11/11 20:00:00');
+			var NowTime = new Date();
+			var t1 = EndTime1.getTime() - NowTime.getTime();
+			var t2 = EndTime2.getTime() - NowTime.getTime();
+			var t3 = EndTime3.getTime() - NowTime.getTime();
+			if(t1 >= 0) {
+				getDjs(t1);
+			} else if(t2 >= 0) {
+				$("#tip").text("下一波红包雨倒计时");
+				getDjs(t2);
+			} else if(t3 >= 0) {
+				$("#tip").text("下一波红包雨倒计时");
+				getDjs(t3);
+			} else {
+				$("#tip").html("");
+				$("#actDjs").html("本次活动已结束！");
+			}
+		}
+
+		setInterval(GetRTime, 0);
+
+		function getDjs(time) {
+			var h = 0;
+			var m = 0;
+			var s = 0;
+			h = Math.floor(time / 1000 / 60 / 60);
+			m = Math.floor(time / 1000 / 60 % 60);
+			s = Math.floor(time / 1000 % 60);
+			if(h.toString().length < 2) {
+				$("#h1").text("0");
+				$("#h2").text(h);
+			} else {
+				$("#h1").text(h.toString().substring(0, 1));
+				$("#h2").text(h.toString().substring(1, 2));
+			}
+			if(m.toString().length < 2) {
+				$("#m1").text("0");
+				$("#m2").text(m);
+			} else {
+				$("#m1").text(m.toString().substring(0, 1));
+				$("#m2").text(m.toString().substring(1, 2));
+			}
+			if(s.toString().length < 2) {
+				$("#s1").text("0");
+				$("#s2").text(s);
+			} else {
+				$("#s1").text(s.toString().substring(0, 1));
+				$("#s2").text(s.toString().substring(1, 2));
+			}
+		}
+
+		$('#sendMsg').click(function() {
+			var user = YRHX.Cookie("userName").get();
+			var msg = $("#textMsg").val().trim();
+			if(user != null) {
+				if(msg.length == 0) {
+					$.popTips("popTipErr", "请输入留言，再点击提交");
+					return;
+				}
+				if(msg.length > 33) {
+					$.popTips("popTipErr", "抱歉，祝福留言最多为33个字");
+					return;
+				}
+				if(msg.length < 4) {
+					$.popTips("popTipErr", "抱歉，祝福留言最少为4个字");
+					return;
+				}
+			}
+
+			YRHX.ajax({
+				url: "/leaveMessage",
+				data: {
+					"msg": msg,
+				},
+				success: function(sucData) {
+					$.popTips("popTipErr", "留言成功，恭喜获得111.1积分");
+				},
+				error: function(errData) {
+					$.popTips("popTipErr", errData.return_info);
+				}
+			});
+		});
+
+		$.showMsg = function() {
+			YRHX.ajax({
+				url: "/showMsg",
+				success: function(sucData) {
+					var html_ul = "<li><span id='userName'>#{userName}</span><span id='msg'>#{msg}</span><span id='time'>#{time}</span></li>";
+					var tableEle = $("#showMsg");
+					tableEle.html("");
+					var rsData = sucData.list;
+					if(rsData.length > 0) {
+						for(var i = 0; i < rsData.length; i++) {
+							var row = rsData[i];
+							var len = row["userName"].length;
+							if(0 == row["userName"].indexOf("*")) {
+								row["userName"] = row["userName"]
+							} else {
+								if(len < 3) {
+									row["userName"] = row["userName"] + "***";
+								} else if(len < 11) {
+									row["userName"] = row["userName"].substr(0, 3) + "***";
+								} else if(len == 11) {
+									row["userName"] = row["userName"].substr(0, 3) + "***" + row["userName"].substr(7);
+								} else {
+									row["userName"] = row["userName"].substr(0, 3) + "***";
+								}
+							}
+							var tmpHtml = html_ul.makeHtml(row);
+							tableEle.append(tmpHtml);
+						}
+					}
+				},
+			});
+		}
+
+		$.showMsg();
+
+		$(function() {
+			var listPanel = $('#showMsg');
+			var z = 0; //向上滚动top值
+			function up() { //向上滚动
+				listPanel.animate({ //中奖结果
+					'top': (z - 66) + 'px'
+				}, 2500, 'linear', function() {
+					listPanel.css({
+							'top': '0px'
+						})
+						.find("li:first").appendTo(listPanel);
+					up();
+				});
+			}
+			up();
+		});
+		
+	</script>
+
+</html>

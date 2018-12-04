@@ -1,0 +1,1133 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>安全中心</title>
+	<link type="text/css" href="/portal/css/public.css" rel="stylesheet">
+	<link type="text/css" href="/portal/css/user.css" rel="stylesheet">
+	<!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+
+<body>
+	<div class="wrapper">
+		<header id="header" class="header">
+			<!--code here-->
+		</header>
+		<nav class='user_index'></nav>
+		<main class="user">
+			<div class="user-main">
+				<div class="user-main-left">
+					<h2>账户管理</h2>
+					<div class="user-nav"></div>
+				</div>
+				<div class="hello"></div>
+				<div class="user-main-right">
+					<div class="user-main-right-c">
+						<div class="tabNav">
+							<i></i>
+							<ul>
+								<li class="active">安全中心</li>
+								<!-- <span class="safeLevel">帐户安全级别:<i class="serLevel">高</i></span> -->
+							</ul>
+						</div>
+						<div class="safeCenter">
+							<div class="topLevel">
+								<div class="topDog">
+									<span class="topTitle">您的帐户安全等级为：</span>
+									<div class="levelBar">
+										<span class="levelTips">低</span>
+										<div class="curLevelWidth" style="width:60%"></div>
+									</div>
+								</div>
+								<p class="desInfo">您可以通过完善下方信息来提升您的安全等级！</p>
+							</div>
+							<div class="safeSubTitle" id="realIdenBox">
+								<span class="leftTitle">实名认证</span>
+								<span class="stateTitle noSet">未认证</span>
+								<span class="desTitle">完成实名认证，账户更安全，投资更放心</span>
+								<span class="safeitleRight" optype="realIdenBind">未认证</span>
+							</div>
+							<div class="safeSubTitle" id="CFCABox">
+								<span class="leftTitle">电子签章授权认证</span>
+								<span class="stateTitle noSet">未认证</span>
+								<span class="desTitle">为保证您的合法权益，我们将为您开通,请阅读<b class="seeDetail">《CFCA数字证书授权协议(个人证书)》</b></span>
+								<span class="safeitleRight" optype="cfcaBind">立即认证</span>
+							</div>
+							<div class="safeSubTitle" id="mobileBox">
+								<span class="leftTitle">手机绑定</span>
+								<span class="stateTitle isSet">已绑定</span>
+								<span class="desTitle">您绑定的手机号为****</span>
+								<span class="safeitleRight" optype="mobileModal">修改平台手机号</span>
+								<span class="safeitleRight2" ></span>
+								
+							</div>
+							<div class="safeSubTitle" id="mailBox">
+								<span class="leftTitle">邮箱认证</span>
+								<span class="stateTitle noSet">未绑定</span>
+								<span class="desTitle">您还未绑定邮箱</span>
+								<span class="safeitleRight" optype="mailIdenModal">未绑定</span>
+							</div>
+							<div class="safeSubTitle" id="loginPwdBox">
+								<span class="leftTitle">登录密码</span>
+								<span class="stateTitle isSet">已设置</span>
+								<span class="desTitle">登录密码和交易密码请尽量不要一样</span>
+								<span class="safeitleRight" optype="loginPwdModal">修改登录密码</span>
+							</div>
+							<div class="safeSubTitle" id="payPwdBox">
+								<span class="leftTitle">支付密码</span>
+								<span class="stateTitle noSet">未设置</span>
+								<span class="desTitle">交易密码和登录密码请尽量不要一样</span>
+								<span class="safeitleRight" optype="payPwdModal">设置平台支付密码</span>
+								<span class="safeitleRight2" ></span>
+							</div>
+							<div class="safeSubTitle" id="cardBox">
+								<span class="leftTitle">存管银行卡</span>
+								<span class="stateTitle noSet">未绑定</span>
+								<span class="desTitle">提现需先绑定银行卡</span>
+								<span class="safeitleRight" optype="cardBind">绑定并激活存管</span>
+								<span class="safeitleRight2" ></span>
+								<span class="safeitleRight3" ></span>
+								<span class="safeitleRight4" ></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer id="footer" class="footer"></footer>
+	</div>
+	<!-- 支付密码modal -->
+	<div id="yinying" class="safeYinying"></div>
+	<div class="popModal" id="popModal">
+		<div class="modalTitle"><b class="modalTitleDes">确认信息</b>
+			<div class="del"></div>
+		</div>
+		<div class="popContent">
+			<div class="safeCenterItem" id="realIdenModal">
+				<!-- <p><label>真实姓名：</label> <input type="text" name="trueName" /></p>
+				<p><label>身份证号：</label> <input type="text" name="cardId" maxlength="18" /> </p>
+				<p><label>重新输入：</label> <input type="text" class="confirmUIdCard" maxlength="18" /></p> -->
+				<!--<div class="opBtns" style="display: none;">
+					<span style="margin: 0;" class="safeSubBtn" id="realIdenBtn">认证</span>
+					<span style="background: #2c87f6;" class="safeSubBtn" id="manIdenBtn">人工认证</span>
+				</div>-->
+				<div id="upLoadImgBox" style="display:none;margin-bottom:20px;">
+					<p style="text-align: center;"><i class="iconArrowDown"></i></p>
+					<div class="upLoadImg">
+						<span class="upfakeBtn" id="filePicker">上传图片</span>
+						<img src="" class="reviewPic" id="fileList" /><i class="uploadPicClose"></i>
+					</div>
+				</div>
+				<!--<div class="opBtns"><input id="agreeMent" type="checkbox" checked />我已阅读并同意<span class="seeDetail">《CFCA数字证书授权协议(个人证书)》</span></div>-->
+				<div class="opBtns">
+					<span class="safeSubBtn" id="subUploadBtn" state="">确认</span>
+					<span class="safeCanBtn" state="">取消</span>
+				</div>
+			</div>
+			<div class="safeCenterItem" id="mailIdenModal">
+				<p>
+					<label>您的邮箱：</label> <input type="text" name="MailAddress" />
+				</p>
+				<div class="opBtns">
+					<span class="safeSubBtn" id="SubMainIden">确定</span>
+				</div>
+				<div id="mailCheckBox" style="display: none;">
+					<p style="text-align: center;">
+						<i class="iconArrowDown"></i>
+					</p>
+					<p>
+						<i class="iconSafe iconSendMail"></i>邮件已发送到您的邮箱<b class="red" id="mailAddress"></b>。请按邮箱中的提示操作，完成邮箱验证。
+					</p>
+				</div>
+			</div>
+			<div class="safeCenterItem" id="loginPwdModal">
+				<p>
+					<label>旧登录密码：</label> <input type="password" name="curPwd" />
+				</p>
+				<p>
+					<label>新登录密码：</label> <input type="password" name="newPwd" />
+				</p>
+				<p>
+					<label>新登录密码：</label> <input type="password" name="confirmNewPwd" />
+				</p>
+				<div class="opBtns">
+					<span class="safeSubBtn" id="SubLoginPwd">确定</span>
+					<span class="safeCanBtn" state="">取消</span>
+				</div>
+			</div>
+			<div class="safeCenterItem" id="mobileModal">
+				<p>
+					<label>新手机号：</label> <input type="text" name="newMobile" />
+				</p>
+				<p>
+					<label>手机验证码：</label>
+					<input type="text" name='msgMac' maxlength="6" style="width: 170px" />
+					<span class="getCode"><i id="sendMsgMobile" sendToggle="1">获取验证码</i><b id="msgCounter"></b></span>
+				</p>
+				<p>
+					<label>登录密码：</label> <input type="password" name="loginPwd" />
+				</p>
+				<div class="opBtns">
+					<span class="safeSubBtn" id="SubmobileMotify">确定</span>
+					<span class="safeCanBtn" state="">取消</span>
+				</div>
+			</div>
+			<div class="safeCenterItem" id="payPwdModal">
+				<p>
+					<label>手机验证码：</label>
+					<input type="text" name='msgPayMac' maxlength="6" style="width: 170px" />
+					<span class="getCode"><i id="sendMsgBtn" sendToggle="0">获取验证码</i><b id="msgCounter"></b></span>
+				</p>
+				<p>
+					<label>支付密码：</label> <input type="password" name="newPayPwd" style="width: 290px" />
+				</p>
+				<p>
+					<label>确认支付密码：</label> <input type="password" name="confirmPayPwd" style="width: 290px" />
+				</p>
+				<div class="opBtns">
+					<span class="safeSubBtn" id="SubPayPwd">确定</span>
+					<span class="safeCanBtn">取消</span>
+					<p id="msgTips"></p>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="beijing" class="beijing"></div>
+	<div id="addBankDialog" class="add_bank_dialog">
+	<div class="bank_dialog_header">
+		<h4>激活存管账户信息确认</h4>
+		<div class="del"></div>
+	</div>
+	<form>
+		<!-- <div class="addIterm">
+			<label>真实姓名</label>
+			<input id="span_trueName" type="text" value="" readonly="readonly"/>
+		</div>
+		<div class="addIterm">
+			<label>身份证号码</label>
+			<span id="span_cardId" class="input_panel disabled"></span>
+		</div> -->
+		
+		<div class="addIterm"><label>真实姓名：</label> <input id="span_trueName" type="text" name="trueName" /></div>
+				<div class="addIterm"><label>身份证号：</label> <input id="span_cardId" type="text" name="cardId" maxlength="18" /></div>
+				<div id="confirmUIdCard" class="addIterm"><label>重新输入：</label> <input type="text" class="confirmUIdCard" maxlength="18" /><span>（身份证号）</span></div>
+		
+		<div class="addIterm">
+			<label>银行卡号</label>
+			<span>
+				<input id="input_add_cardno" type="text" value="" /> <span class="bankCardTips">银行卡开户名必须与真实姓名保持一致</span>
+			</span>
+		</div>
+		
+		<!-- <div class="addIterm">
+			<label>银行卡号</label>
+			<span>
+				<span id="span_cardno" class="input_panel disabled"></span> <span class="bankCardTips">银行卡开户名必须与真实姓名保持一致</span>
+			</span>
+		</div> -->
+		<div class="addIterm">
+			<label>开户银行</label>
+			<select id="bankname" class="bankname" style="width: 202px"></select>
+		</div>
+		<div class="addIterm">
+			<label>银行卡所在地</label>
+			<select id="Province" class="porvice"></select>
+			<select id="City" class="city"></select>
+		</div>
+		<div class="addIterm">
+			<label>短信校验</label>
+			<span><input type="text" id="input_add_msgmac" value="" maxlength="6" /></span>
+			<a id="sendMsgBtn2" class="vail" href="javascript:" sendToggle="0">获取验证码</a>
+			<label id="msgCounter2"></label>
+		</div>
+		<div class="cardSaveBtn addIterm">
+			<div id="btn_add_save">提交</div>
+			<label style="width:200px;" id="msgTips2" class="red"></label>
+		</div>
+	</form>
+	</div>
+	<script src="/assets/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+	<script type="text/javascript" src="/portal/js/config.js"></script>
+	<script type="text/javascript" src="/portal/js/public.js"></script>
+	<script type="text/javascript">
+		window.userNavActive = 0;
+		topNavSelect = '4';
+	</script>
+	<script type="text/javascript" src="/portal/js/user.js"></script>
+	<script type="text/javascript" src="/portal/js/pub/widget-table.js"></script>
+	<script type="text/javascript" src="/portal/js/pub/app.js"></script>
+	<script type="text/javascript" src="/portal/js/webuploader.min.js"></script>
+	<script type="text/javascript" src="/assets/js/amazeui.min.js"></script>
+	<script>
+	    setting(3, window.userNavActive);
+		NavMenu(3);
+		
+
+		$("#mobileBox .desTitle").text("您绑定的平台手机号为"+YRHX.Cookie("loginName").get())
+		function closeModal() {
+			$("#yinying").hide()
+			$(".popModal").hide()
+			$("html,body").css("overflow", "auto")
+		}
+
+		function showModal() {
+			$("#yinying").show()
+			$(".popModal").show()
+			$('body,html').css("overflow", "hidden");
+		}
+
+		$(".safeitleRight").click(function () {
+			if (!$(this).hasClass('isDone')) {
+				$(".safeCenterItem").hide()
+				switch ($(this).attr('optype')) {
+					case 'realIdenBind':
+						/* showModal()
+						$(".modalTitleDes").text("实名认证")
+						$('#realIdenModal').show(); */
+						alert("请在开通存管中进行实名认证！");
+						break;
+					case 'cfcaBind':
+						var isAgree = confirm('是否已阅读并同意电子签章授权认证！');
+						if (isAgree) {
+							YRHX.ajax({
+								url: CONFIG.getRequestURI("userCFCA"),
+								success: function (sucData) {
+									window.location.reload()
+
+								},
+								error: function () {
+									$.popTips("popTipErr", errData.return_info);
+								}
+							})
+						}
+						// $(".modalTitleDes").text("电子签章授权认证")
+						// $('#realIdenModal').show();
+						break;
+					case 'mailIdenModal':
+						showModal()
+						$(".modalTitleDes").text("邮箱认证")
+						$('#mailIdenModal').show();
+						break;
+					case 'loginPwdModal':
+						showModal()
+						$(".modalTitleDes").text("登录密码修改")
+						$('#loginPwdModal').show();
+						break;
+					case 'payPwdModal':
+						showModal()
+						$(".modalTitleDes").text("支付密码设置")
+						$('#payPwdModal').show();
+						break;
+					case 'cardBind':
+						//window.location.href = '/B04'
+						
+						//查询是否实名认证 
+						 YRHX.ajax({
+							url : "/queryUserInfo?istrue=certification",//判断参数 返回不同信息 
+							success : function( sucData ) {
+								if( sucData.isAuthed == '2'){
+									var dataPath =  sucData;
+									
+									to_center($('#addBankDialog').show());
+									to_center($('#beijing').show());
+									$('body,html').css('overflow', 'hidden');
+									
+									$('#span_trueName').val( dataPath.userCardName);
+									$('#span_trueName').attr("readonly","readonly");
+									$('#span_cardId').val( dataPath.userCardId );
+									$('#span_cardId').attr("readonly","readonly");
+									$('#confirmUIdCard').hide();	
+								}else{
+									to_center($('#addBankDialog').show());
+									to_center($('#beijing').show());
+									$('body,html').css('overflow', 'hidden');
+									
+								}
+								;
+						    },
+						    error : function( errData ){
+								 
+							}
+	
+					}); 
+						
+						
+						break;
+					case 'mobileModal':
+						showModal()
+						$(".modalTitleDes").text("手机号修改")
+						$('#mobileModal').show();
+						break;
+					default:
+						break;
+				}
+			}
+		})
+
+		$(".seeDetail").click(function () {
+			window.open('/cfcaAgreement', 'newwindow',
+				'height=800,width=700,top=0,left=0,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,status=no')
+		})
+
+		$(".popModal .del, .safeCanBtn").click(function () {
+			closeModal()
+		})
+		
+		$("#addBankDialog .bank_dialog_header .del").click(function(){
+			$("#beijing").hide();
+		})
+
+		//初始化状态
+		YRHX.ajax({
+			url: CONFIG.getRequestURI("getAuthInfo"),
+			success: function (sucData) {
+				var curLevel = 0;
+				if (sucData.cardId) {
+					curLevel++
+					switch (sucData.isAuth) {
+						case 0:
+							$("#realIdenBox .safeitleRight").text('未认证')
+							break;
+						case "1":
+							$("#realIdenBox .stateTitle").text("认证中")
+							$("#realIdenBox .safeitleRight").addClass('isDone').text('认证中')
+							break;
+						case "2":
+							curLevel++
+							$("#realIdenBox .safeitleRight").addClass('isDone').text('已认证')
+							$("#realIdenBox .stateTitle").removeClass('noSet').addClass('isSet').text("已认证")
+							$("#realIdenBox .desTitle").text('真实姓名：' + sucData.trueName + '  身份证号:' + sucData.cardId)
+							break;
+						case "3":
+							$("#realIdenBox .stateTitle").removeClass('isSet').addClass('noSet').text("认证失败")
+							$("#realIdenBox .desTitle").text('认证失败')
+							break;
+					}
+				}
+
+				if (sucData.isCFCA == "1") {
+					curLevel++;
+					$("#CFCABox .stateTitle").removeClass('noSet').addClass('isSet').text("已认证");
+					$("#CFCABox .desTitle").text('已为您开通电子签章（个人）服务，由CFCA提供技术支持');
+					$("#CFCABox .safeitleRight").addClass('isDone').text('已认证');
+				}
+				if (sucData.email) {
+					curLevel++;
+					$("#mailBox .stateTitle").removeClass('noSet').addClass('isSet').text("已绑定");
+					$("#mailBox .desTitle").text('您绑定的邮箱为：' + sucData.email);
+					$("#mailBox .safeitleRight").text('');
+				}
+				if (sucData.isPayPasswd == "1") {
+					curLevel++;
+					$("#payPwdBox .stateTitle").removeClass('noSet').addClass('isSet').text("已设置");
+					$("#payPwdBox .safeitleRight").text('修改平台支付密码');
+				}
+				//安全等级
+				if (curLevel < 3) {
+					$(".curLevelWidth").css('width', '33.33%');
+					$(".levelTips").css('left', '33.33%').text("低");
+				} else if (curLevel < 5 && curLevel > 2) {
+					$(".curLevelWidth").css('width', '66.66%');
+					$(".levelTips").css('left', '66.66%').text("中");
+				} else if (curLevel > 4) {
+					$(".curLevelWidth").css('width', '100%');
+					$(".levelTips").css('left', '100%').text("高");
+				}
+				//初始化状态
+				YRHX.ajax({
+					url: CONFIG.getRequestURI("queryBanks"),
+					success: function (sucData) {
+						if (sucData["banks"].length > 0) {
+							$("#bankCarState").text("已绑定银行卡");
+							$("#cardBox .stateTitle").removeClass('noSet').addClass('isSet').text("已绑定");
+									YRHX.ajax({
+											url:CONFIG.getRequestURI("isLogin"),
+											success:function(sucData){
+												$("#payPwdBox .safeitleRight2").text("修改存管支付密码");
+												$("#mobileBox .safeitleRight2").text("修改存管手机号");
+												$("#cardBox .safeitleRight4").text("已激活存管账户");
+												$("#cardBox .safeitleRight3").text("更换绑定银行卡");
+												},
+											error:function(errData){
+											$("#cardBox .safeitleRight2").text("补全信息，立即激活存管账户");
+												}
+											});
+							$("#cardBox .desTitle").text(sucData["banks"][0].bankName + '    ' + sucData["banks"][0].bankNo + '    ' +
+								sucData["banks"][0].trueName);
+							$("#cardBox .safeitleRight").text('')
+						}
+					},
+					error: function (errData) {
+						$.popTips("popTipErr", errData.return_info);
+					}
+				});
+			},
+			error: function (errData) {
+				$.popTips("popTipErr", errData.return_info);
+			}
+		});
+
+		//slideDown效果
+		/*$(".safeSubTitle").click(function () {
+			if ($(this).attr("state") == "active") {
+				$(this).attr("state", "");
+				$(this).next(".safeCenterItem").slideToggle();
+			} else {
+				$("#filePicker").find(".webuploader-pick").next().css({
+					"height": "30px",
+					"width": "90px"
+				});
+				if ($(this).find(".safeitleRight").attr("isCheck") == "checked") {
+
+				} else {
+					$(".safeCenterItem").hide();
+					$(".safeSubTitle").attr("state", "");
+					$(this).attr("state", "active");
+					$(this).next(".safeCenterItem").slideToggle();
+				}
+
+			}
+		});*/
+
+		//上传图片关闭按钮
+		/*     $("#fileList").hover(function(){
+		    	$(".uploadPicClose").show();
+		    });
+		    
+		    $(".uploadPicClose").on("click",function(){
+		    	alert(1)
+		    	$("#fileList").attr("src","");
+		    }); */
+		
+		$("#SubmobileMotify").click(function () {
+		var newMobile=$("input[name=newMobile]").val();
+		var loginPwd=$("input[name=loginPwd]").val();
+		var msgMac=$("input[name=msgMac]").val();
+		if (newMobile == '') {
+				$.popTips("popTipErr", "请输入新手机号");
+				$("input[name=newMobile]").focus();
+				return false;
+			}
+		if (msgMac == '') {
+				$.popTips("popTipErr", "请输入验证码");
+				$("input[name=msgMac]").focus();
+				return false;
+			}
+		if (loginPwd == '') {
+				$.popTips("popTipErr", "请输入平台登录密码");
+				$("input[name=loginPwd]").focus();
+				return false;
+			}
+			YRHX.ajax({
+				url: CONFIG.getRequestURI("updateYrMobile"),
+				data: {
+					newMobile: newMobile,
+					loginPwd:loginPwd,
+					msgMac:msgMac
+					
+				},
+				success: function (sucData) {
+				$.popTips("popTipSuc", '平台手机号修改成功,请重新登录!', function () {
+						YRHX.ajax({
+							url : CONFIG.getRequestURI("logout"),
+							success : function(sucData) {
+								var loginName = YRHX.Cookie("loginName").get();
+								YRHX.Cookie().clear();
+								YRHX.Cookie("loginName", loginName).set();
+								window.location.href = "/login";
+							}
+						});
+						
+			           
+					});
+
+
+				},
+				error: function (errData) {
+				$.popTips("popTipErr", errData.return_info);
+				}
+			});
+			
+			
+			
+		})
+		//修改登录密码
+		$("#SubLoginPwd").click(function () {
+			var oldPwd = $("input[name=curPwd]").val();
+			var newPwd = $("input[name=newPwd]").val();
+			var confirmNewPwd = $("input[name=confirmNewPwd]").val();
+			if (oldPwd == '') {
+				$.popTips("popTipErr", "请输入当前登录密码");
+				$("input[name=curPwd]").focus();
+				return false;
+			}
+			if (newPwd == '') {
+				$.popTips("popTipErr", "请输入新登录密码");
+				$("input[name=newPwd]").focus();
+				return false;
+			}
+			if (newPwd != confirmNewPwd) {
+				$.popTips("popTipErr", "新登录密码与确认新登录密码不一致");
+				$("input[name=confirmNewPwd]").focus();
+				return false;
+			}
+			YRHX.ajax({
+				url: CONFIG.getRequestURI("updateLoginPwd"),
+				data: {
+					oldPwd: oldPwd,
+					newPwd: newPwd
+				},
+				success: function (sucData) {
+					$.popTips("popTipSuc", '修改密码成功，请重新登录！', function () {
+						YRHX.Cookie().clear();
+						window.location.href = 'login';
+					});
+
+
+				},
+				error: function (errData) {
+					$.popTips("popTipErr", errData.return_info);
+				}
+			});
+		});
+
+		//发送验证码
+		$('#sendMsgBtn').click(function () {
+			captchaApiV2(function( capVal ){
+			$("#sendMsgBtn").sendMsg({
+				"msgCounter": "#msgCounter",
+				"msgTips": "#msgTips",
+				"type": "1",
+				"urPhone": "",
+				"url": "sendMsgMac",
+				"cv" : capVal
+			});
+			})
+		})
+
+		//修改支付密码
+		$("#SubPayPwd").click(function () {
+			var msgPayMac = $("input[name=msgPayMac]").val();
+			var newPayPwd = $("input[name=newPayPwd]").val();
+			var confirmNewPwd = $("input[name=confirmPayPwd]").val();
+			if (msgPayMac == '') {
+				$.popTips("popTipErr", "手机验证码不正确");
+				$("input[name=msgPayMac]").focus();
+				return false;
+			}
+			if (newPayPwd == '') {
+				$.popTips("popTipErr", "请输入新支付密码");
+				$("input[name=newPayPwd]").focus();
+				return false;
+			}
+			if (newPayPwd != confirmNewPwd) {
+				$.popTips("popTipErr", "新支付密码与确认新支付密码不一致");
+				$("input[name=confirmPayPwd]").focus();
+				return false;
+			}
+			YRHX.ajax({
+				url: CONFIG.getRequestURI("updatePayPwd"),
+				data: {
+					payPwd: newPayPwd,
+					msgPayMac: msgPayMac
+				},
+				success: function (sucData) {
+					$.popTips("popTipSuc", '设置平台支付密码成功', function () {
+						window.location.reload();
+					});
+
+				},
+				error: function (errData) {
+					$.popTips("popTipErr", errData.return_info);
+				}
+			});
+		});
+
+		$("#manIdenBtn").click(function () {
+			$("#upLoadImgBox").slideToggle();
+
+		});
+
+		window.certificationInfo = {};
+		//上传图片
+		var $list = $("#fileList");
+		//初始化Web Uploader
+		var uploader = WebUploader.create({
+			// 选完文件后，是否自动上传。
+			auto: true,
+			// swf文件路径
+			swf: 'http://cdn.staticfile.org/webuploader/0.1.0/Uploader.swf',
+			// 文件接收服务端。
+			server: '/upload',
+			// 选择文件的按钮。可选。
+			// 内部根据当前运行是创建，可能是input元素，也可能是flash.
+			pick: '#filePicker',
+			// 只允许选择图片文件。
+			accept: {
+				title: 'Images',
+				extensions: 'gif,jpg,jpeg,bmp,png',
+				mimeTypes: 'image/jpg,image/jpeg,image/png' //修改这行
+			}
+		});
+		// 文件上传过程中创建进度条实时显示。
+		uploader.on('uploadProgress', function (file, percentage) {
+			$("#fileList").attr("src", "/portal/images/loadingPic.gif").show();
+			$(".webuploader-pick").text("重新上传");
+		});
+		// 完成上传完了，成功或者失败，先删除进度条。
+		uploader.on('uploadAccept', function (file, ret) {
+			window.uploadPath = "http://image1.yrhx.com/" + ret.fileid + "/zip";
+			$("#fileList").attr("src", "http://image1.yrhx.com/" + ret.fileid + "/zip").show();
+		});
+
+
+		$("#subUploadBtn").on("click", function () {
+
+			var uRealName = $("input[name=trueName]");
+			var uIdCard = $("input[name=cardId]");
+			var confirmUIdCard = $(".confirmUIdCard");
+			var uploadF = $("#fileList").attr("src");
+			var confirm_state = $(this).attr('state');
+
+			if (uRealName.val() == '') {
+				$.popTips("popTipErr", "请输入真实姓名", function () {
+					uRealName.focus();
+				});
+				return false;
+			}
+			if (uIdCard.val() == '') {
+				$.popTips("popTipErr", "请输入身份证", function () {
+					uIdCard.focus();
+				});
+				return false;
+			}
+			if ($("input[name=cardId]").val().length != 18) {
+				$.popTips("popTipErr", "身份证位数必须是18位", function () {
+					uIdCard.focus();
+				});
+				return false;
+			}
+			if (confirmUIdCard.val() == '') {
+				$.popTips("popTipErr", "请输入重新输入", function () {
+					confirmUIdCard.focus();
+				});
+				return false;
+			}
+			if (uIdCard.val() != confirmUIdCard.val()) {
+				$.popTips("popTipErr", "两次身份证不一致", function () {
+					confirmUIdCard.focus();
+				});
+				return false;
+			}
+			if (confirm_state == 9) {
+				if (uploadF == '' && uploadF == "/portal/images/loadingPic.gif") {
+					$.popTips("popTipErr", "请上传图片");
+					return false;
+				}
+				YRHX.ajax({
+					url: CONFIG.getRequestURI("certification"),
+					data: {
+						trueName: uRealName.val(),
+						cardId: uIdCard.val(),
+						cardIdImg: window.uploadPath
+					},
+					success: function (sucData) {
+						$.popTips("popTipSuc", "提交成功，等待审核", function () {
+							window.location.reload();
+						});
+					},
+					error: function (errData) {
+						$.popTips("popTipErr", errData.return_info);
+					}
+				});
+			} else {
+				YRHX.ajax({
+					url: CONFIG.getRequestURI("certificationAuto"),
+					data: {
+						trueName: uRealName.val(),
+						cardId: uIdCard.val()
+					},
+					success: function (sucData) {
+						$.popTips("popTipSuc", "审核通过", function () {
+							window.location.reload();
+						});
+					},
+					error: function (errData) {
+						var state = errData.return_code;
+						if (state == 9) {
+							$('#upLoadImgBox').show();
+						}
+						$("#filePicker").find(".webuploader-pick").next().css({
+							"height": "30px",
+							"width": "90px"
+						});
+						$('#subUploadBtn').attr('state', errData.return_code);
+						$.popTips("popTipErr", errData.return_info);
+						$('.safeSubBtn').css('background', '#ccc');
+						setTimeout(function () {
+							$('.safeSubBtn').css('background', '#F03D2D');
+						}, 2000);
+					}
+				});
+			}
+
+		});
+
+		$("#SubMainIden").click(function () {
+			//$("#mailChenckBox").slideDown();
+			if ($("input[name=MailAddress]").val() == '') {
+				$.popTips("popTipErr", "请输入邮箱地址");
+				return false;
+			}
+			YRHX.ajax({
+				url: CONFIG.getRequestURI("sendEmail"),
+				data: {
+					email: $("input[name=MailAddress]").val()
+				},
+				success: function (sucData) {
+					$.popTips("popTipSuc", "提交成功");
+					$("#mailCheckBox").slideDown();
+					$("#mailAddress").text($("input[name=MailAddress]").val());
+				},
+				error: function (errData) {
+					$.popTips("popTipErr", errData.return_info);
+				}
+			});
+		});
+		$("#time2CheckMail").click(function () {
+			$.popTips("popTipErr", "邮件已经发送，现在您可以到邮箱完成认证啦。");
+		});
+			var bankname=$("#bankname");
+	var province=$("#Province");
+	var city=$("#City");
+	function init_porvice(){
+		YRHX.ajax({
+			url:"/queryBankProvinceCodes",
+			success:function(sucData){
+				 province.html("");
+				 province.append("<option value='请选择省份' selected='selected'>请选择省份</option>");
+				 city.append("<option value='请选择城市' selected='selected'>请选择市区县</option>");
+				 for(var i=0;i<sucData.length;i++){
+					 var bankprovince=sucData[i];
+					 province.append("<option value='"+bankprovince.provinceCode+"'>"+bankprovince.provinceName+"</option>");
+				} 
+				
+			},
+			error:function(errorData){
+				$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+			}
+		});
+		$('#Province').change(function(){
+			var provinceCode = $(this).find('option:selected').val();
+			if("请选择省份"==provinceCode){
+				city.html("");
+				city.append("<option value='请选择城市' selected='selected'>请选择城市</option>");
+			}else{
+			YRHX.ajax({
+				url:"/queryBankCityCodes",
+				data:{"provinceCode":provinceCode},
+				success:function(sucData){
+					city.html("");
+					for(var i=0;i<sucData.length;i++){
+					var bankcity=sucData[i];
+					city.append("<option value='"+bankcity.cityCode+"'>"+bankcity.cityName+"</option>");}
+				},
+				error:function(errorData){
+				$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+			}
+			});
+			}
+			
+		});
+	}
+	function init_Bankname(){
+		bankname.append("<option value='请选择银行名称' selected='selected'>请选择银行名称</option>")
+		YRHX.ajax({
+			url:"/querBankName",
+			success:function(sucData){
+				for(var i=0;i<sucData.length;i++){
+					var bank=sucData[i];
+				bankname.append("<option value='"+bank.bankCode+"'>"+bank.bankName+"</option>");
+				}
+			}
+		});
+	}
+	init_Bankname();
+	init_porvice();
+		//修改富友支付密码
+		$("#payPwdBox .safeitleRight2").click(function(){
+		window.open("/changefuiouPayPwd");
+		});
+		//存管激活验证  20170614 ws
+		$("#cardBox .safeitleRight2").click(function(){
+		YRHX.ajax({
+		url:"/checkUserBankInfor",
+		success:function(sucData){
+			if(sucData.trueName==null||sucData.trueName==''){
+					$('#span_trueName').val("");
+					$('#span_trueName').removeAttr('readonly');
+			}else{
+					$('#span_trueName').val( sucData.trueName);
+					}
+					$('#span_cardId').text( sucData.userCardId );
+					$('#span_cardno').text( sucData.cardNo );
+					$('#input_add_cardcity').val("");
+					$('#input_add_msgmac').val("");
+					$('body,html').css('overflow', 'hidden');
+					to_center($('#addBankDialog').show());
+		},
+		error:function(errData){
+		$.popTips("popTipErr","获取信息失败");
+		}
+		});
+		});
+		
+		//补充银行卡信息开户
+	$("#btn_add_save").click(function(){
+		
+		
+		var uRealName = $("input[name=trueName]");
+		var uIdCard = $("input[name=cardId]");
+		var confirmUIdCard = $(".confirmUIdCard");
+
+		if (uRealName.val() == '') {
+			$.popTips("popTipErr", "请输入真实姓名", function () {
+				uRealName.focus();
+			});
+			return false;
+		}
+		if (uIdCard.val() == '') {
+			$.popTips("popTipErr", "请输入身份证", function () {
+				uIdCard.focus();
+			});
+			return false;
+		}
+		if ($("input[name=cardId]").val().length != 18) {
+			$.popTips("popTipErr", "身份证位数必须是18位", function () {
+				uIdCard.focus();
+			});
+			return false;
+		}
+		
+
+		var span_trueName = $('#span_trueName').val();
+		var span_cardId = $('#span_cardId').val();
+		
+		
+		var bankno = $('#input_add_cardno').val();
+		var bankcity = $('#Province').val() +"|"+ $('#City').val();
+		var msgMac = $('#input_add_msgmac').val();
+
+		if( bankno.length == 0 ){
+			$("#btn_add_save").popUp ("err","请输入银行卡号",function(){
+				//$('#input_add_cardno').focus();
+			});
+			return false;
+		}
+		if($('#bankname').val() == "请选择银行名称"){
+			$("#btn_add_save").popUp ("err","请认真输入银行名称");
+			return false;
+		}
+		if($('#Province').val() == "请选择省份" ||$('#City').val() == "请选择城市"){
+			$("#btn_add_save").popUp ("err","请认真输入银行卡所在地");
+			return false;
+		}
+		if( msgMac.length == 0 ){
+			$("#btn_add_save").popUp ("err","请输入验证码",function(){
+				$('#input_add_msgmac').focus();
+			});
+			return false;
+		};
+		
+		YRHX.ajax({
+			url : "/queryUserInfo?istrue=certification",
+			success : function( sucData ) {
+				//如果实名认证  
+				if( sucData.isAuthed == '2'){
+					var trueName=$('#span_trueName').val();
+					var span_cardId = $('#span_cardId').val();
+					
+					if( $("#bankLocation").val() ){
+						bankcity +=  "|" + $("#bankLocation").val();
+					}
+					if(trueName.length==0){
+					$("#span_trueName").popUp ("err","请认真输入真实姓名");
+						return false;
+					}
+					YRHX.ajax({
+						url : CONFIG.getRequestURI("bankv3Save"),
+						data : {
+							'bankNo':bankno,
+							'trueName':trueName,
+							'bankCode':$("#bankname").val(),
+							'bankName':$("#bankname").find("option:selected").text(), 
+							'CityCode': $("#City").val(),
+							'provinceName':$("#Province").find("option:selected").text(),
+							'CityName':$("#City").find("option:selected").text(),
+							'smsCode': msgMac,
+						},
+						success : function( sucAddData ) {
+							$('#beijing').hide();
+							$('body,html').css('overflow', 'auto');
+							$('#addBankDialog').hide();
+							$("#lab_send_msgTip").text("");
+							//$.popTips("popTipSuc","存管账户开通成功，您的存管支付密码默认为手机号后六位，请在安全中心页面及时修改");
+							alert("存管账户开通成功，您的存管支付密码默认为手机号后六位，请在安全中心页面及时修改");
+							//重新加载数据
+								window.location.href = "/C01" ;
+							//window.location.href='/C01';
+						},
+						error : function( errorData ){
+							$("#lab_send_msgTip").text("");
+							 $.popTips("popTipErr",errorData.return_info || "存管账户开通失败,请确认实名信息、银行卡信息是否正确");
+						}
+					});
+					
+				}else{
+					//没有实名认证 
+					if (uRealName.val() == '') {
+						$.popTips("popTipErr", "请输入真实姓名", function () {
+							uRealName.focus();
+						});
+						return false;
+					}
+					if (uIdCard.val() == '') {
+						$.popTips("popTipErr", "请输入身份证", function () {
+							uIdCard.focus();
+						});
+						return false;
+					}
+					if ($("input[name=cardId]").val().length != 18) {
+						$.popTips("popTipErr", "身份证位数必须是18位", function () {
+							uIdCard.focus();
+						});
+						return false;
+					}
+					if (confirmUIdCard.val() == '') {
+						$.popTips("popTipErr", "请输入重新输入", function () {
+							confirmUIdCard.focus();
+						});
+						return false;
+					}
+					if (uIdCard.val() != confirmUIdCard.val()) {
+						$.popTips("popTipErr", "两次身份证不一致", function () {
+							confirmUIdCard.focus();
+						});
+						return false;
+					}
+					YRHX.ajax({
+						url: "/bankSaveAndCertificationAuto",
+						data: {
+							'trueName': uRealName.val(),
+							'cardId': uIdCard.val(),
+							'bankNo':bankno,
+							'bankCode':$("#bankname").val(),
+							'bankName':$("#bankname").find("option:selected").text(), 
+							'CityCode': $("#City").val(),
+							'provinceName':$("#Province").find("option:selected").text(),
+							'CityName':$("#City").find("option:selected").text(),
+							'smsCode': msgMac,
+						},
+						success: function (sucData) {
+							
+							$('#addBankDialog').hide();
+							$("#lab_send_msgTip").text("");
+							alert("存管账户开通成功，您的存管支付密码默认为手机号后六位，请在安全中心页面及时修改");
+							$('#beijing').hide();
+							$('body,html').css('overflow', 'auto');
+							//重新加载数据
+								window.location.href = "/C01" ;
+						},
+						error: function (errData) {
+							$.popTips("popTipErr", errData.return_info);
+						}
+					});
+				};
+		    },
+		    error : function( errData ){
+				 
+			}
+
+	});
+		
+		
+	});
+	
+	//发送验证码 绑定银行卡
+	$('#sendMsgBtn2').click(function(){
+		
+		if( $(this).attr("sendToggle") == 0){
+			captchaApiV2(function( capVal ){
+			$("#sendMsgBtn2").sendMsg({
+				"msgCounter" : "#msgCounter2",
+				"msgTips"    : "#msgTips2",
+				"type"       : "0",
+				"urPhone"    : "",
+				"url"		 : "sendMsgMac",
+				"cv"           : capVal
+			});
+			})
+		}
+		
+		
+	});
+	
+	$("#cardBox .safeitleRight3").click(function(){
+	
+	window.open(CONFIG.getRequestURI("changeBank"));
+	});
+	$("#mobileBox .safeitleRight2").click(function(){
+	
+	window.open(CONFIG.getRequestURI("updateHfMobile"));
+	});
+	//发送验证码     修改平台手机号
+		$('#sendMsgMobile').click(function(){
+				if($("input[name=newMobile]").val().length == 11 ){
+					captchaApiV2(function( capVal ){
+						$("#sendMsgMobile").sendMsg({
+								"msgCounter" : "#msgCounter",
+								"msgTips"    : "#msgTips",
+								"type"       : "4",
+								"urPhone"    :$("input[name=newMobile]").val(),
+								"url"		 : "sendMsgMobile",
+								"cv"           : capVal
+							});
+					})
+					}else{
+						$.popTips("popTipErr","请认真填写您的手机号码!") ;
+					}
+		})
+		
+		
+	//页面加载   当没有实名认证的时候 进入安全中心自动弹框 	
+		$(function(){
+			
+			var userName = YRHX.Cookie("userName").get();
+			if(userName == null || userName==''){
+				return false;
+			}
+			YRHX.ajax({
+				url:'/queryUserInfo?istrue=certification',
+				success:function(sucDate){
+					if( sucDate.isAuthed == '2'){
+						return false;
+					}else{
+						to_center($('#addBankDialog').show());
+						to_center($('#beijing').show());
+						$('body,html').css('overflow', 'hidden')
+					}
+				},
+				error : function( errData ){
+					 
+				}
+			})
+	
+		})
+		  
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,1251 @@
+package com.dutiantech.controller.admin;
+
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.dutiantech.CACHED;
+import com.dutiantech.Message;
+import com.dutiantech.anno.AuthNum;
+import com.dutiantech.controller.BaseController;
+import com.dutiantech.controller.FuiouController;
+import com.dutiantech.controller.admin.validator.UserAddUserValidator;
+import com.dutiantech.controller.admin.validator.UserModifyUserValidator;
+import com.dutiantech.controller.admin.validator.UserResetPwdValidator;
+import com.dutiantech.controller.admin.validator.UserUpdateIsAuthed;
+import com.dutiantech.controller.admin.validator.UserUpdateUserInfoValidator;
+import com.dutiantech.controller.admin.validator.UserUpdateUserState;
+import com.dutiantech.exception.BaseBizRunTimeException;
+import com.dutiantech.interceptor.AuthInterceptor;
+import com.dutiantech.interceptor.PkMsgInterceptor;
+import com.dutiantech.model.BanksV2;
+import com.dutiantech.model.BizLog.BIZ_TYPE;
+import com.dutiantech.model.BankCode;
+import com.dutiantech.model.ChangeBankTrace;
+import com.dutiantech.model.Funds;
+import com.dutiantech.model.FundsTrace;
+import com.dutiantech.model.LoanTrace;
+import com.dutiantech.model.LoanTransfer;
+import com.dutiantech.model.RecommendInfo;
+import com.dutiantech.model.SMSLog;
+import com.dutiantech.model.Share;
+import com.dutiantech.model.TempReport;
+import com.dutiantech.model.User;
+import com.dutiantech.model.UserInfo;
+import com.dutiantech.model.ViewLoanAmount;
+import com.dutiantech.plugins.Memcached;
+import com.dutiantech.service.BanksService;
+import com.dutiantech.service.FundsTraceService;
+import com.dutiantech.service.HistoryRecyService;
+import com.dutiantech.service.LoanTraceService;
+import com.dutiantech.service.LoanTransferService;
+import com.dutiantech.service.SMSLogService;
+import com.dutiantech.service.ShareService;
+import com.dutiantech.service.TicketsService;
+import com.dutiantech.service.UserInfoService;
+import com.dutiantech.service.UserService;
+import com.dutiantech.service.VIPService;
+import com.dutiantech.util.CommonUtil;
+import com.dutiantech.util.DESUtil;
+import com.dutiantech.util.DateUtil;
+import com.dutiantech.util.HttpRequestUtil;
+import com.dutiantech.util.LoggerUtil;
+import com.dutiantech.util.Number;
+import com.dutiantech.util.StringUtil;
+import com.dutiantech.util.UIDUtil;
+import com.dutiantech.vo.TemplateMessage;
+import com.dutiantech.vo.VipV2;
+import com.fuiou.data.ChangeCard2ReqData;
+import com.fuiou.data.ModifyMobileReqData;
+import com.fuiou.data.QueryChangeCardReqData;
+import com.fuiou.data.QueryChangeCardRspData;
+import com.fuiou.service.FuiouService;
+import com.jfinal.aop.Before;
+import com.jfinal.core.ActionKey;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.tx.Tx;
+
+public class UserController extends BaseController {
+
+	private UserService userService = getService(UserService.class);
+	
+	private UserInfoService userInfoService = getService(UserInfoService.class);
+	
+	private VIPService vipService = getService(VIPService.class);
+	
+	private BanksService bankService = getService(BanksService.class);
+	
+	private TicketsService ticketsService = getService(TicketsService.class);
+	
+	private SMSLogService smsLogService = getService(SMSLogService.class);
+	
+	private LoanTraceService loanTraceService = getService(LoanTraceService.class);
+	
+	private FundsTraceService fundsTraceService = getService(FundsTraceService.class);
+	
+	private ShareService shareService = getService(ShareService.class);
+	
+	private HistoryRecyService historyRecyService = getService(HistoryRecyService.class);
+	private LoanTransferService loanTransferService=getService(LoanTransferService.class);
+	
+	private static final Logger scanVipLevelLogger = Logger.getLogger("scanVipLevelLogger");
+	
+	static{
+		LoggerUtil.initLogger("scanVipLevel", scanVipLevelLogger);
+	}
+	
+	/**
+	 * 添加一个用户
+	 */
+	@ActionKey("/createUser")
+	@AuthNum(value=999)
+	@Before({UserAddUserValidator.class,AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message createUser(){
+		
+		//拦截器验证不可为空---begin
+		String userMobile = getPara("userMobile");
+		String userEmail = getPara("userEmail");
+		String loginPasswd = getPara("loginPasswd");
+		String userName =getPara("userName");
+		String regIP = getRequestIP(getRequest());
+		//拦截器验证不可为空---end
+		
+		//验证是否已经存在此手机号
+		User user = userService.find4mobile(userMobile);
+		if(null != user){
+			return error("02", "手机号已经被注册", "");
+		}
+		
+		if(userService.save(UIDUtil.generate(),userMobile, userEmail, loginPasswd,userName, regIP,"后台创建用户"))
+			return succ("添加用户操作完成", true);
+		else
+			return error("01", "添加用户操作未生效", false);
+	}
+	
+	
+	/**
+	 * 补充或更新 用户认证信息
+	 */
+	@ActionKey("/updateUserInfo")
+	@AuthNum(value=999)
+	@Before({UserUpdateUserInfoValidator.class,AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message updateUserInfo(){
+		
+		//拦截验证不可为空-------begin
+		String userCode = getPara("paraUserCode");
+		
+		String userCardName = getPara("userCardName","");//真实姓名
+		String userCardId = getPara("userCardId","");//身份证编号
+		String userAdress = getPara("userAdress","");//用户登记住址
+		String ecpNme1 = getPara("ecpNme1","");//紧急联系人1
+		String ecpRlation1 = getPara("ecpRlation1","");//紧急联系人1与用户关系
+		String ecpMbile1 = getPara("ecpMbile1","");//紧急联系人1电话
+		String ecpNme2 = getPara("ecpNme2","");//紧急联系人2
+		String ecpRlation2 = getPara("ecpRlation2","");//紧急联系人2与用户关系
+		String ecpMbile2 = getPara("ecpMbile2","");//紧急联系人2电话
+		String isAuthed = getPara("isAuthed","");
+		//拦截验证不可为空-------end
+		
+		String usercardid = null;
+		try {
+			usercardid = CommonUtil.encryptUserCardId(userCardId);
+		} catch (Exception e) {
+			throw new BaseBizRunTimeException("AX", "用户认证信息加密发生异常", e.getMessage());
+		}
+		
+		Map<String,Object> para = new HashMap<String, Object>();
+		para.put("userCardName", userCardName);para.put("userAdress", userAdress);para.put("userCardId",usercardid);
+		para.put("ecpNme1", ecpNme1);para.put("ecpRlation1", ecpRlation1);
+		para.put("ecpMbile1", ecpMbile1);para.put("ecpNme2", ecpNme2);
+		para.put("ecpRlation2", ecpRlation2);para.put("ecpMbile2", ecpMbile2);
+		if(!StringUtil.isBlank(isAuthed)){
+			para.put("isAuthed", isAuthed);
+		}
+		
+		if(userInfoService.updateUserInfo(userCode, para)){
+			if(!StringUtil.isBlank(isAuthed) && isAuthed.equals("2")){
+				//TODO  身份认证后，邀请人添加30元现金抵用券  5月活动,9月继续，常态
+				try{
+					User user = userService.findById(userCode);
+					RecommendInfo rmd = RecommendInfo.rmdInfoDao.findFirst("select * from t_recommend_info where bUserCode = ?",user.getStr("userCode"));
+					if(rmd != null){
+						User shareUser = userService.findById(rmd.getStr("aUserCode"));
+						if(shareUser!=null){
+							//实名认证送券
+//							boolean aa = ticketsService.save(shareUser.getStr("userCode"), shareUser.getStr("userName"),CommonUtil.decryptUserMobile(shareUser.getStr("userMobile")) , "", 
+//									"30元现金券【好友实名认证奖励】", DateUtil.addDay(DateUtil.getNowDate(), 15), "F", null, SysEnum.makeSource.A);
+							boolean aa = ticketsService.saveADV(shareUser.getStr("userCode"), "50元现金券【好友实名认证奖励】", DateUtil.addDay(DateUtil.getNowDate(), 15), 5000, 1000000);
+							if(aa){
+								String mobile = userService.getMobile(shareUser.getStr("userCode"));
+								String content = CommonUtil.SMS_MSG_TICKET.replace("[huoDongName]", "推荐好友实名认证").replace("[ticketAmount]", "50");
+								SMSLog smsLog = new SMSLog();
+								smsLog.set("mobile", mobile);
+								smsLog.set("content", content);
+								smsLog.set("userCode", shareUser.getStr("userCode"));
+								smsLog.set("userName", shareUser.getStr("userName"));
+								smsLog.set("type", "15");smsLog.set("typeName", "送现金券活动");
+								smsLog.set("status", 9);
+								smsLog.set("sendDate", DateUtil.getNowDate());
+								smsLog.set("sendDateTime", DateUtil.getNowDateTime());
+								smsLog.set("break", "");
+								smsLogService.save(smsLog);
+							}
+						}
+					}
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+			return succ("更新用户认证信息操作完成", true);
+		}else
+			return error("01", "更新用户认证信息操作未生效", false);
+	}
+	
+	@ActionKey("/getUserByUserCode")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getUserByUserCode(){
+		String userCode = getPara("paraUserCode","");
+		
+		User user = userService.findUserAllInfoById(userCode);
+		if(user==null ){
+			return error("02","用户数据异常，请联系管理员",false);
+		}
+		
+		try {
+			String userMobile = user.getStr("userMobile");
+			if(!StringUtil.isBlank(userMobile)){
+				String x = CommonUtil.decryptUserMobile(userMobile);
+				if(CommonUtil.isMobile(x) || CommonUtil.isPhone(x)){
+					user.put("userMobile", x);
+				}else{
+					user.put("userMobile", " ");
+				}
+				
+			}else{
+				user.put("userMobile", " ");
+			}
+		} catch (Exception e) {
+			user.put("userMobile", "");
+		}
+		try {
+			String userCardId = user.getStr("userCardId");
+			if(!StringUtil.isBlank(userCardId)){
+				user.put("userCardId",  CommonUtil.decryptUserCardId(userCardId));
+			}else{
+				user.put("userCardId",  " ");
+			}
+		} catch (Exception e) {
+			user.put("userCardId", "");
+		}
+		
+		return succ("查询单个用户全部信息完成", user);
+	}
+	
+	/**
+	 * 根据ID查询一个用户
+	 */
+	@ActionKey("/getUserById")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getUserById(){
+		
+		String userCode = getPara("paraUserCode","");
+
+		User user = userService.findById(userCode);
+		
+		if(user==null || user.get("userMobile")==null || user.get("userCardId")==null){
+			return error("02","用户数据异常，请联系管理员",false);
+		}
+		try {
+			String userMobile = user.getStr("userMobile");
+			if(!StringUtil.isBlank(userMobile)){
+				user.put("userMobile", CommonUtil.decryptUserMobile(userMobile));
+			}else{
+				user.put("userMobile", " ");
+			}
+		} catch (Exception e) {
+			user.put("userMobile", "");
+		}
+		return succ("查询单个用户基本信息完成", user);
+
+	}
+	
+	/**
+	 * 根据id查询用户认证信息
+	 */
+	@ActionKey("/getUserInfoById")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getUserInfoById(){
+		String userCode = getPara("paraUserCode","");//拦截器验证不可为空
+		
+		UserInfo userInfo = userInfoService.findById(userCode);
+		try {
+			String userCardId = userInfo.getStr("userCardId");
+			if(!StringUtil.isBlank(userCardId)){
+				userInfo.put("userCardId", CommonUtil.decryptUserCardId(userCardId));
+			}else{
+				userInfo.put("userCardId", " ");
+			}
+		} catch (Exception e) {
+			userInfo.put("userCardId", "");
+		}
+		return succ("查询单个用户认证信息完成", userInfo);
+	}
+	
+	/**
+	 * 修改用户信息
+	 */
+	@ActionKey("/updateUser")
+	@AuthNum(value=999)
+	@Before({UserModifyUserValidator.class,AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message modifyUser(){
+		String userCode = getPara("paraUserCode","");//拦截器验证不可为空
+		String newPasswd = getPara("newPassword","");
+		String newUserName = getPara("newUserName","");
+		String newEmail = getPara("newEmail","");
+		if(userService.updateUser(userCode, newUserName, newPasswd,newEmail))
+			return succ("更新用户基本信息完成", true);
+		else
+			return error("01", "更新用户基本信息操作未生效", false);
+	}
+	
+	/**
+	 * 修改用户手机号
+	 */
+	@ActionKey("/updateUserMobile")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message updateUserMobile(){
+		String oldMobile = getPara("oldMobile","");
+		String newMobile = getPara("newMobile","");
+		String newPassword = getPara("newPassword","");
+		
+		if(StringUtil.isBlank(oldMobile)){
+			return error("03", "旧手机号不能为空", "");
+		}
+		if(StringUtil.isBlank(newMobile)){
+			return error("03", "新手机号不能为空", "");
+		}
+		if(StringUtil.isBlank(newPassword)){
+			return error("03", "初始化密码不能为空", "");
+		}
+		
+		if(CommonUtil.isMobile(newMobile) == false){
+			return error("04", "新手机号格式不正确", "");
+		}
+		
+		User user = userService.find4mobile(oldMobile);
+		if(null == user){
+			return error("01", "用户不存在", "");
+		}
+		boolean b = userService.updateUserMobile(user.getStr("userCode"),newMobile,newPassword);
+		if(b == false){
+			return error("02", "新手机号已存在或修改异常", "");
+		}
+		//跳转存管平台手机号修改
+		else{
+			BIZ_LOG_INFO(user.getStr("userCode"), BIZ_TYPE.USER, "修改用户手机号：用户手机号【" + oldMobile + "】修改为 【" + newMobile + "】初始化密码为【" + newPassword + "】");
+			String loginId=user.getStr("loginId");
+			if(null!=loginId&&!"".equals(loginId)){
+				try {
+					loginId=CommonUtil.decryptUserMobile(loginId);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			ModifyMobileReqData modifyMobileReqData=new ModifyMobileReqData();
+			modifyMobileReqData.setLogin_id(loginId);
+			modifyMobileReqData.setMchnt_cd(CommonUtil.MCHNT_CD);
+			String ssn=CommonUtil.genMchntSsn();
+			modifyMobileReqData.setMchnt_txn_ssn(ssn);
+			modifyMobileReqData.setPage_notify_url(CommonUtil.ADDRESS+"/changUserMobileSign");
+			try {
+				FuiouService.p2p400101(modifyMobileReqData, getResponse());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			renderNull();
+			}
+		}
+		return succ("修改成功,请速度联系修改密码!", "");
+	}
+	
+	/**
+	 * 取消用户理财卡绑定(连连支付)
+	 */
+	@ActionKey("/unbindBank4LianLian")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message unbindBank4LianLian(){
+		String mobile = getPara("mobile","");
+		
+		if(StringUtil.isBlank(mobile)){
+			return error("01", "手机号不能为空", "");
+		}
+		
+		User user = userService.find4mobile(mobile);
+		if(null == user){
+			return error("02", "用户不存在", "");
+		}
+		
+		String userCode = user.getStr("userCode");
+		int x = bankService.unbindBank4LianLian(userCode);
+		if(x>0){
+			return succ("解绑成功!", x);
+		}
+		return succ("该用户还未绑定理财卡", 0);
+		
+	}
+	
+	/**
+	 * 修改用户理财卡卡号
+	 */
+	@ActionKey("/updateUserBank")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message updateUserBank(){
+		String mobile = getPara("mobile","");
+		String bankNo = getPara("bankNo","");
+		String bankType = getPara("bankType","");
+		String bankName = getPara("bankName","");
+		
+		if(StringUtil.isBlank(mobile)){
+			return error("04", "手机号不能为空", "");
+		}
+		if(StringUtil.isBlank(bankNo)){
+			return error("04", "理财卡不能为空", "");
+		}
+		if(StringUtil.isBlank(bankType)){
+			return error("04", "理财卡类型不能为空", "");
+		}
+		if(StringUtil.isBlank(bankName)){
+			return error("04", "理财卡名称不能为空", "");
+		}
+		
+		User user = userService.find4mobile(mobile);
+		if(null == user){
+			return error("01", "用户不存在", "");
+		}
+		
+		String userCode = user.getStr("userCode");
+		boolean x = bankService.isAuthCard(userCode, bankNo);
+		if(x){
+			return error("66", "该理财卡已被绑定过", "");
+		}
+		//boolean b = bankService.updateBankNo(userCode, bankNo, bankName, bankType);
+		BanksV2 bank = null;
+		try {
+			bank = bankService.findBanks4User(userCode).get(0);
+		} catch (Exception e) {
+			return error("02", "该用户没有银行卡", "");
+		}
+		if(null == bank){
+			return error("02", "该用户没有银行卡", "");
+		}
+		
+		String biz_content = "银行卡修改：用户 " + userCode + " ,理财卡由【" + bank.getStr("bankNo") + "|" + bank.getStr("bankType") + "|" + bank.getStr("bankName") + "】";
+		
+		bank.set("bankNo", bankNo);
+		bank.set("bankType", bankType);
+		bank.set("bankName", bankName);
+		bank.set("cardCity", "");
+		boolean b = bank.update();
+		if(b == false){
+			return error("03", "银行卡号修改异常", "");
+		}
+		biz_content += "修改为【" + bankNo + "|" + bankName + "|" + bankType + "】" ;
+		BIZ_LOG_INFO(userCode, BIZ_TYPE.BANK, biz_content);
+		return succ("修改成功!", "");
+	}
+	
+	/**
+	 * 重置用户密码
+	 */
+	@ActionKey("/resetPasswd")
+	@AuthNum(value=999)
+	@Before({UserResetPwdValidator.class,AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message resetPwd(){
+		String userCode = getPara("paraUserCode","");//拦截器验证不可为空
+		String newPasswd = (String)CACHED.get("S0.portal-init-pwd");
+		if(userService.resetPasswd(userCode, newPasswd))
+			return succ("重置初始化用户密码操作完成", true);
+		else
+			return error("01", "重置初始化用户密码操作未生效", false);
+	}
+	
+	/**
+	 * 更新用户状态
+	 */
+	@ActionKey("/updateUserState")
+	@AuthNum(value=999)
+	@Before({UserUpdateUserState.class,AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message updateUserState(){
+		
+		String userCode = getPara("paraUserCode");//拦截器验证不可为空
+		String userState = getPara("userState");//拦截器验证不可为空
+		
+		if(userService.updateUserState(userCode, userState))
+			return succ("更新用户状态操作完成", true);
+		else
+			return error("01", "更新用户状态操作未生效", false);
+	}
+	
+	/**
+	 * 更新用户认证状态
+	 */
+	@ActionKey("/updateIsAuthed")
+	@AuthNum(value=999)
+	@Before({UserUpdateIsAuthed.class,AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message updateIsAuthed(){
+		String userCode = getPara("paraUserCode");//拦截器验证不可为空
+		String isAuthed = getPara("isAuthed");//拦截器验证不可为空
+		
+		if(userInfoService.updateIsAuthed(userCode, isAuthed))
+			return succ("更新用户认证状态操作完成", true);
+		else
+			return error("01", "更新用户认证状态操作未生效", false);
+	}
+	
+	/**
+	 * 分页查询用户
+	 */
+	@ActionKey("/getUserInfoByPage")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message findByPage(){
+		
+		Integer pageNumber = getParaToInt("pageNumber",1);
+		
+		pageNumber = pageNumber > 0 ? pageNumber : 1;
+		
+		Integer pageSize = getParaToInt("pageSize",10);
+		
+		String beginDate = getPara("beginDate","");
+		
+		String endDate = getPara("endDate","");
+		
+		String userState = getPara("userState","");
+		
+		String allkey = getPara("allkey","").trim();
+		
+		Page<User> pageUser = userService.findByPage(pageNumber, pageSize, beginDate, endDate, userState, allkey);
+		
+//		if(pageNumber > pageUser.getTotalPage() && pageUser.getTotalPage() > 0){
+//			pageNumber = pageUser.getTotalPage();
+//			userService.findByPage(pageNumber, pageSize, beginDate, endDate, userState,userMobile, allkey);
+//		}
+		return succ("分页查询用户完成", pageUser);
+	}
+	
+	@ActionKey("/getUserInfo4scoreByPage")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message queryUserInfo4scoreByPage(){
+
+		Integer pageNumber = getParaToInt("pageNumber",1);
+		
+		pageNumber = pageNumber > 0 ? pageNumber : 1;
+		
+		Integer pageSize = getParaToInt("pageSize",10);
+
+		String allkey = getPara("allkey","");
+		
+		Page<User> pageUser = userService.findInfo4scoreByPage(pageNumber, pageSize, allkey );
+		
+		return succ("ok", pageUser ) ;
+	}
+
+	@ActionKey("/modifyUserScore")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message modifyUserScore(){
+		String userCode = getPara("userCode","") ;
+		if( StringUtil.isBlank( userCode) ){
+			return error("01", "缺少必要参数!", null ) ;
+		}
+		String opValue = getPara("score");
+		String opType = "+";
+		if( opValue.indexOf("-") == 0 ){
+			opType = "-";
+			opValue = opValue.replace("-", "") ;
+		}
+		int score = 0 ;
+		try{
+			score = Integer.parseInt( opValue ) ;
+		}catch(Exception e){
+			return error("02", "积分应该为数值，比如1003,-4302", null ) ;
+		}
+		boolean upResult = userService.modifyUserScore(userCode, opType, score ) ;
+		
+		if( upResult == false ){
+			return error("03", "修改失败!", null ) ;
+		}
+		return succ("ok", null ) ;
+	}
+	
+	/**
+	 * 分页查询认证进行中的用户列表
+	 */
+	@ActionKey("/getAuthedInfoByPage")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message findAuthedByPage(){
+		
+		Integer pageNumber = getParaToInt("pageNumber",1);
+		
+		pageNumber = pageNumber > 0 ? pageNumber : 1;
+		
+		Integer pageSize = getParaToInt("pageSize",10);
+		
+		String allkey = getPara("allkey","");
+		
+		Page<User> pageUser = userService.findAuthedByPage(pageNumber, pageSize, allkey);
+		
+		if(pageNumber > pageUser.getTotalPage() && pageUser.getTotalPage() > 0){
+			pageNumber = pageUser.getTotalPage();
+			pageUser = userService.findAuthedByPage(pageNumber, pageSize, allkey);
+		}
+		return succ("分页查询用户完成", pageUser);
+	}
+	
+	@ActionKey("/sendTiXianCode2WeiXin")
+	@AuthNum(value=999)
+	@Before({Tx.class,PkMsgInterceptor.class})
+	public Message sendTiXianCode2WeiXin(){
+		String userCode = getPara("paraUserCode","");//拦截器验证不可为空
+		if(StringUtil.isBlank(userCode)){
+			return error("01", "用户不可为空", false);
+		}
+		String openId = Db.queryStr("select openId from t_short_password where userCode = ? and mobileType = 'WX'",userCode);
+		if(StringUtil.isBlank(openId))
+			return error("05", "该用户未绑定微信", false);
+		if(StringUtil.isBlank(openId) == false){
+			
+			String mobile = "";
+			try {
+				String x = Db.queryStr("select userMobile from t_user where userCode = ? ",userCode);
+				x = DESUtil.decode4string(x, CommonUtil.DESKEY);
+				if(CommonUtil.isMobile(x))
+					mobile = x;
+				else
+					return error("02", "手机号码异常",false);
+			} catch (Exception e) {
+				return error("02", "手机号码异常",false);
+			}
+			try {
+				String msgMac = CommonUtil.getMathNumber(6);
+				String wxMsgUrl = "http://wxapi.yrhx.com/weixin/service/sendTempMsg";
+				TemplateMessage msgxxx = new TemplateMessage() ;
+				msgxxx.setTemplateId("KOU41Tac7axGmgzxgRBQM5cd81Rge1yNznaMb_aQdGA");
+				msgxxx.setTouser(openId);
+				msgxxx.setData("keyword1", "易融恒信");
+				msgxxx.setData("keyword2", mobile);
+				msgxxx.setData("keyword3", msgMac);
+				msgxxx.setData("keyword4", DateUtil.getStrFromNowDate("yyyy-MM-dd HH:mm:ss:"));
+				msgxxx.setData("remark", "您正在使用提现功能，请注意验证码保密。");
+				String result = HttpRequestUtil.sendGet(wxMsgUrl, "appid=wx377e1b9c96a05ce6&body="+URLEncoder.encode( msgxxx.toJSONString(),"UTF-8"));
+				System.out.println( result );
+				Memcached.set("SMS_MSG_WITHDRAW_" + userCode , msgMac, 10*60*1000);
+				return succ("发送完成", msgMac);
+			} catch (Exception e) {
+				return error("03", "发送异常", false);
+			}
+		}
+		return error("04", "发送失败", false);
+		
+	}
+	
+	@ActionKey("/checkVIPLevel")
+	@AuthNum(value=999)
+	@Before({Tx.class,PkMsgInterceptor.class})
+	public Message checkVIPLevel(){
+		String tmpKey = getPara("key","");
+		if(StringUtil.isBlank(tmpKey)){
+			return error("01", "呵呵哒", false);
+		}
+		
+		if(tmpKey.equals("3.14159265358") == false){
+			return error("02", "呵呵哒", false);
+		}
+		
+		int x = DateUtil.compareDateByStr("yyyyMMdd", "20160411", DateUtil.getNowDate());
+		
+		if(x > 0){
+			return error("03", "新会员制度2016年4月11后才生效，还未到时间", false);
+		}
+		scanVipLevelLogger.log(Level.INFO,"[定时任务:自动扫描会员VIP等级任务,扫描中......");
+		String nowDate = CommonUtil.getFirstDataAndLastDateByMonth(0, 0, "yyyyMMdd")[0];
+		if(nowDate.equals(DateUtil.getNowDate())){
+			scanVipLevelLogger.log(Level.INFO,"[定时任务:自动扫描会员VIP等级任务,当前日期:"+nowDate+",开始重置免费提现次数");
+			Db.update("update t_withdraw_free set freeCount = 0 where updateDate < ?",nowDate);
+		}
+		List<VipV2> vips = VipV2.VIPS;
+		for (int i = 0; i < vips.size(); i++) {
+			VipV2 tmpVip = vips.get(i);
+			long tmpMinScore = CommonUtil.yunsuan(tmpVip.getVipMinScore()+"", "100", "cheng", 0).longValue();
+			long tmpMaxScore = CommonUtil.yunsuan(tmpVip.getVipMaxScore()+"", "100", "cheng", 0).longValue();
+			if(tmpVip.getVipMaxScore() == -1){
+				tmpMaxScore = -1;
+			}
+			int pageNumber = 1;
+			int pageSize = 100;
+			long doCount = 1;
+			long total = vipService.countUserByUserScore(tmpMinScore,tmpMaxScore);
+			boolean hasNext = total > 0 ? true : false;
+//			List<String> date = CommonUtil.getAnyDateFromDayLength(32, 0, 0, 0, "yyyyMMdd", 1);
+//			String date_now = date.get(0);//当天日期
+//			String date_after30days = date.get(date.size()-1);//30天后的日期
+			scanVipLevelLogger.log(Level.INFO,"[定时任务:自动扫描会员VIP等级任务,扫描符合【"+tmpVip.getVipLevelName()+"】开始......共计"+total+"个用户...");
+			while(hasNext){
+				List<User> users = vipService.findUserByUserScore(tmpMinScore,tmpMaxScore, pageNumber, pageSize);
+				if(users.size()<=0){
+					scanVipLevelLogger.log(Level.INFO,"[定时任务:自动扫描会员VIP等级任务,部分用户积分产生变动,跳出任务,重新统计中...！");
+					hasNext = false;
+					total = vipService.countUserByUserScore(tmpMinScore,tmpMaxScore);//重新统计总条数
+					hasNext = total > 0 ? true : false;
+					doCount = 1;//重置已处理数
+					pageNumber = 1;//重置索引
+					scanVipLevelLogger.log(Level.INFO,"[定时任务:自动扫描会员VIP等级任务,重新扫描符合【"+tmpVip.getVipLevelName()+"】开始......共计"+total+"个用户...");
+					continue;
+				}
+				for (int j = 0; j < users.size(); j++) {
+					User tmpUser = users.get(j);
+					long amount = vipService.findBeRecyMoney(tmpUser.getStr("userCode"));
+					scanVipLevelLogger.log(Level.INFO,"[定时任务:自动扫描会员VIP等级任务,扫描符合【"+tmpVip.getVipLevelName()+"】进行中......"
+							+ "用户信息:["+tmpUser.getStr("userCode")+"]"+tmpUser.getStr("userName")+",未来30天待收本息"+amount+",当前用户等级:"+tmpUser.getInt("vipLevel"));
+					if(tmpUser.getInt("vipLevel") == 6){//当前用户等级如果是6级
+						//TODO 判断月均待收不足10万，降级
+						if(amount < 10000000){
+							scanVipLevelLogger.log(Level.INFO,"[定时任务:自动扫描会员VIP等级任务,扫描符合【"+tmpVip.getVipLevelName()+"】进行中...用户不满足上校待收本息，降1级");
+							vipService.downUserLevel(tmpUser.getStr("userCode"), tmpUser.getInt("vipLevel"), 1);
+						}else{
+							//TODO 满足待收本息20万以上，正常判断是否可以升级
+							if(amount >= 20000000 && tmpUser.getInt("vipLevel") < tmpVip.getVipLevel()){
+								scanVipLevelLogger.log(Level.INFO,"[定时任务:自动扫描会员VIP等级任务,扫描符合【"+tmpVip.getVipLevelName()+"】进行中...用户满足升级将军的条件，升为将军");
+								vipService.updateUserLevel(tmpUser.getStr("userCode"), tmpVip);
+							}
+						}
+					}else if(tmpUser.getInt("vipLevel") == 7){//当前用户等级如果是7级
+						//TODO 判断月均待收不足20万，降级 
+						if(amount < 20000000){
+							scanVipLevelLogger.log(Level.INFO,"[定时任务:自动扫描会员VIP等级任务,扫描符合【"+tmpVip.getVipLevelName()+"】进行中...用户不满足将军待收本息，降1级");
+							vipService.downUserLevel(tmpUser.getStr("userCode"), tmpUser.getInt("vipLevel"), 1);
+						}
+					}else{
+						//只升级 不降级
+						if(tmpUser.getInt("vipLevel") < tmpVip.getVipLevel()){
+							if(tmpVip.getVipLevel() == 6){//用户积分满足6级
+								if(amount >= 10000000){
+									scanVipLevelLogger.log(Level.INFO,"[定时任务:自动扫描会员VIP等级任务,扫描符合【"+tmpVip.getVipLevelName()+"】进行中...用户满足上校条件，升为上校");
+									vipService.updateUserLevel(tmpUser.getStr("userCode"), tmpVip);
+								}else if(tmpUser.getInt("vipLevel") < 5){
+									//兼容积分跨级到上校，但本身会员等级还在中校以下
+									scanVipLevelLogger.log(Level.INFO,"[定时任务:自动扫描会员VIP等级任务,扫描符合【"+tmpVip.getVipLevelName()+"】进行中...用户满足上校积分但不满足待收本息条件，升为中校");
+									vipService.updateUserLevel(tmpUser.getStr("userCode"), VipV2.getVipByLevel(5));
+								}
+							}else if(tmpVip.getVipLevel() == 7){
+								if(amount >= 20000000){
+									scanVipLevelLogger.log(Level.INFO,"[定时任务:自动扫描会员VIP等级任务,扫描符合【"+tmpVip.getVipLevelName()+"】进行中...用户满足将军条件，升为将军");
+									vipService.updateUserLevel(tmpUser.getStr("userCode"), tmpVip);
+								}else if(tmpUser.getInt("vipLevel") < 6 && amount >= 10000000){
+									scanVipLevelLogger.log(Level.INFO,"[定时任务:自动扫描会员VIP等级任务,扫描符合【"+tmpVip.getVipLevelName()+"】进行中...用户积分满足将军条件但待收本息不满足，但用户满足上校条件，升为上校");
+									//兼容积分跨级到将军，但待收只满足上校，并且会员等级还在上校以下
+									vipService.updateUserLevel(tmpUser.getStr("userCode"), VipV2.getVipByLevel(6));
+								}else if(tmpUser.getInt("vipLevel") < 5){
+									//兼容积分跨级到将军，但本身会员等级还在中校以下
+									scanVipLevelLogger.log(Level.INFO,"[定时任务:自动扫描会员VIP等级任务,扫描符合【"+tmpVip.getVipLevelName()+"】进行中...用户积分满足将军条件但待收本息不满足，升为中校");
+									vipService.updateUserLevel(tmpUser.getStr("userCode"), VipV2.getVipByLevel(5));
+								}
+							}else{
+								scanVipLevelLogger.log(Level.INFO,"[定时任务:自动扫描会员VIP等级任务,扫描符合【"+tmpVip.getVipLevelName()+"】进行中...用户正常升级，升级为"+tmpVip.getVipLevelName());
+								vipService.updateUserLevel(tmpUser.getStr("userCode"), tmpVip);
+							}
+						}
+					}
+					doCount++;
+				}
+				if(doCount <= total){
+					pageNumber++;
+					hasNext = true;
+				}else
+					hasNext = false;
+			}
+			scanVipLevelLogger.log(Level.INFO,"[定时任务:自动扫描会员VIP等级任务,扫描符合【"+tmpVip.getVipLevelName()+"】完成......共计"+total+"个用户...");
+		}
+		return succ("00", "扫描用户VIP等级完成");
+	}
+	
+	
+	
+	/**
+	 * 用户报表
+	 * @return
+	 */
+	@ActionKey("/userTempReport")
+	@AuthNum(value=999)
+	@Before({PkMsgInterceptor.class})
+	public Message userTempReport(){
+		String tmpKey = getPara("key","");
+		if(StringUtil.isBlank(tmpKey)){
+			return error("01", "呵呵哒", false);
+		}
+		
+		if(tmpKey.equals("3.14159265358") == false){
+			return error("02", "呵呵哒", false);
+		}
+		
+		int i = 0;
+		while (true) {
+			i++;
+			Page<User> pageUser = userService.findByPage(i, 1000, null, null, null, null);
+			List<User> listUser = pageUser.getList();
+			if( null == listUser || listUser.size() <= 0){
+				break;
+			}
+			for (int j = 0; j < listUser.size(); j++) {
+				//用户个人信息
+				User user = listUser.get(j);
+				String userCode = user.getStr("userCode");
+				TempReport tr = new TempReport();
+				tr.set("userCode", userCode);
+				tr.set("userName", user.getStr("userName"));
+				tr.set("registDateTime", user.getStr("regDate"));
+				long regist4Now = CommonUtil.compareDateTime(DateUtil.getNowDate(), user.getStr("regDate"), "yyyyMMdd");
+				tr.set("regist4Now", regist4Now);
+				
+				
+				//待回收信息
+				Funds funds = Funds.fundsDao.findById(userCode);
+				tr.set("beRecyPrincipal", funds.getLong("beRecyPrincipal"));
+				tr.set("beRecyInterest", funds.getLong("beRecyInterest"));
+				
+				
+				//第一次投资信息
+				LoanTrace loanTrace = loanTraceService.findFirstLoan(userCode);
+				if(null != loanTrace){
+					tr.set("firstLoanInfo", loanTrace.getStr("loanDateTime")+"&"+loanTrace.getLong("payAmount")+"&" + loanTrace.getStr("loanUserName"));
+				}
+				
+				//第一次回款信息
+				FundsTrace fundsTrace =  fundsTraceService.findFirstBack(userCode);
+				if(null != fundsTrace){
+					tr.set("firstLoanBackInfo", fundsTrace.getStr("traceDateTime")+"&"+fundsTrace.getLong("traceAmount"));
+				}
+				
+				//投标金额小于某金额笔数
+				long loanMinAmountCount = loanTraceService.countLoanByAmount(userCode ,100000);
+				tr.set("loanMinAmountCount", loanMinAmountCount);
+				
+				//最大一次投标金额
+				long loanMaxAmount = loanTraceService.queryAmount4Max(userCode);
+				tr.set("loanMaxAmount", loanMaxAmount);
+				
+				//月投资总金额
+				long loan4Month = loanTraceService.countPayAmount4User(userCode,"20161001000000", "20161031235959");
+				tr.set("loan4Month", loan4Month);
+				
+				//月赚取收益
+				long income4Month = historyRecyService.queryIncome4Month(userCode, "20161001", "20161031");
+				tr.set("income4Month", income4Month);
+				
+				//投标总金额，总笔数
+				long[] coungTouBiaoCiShu = loanTraceService.coungTouBiaoCiShu(userCode);
+				tr.set("loanAmount", coungTouBiaoCiShu[0]);
+				tr.set("loanCount", coungTouBiaoCiShu[1]);
+				
+				//投资金额超过百分比
+				int loanPercent = 0;
+				
+				if(coungTouBiaoCiShu[0] > 0){
+					long totalCount = ViewLoanAmount.viewLoanDao.countAll();
+					long minAmountCount = ViewLoanAmount.viewLoanDao.countByAmount(coungTouBiaoCiShu[0], "<=");
+					loanPercent = (int)((float)minAmountCount/totalCount * 100);
+				}
+				tr.set("loanPercent", loanPercent);
+				
+				
+				//总收益
+				long sumTraceAmount = fundsTraceService.sumTraceAmount(null, null, "R,L", "J", userCode);
+				tr.set("incomeAmount", sumTraceAmount);
+				
+				//投标类型
+				long countLoanByCar = loanTraceService.countLoanByCar(userCode);
+				long countLoanByHouse = loanTraceService.countLoanByHouse(userCode);
+				tr.set("loanCar", countLoanByCar);
+				tr.set("loanHouse", countLoanByHouse);
+				
+				//邀请总人数
+				Page<Share> queryShareList = shareService.queryShareList(1, 2, userCode);
+				int shareCount = queryShareList.getTotalRow();
+				tr.set("shareCount", shareCount);
+				
+//				//投资称号
+//				String loanName = getLoanTitle(coungTouBiaoCiShu[0], regist4Now, countLoanByCar > countLoanByHouse, shareCount, loanMaxAmountCount);
+//				String loanKeyName = getLoanKeyName(loanName);
+//				tr.set("loanName", loanName);
+//				tr.set("loanKeyName", loanKeyName);
+				
+				TempReport tempReport = TempReport.tempReportDao.findById(userCode);
+				if( null == tempReport ){
+					tr.save();
+				}else{
+					tr.update();
+				}
+				System.out.println("完成条数 ： " + ((i-1)*1000 +j+1) );
+			}
+		}
+		
+		return succ("执行完成", "");
+	}
+	
+	
+	public String getLoanTitle(long amount , long registDate , 
+			boolean maxLoanCar ,int shareCount,long loanMaxAmountCount){
+		String title = "初入江湖";
+		if(amount < 1000000){
+			title = "初入江湖";
+		}else if(amount < 50000000 && amount > 1000000){
+			title = "小有所成";
+		}else if(amount < 100000000 && amount > 50000000){
+			title = "名动天下";
+		}else if(amount > 100000000){
+			title = "一代宗师";
+		}
+		
+		if(registDate > 730){
+			title += "&老朋友";
+		}else if(registDate < 730 && amount >= 365){
+			title += "&同路人";
+		}else{
+			title += "&君子之交";
+		}
+		
+		if(maxLoanCar){
+			title += "&极品飞车";
+		}else{
+			title += "&万顷良田";
+		}
+		
+		if(shareCount > 20){
+			title += "&高朋满座";
+		}else if(shareCount < 20 && shareCount >= 5){
+			title += "&广交四海";
+		}else{
+			title += "&自己偷着乐";
+		}
+		
+		if(loanMaxAmountCount > 5){
+			title += "&擒贼擒王";
+		}else{
+			title += "&捕鱼达人";
+		}
+		return title;
+	}
+	
+	
+	public String getLoanKeyName(String loanName){
+		
+		String keyName = "";
+		
+		if(loanName.indexOf("捕鱼达人") != -1){
+			keyName = "谨慎";
+		}else{
+			keyName = "冒险";
+		}
+		
+		if(loanName.indexOf("一代宗师") != -1){
+			keyName += "&气魄";
+		}else if(loanName.indexOf("名动天下") != -1){
+			keyName += "&巅峰";
+		}else if(loanName.indexOf("小有所成") != -1){
+			keyName += "&幸运";
+		}else if(loanName.indexOf("初入江湖") != -1){
+			keyName += "&尝试";
+		}
+		
+		if(loanName.indexOf("万顷良田") != -1){
+			keyName += "&沉稳";
+		}else {
+			keyName += "&灵动";
+		}
+		
+		
+		if(loanName.indexOf("老朋友") != -1){
+			keyName += "&资深";
+		}
+		if(loanName.indexOf("高朋满座") != -1){
+			keyName += "&广泛";
+		}
+		return keyName;
+	}
+	
+//20170525 ws  富友更换银行卡
+	@ActionKey("/changeBankCard")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public void changeBankCard(){
+		String mobile= getPara("mobile");
+		String newbankNo=getPara("bankNo");
+		String bankType=getPara("bankType");
+		String bankName=getPara("bankName");
+		User user=userService.find4mobile(mobile);
+		if(user==null){
+			forward("/pages/404.html",true);
+		}
+		String loginId=user.getStr("loginId");
+		if(loginId==null||"".equals(loginId)){
+			forward("/pages/404.html",true);
+		}
+		try {
+			loginId = CommonUtil.decryptUserMobile(user.getStr("loginId"));
+		} catch (Exception e1) {
+			forward("/pages/404.html",true);
+		}
+		if(null!=mobile){
+			ChangeCard2ReqData changeCard =new ChangeCard2ReqData();
+			changeCard.setLogin_id(loginId);
+			changeCard.setMchnt_cd(CommonUtil.MCHNT_CD);
+			String ssn=CommonUtil.genMchntSsn();
+			changeCard.setMchnt_txn_ssn(ssn);
+			changeCard.setPage_notify_url(CommonUtil.ADDRESS+"/changeBankCardtrace");
+			//添加修改银行卡信息记录
+			ChangeBankTrace changebankTrace = getModel(ChangeBankTrace.class);
+			changebankTrace.set("userCode", user.get("userCode"));
+			changebankTrace.set("ssn", ssn);
+			changebankTrace.set("state", "5");
+			changebankTrace.set("creatDate", DateUtil.getNowDateTime());
+			changebankTrace.set("upDate", DateUtil.getNowDateTime());
+			BanksV2 banksV2 =bankService.findBanks4User(user.getStr("userCode")).get(0);
+			changebankTrace.set("oldBankCardId", banksV2.getStr("bankNo"));
+			changebankTrace.set("newBankCardId", newbankNo);
+			changebankTrace.set("newBankType", bankType);
+			changebankTrace.set("newBankName", bankName);
+			if(changebankTrace.save()){
+				try {
+					FuiouService.changeCard2(changeCard, getResponse());
+				} catch (Exception e) {
+					forward("/pages/404.html",true);
+				}
+			}
+		}
+		renderNull();
+	}
+	//查询新银行卡是否被使用 20170610 ws
+	@ActionKey("/isbankBeused")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message isbankBeused(){
+		String newbankNo=getPara("bankNo");
+		BanksV2 banksV2 =BanksV2.bankV2Dao.findFirst("select bankNo from t_banks_v2 where bankNo=?",newbankNo);
+		if(null==banksV2){
+			return succ("可以使用", "");
+		}
+		return error("66", "该理财卡已被绑定过", "");
+		
+	}
+	//更改银行卡更换状态 20170610 ws
+	@ActionKey("/changeBankCardTrace")
+	@AuthNum(value=999)
+	@Before(Tx.class)
+	public void changeBankCardTrace(){
+		String resp_code = getPara("resp_code");
+		//修改银行卡更换记录
+		if("0000".equals(resp_code)){
+			String mchnt_txn_ssn= getPara("mchnt_txn_ssn");
+			ChangeBankTrace changeBankTrace = ChangeBankTrace.changeBankTraceDao.findFirst("select * from t_changebank_trace where ssn=?",mchnt_txn_ssn);
+			changeBankTrace.set("state", "0");
+			changeBankTrace.set("upDate", DateUtil.getNowDateTime());
+			if(changeBankTrace.update()){
+				forward("/pages/update-bank-fuiou.html",true);
+			}else{
+				forward("/pages/404.html",true);
+			}
+		}
+		forward("/pages/404.html",true);
+	}
+	//换卡页面 银行名称下拉框
+	@ActionKey("/querBankName")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message querBankCodes(){
+		List<BankCode> tmp=  BankCode.bankCodeDao.find("select bankCode,bankName from t_bank_Code ");
+		return succ("bankcodes", tmp);
+	}
+	//查询银行卡更换状态
+	@ActionKey("/queryBankCardTrace")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message queryBankCardTrace(){
+		System.out.println("进入换卡查询接口");
+		String mobile= getPara("mobile");
+		if(null==mobile){
+			return error("01", "手机号为空", "");
+		}
+		User user=userService.find4mobile(mobile);
+		if(null==user){
+			return error("02", "无此用户", "");
+		}
+		String loginId=user.getStr("loginId");
+		if(loginId==null||"".equals(loginId)){
+			return error("09", "此用户还未开通存管", "");
+		}
+		try {
+			loginId = CommonUtil.decryptUserMobile(user.getStr("loginId"));
+		} catch (Exception e1) {
+			return error("03", "查询错误", "");
+		}
+		ChangeBankTrace changeBankTrace = ChangeBankTrace.changeBankTraceDao.findFirst("select * from t_changebank_trace where userCode=? and state =0",user.getStr("userCode"));
+		if(null==changeBankTrace){
+			return error("04", "查询错误", "");
+		}
+		QueryChangeCardReqData queryChangeCardReqData=new QueryChangeCardReqData();
+		queryChangeCardReqData.setLogin_id(loginId);
+		queryChangeCardReqData.setMchnt_cd(CommonUtil.MCHNT_CD);
+		String ssn=CommonUtil.genShortUID();
+		queryChangeCardReqData.setMchnt_txn_ssn(ssn);
+		queryChangeCardReqData.setTxn_ssn(changeBankTrace.getStr("ssn"));
+		try {
+			QueryChangeCardRspData qcc=FuiouService.queryChangeCard(queryChangeCardReqData);
+			if("0000".equals(qcc.getResp_code())){
+				if("1".equals(qcc.getExamine_st())){
+					//更新更换银行卡记录
+					changeBankTrace.set("newBankNo", qcc.getCard_no());//更新新银行卡号
+					changeBankTrace.set("state","1");//更新状态
+					changeBankTrace.set("upDate", DateUtil.getNowDateTime());//更新时间
+					if(changeBankTrace.update()){
+						String userCode=user.getStr("userCode");
+						BanksV2 bank=BanksV2.bankV2Dao.findById(userCode);
+						String biz_content = "银行卡修改：用户 " + userCode + " ,理财卡由【" + bank.getStr("bankNo") + "|" + bank.getStr("bankType") + "|" + bank.getStr("bankName") + "】";
+						String bankNo=qcc.getCard_no();
+						String bankName=changeBankTrace.getStr("bankName");
+						String bankType=changeBankTrace.getStr("bankType");
+						bank.set("bankNo",bankNo );
+						bank.set("bankType",bankType );
+						bank.set("bankName",bankName );
+						bank.set("cardCity", "");
+						boolean b = bank.update();
+						if(b == false){
+							return error("03", "银行卡号修改异常", "");
+						}
+						biz_content += "修改为【" + bankNo + "|" + bankName + "|" + bankType + "】" ;
+						BIZ_LOG_INFO(userCode, BIZ_TYPE.BANK, biz_content);
+						return succ("修改成功!", "");
+					}}
+					if("2".equals(qcc.getExamine_st())){
+						changeBankTrace.set("state","2");//更新状态
+						changeBankTrace.set("upDate", DateUtil.getNowDateTime());//更新时间
+						changeBankTrace.set("remark", qcc.getRemark());
+						if(changeBankTrace.update()){
+							return error("07","更新失败,原因为："+qcc.getRemark(), "");
+						}
+					}
+					if("0".equals(qcc.getExamine_st())){
+						return error("08","审核中", "");
+					}
+				
+			}
+		} catch (Exception e) {
+			return error("05", "查询错误", "");
+		}
+		return error("06", "查询错误,确认查询信息是否正确,用户未提交更换银行卡或者已更换完成", "");
+	}
+	
+	
+	/**
+	 * 20170906 后台根据usercode查询该用户的投资加权明细
+	 * 
+	 * @return
+	 */
+	@ActionKey("/getUserJq")
+	@AuthNum(value = 999)
+	@Before({ AuthInterceptor.class, PkMsgInterceptor.class })
+	public Message getUserJq() {
+		String userMobile =getPara("userMobile");
+		//userCode="ad4599c92c5f4e8ba9353a3501f77d40";
+		String beginDateTime = "20170901000000";
+		String endDateTime = "20170930235959";
+		String beginDate = "20170901";
+		String endDate = "20170930";
+		int loanTimeLimit = 0;// 投标期限
+		long loanAmountTotalJQ = 0;// 总投资加权金额
+		String userName="";
+		if(""!=userMobile){
+			try {
+				userMobile=CommonUtil.encryptUserMobile(userMobile);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		List<LoanTrace> loanTraces = loanTraceService.userAmountByMobile(beginDateTime, endDateTime, userMobile);
+		Map<String, Object> map = new HashMap<String, Object>();
+		ArrayList<LoanTrace> list=new ArrayList<LoanTrace>();
+		if (null != loanTraces) {
+			for (int i = 0; i < loanTraces.size(); i++) {
+				long loanAmount = 0;
+				long loanAmountJQ = 0;
+				LoanTransfer loanTransfer = null;
+				LoanTrace loanTrace = loanTraces.get(i);
+				 userName = loanTrace.getStr("payUserName");
+				String traceCode = loanTrace.getStr("traceCode");
+				if ("C".equals(loanTrace.getStr("isTransfer"))) { // 不是债权
+
+					loanTimeLimit = loanTrace.getInt("loanTimeLimit");
+					loanAmount = loanTrace.getLong("payAmount");
+					loanAmountJQ = loanAmount * loanTimeLimit / 12;
+				}  else if ("A".equals(loanTrace.getStr("isTransfer"))) {// 转让中
+					loanTransfer = loanTransferService.queryLoanTransferByMobile(traceCode, "B", userMobile,
+							beginDate, endDate);
+					if (null == loanTransfer) {
+						loanTimeLimit = loanTrace.getInt("loanTimeLimit");
+						loanAmount = loanTrace.getLong("payAmount");
+						loanAmountJQ = loanAmount * loanTimeLimit / 12;
+					} 
+				}
+				loanAmountTotalJQ+=loanAmountJQ;
+				loanTrace.put("userName",userName);
+				loanTrace.put("loanTimeLimit",loanTimeLimit);
+				loanTrace.put("loanAmount",Number.longToString(loanAmount));
+				loanTrace.put("loanAmountJQ",Number.longToString(loanAmountJQ));
+				list.add(loanTrace);
+			}
+		}
+		map.put("loanAmountTotalJQ",Number.longToString(loanAmountTotalJQ));
+		map.put("list", list);
+		return succ("success", map);
+	}
+
+	@ActionKey("/isFuiouAccount")
+	@Before(PkMsgInterceptor.class)
+	public Message isFuiouAccount() {
+		String userCode = getPara("userCode");
+		User user = userService.findById(userCode);
+		FuiouController fuiouController = new FuiouController();
+		if (fuiouController.isFuiouAccount(user)) {
+			return succ("success", "已开通存管");
+		}
+		return error("failed", "未开通存管", null);
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

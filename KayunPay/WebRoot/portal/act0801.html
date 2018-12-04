@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>抢点现金买西瓜</title>
+		<link type="text/css" href="/portal/css/activity/act0801.css" rel="stylesheet">
+	</head>
+
+	<body>
+		<div id="topic"></div>
+		<div id="middle">
+			<div id="mid_content">
+				<div id="mid_left">
+					<div id="mid_left_top">
+						欢迎您!
+						<a id="noLogin" href="/login">请登录</a> <b id="yesLogin"><span id="userName"></span>，今日还有<span
+						id="chance"></span>次抽奖机会</b>
+						<div id="record">
+							<img id="showRecord" src="/portal/images/activity/record.jpg" />
+						</div>
+					</div>
+					<div id="mid_left_foot">
+						<div id="showAllBox">
+							<ul id="showAll">
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div id="mid_right">
+					<div id="bg">
+						<img id="choujiang" src="/portal/images/activity/choujiang.png">
+						<img id="awards" src="/portal/images/activity/pan.png">
+						<div id="djs">
+							距离活动开始还有: <span id="hour"></span>小时 <span id="minites"></span>分 <span id="seconds"></span>秒
+						</div>
+						<div id="rest">
+							剩余<span id="restNo"></span>个奖品
+						</div>
+						<div id="qiangguang">抢光了，明天再来哦</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="content">
+			<div id="userTotal">
+				登录后可查本月投资总额！
+			</div>
+		</div>
+		<div id="foot"></div>
+		<!-- 阴影背景 -->
+		<div id="yinying">
+			<div id="rs_pic">
+				<div id="exit"></div>
+				<div id="tz_now"></div>
+			</div>
+			<div id="recordBg">
+				<div id="record_list">
+					<ul id="record_list_title">
+						<li>
+							<div id="title1">获得奖品</div>
+							<div id="title2">时间</div>
+						</li>
+					</ul>
+					<div id="scroll">
+						<ul id="userAwards_list">
+						</ul>
+					</div>
+				</div>
+				<div id="quit"></div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js?v=1.0.0" charset="utf-8"></script>
+	<script type="text/javascript" src="/portal/js/pub/core.js?v=1.0.0" charset="utf-8"></script>
+	<script type="text/javascript">
+		//window.onload = checkLogin();
+		var flag = false;
+		var restLotteryCount = 0;
+		$(function() {
+			getTotal();
+			getLotteryInfo();
+			checkRest();
+			$("#choujiang").bind("click", function() {
+				lottery();
+			});
+			if(YRHX.Cookie("userName").get() != null && YRHX.Cookie("userName").get() != "") {
+				$("#showRecord").bind("click", function() {
+					showRecords();
+				});
+			} else {
+				$("#showRecord").bind("click", function() {
+					alert("请登录后查看中奖记录");
+					window.location.href = "/login";
+				})
+			}
+		});
+
+		var cat = 60;
+		var num = 0;
+		var start = true;
+
+		$("#noLogin").mouseover(function() {
+			$(this).css('text-decoration', 'underline');
+		});
+		$("#noLogin").mouseleave(function() {
+			$(this).css('text-decoration', 'none');
+		});
+
+		function getLotteryInfo() {
+			var userName = YRHX.Cookie("userName").get();
+			if(userName != null) {
+				$("#noLogin").css('display', 'none');
+				$("#yesLogin").css('display', 'block');
+				$("#userName").html(userName);
+				YRHX.ajax({
+					url: "/findRecords4User",
+					success: function(sucData) {
+						$("#chance").html(sucData['count']);
+						restLotteryCount = sucData["count"];
+					},
+					error: function(errData) {
+						$.popTips("popTipErr", errData.return_info);
+					}
+				});
+			}
+		}
+
+		function lottery() {
+			if(!flag) {
+				alert("活动尚未开始");
+				return;
+			}
+			if(YRHX.Cookie("userName").get() == null || YRHX.Cookie("userName").get() === "") {
+				alert("请登录后参与抽奖");
+				return;
+			}
+			if(restLotteryCount == 0) {
+				alert("您今日的抽奖机会已用完");
+				return;
+			}
+			YRHX.ajax({
+				url: "/activity4month201708",
+				success: function(sucData) {
+					if(start) {
+						$("#awards").css('transform', 'rotate(0)')
+						start = !start;
+						run(sucData);
+					}
+				},
+				error: function(errData) {
+					if(errData.return_code == "01") {
+						alert("活动尚未开始");
+					}
+					if(errData.return_code == "05") {
+						alert("您今日的抽奖机会已用完");
+					}
+				}
+			});
+		}
+
+		function run(rs) {
+			var timer = null;
+			var rdm = 360 * 7 + 60 * rs;
+			clearInterval(timer);
+			timer = setInterval(function() {
+				$("#awards").css('transform', 'rotate(' + rdm + 'deg)');
+				clearInterval(timer);
+				setTimeout(function() {
+					start = !start;
+					num = rdm % 360;
+					if(num <= cat * 1) {
+						yinYing(rs);
+					} else if(num <= cat * 2) {
+						yinYing(rs);
+					} else if(num <= cat * 3) {
+						yinYing(rs);
+					} else if(num <= cat * 4) {
+						yinYing(rs);
+					} else if(num <= cat * 5) {
+						yinYing(rs);
+					} else if(num <= cat * 6) {
+						yinYing(rs);
+					}
+				}, 3500);
+			}, 30);
+		};
+
+		function yinYing(show_pic) {
+			$("#yinying").css('display', 'block');
+			$("#rs_pic").css('display', 'block');
+			$("#exit").css('display', 'block');
+			$("#tz_now").css('display', 'block');
+			$("body").css('overflow', 'hidden');
+			if(show_pic == 0) {
+				$("#rs_pic").css('background',
+					'url(/portal/images/activity/100yuan.png)');
+			} else if(show_pic == 1) {
+				$("#rs_pic").css('background',
+					'url(/portal/images/activity/1yuan.png)');
+			} else if(show_pic == 2) {
+				$("#rs_pic").css('background',
+					'url(/portal/images/activity/5yuan.png)');
+			} else if(show_pic == 3) {
+				$("#rs_pic").css('background',
+					'url(/portal/images/activity/10yuan.png)');
+			} else if(show_pic == 4) {
+				$("#rs_pic").css('background',
+					'url(/portal/images/activity/20yuan.png)');
+			} else if(show_pic == 5) {
+				$("#rs_pic").css('background',
+					'url(/portal/images/activity/50yuan.png)');
+			}
+		};
+
+		$("#exit").click(function() {
+			$("#yinying").css('display', 'none');
+			$("body").css('overflow', 'auto');
+			window.location.reload();
+		});
+
+		function djs() {
+			var sysDate = new Date();
+			var sysYear = sysDate.getFullYear();
+			var sysMonth = sysDate.getMonth() + 1;
+			var sysDay = sysDate.getDate();
+			var nowDate = sysYear + "/" + sysMonth + "/" + sysDay;
+			var actTime = new Date(nowDate + " 10:00:00");
+
+			//剩余时间
+			var leftTime = actTime - sysDate;
+			//定义时，分，秒
+			var h, m, s;
+			if(leftTime >= 0) {
+				h = Math.floor(leftTime / 1000 / 60 / 60 % 24);
+				m = Math.floor(leftTime / 1000 / 60 % 60) + "";
+				s = Math.floor(leftTime / 1000 % 60);
+				if(h.length < 2) {
+					h = "0" + h;
+				}
+				if(m.length < 2) {
+					m = "0" + m;
+				}
+				if(s.lengt < 2) {
+					s = "0" + s;
+				}
+				if(h <= 0) {
+					$("#hour").text("0");
+				} else {
+					$("#hour").text(h);
+				}
+				if(m <= 0) {
+					$("#minites").text("00");
+				} else {
+					$("#minites").text(m);
+				}
+				$("#seconds").text(s);
+				setTimeout(djs, 1000);
+			} else {
+				$("#djs").css('display', 'none');
+				$("#rest").css("display", 'block');
+				flag = true;
+			}
+		}
+
+		function checkRest(rest) {
+			if(rest == 0) {
+				$("#djs").css('display', 'none');
+				$("#rest").css('display', 'none');
+				$("#qiangguang").css('display', 'block');
+			} else {
+				djs();
+			}
+		}
+
+		function showRecords() {
+			$("#yinying").css('display', 'block');
+			$("#recordBg").css('display', 'block');
+			$("body").css('overflow', 'hidden');
+		}
+
+		$("#quit").click(function() {
+			$("#yinying").css('display', 'none');
+			$("#recordBg").css('display', 'none');
+			$("body").css('overflow', 'auto');
+		});
+
+		$.showAllUsers = function() {
+			YRHX.ajax({
+				url: "/list4active201708",
+				success: function(sucData) {
+					var html_ul = "<li><span class='a1'>#{userName}</span><span class='a2'>#{prizeName}</span><span class='a3'>#{addDateTime}</span></li>";
+					var tableEle = $("#mid_left_foot ul");
+					tableEle.html("");
+					var rsData = sucData.list;
+					if(rsData.length > 0) {
+						for(var i = 0; i < rsData.length; i++) {
+							var row = rsData[i];
+							var len = row["userName"].length;
+							if(len < 3) {
+								row["userName"] = row["userName"] + "***";
+							} else if (len < 11) {
+								row["userName"] = row["userName"].substr(0, 3) + "***";
+							} else if (len == 11) {
+								row["userName"] = row["userName"].substr(0, 3) + "***" + row["userName"].substr(7);
+							} else {
+								row["userName"] = row["userName"].substr(0, 3) + "***";
+							}
+							row["addDateTime"] = row["addDateTime"].substring(4, 6) + "-" + row["addDateTime"].substring(6, 8);
+							var tmpHtml = html_ul.makeHtml(row);
+							tableEle.append(tmpHtml);
+						}
+					}
+				},
+			});
+		}
+
+		$("#showRecord").bind("click", function() {
+			showSelf();
+		});
+
+		function showSelf() {
+			YRHX.ajax({
+				url: "/findRecords4User",
+				success: function(sucData) {
+					var html_ul = "<li><span class='b1'>#{prizeName}</span><span class='b2'>#{addDateTime}</span></li>";
+					var tableEle = $("#userAwards_list");
+					tableEle.html("");
+					var rsData = sucData.list;
+					if(rsData.length > 0) {
+						for(var i = 0; i < rsData.length; i++) {
+							var row = rsData[i];
+							row["prizeName"] = row["prizeName"];
+							row["addDateTime"] = row["addDateTime"].substring(0, 4) + "-" + row["addDateTime"].substring(4, 6) + "-" + row["addDateTime"].substring(6, 8);
+							var tmpHtml = html_ul.makeHtml(row);
+							tableEle.append(tmpHtml);
+						}
+					}
+				},
+			});
+		}
+
+		$("#tz_now").click(function() {
+			window.location.href = "/Z02?navTab=1";
+		});
+
+		$.showAllUsers();
+
+		$(function() {
+			var listPanel = $('#showAll');
+			var z = 0; //向上滚动top值
+			function up() { //向上滚动
+				listPanel.animate({ //中奖结果
+					'top': (z - 39) + 'px'
+				}, 2500, 'linear', function() {
+					listPanel.css({
+							'top': '0px'
+						})
+						.find("li:first").appendTo(listPanel);
+					up();
+				});
+			}
+			up();
+		});
+
+		$.showRest = function() {
+			YRHX.ajax({
+				url: "/remain4active201708",
+				success: function(sucData) {
+					$("#restNo").html(sucData);
+					checkRest(sucData);
+				},
+				error: function(errData) {
+					$.popTips("popTipErr", errData.return_info);
+				}
+			});
+		}
+		$.showRest();
+
+		function getTotal() {
+			var userName = YRHX.Cookie("userName").get();
+			if(userName != null) {
+				$("#userTotal").html("");
+				YRHX.ajax({
+					url: "/tmpQueryFundsTrace4User",
+					data: {
+						"beginDate": "20170801",
+						"endDate": "20170831"
+					},
+					success: function(sucData) {
+						$("#userTotal").html("您本月的累计投资额金额为：<span>" + YRHX.toDecimal2(sucData["sumTraceAmount"] / 10.0 / 10.0) + "</span>元");
+					},
+					error: function(errData) {
+						$.popTips("popTipErr", errData.return_info);
+					}
+				});
+			}
+		}
+	</script>
+
+</html>

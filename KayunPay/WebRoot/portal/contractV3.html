@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>借款合同生成工具</title>
+<link type="text/css" href="/portal/css/public.css" rel="stylesheet">
+<link type="text/css" href="/portal/css/user.css" rel="stylesheet">
+<link type="text/css" href="/portal/css/datapicker/datepicker.css" rel="stylesheet">
+<!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+<style>
+	.myInfo .item{
+		padding-left:10px;
+	}
+</style>
+</head>
+<body>
+	<div class="wrapper">
+		<div style="height: 100px;font-size: 64px;text-align: center;">
+			<font>易融恒信V587</font>
+		</div>
+		<main class="user">
+		<div class="user-main">
+			<div class="user-main-right" style="width: 100%">
+				<div class="user-main-right-c">
+					<div class="tabNav">
+						<ul>
+							<li class="active">借款合同生成器</li>
+						</ul>
+					</div>
+					
+					<div id="tab-content">
+						<div class="tab-content-list myInfo">
+							<div><h2>借款信息:</h2></div>
+							<div class="item">
+								<div class="write_text">
+									<label><i>&nbsp;&nbsp;</i>还款方式&nbsp;&nbsp;&nbsp;：</label>
+									<div id="divTemplateType" class="select" style="width:100px;margin-left:16px;">
+										<span id="spanTemplateType" style="margin-left:0px;" templateType='等额本息' >等额本息</span>
+										<div class="options" id="templateType">
+											<!-- <a href='javascript:' templateType='等本等息'>等额本息</a>
+											<a href='javascript:' templateType='GPS先息后本'>GPS先息后本</a>
+											<a href='javascript:' templateType='质押等本等息'>等额本息</a>
+											<a href='javascript:' templateType='质押先息后本'>质押先息后本</a> -->
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="item"><label><i>&nbsp;&nbsp;</i>借款类型：
+							   <select id="loanTypeForContract" style="width: 102px;margin-left: 27px;height: 37px;">
+							      <option value="0">车   贷</option>
+							      <option value="1">信   贷</option>
+							   </select>
+							
+							</label></div>
+							<div class="item"><label><i>&nbsp;&nbsp;</i>借款人类型：
+								<input type="radio" value="0" name="loanUserType" checked="checked" id="loanUserType_personal" /><label for="loanUserType_personal">&nbsp;个人用户</label>
+								<input type="radio" value="1" name="loanUserType" id="loanUserType_company" /><label for="loanUserType_company">&nbsp;企业用户</label></label>
+							</div>
+							<div class="item"><label id="txtLoanUserName"><i>*</i>借款人姓名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;：</label><input type="text" id="loanUserName"/><font color="red"> &nbsp;&nbsp;</font></div>
+							<div class="item"><label id="txtLoanUserCardId"><i>*</i>借款人身份证&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;：</label><input type="text" id="loanUserCardId" maxlength=18/><font color="red">&nbsp;&nbsp;</font></div>
+							<div id="txtLegal" class="item" style="display: none;"><label id="txtLegalUserCardId"><i>*</i>法人身份证&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;：</label><input type="text" id="legalUserCardId" maxlength=18/></div>
+							<div id="loanType" class="item" style="display: none;"><label id="txtLegalUserCardId"><i>*</i>借款用户类型&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;：</label><input type="text" id="loanTypeForUser" value="个人用户" maxlength=18/></div>
+							
+							<div class="item"><label><i>*</i>借款人联系住址&nbsp;&nbsp;&nbsp;：</label><input type="text" maxlength=30 id="loanUserAddress"/></div>
+							<div class="item"><label><i>*</i>借款人手机号&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;：</label><input type="text" id="loanUserMobile" maxlength=11/></div>
+							<div class="dashedLine"></div>
+							 
+							<div class="item"><label><i>*</i>借款金额&nbsp;&nbsp;&nbsp;：</label><input type="text" id="loanAmount" onkeyup="this.value=this.value.replace(/\D/g,'')"  onafterpaste="this.value=this.value.replace(/\D/g,'')"/><font color="red">(单位：元)</font></div>
+							
+							<div class="item"><label><i>*</i>商务服务月费率&nbsp;&nbsp;&nbsp;：</label><input type="text" id="rateByService" maxlength=6/>&nbsp;&nbsp;%&nbsp;&nbsp;<font color="red">(1.5%则输入1.5即可)</font></div>
+							<div class="item"><label><i>&nbsp;&nbsp;</i>借款用途&nbsp;&nbsp;&nbsp;：</label><input type="text" maxlength=20 id="loanUsed"/></div>
+							<div class="item"><label><i>*</i>借款期限&nbsp;&nbsp;&nbsp;：</label><input type="text" id="limit" maxlength=3 style="width:80px;" onkeyup="this.value=this.value.replace(/\D/g,'')"  onafterpaste="this.value=this.value.replace(/\D/g,'')"/><font color="red">&nbsp;&nbsp;(如：3个月则输入3即可)</font></div>
+							<div class="item"><label><i>*</i>借款利率&nbsp;&nbsp;&nbsp;：</label><input type="text" id="rateByYear" maxlength=6 style="width:80px;"/>&nbsp;&nbsp;%&nbsp;&nbsp;<font color="red">(实际借款年利率，如：1.5%则输入1.5即可)</font></div>
+							<div class="item"><label><i>*</i>平台综合成本&nbsp;&nbsp;&nbsp;：</label><input type="text" id="rateByCompany"/>&nbsp;&nbsp;&nbsp;&nbsp;%<font color="red">(如：18% 填18即可,12期以下18%，12期及以上21%)</font></div>
+		
+							<div class="item" id="carManager">
+									<label style="margin-right:23px"><i>&nbsp;&nbsp;</i>车辆信息&nbsp;&nbsp;：</label>品牌：<input type="text" maxlength=10 style="width:180px;margin-left: 0px;margin-right: 10px;" id="car_pp"/>型号：<input type="text" maxlength=10 style="width:170px;margin-left: 0px;margin-right: 10px;" id="car_xh"/>车牌号：<input type="text" maxlength=7 style="width:180px;margin-left: 0px;margin-right: 10px;" id="car_cph"/>发动机号：<input type="text" maxlength=20 style="width:180px;margin-left: 0px;margin-right: 10px;" id="car_fdjh"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;车架号：<input type="text" maxlength=20 style="width:180px;margin-left: 0px;margin-right: 10px;" id="car_cjh"/>车辆违章费：<input type="text" maxlength=20 style="width:180px;margin-left: 0px;margin-right: 10px;" id="car_cwzf"/><font color="red"> &nbsp;&nbsp;(单位：元)</font>&nbsp;&nbsp;&nbsp;&nbsp;车主姓名：<input type="text" maxlength=20 style="width:180px;margin-left: 0px;margin-right: 10px;" id="car_cz"/>
+									<!-- <a href='javascript:' id="a_addCars" class="green">添加</a>
+									<a href='javascript:' id="a_delCars" class="red">删除</a> -->
+							</div>
+							<div id="carsDiv"></div>
+							
+							<div class="item"><label><i>&nbsp;&nbsp;</i>借款人银行卡卡号：</label><input type="text" id="loanBankNo"/></div>
+							<div class="item"><label><i>&nbsp;&nbsp;</i>借款人银行卡全称&nbsp;&nbsp;&nbsp;：</label><input type="text" id="loanBankName"/></div>
+
+							<div class="dashedLine"></div>
+							<div style="margin-left: 40px;color: red;">备注：如果有担保人，姓名必须填写，其它可选填！</div>
+							<!-- <div class="item">
+								<label style="margin-right:23px">
+									<i>&nbsp;&nbsp;</i>担保人(公司)&nbsp;&nbsp;：
+								</label>
+								姓名：<input type="text" maxlength=20 style="width:60px;margin-left: 0px;margin-right: 10px;" id="ensureCompanyName"/>
+								公司组织机构代码：<input type="text" maxlength=20 style="width:120px;margin-left: 0px;margin-right: 10px;" id="companyCode"/>
+								经营场所：<input type="text" maxlength=30 style="width:260px;margin-left: 0px;margin-right: 10px;" id="businessPlace"/>
+								联系电话：<input type="text" maxlength=11 style="width:90px;margin-left: 0px;margin-right: 10px;" id="companyPhone"/>
+							</div> -->
+							<div class="item">
+								<label style="margin-right:23px">
+									<i>&nbsp;&nbsp;</i>担保人(个人)&nbsp;&nbsp;：
+								</label>
+								姓名：<input type="text" maxlength=20 style="width:60px;margin-left: 0px;margin-right: 10px;" id="dbr_xm"/>
+								身份证号：<input type="text" maxlength=18 style="width:130px;margin-left: 0px;margin-right: 10px;" id="dbr_sfzh"/>
+								联系电话：<input type="text" maxlength=11 style="width:80px;margin-left: 0px;margin-right: 10px;" id="dbr_lxdh"/>
+								住所：<input type="text" maxlength=30 style="width:300px;margin-left: 0px;margin-right: 10px;" id="dbr_zs"/>
+								<a href='javascript:' id="a_addDbr" class="green">添加</a>
+								<a href='javascript:' id="a_delDbr" class="red">删除</a>
+							</div>
+							<div id="dbrDiv"></div>
+							<div class="dashedLine"></div>
+							<div class="dashedLine"></div>
+							<div><h2>固化类信息:<font color="red" style="font-size:14px;">（注：如果修改，请注意保存）</font></h2><button type="button" class="save1" id="resetInformationBtn">修改固化信息</button></div>
+							<div class="item"><label><i>*</i>签订时间&nbsp;&nbsp;&nbsp;：</label><input class="time_input" type="text" id="loanDate"/></div>
+							<div class="item"><label><i>&nbsp;&nbsp;</i>客服专号&nbsp;&nbsp;&nbsp;：</label><input class="classid" type="text" id="serveMobile" value="400 027 0707" maxlength=11 readonly="readonly"/>&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">(线下门店客服号码)</font></div>
+							<div class="item"><label><i>*</i>线下门店单位名称&nbsp;&nbsp;&nbsp;：</label><input class="classid" type="text" id="shop" readonly="readonly" />&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">(线下门店名称)</font></div>
+							<div class="item"><label><i>*</i>门店代码&nbsp;&nbsp;&nbsp;：</label><input class="classid" type="text" id="shopNum" />&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">(如：QT02，ZZ03)</font></div>
+							<div class="item"><label><i>*</i>联系地址&nbsp;&nbsp;&nbsp;：</label><input class="classid" type="text" id="shopAddress" readonly="readonly"/>&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">(如：门店地址)</font></div>
+							<div class="item"><label><i>*</i>联系电话&nbsp;&nbsp;&nbsp;：</label><input class="classid" type="text" id="shopPhone" maxlength=11 readonly="readonly"/>&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">(如：门店负责人电话)</font></div>
+							<div class="item"><label><i>*</i>人工材料费&nbsp;&nbsp;&nbsp;：</label><input class="classid" type="text" id="materialMoney" readonly="readonly"/>&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">(单位：元)</font></div>
+							<div class="item" id="GPSmanager"><label><i>*</i>GPS管理费&nbsp;&nbsp;&nbsp;：</label><input class="classid" type="text" id="GPSManageMoney" readonly="readonly"/>&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">(单位：元)</font></div>
+							
+							<div class="item"><label><i>*</i>收款人姓名&nbsp;&nbsp;&nbsp;：</label><input class="classid" type="text" id="gatheringName" readonly="readonly"/>&nbsp;&nbsp;&nbsp;&nbsp;<font color="red"></font></div>
+							<div class="item"><label><i>*</i>收款人开户行&nbsp;&nbsp;&nbsp;：</label><input class="classid" type="text" id="gatheringBankName" readonly="readonly"/>&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">(如：**银行)</font></div>
+							<div class="item"><label><i>*</i>收款人账户&nbsp;&nbsp;&nbsp;：</label><input class="classid" type="text" id="gatheringBankNumber" readonly="readonly"/>&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">(如：银行卡号)</font></div>
+							<div class="item"><label><i>*</i>线上平台名称&nbsp;&nbsp;&nbsp;：</label><input class="classid" type="text" id="onlineName" readonly="readonly"/>&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">(如：武汉易融恒信金融服务有限公司)</font></div>
+							<div class="item"><label><i>*</i>联系地址&nbsp;&nbsp;&nbsp;：</label><input class="classid" type="text" id="onlineAddress" readonly="readonly"/>&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">(线上平台联系地址)</font></div>
+							<div class="item"><label><i>*</i>联系电话&nbsp;&nbsp;&nbsp;：</label><input class="classid" type="text" id="onlinePhone" maxlength=11 readonly="readonly"/>&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">(线上平台联系电话)</font></div>
+
+							<!-- <div class="item"><label><i>&nbsp;&nbsp;</i>收车费用标准：</label><input type="text" maxlength=20 id="companyAddress" style="width:200px;"/>&nbsp;之内5000元起步，之外10000元起步</div> -->
+							<div class="item"><label><i>&nbsp;&nbsp;</i>合同签署地：</label><input type="text" maxlength=30 id="addressSign"/></div>
+							<div class="item"><label><i>&nbsp;&nbsp;</i>合同签署地法院：</label><input type="text" value="武汉市江汉区" maxlength=30 id="court"/>&nbsp;人民法院</div>
+							<div class="dashedLine"></div>
+							<form id="vehicleFromByCompany" action="/addInformation" method="post">
+							    <input type="hidden" name="serveMobile"><!-- 客服专号 -->
+							    <input type="hidden" name="shop"><!-- 线下门店单位名称 -->
+							    <input type="hidden" name="shopNum"><!-- 门店代码 -->
+							    <input type="hidden" name="shopAddress"><!-- 联系地址 -->
+							    <input type="hidden" name="shopPhone"><!-- 负责人联系电话 -->
+							    <input type="hidden" name="materialMoney"><!-- 人工材料费-->
+							    <input type="hidden" name="GPSManageMoney"><!-- GPS管理费 -->
+							    <input type="hidden" name="rateByCompany"><!-- 平台综合成本 -->
+							    <input type="hidden" name="gatheringName"><!-- 收款人姓名 -->
+							    <input type="hidden" name="gatheringBankName"><!-- 收款人开户行 -->
+							    <input type="hidden" name="gatheringBankNumber"><!-- 收款人账户 -->
+							    <input type="hidden" name="onlineName"><!-- 线上平台名称 -->
+							    <input type="hidden" name="onlineAddress"><!-- 联系地址-->
+							    <input type="hidden" name="onlinePhone"><!-- 联系电话 -->
+							    <input type="hidden" name="court"><!-- 合同签署地法院 -->
+						        
+							</form>
+							
+							<form id="vehicleForm" action="/addContracts" method="post">
+								<!-- 
+								<div class="item"><label><i>*</i>是否担保&nbsp;&nbsp;&nbsp;：</label>
+									<input type="radio" name="isdanbao" value="1" />是
+									<input type="radio" name="isdanbao" value="0" checked="checked"/>否
+								</div>
+								 -->
+								<input type="hidden" name="loanTypeForContract"><!-- 合同借款类型 -->
+								<input type="hidden" name="serveMobile"><!-- 客服专号 -->
+							    <input type="hidden" name="shop"><!-- 线下门店单位名称 -->
+							    <input type="hidden" name="shopNum"><!-- 门店代码 -->
+							    <input type="hidden" name="shopAddress"><!-- 联系地址 -->
+							    <input type="hidden" name="shopPhone"><!-- 负责人联系电话 -->
+							    <input type="hidden" name="materialMoney"><!-- 人工材料费-->
+							    <input type="hidden" name="GPSManageMoney"><!-- GPS管理费 -->
+							    <input type="hidden" name="rateByCompany"><!-- 平台综合成本 -->
+							    <input type="hidden" name="gatheringName"><!-- 收款人姓名 -->
+							    <input type="hidden" name="gatheringBankName"><!-- 收款人开户行 -->
+							    <input type="hidden" name="gatheringBankNumber"><!-- 收款人账户 -->
+							    <input type="hidden" name="onlineName"><!-- 线上平台名称 -->
+							    <input type="hidden" name="onlineAddress"><!-- 联系地址-->
+							    <input type="hidden" name="onlinePhone"><!-- 联系电话 -->
+							    <input type="hidden" name="court"><!-- 合同签署地法院 -->
+	
+								<input type="hidden" name="loanUserName"><!-- 借款人姓名 -->
+								<input type="hidden" name="loanUserCardId"><!-- 借款人身份证号 -->
+								<input type="hidden" name="loanUserAddress"><!-- 家庭住址 -->
+								<input type="hidden" name="loanUserMobile"><!-- 手机号 -->
+						
+								<input type="hidden" name="loanAmount"><!-- 借款金额 -->
+								<input type="hidden" name="moneyLoan"/><!-- 现金支付 -->
+								<input type="hidden" name="rateByYear"><!-- 借款利率 -->
+							
+								<input type="hidden" name="loanUsed"><!-- 借款用途 -->
+								<input type="hidden" name="limit"><!-- 借款期限 -->
+								<input type="hidden" name="cars"><!-- 汽车信息 -->
+								<!-- <input type="hidden" name="loanBankUserName">银行卡姓名 -->
+								<input type="hidden" name="loanBankNo"><!-- 银行卡卡号 -->
+								<input type="hidden" name="loanBankName"><!-- 银行全称 -->
+								<input type="hidden" name="loanDate"><!-- 签订时间 -->
+								<input type="hidden" name="dbrs"><!-- 担保人(个人) -->
+								
+								<input type="hidden" name="ensureCompanyName"><!-- 担保人姓名(公司) -->
+								<input type="hidden" name="companyCode"><!-- 担保人公司组织机构代码(公司) -->
+								<input type="hidden" name="businessPlace"><!-- 担保人经营场所(公司) -->
+								<input type="hidden" name="companyPhone"><!-- 担保人联系电话(公司) -->
+								
+								<input type="hidden" name="templateType"/><!-- 合同类型 -->
+								
+								<input type="hidden" name="companyAddress"/><!-- 收车费用标准 -->
+								<input type="hidden" name="addressSign"/><!-- 合同签署地 -->
+
+								<!-- 
+								<input type="hidden" name="entrustPersonName">首次款卡姓名 -->
+								<input type="hidden" name="rateByService"><!-- 月服务费率 -->
+								<input type="hidden" name="legalUserCardId"><!-- 法人身份证 -->
+								<input type="hidden" name="loanTypeForUser"><!-- 用户类型  -->
+								<div class="item buttonP"><button type="button" class="save" id="saveInfoBtn">生成合同</button></div><!-- <button type="reset" class="reset">修改</button> -->
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</main>
+		<footer id="aaa" class="footer"></footer>
+	</div>
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+<script type="text/javascript" src="/portal/js/config.js"></script>
+<script type="text/javascript" src="/portal/js/public.js"></script>
+<script type="text/javascript">window.userNavActive = 11;topNavSelect= '4'; </script>
+<script type="text/javascript" src="/portal/js/user.js"></script>
+<script type="text/javascript" src="/portal/js/pub/widget-table.js"></script>
+<script type="text/javascript" src="/portal/js/pub/app.js"></script>
+<script type="text/javascript" src="/portal/css/datapicker/bootstrap-datepicker.js"></script>
+<script>
+	//初始化查询数据
+   var numm = YRHX.queryString("shopNum"); 
+	var snum = numm.substring(0,2);
+   $("#shopNum").val(numm);
+	$('.time_input').datepicker({
+		'format':'yyyy-mm-dd'
+	});
+	$(document).on("click","#loanTypeForContract",function(){
+		var loanTypeForContract = $("#loanTypeForContract").val();
+		if(loanTypeForContract == 1){
+			$("#GPSmanager").hide();
+			$("#carManager").hide();
+			$("#loanUserType_company").attr("disabled","disabled");
+		}else if(loanTypeForContract == 0){
+			$("#GPSmanager").show();
+			$("#carManager").show();
+			$("#loanUserType_company").removeAttr("disabled");
+		}
+	});
+	
+	$(document).on("blur","#limit",function(){
+		var limit1 = $("#limit").val();
+		if('QT' == snum){
+			if(""!=limit1){
+				if(limit1<12){
+					$("#rateByCompany").val("18");
+					if(limit1 == 3){
+						$("#rateByYear").val("10.5");
+					}else if(limit1 == 6||limit == 9){
+						$("#rateByYear").val("11.5");
+					}
+				}else{
+					$("#rateByCompany").val("21");
+					if(limit1 == 12){
+						$("#rateByYear").val("13");
+					}else if(limit1 == 18){
+						$("#rateByYear").val("14");
+					}else if(limit1 == 24){
+						$("#rateByYear").val("15");
+					}
+				}
+				
+			}
+		}else if('ZZ' == snum){
+			if(""!=limit1){
+				$("#rateByCompany").val("24");
+				if(limit1 == 3||limit1==6){
+					$("#rateByYear").val("12.6");
+				}else if(limit1 == 9 || limit1 == 12){
+					$("#rateByYear").val("13.5");
+				}else if(limit1 == 18){
+					$("#rateByYear").val("14.2");
+				}else if( limit1 == 24){
+					$("#rateByYear").val("15");
+				}
+				
+			}
+		}
+
+	});
+	
+	var date = new Date();
+	var year = date.getFullYear();
+	var month = date.getMonth()+1 ;
+	var day = date.getDate();
+	$('#loanDate').val(year + "-" + (month > 9 ? month : "0"+ month) + "-" + (day > 9 ? day : "0"+day));
+	
+	$("input[name=loanUserType]").click(function() {
+		if ($(this).val() == 0) {
+			$("#txtLoanUserName").html("<i>*</i>借款人姓名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;：");
+			$("#txtLoanUserCardId").html("<i>*</i>借款人身份证&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;：");
+			$("#txtLegal").css('display','none');
+			$("#loanTypeForUser").val("个人用户");
+		} else if ($(this).val() == 1) {			
+			$("#txtLoanUserName").html("<i>*</i>借款人&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;：")
+			$("#txtLoanUserCardId").html("<i>*</i>企业代码&nbsp;&nbsp;：");	
+			$("#txtLegal").css('display','block');
+			$("#loanTypeForUser").val("企业用户");
+
+		}
+	})
+//固化信息 start 
+   
+							    
+	$(document).on("click","#resetInformationBtn",function(){
+		$(".save1").attr("id","saveInformationBtn");
+		$(".save1").text("保存固化信息");
+		$(".classid").attr("readonly",false);
+	})
+	$(document).on("click","#saveInformationBtn",function(){
+		    //constraint();
+		if(""==$("#shop").val()){
+			$.popTips("popTipErr","线下门店不能为空 ");
+			return;
+		}
+		if(""==$("#shopNum").val()){
+			$.popTips("popTipErr","门店号 不能为空 ");
+			return;
+		}
+		if(""==$("#gatheringName").val()){
+			$.popTips("popTipErr","收款人不能为空  ");
+			return;
+		}
+		if(""==$("#gatheringBankNumber").val()){
+			$.popTips("popTipErr","收款人账户 不能为空 ");
+			return;
+		}
+		if(""==$("#gatheringBankName").val()){
+			$.popTips("popTipErr","收款人账户名 不能为空 ");
+			return;
+		}
+		if(""==$("#onlineName").val()){
+			$.popTips("popTipErr","线上平台不能为空 ");
+			return;
+		}
+		    $("input[name='serveMobile']").val($("#serveMobile").val());
+			$("input[name='shop']").val($("#shop").val());
+			$("input[name='shopNum']").val($("#shopNum").val());
+			$("input[name='shopAddress']").val($("#shopAddress").val());
+			$("input[name='shopPhone']").val($("#shopPhone").val());
+			$("input[name='materialMoney']").val($("#materialMoney").val());
+			$("input[name='GPSManageMoney']").val($("#GPSManageMoney").val());
+			$("input[name='rateByCompany']").val($("#rateByCompany").val());
+			$("input[name='gatheringName']").val($("#gatheringName").val());
+			$("input[name='gatheringBankName']").val($("#gatheringBankName").val());
+			$("input[name='gatheringBankNumber']").val($("#gatheringBankNumber").val());
+			$("input[name='onlineName']").val($("#onlineName").val());
+			$("input[name='onlineAddress']").val($("#onlineAddress").val());
+			$("input[name='onlinePhone']").val($("#onlinePhone").val());
+			$("input[name='court']").val($("#court").val());
+			
+		YRHX.ajax({
+			   url:"/addInformation",
+			   data: $("#vehicleFromByCompany").serialize(),
+			   success:function(sucData){
+				   alert("保存信息成功");
+				   $(".save1").attr("id","resetInformationBtn");
+				   $(".save1").text("修改固化信息");
+				   $(".classid").attr("readonly","readonly");
+			   },
+			   error:function(data){
+				   alert(data.return_info||"保存失败");
+			   }
+		   }); 
+	})
+	// ----end ----
+	function constraint(){
+		if(""==$("#shop").val()){
+			$.popTips("popTipErr","线下门店不能为空 ");
+			return;
+		}
+		if(""==$("#shopNum").val()){
+			$.popTips("popTipErr","门店号 不能为空 ");
+			return;
+		}
+		if(""==$("#gatheringName").val()){
+			$.popTips("popTipErr","收款人不能为空  ");
+			return;
+		}
+		if(""==$("#gatheringBankNumber").val()){
+			$.popTips("popTipErr","收款人账户 不能为空 ");
+			return;
+		}
+		if(""==$("#onlineName").val()){
+			$.popTips("popTipErr","线上平台不能为空 ");
+			return;
+		}
+		
+	}
+	
+	$(function(){
+		YRHX.ajax({
+			url:"/queryInformationByShopNum",
+			data:{"shopNum":numm},
+			success:function(data){
+				$("#serveMobile").val(data.shopContent.serveMobile);
+				$("#shop").val(data.shopContent.shop);
+				$("#shopNum").val(data.shopNum);
+				$("#shopAddress").val(data.shopContent.shopAddress);
+				$("#shopPhone").val(data.shopContent.shopPhone);
+				$("#materialMoney").val(data.shopContent.materialMoney);
+				$("#GPSManageMoney").val(data.shopContent.GPSManageMoney);
+				$("#gatheringName").val(data.shopContent.gatheringName);
+				$("#gatheringBankName").val(data.shopContent.gatheringBankName);
+				$("#gatheringBankNumber").val(data.shopContent.gatheringBankNumber);
+				$("#onlineName").val(data.shopContent.onlineName);
+				$("#onlineAddress").val(data.shopContent.onlineAddress);
+				$("#onlinePhone").val(data.shopContent.onlinePhone);
+				$("#court").val(data.shopContent.court);
+			},error:function(data){
+				
+			}
+		})
+
+})
+	
+	
+	//合同类型aa
+	$("#templateType a").click(function(){
+		var html = $(this).html();
+		var contractTemplate = $(this).attr("templateType");
+		var value = html;
+		var selectElement = $(this).parent().parent();
+		if ($(this).attr("value")) {
+			value = $(this).attr("value");
+		}
+		selectElement.children("span").html(html);
+		selectElement.children("span").attr("templateType", contractTemplate);
+		$(this).parent().hide();
+	});
+		
+	//汽车信息
+	$("#a_addCars").click(function(){
+		 var item = $("#carsDiv > div");
+		 var carLength = item.length + 1;
+		 var carsHtml = '<div id="carItem_'+ carLength +'" class="item" carsDiv="carsDiv"><label style="margin-right:23px"><i>*</i>车辆信息&nbsp;&nbsp;：</label>品牌：<input type="text" maxlength=10 style="width:180px;margin-left: 0px;margin-right: 10px;" id="car_pp_' + carLength;
+		 carsHtml += '"/>型号：<input type="text" maxlength=10 style="width:170px;margin-left: 0px;margin-right: 10px;" id="car_xh_'+carLength;
+		 carsHtml += '"/>车牌号：<input type="text" maxlength=7 style="width:180px;margin-left: 0px;margin-right: 10px;" id="car_cph_'+carLength;
+		 carsHtml += '"/>发动机号：<input type="text" maxlength=20 style="width:180px;margin-left: 0px;margin-right: 10px;" id="car_fdjh_'+carLength;
+		 carsHtml += '"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;车架号：<input type="text" maxlength=20 style="width:180px;margin-left: 0px;margin-right: 10px;" id="car_cjh_'+carLength;
+		 carsHtml += '"/>车辆违章费：<input type="text" maxlength=20 style="width:180px;margin-left: 0px;margin-right: 10px;" id="car_cwzf_'+carLength;
+		 carsHtml += '"/>车主姓名 ：<input type="text" maxlength=20 style="width:180px;margin-left: 0px;margin-right: 10px;" id="car_cz_'+carLength;
+		 carsHtml += '"/></div>';
+		 $('#carsDiv').append(carsHtml); 
+	});
+	
+	//增加汽车信息
+	$("#a_delCars").click(function(){
+		var item = $("#carsDiv > div");
+		if(item && item.length > 0){
+			$('div').remove('#carItem_'+item.length);
+		}
+	});
+	
+	//增加担保人
+	$("#a_addDbr").click(function(){
+		 var item = $("#dbrDiv > div");
+		 var dbrLength = item.length + 1;
+		 var dbrHtml = '<div id="dbrItem_'+ dbrLength +'" class="item" carsDiv="carsDiv"><label style="margin-right:23px"><i>&nbsp;&nbsp;</i>担保人(个人)&nbsp;&nbsp;：</label>&nbsp;姓名：<input type="text" maxlength=20 style="width:60px;margin-left: 0px;margin-right: 10px;" id="dbr_xm_' + dbrLength;
+		 dbrHtml += '"/>&nbsp;身份证号：<input type="text" maxlength=18 style="width:130px;margin-left: 0px;margin-right: 10px;" id="dbr_sfzh_'+dbrLength;
+		 dbrHtml += '"/>&nbsp;联系电话：<input type="text" maxlength=11 style="width:80px;margin-left: 0px;margin-right: 10px;" id="dbr_lxdh_'+dbrLength;
+		 dbrHtml += '"/>&nbsp;住所：<input type="text" maxlength=30 style="width:300px;margin-left: 0px;margin-right: 10px;" id="dbr_zs_'+dbrLength;
+		 dbrHtml += '"/></div>';
+		 $('#dbrDiv').append(dbrHtml);
+	});
+	
+	$("#a_delDbr").click(function(){
+		var item = $("#dbrDiv > div");
+		if(item && item.length > 0){
+			$('div').remove('#dbrItem_'+item.length);
+		}
+	});
+	
+	
+	//提交修改数据
+	$("#saveInfoBtn").click(function(){
+		
+		if("" == $("#loanUserName").val()){
+			$.popTips("popTipErr","借款人姓名不能为空");
+			return;
+		}
+		if("" == $("#loanUserCardId").val()){
+			$.popTips("popTipErr","借款人身份证号不能为空");
+			return;
+		}
+		if("" == $("#loanAmount").val()){
+			$.popTips("popTipErr","借款金额不能为空");
+			return;
+		}
+		if("" == $("#rateByYear").val()){
+			$.popTips("popTipErr","借款利率不能为空");
+			return;
+		}
+		if("" == $("#loanBankNo").val()){
+			$.popTips("popTipErr","借款账户卡号不能为空 ");
+			return;
+		}if("" == $("#loanBankName").val()){
+			$.popTips("popTipErr","借款开户行不能为空 ");
+			return;
+		}
+		
+		if($("#loanTypeForUser").val()=="企业用户"){
+			if(""==$("#legalUserCardId").val()){
+				$.popTips("popTipErr","借款用户为企业用户，法人的身份证号不能为空");
+				return;
+			}
+		}
+		
+		if("" == $("#limit").val()){
+			$.popTips("popTipErr","借款期限不能为空");
+			return;
+		}
+		//constraint();
+		if(""==$("#shop").val()){
+			$.popTips("popTipErr","线下门店不能为空 ");
+			return;
+		}
+		if(""==$("#shopNum").val()){
+			$.popTips("popTipErr","门店号 不能为空 ");
+			return;
+		}
+		if(""==$("#gatheringName").val()){
+			$.popTips("popTipErr","收款人不能为空  ");
+			return;
+		}
+		if(""==$("#gatheringBankNumber").val()){
+			$.popTips("popTipErr","收款人账户 不能为空 ");
+			return;
+		}
+		if(""==$("#onlineName").val()){
+			$.popTips("popTipErr","线上平台不能为空 ");
+			return;
+		}
+		if(""==$("#gatheringBankName").val()){
+			$.popTips("popTipErr","收款人账户名不能为空 ");
+			return;
+		}
+		
+	
+		var refundType = $("#spanFirstRefund").attr("refundType");
+		var product = $("#spanFirstProduct").attr("product");
+		var loanDate = $("#loanDate").val().replaceAll('-',"");
+		var loanAmount = $("#loanAmount").val()*10*10;
+		var rateByYear = ($("#rateByYear").val()*10*10).toFixed(0);//借款利率
+		var templateType = $("#spanTemplateType").attr("templateType");
+		
+		var sumFinancingMoney = $("#sumFinancingMoney").val()*10*10;
+		var financingMoney = $("#financingMoney").val()*10*10;
+		var fee = $("#fee").val()*10*10;
+		var guaranteeFee = $("#guaranteeFee").val()*10*10;
+		var incidentals = $("#incidentals").val()*10*10;
+		var otherMoney = $("#otherMoney").val()*10*10;
+		
+		
+		
+		if($("#loanTypeForContract").val() == 0){
+			
+		//汽车信息
+		var cars = "";
+		var p = $("#car_pp").val();
+		var x = $("#car_xh").val();
+		var c = $("#car_cph").val();
+		var f = $("#car_fdjh").val();
+		var cjh = $("#car_cjh").val();
+		var cwzf = $("#car_cwzf").val();
+		var cz = $("#car_cz").val();
+		if(isNaN(cwzf)){
+			alert("违章押金请填写数字");
+			return;
+		}
+		
+		if(p && "" !=p && x && "" !=x && c && "" !=c && f && "" !=f && cjh && "" !=cjh && "" !=cwzf && ""!=cz){
+			cars = p + "|" + x + "|" + c + "|" + f + "|" + cjh + "|" + cwzf +"|"+ cz+"," ;
+		} else if(!p || "" !=p || !x || "" ==x || !c || "" ==c || !f || "" ==f || !cjh || "" ==cjh || ""==cwzf || ""==cz){
+			alert("车辆信息填写不完整\n");
+			return;
+		} 
+		var item = $("#carsDiv > div");
+		for (var i = 1; i <= item.length; i++) {
+			var pp = $("#car_pp_"+i).val();
+			var xh = $("#car_xh_"+i).val();
+			var cph = $("#car_cph_"+i).val();
+			var fdjh = $("#car_fdjh_"+i).val();
+			var cjh = $("#car_cjh_"+i).val();
+			var cwzfh = $("#car_cwzf_"+i).val();
+			var czh = $("#car_cz_"+i).val();
+			if(isNaN(cwzfh)){
+				alert("违章押金请填写数字");
+				return;
+			}
+			
+			if(pp && "" !=pp && xh && "" !=xh && cph && "" !=cph && fdjh && "" !=fdjh && cjh && "" !=cjh && "" !=cwzfh && "" !=czh){
+				cars += pp + "|";
+				cars += xh + "|";
+				cars += cph + "|";
+				cars += fdjh + "|";
+				cars += cjh + "|";
+				cars += cwzf + "|";
+				cars += czh;
+				if(i < item.length){
+					cars += ","
+				}
+			} else if(!pp || "" !=pp || !xh || "" ==xh || !cph || "" ==cph || !fdjh || "" ==fdjh || !cjh || "" ==cjh ||"" == cwzfh || "" ==czh){
+				alert("车辆信息填写不完整\n");
+				return;
+			} 
+		}
+		
+		}
+		
+		//担保人(个人)
+		var dbrs = "";
+		var dbr_xm = $("#dbr_xm").val();
+		var dbr_sfzh = $("#dbr_sfzh").val();
+		var dbr_lxdh = $("#dbr_lxdh").val();
+		var dbr_zs = $("#dbr_zs").val();
+		if(dbr_xm && "" != dbr_xm){
+			if("" == dbr_sfzh){
+				dbr_sfzh = " ";
+			}
+			if("" == dbr_lxdh){
+				dbr_lxdh = " ";
+			}
+			if("" == dbr_zs){
+				dbr_zs = " ";
+			}
+			dbrs = dbr_xm + "|" + dbr_sfzh + "|" + dbr_lxdh + "|" + dbr_zs + "," ;
+		}
+		var item = $("#dbrDiv > div");
+		for (var i = 1; i <= item.length; i++) {
+			var dbr_xm_a = $("#dbr_xm_"+i).val();
+			var dbr_sfzh_a = $("#dbr_sfzh_"+i).val();
+			var dbr_lxdh_a = $("#dbr_lxdh_"+i).val();
+			var dbr_zs_a = $("#dbr_zs_"+i).val();
+			
+			if("" != dbr_xm_a){
+				if("" == dbr_sfzh_a){
+					dbr_sfzh_a = " ";
+				}
+				if("" == dbr_lxdh_a){
+					dbr_lxdh_a = " ";
+				}
+				if("" == dbr_zs_a){
+					dbr_zs_a = " ";
+				}
+				dbrs += dbr_xm_a + "|" + dbr_sfzh_a + "|" + dbr_lxdh_a + "|" + dbr_zs_a;
+				if(i < item.length){
+					dbrs += ","
+				}
+			}
+		}
+		
+
+		$("input[name='loanUserName']").val($("#loanUserName").val());//借款人姓名
+		$("input[name='loanUserCardId']").val($("#loanUserCardId").val());//借款人身份证号
+		$("input[name='loanUserAddress']").val($("#loanUserAddress").val());//借款人家庭住址
+		$("input[name='loanUserMobile']").val($("#loanUserMobile").val());//借款人手机号
+	
+		$("input[name='loanAmount']").val(loanAmount);//借款金额
+		$("input[name='rateByYear']").val(rateByYear);//借款利率
+		$("input[name='loanUsed']").val($("#loanUsed").val());//借款用途
+		$("input[name='limit']").val($("#limit").val());//借款期限
+		$("input[name='refundType']").val(refundType);
+		$("input[name='cars']").val(cars);
+		$("input[name='loanBankNo']").val($("#loanBankNo").val());//银行卡卡号
+		$("input[name='loanBankName']").val($("#loanBankName").val());//银行卡全称
+		$("input[name='loanDate']").val(loanDate);//签订时间
+		$("input[name='product']").val(product);
+		$("input[name='dbrs']").val(dbrs);
+		$("input[name='templateType']").val(templateType);//合同类型
+		$("input[name='addressSign']").val($("#addressSign").val());//合同签署地
+		$("input[name='court']").val($("#court").val());//合同签署地法院
+		
+		$("input[name='ensureCompanyName']").val($("#ensureCompanyName").val());//担保人姓名(公司)
+		$("input[name='companyCode']").val($("#companyCode").val());//担保人公司组织机构代码(公司)
+		$("input[name='businessPlace']").val($("#businessPlace").val());//担保人经营场所(公司)
+		$("input[name='companyPhone']").val($("#companyPhone").val());//担保人联系电话(公司)
+		$("input[name='companyAddress']").val($("#companyAddress").val());//收车费用标准
+		
+		$("input[name='serveMobile']").val($("#serveMobile").val());//客服专号
+		$("input[name='moneyLoan']").val($("#moneyLoan").val());//现金支付
+		
+		$("input[name='sumFinancingMoney']").val(sumFinancingMoney);
+		$("input[name='financingMoney']").val(financingMoney);
+		$("input[name='fee']").val(fee);
+		$("input[name='guaranteeFee']").val(guaranteeFee);
+		$("input[name='incidentals']").val(incidentals);
+		$("input[name='otherMoney']").val(otherMoney);
+		$("input[name='entrustPersonName']").val($("#entrustPersonName").val());
+		$("input[name='rateByService']").val(($("#rateByService").val()*10*10).toFixed(0));//月服务费率 
+		$("input[name='legalUserCardId']").val($("#legalUserCardId").val());//法人身份证 
+		$("input[name='loanTypeForUser']").val($("#loanTypeForUser").val());//用户类型 
+		$("input[name='shop']").val($("#shop").val());//线下门店 
+		$("input[name='shopNum']").val($("#shopNum").val());//门店号 
+		
+
+	
+		$("input[name='shopAddress']").val($("#shopAddress").val());
+		$("input[name='shopPhone']").val($("#shopPhone").val());
+		$("input[name='materialMoney']").val($("#materialMoney").val()*10*10);
+		$("input[name='GPSManageMoney']").val($("#GPSManageMoney").val()*10*10);
+		$("input[name='rateByCompany']").val(($("#rateByCompany").val()*10*10).toFixed(0));
+		$("input[name='gatheringName']").val($("#gatheringName").val());
+		$("input[name='gatheringBankName']").val($("#gatheringBankName").val());
+		$("input[name='gatheringBankNumber']").val($("#gatheringBankNumber").val());
+		$("input[name='onlineName']").val($("#onlineName").val());
+		$("input[name='onlineAddress']").val($("#onlineAddress").val());
+		$("input[name='onlinePhone']").val($("#onlinePhone").val());
+		$("input[name='loanTypeForContract']").val($("#loanTypeForContract").val());
+		$("#saveInfoBtn").attr("disabled",true);
+		$("#saveInfoBtn").css("cursor","wait");
+		//表单提交
+		 YRHX.ajax({
+			   url:"/addContracts",
+			   data: $("#vehicleForm").serialize(),
+			   success:function(sucData){
+				   $("#saveInfoBtn").attr("disabled", false);
+				   $("#saveInfoBtn").css("cursor","Pointer");
+				   alert("添加合同成功");
+				   window.location.href="contractsFullPDF?contractsNum="+sucData;
+			   },
+			   error:function(data){
+				   $("#saveInfoBtn").attr("disabled", false);
+				   $("#saveInfoBtn").css("cursor","Pointer");
+				   alert(data.return_info||"添加失败");
+			   }
+		   }); 
+	});
+</script>
+</body>
+</html>

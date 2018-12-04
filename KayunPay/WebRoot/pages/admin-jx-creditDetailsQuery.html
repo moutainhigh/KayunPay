@@ -1,0 +1,262 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<!-- <body onkeydown="zhazha(event)"> -->
+<body>
+		<h3 style="color: green; margin-left: 20px">投资人债权明细查询（最近一个月的债权）</h3>
+	
+		<div class="am-u-sm-12 am-u-md-4" style="margin-left: 50px;">
+				<div class="am-u-sm-6" style="padding: 0;">
+					<div class="am-input-group am-datepicker-date" data-am-datepicker="{format: 'yyyy-mm-dd', viewMode: 'days'}">
+						<input type="text" class="am-form-field" id="my-startDate" placeholder="开始日期" readonly style="width: 71%;">
+							<span class="am-input-group-btn am-datepicker-add-on">
+								<button class="am-btn am-btn-default" type="button">
+									<span class="am-icon-calendar"></span>
+								</button>
+							</span> 
+					</div>
+				</div>
+				
+				<div class="am-u-sm-6" style="padding: 0;">
+					<div class="am-input-group am-datepicker-date" data-am-datepicker="{format: 'yyyy-mm-dd', viewMode: 'days'}">
+						<input type="text" class="am-form-field" id="my-endDate" placeholder="结束日期" readonly style="width: 71%;">
+							<span class="am-input-group-btn am-datepicker-add-on">
+								<button class="am-btn am-btn-default" type="button">
+									<span class="am-icon-calendar"></span>
+								</button>
+							</span>
+					</div>
+				</div>
+		</div>
+		<br/>
+		<br/>
+		  <div class="am-u-md-3" style="width: 300px;margin-left: 50px;">
+		  <span>查询标的状态：</span>
+		    <select id = "selectState">
+		       <option value ="0" >所有债权</option>
+		       <option value ="1" >有效债权</option>
+		    </select>
+		</div>
+
+		<div>
+		<div style="width: :1200px" >
+		   <div  style="width:200px;display: inline;">
+		    <span>查询标的号：</span>
+		   </div>
+		   <div  style="width: 116px;display: inline;">
+		      <input type="text" class="productId">
+		   </div>
+		   
+		    <div style="width: 116px;display: inline;">
+		        <span>电子/手机账户：</span>
+		    </div>
+		    <div  style="display: inline;">
+				<input type="text" class="allkey">
+				每页条数：<input type="text" class="pageSize" maxlength="2">
+					<button class="querybutton" type="button" value="查询">查询</button>
+				
+			</div>
+		</div>
+		</div>
+		<br/>
+   
+
+<div class="am-g" style="font-size: 14px;">
+		<div class="am-u-sm-12">
+			<table class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 0 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+						<li id="not"><input type="text" size="5" id="goValue" onkeypress="return IsNum(event)" value="1"/></li>
+						<li id="go"><input type="button" value="GO" onclick="$('#go').attr('index',$('#goValue').val())"/></li>
+					</ul>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+		
+		
+
+
+	<!-- prompt start -->
+
+	
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script type="text/javascript" src="/portal/js/jxErr.js"></script>
+	<script>
+		/* function zhazha(e){
+			var keynum = 0;
+			if(window.event){
+				keynum = e.keyCode
+			}
+			else if(e.which){
+				keynum = e.which
+			}
+			if(keynum==13){
+				queryData(1);
+			}
+		} */	
+		
+		var maxQueryNum = 10;
+		var queryUrl = "/creditDetailsQuery";
+		var size = 0;
+		var pageSize = 0;
+		
+		function queryData(pNum,pSize){
+			var accountId = $(".allkey").val();
+			var productId = $(".productId").val();
+			var startDate = $("#my-startDate").val().replaceAll("-","");
+			var endDate = $("#my-endDate").val().replaceAll("-","");
+			var state = $("#selectState").val();
+			if(accountId == ''){
+				alert("电子账户不能为空");
+				return;
+			}
+			if( startDate == ""){
+			     alert("开始时间不能为空");
+			     return;
+		        }
+		       if( endDate == ""){
+			      alert("结束时间不能为空");
+			      return;
+		         }
+			if(isNaN(pNum)){
+				alert("GO栏请输入数字！");
+				return;
+			}
+			if(size<1){
+				size = 1;
+			}
+			if(pNum>size && size !=0){
+				pNum = size;
+				$("#goValue").val(pNum);
+			}
+			
+			YRHX.ajax({
+				url : queryUrl,
+				data : {
+					pageNum : pNum,
+					pageSize : pSize || maxQueryNum,
+					accountId : accountId,
+					productId : productId,
+					state : state,
+					startDate:startDate,
+					endDate:endDate
+				},
+				success : function(sucData){
+					
+					size = Math.ceil(sucData["totalItems"]/maxQueryNum);//总页数
+					var temToalData = {};
+					var name = sucData.name;
+					makeTable(sucData.subPacks, {index : sucData["pageNum"],max : sucData["pageSize"],size :sucData["totalItems"]},temToalData, name);
+				},
+                   error:function(data){
+					
+                	   if(data.return_info == ''){
+ 						  var returnCode = data.return_code;
+ 						  var message = jxErr(returnCode);
+ 						  YRHX.alert1(message || "获取信息失败");
+ 						  
+ 						}else{
+ 							YRHX.alert1(data.return_info || "获取信息失败");
+ 						}
+					
+				}
+			})
+		}
+		
+		function makeTable(tableData,pageData,countData,name){
+			$(".am-g").table({
+				
+				dataFormat:function(rowObj){
+					rowObj["productId"] =rowObj["productId"]; 
+					rowObj["buyDate"] =rowObj["buyDate"].dateformat("yyyy-MM-dd"); 
+					rowObj["orderId"] =rowObj["orderId"]; 
+					rowObj["txAmount"] =YRHX.toDecimal2(rowObj["txAmount"], "");
+					rowObj["yield"] =rowObj["yield"];
+					rowObj["forIncome"] =YRHX.toDecimal2(rowObj["forIncome"], "");
+					rowObj["intTotal"] =YRHX.toDecimal2(rowObj["intTotal"], "");
+					rowObj["income"] =YRHX.toDecimal2(rowObj["income"], "");
+					rowObj["incFlag"] = rowObj["incFlag"];
+					rowObj["endDate"] = rowObj["endDate"].dateformat("yyyy-MM-dd");
+					rowObj["state"] = rowObj["state"];
+
+					return rowObj;
+				},
+				max : 99,
+				pag :pageData,
+				header:[
+				        {name:"",text:"姓名",html:name},
+				        {name:"",text:"标的号",html:"#{productId}"},
+				        {name:"",text:"投标日期",html:"#{buyDate}"},
+				        {name:"",text:"订单号",html:"#{orderId}"},
+				        {name:"",text:"交易金额",html:"#{txAmount}"},
+				        {name:"",text:"预期年化收益率",html:"#{yield}"},
+				        {name:"",text:"预期收益",html:"#{forIncome}"},
+				        {name:"",text:"预期本息收益",html:"#{intTotal}"},
+				        {name:"",text:"实际收益",html:"#{income}"},
+				        {name:"",text:"实际收益符号",html:"#{incFlag}"},
+				        {name:"",text:"到期日",html:"#{endDate}"},
+				        {name:"",text:"状态",html:"#{state}"},
+				],
+				data : tableData
+			});
+		}
+		
+
+		$(".querybutton").click(function(){
+			pageSize=$(".pageSize").val();
+			if(pageSize != ''){
+				maxQueryNum=pageSize;
+			}else{
+				maxQueryNum = 10;
+			}
+	
+				queryData(1,maxQueryNum);
+			
+			
+			$("#goValue").val(1);//设置GO栏默认页码为1
+
+		});
+		
+		$("div.pad-div").initPagEvent( queryData );
+
+		
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+	</script>
+</body>
+</html>

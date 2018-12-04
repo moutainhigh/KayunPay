@@ -1,0 +1,160 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<!-- <body onkeydown="zhazha(event)"> -->
+<body>
+		<h3 style="color: green; margin-left: 20px">绑卡关系查询</h3>
+		
+		<div class="am-u-md-3" style="width: 300px">
+		  <span>查询状态：</span>
+		    <select id = "selectType">
+		       <option value ="0" >所有</option>
+		       <option value ="1" >当前有效的绑定卡</option>
+		    </select>
+		</div>
+		
+		<div style="width: :1200px" >
+		   
+		    <div style="width: 116px;display: inline;">
+		        <span>电子/手机账户：</span>
+		    </div>
+		    <div  style="display: inline;">
+				<input type="text" class="allkey">
+				
+					<button class="querybutton" type="button" value="查询">查询</button>
+				
+			</div>
+		</div>
+<br/>
+<div class="am-g">
+		<div class="am-u-sm-12">
+			<table class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			
+		</div>
+	</div>
+		
+		
+
+
+	<!-- prompt start -->
+
+	
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script type="text/javascript" src="/portal/js/jxErr.js"></script>
+	<script>
+		/* function zhazha(e){
+			var keynum = 0;
+			if(window.event){
+				keynum = e.keyCode
+			}
+			else if(e.which){
+				keynum = e.which
+			}
+			if(keynum==13){
+				queryData(1);
+			}
+		} */	
+
+		function makeTable(tableData,countData,name,accoundId){
+			$(".am-g").table({
+				count_info:countData,
+				dataFormat:function(rowObj){
+					rowObj["cardNo"] =rowObj["cardNo"]; 
+					rowObj["txnDate"] =rowObj["txnDate"].dateformat("yyyy-MM-dd"); 
+					rowObj["txnTime"] =rowObj["txnTime"].dateformat("hh:mm:ss"); 
+					rowObj["canclDate"] =rowObj["canclDate"].dateformat("yyyy-MM-dd"); 
+					rowObj["canclTime"] =rowObj["canclTime"].dateformat("hh:mm:ss"); 
+					
+					return rowObj;
+				},
+				max : 10,
+				pag :{index:1,max : 10 ,size : tableData.length},
+				header:[
+				        {name:"",text:"姓名",html:name},
+				        {name:"",text:"电子账号",html:accoundId},
+				        {name:"",text:"银行卡号",html:"#{cardNo}"},
+				        {name:"",text:"绑定日期",html:"#{txnDate}"},
+				        {name:"",text:"绑定时间",html:"#{txnTime}"},
+				        {name:"",text:"解绑日期",html:"#{canclDate}"},
+				        {name:"",text:"解绑时间",html:"#{canclTime}"},
+				],
+				data : tableData
+			});
+		}
+		$(".querybutton").click(function(){
+			
+			var state = $("#selectType").val();
+			var accountId = $(".allkey").val();
+			if(accountId == ''){
+				alert("电子账户不能为空");
+				return;
+			}
+			YRHX.ajax({
+				url : "/cardBindDetailsQuery",
+				data: {
+					 "accountId":accountId,
+					 "state":state
+				},
+				success:function(data){
+					var name = data.name;
+					var accountid = data.accountId;
+					var list = data.subPacks;
+					var tmpTotalData = {};
+					tmpTotalData["总记录数"] = data.totalItems;
+					
+					makeTable(list,tmpTotalData,name,accountid);
+					if(list.length==0){
+						alert("没有记录 ");
+						return;
+					}
+					   
+					    
+				},error:function(data){
+					
+					if(data.return_info == ''){
+						  var returnCode = data.return_code;
+						  var message = jxErr(returnCode);
+						  YRHX.alert1(message || "获取信息失败");
+						  
+						}else{
+							YRHX.alert1(data.return_info || "获取信息失败");
+						}
+					
+				}
+				
+			});
+			
+		})
+
+		
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+	</script>
+</body>
+</html>

@@ -1,0 +1,429 @@
+package com.dutiantech.controller.admin;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.dutiantech.CACHED;
+import com.dutiantech.Message;
+import com.dutiantech.anno.AuthNum;
+import com.dutiantech.controller.BaseController;
+import com.dutiantech.controller.JXController;
+import com.dutiantech.interceptor.AuthInterceptor;
+import com.dutiantech.interceptor.PkMsgInterceptor;
+import com.dutiantech.model.JXTrace;
+import com.dutiantech.model.LoanTrace;
+import com.dutiantech.model.LoanTransfer;
+import com.dutiantech.model.User;
+import com.dutiantech.service.FundsServiceV2;
+import com.dutiantech.service.JXTraceService;
+import com.dutiantech.service.LoanTraceService;
+import com.dutiantech.service.LoanTransferService;
+import com.dutiantech.service.UserService;
+import com.dutiantech.util.CommonUtil;
+import com.dutiantech.util.DateUtil;
+import com.dutiantech.util.FileOperate;
+import com.dutiantech.util.LoggerUtil;
+import com.dutiantech.util.StringUtil;
+import com.dutiantech.util.SysEnum;
+import com.jfinal.aop.Before;
+import com.jfinal.core.ActionKey;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.tx.Tx;
+import com.jx.http.WebUtils;
+import com.jx.service.JXService;
+
+public class TransferController extends BaseController {
+	
+	private FundsServiceV2 fundsServiceV2 = getService(FundsServiceV2.class);
+	private LoanTransferService loanTransferService = getService(LoanTransferService.class);
+	private UserService userService = getService(UserService.class);
+	private LoanTraceService loanTraceService = getService(LoanTraceService.class);
+	private JXTraceService jxTraceService = getService(JXTraceService.class);
+	private static final Logger scanTransferLogger = Logger.getLogger("scanTransferLogger");
+	
+	static{
+		LoggerUtil.initLogger("scanTransfer", scanTransferLogger);;
+	}
+	
+	@ActionKey("/scanTransfer")
+	@Before({Tx.class,PkMsgInterceptor.class})
+	public void autoLoan(){
+		Message msg = autox();
+//		String returnCode = msg.getReturn_code()  ;
+		renderJson(msg);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private Message autox(){
+
+		String key = getPara("key", "");
+		String preKey = (String) CACHED.get("S1.scanTransferKey");
+		if(!key.equals(preKey)){
+			return error("01","密匙错误", false );
+		}
+		try {
+			int startIndex = 0 ;
+			int size = 50 ;
+			boolean isGo = true ;
+			long total = Db.queryLong("select count(uid) from t_loan_transfer where transState = 'A'");
+			int doCount = 1 ;
+			List<String[]> tcs = new ArrayList<String[]>();
+			scanTransferLogger.log(Level.INFO,"[定时任务:扫描过期的债权转让信息]扫描中......共计"+total+"条债权转让中...");
+//			System.err.println("[定时任务:扫描过期的债权转让信息]扫描中......共计"+total+"条债权转让中...");
+			while( isGo ){
+				List<Object[]> loanTransfers = getTransferList(startIndex, size) ;
+				if( doCount <= total ){
+					for(Object[] loanTransfer : loanTransfers){
+						String transCode = (String) loanTransfer[0];//债权转让编码
+						String transDate = (String) loanTransfer[1];//债权转让发起日期
+						String transTime = (String) loanTransfer[2];//债权转让发起时间
+						String traceCode = (String) loanTransfer[3];//投标流水编码
+						long x = CommonUtil.compareDateTime(DateUtil.getNowDate()+ " " + DateUtil.getNowTime(),transDate+ " " + transTime , "yyyyMMdd HHmmss");
+						if(x>=1){
+							tcs.add(new String[]{transCode,traceCode});
+						}
+						doCount ++ ;
+					}
+				}else{
+					isGo = false ;
+				}
+				startIndex ++ ;
+			}
+			if(tcs.size()<1){
+				scanTransferLogger.log(Level.INFO,"[定时任务:扫描过期的债权转让信息]处理过期债权,共0条债权已过期");
+//				System.out.println("[定时任务:扫描过期的债权转让信息]处理过期债权,共0条债权已过期");
+			}
+			for (int i = 0; i < tcs.size(); i++) {
+				String transCode = tcs.get(i)[0];
+				String traceCode = tcs.get(i)[1];
+				//回滚积分
+				LoanTransfer tmp = LoanTransfer.loanTransferDao.findFirst("select transState,transScore,payUserCode from t_loan_transfer where transCode = ?",transCode);
+				if(tmp.getInt("transScore")!=null && !StringUtil.isBlank(tmp.getStr("payUserCode")) && !StringUtil.isBlank(tmp.getStr("transState"))){
+					int transScore = tmp.getInt("transScore");
+					if(transScore>0 && tmp.getStr("transState").equals("A")){
+//						fundsServiceV2.doPoints(tmp.getStr("payUserCode"), 0 , transScore , "取消债权转让,返回冻结积分!");
+					}
+				}
+				Db.update("update t_loan_transfer set transState = 'C' where transCode = ?",transCode);
+				Db.update("update t_loan_trace set isTransfer='C' where traceCode = ?",traceCode);
+				scanTransferLogger.log(Level.INFO,"[定时任务:扫描过期的债权转让信息]处理过期债权,债权转让编码["+transCode+"],第"+(i+1)+"条...共"+tcs.size()+"条债权已过期");
+//				System.out.println("[定时任务:扫描过期的债权转让信息]处理过期债权,债权转让编码["+transCodes.get(i)+"],第"+(i+1)+"条...共"+transCodes.size()+"条债权已过期");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			scanTransferLogger.log(Level.SEVERE,"扫描过期的债权时发生异常:"+e.getMessage());
+			return error("02", "扫描过期的债权时发生异常:"+e.getMessage(), false);
+		}
+		scanTransferLogger.log(Level.INFO,"扫描过期的债权任务完成");
+		return succ("扫描过期的债权任务完成", true ) ;
+	}
+	
+	/**
+	 * 	获取进行中的债权转让信息(无机构待接)
+	 * @param index
+	 * @param size
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	private List getTransferList(int index , int size ){
+		index = index * size;
+		String querySql = "select transCode,transDate,transTime,traceCode from t_loan_transfer where transState = 'A' and refundType not in ('E','F','H') limit ?,?";
+		//querySql = querySql.replace("${index}", index+"" ) ;
+		//querySql = querySql.replace("${size}", size+"" ) ;
+		List users =  Db.query(querySql,index,size) ;
+		return users ;
+	}
+	
+	
+	@ActionKey("/getOverdueTransferList")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getOverdueTransferList(){
+		int pageNumber = getParaToInt("pageNumber",1);
+		int pageSize = getParaToInt("pageSize",10);
+		String orderParam = getPara("orderParam");
+		String orderType = getPara("orderType");
+		String transState = SysEnum.transState.A.val();
+		Page<LoanTransfer> pageLoanTransfer = loanTransferService.queryOverdueLoanTransfer(pageNumber, pageSize, transState, orderType, orderParam);
+		//查询逾期金额
+		List<LoanTransfer> loanTransfers = pageLoanTransfer.getList();
+		for(int i = 0;i<loanTransfers.size();i++){
+			LoanTransfer loanTransfer = loanTransfers.get(i);
+			String traceCode = loanTransfer.getStr("traceCode");
+			LoanTrace loanTrace = loanTraceService.findById(traceCode);
+			long overdueAmount = loanTrace.getLong("overdueAmount");
+			loanTransfer.put("overdueAmount",overdueAmount);
+		}
+		return succ("查询成功", pageLoanTransfer);
+	}
+	
+	/**
+	 * 承接逾期债权
+	 * */
+	@ActionKey("/inheritOverdueLoan")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message inheritOverdueLoan(){
+		String[] phoneNo = {"18372124604"};
+		String mobile = getPara("mobile");
+		if(StringUtil.isBlank(mobile)||!Arrays.asList(phoneNo).contains(mobile)){
+			return error("01", "承接账错误", null);
+		}
+		User user = userService.find4mobile(mobile);
+		if(user == null){
+			return error("01", "承接账错误", null);
+		}
+		String userCode = user.getStr("userCode");
+		
+		//限制还款时间不让承接     10点半到11点
+//		int exeTime = Integer.parseInt(DateUtil.getNowTime());
+//		if(exeTime >= 103000 && exeTime <= 110000){
+//			return error("12", "10:30至11:00系统正在还款，请稍后操作。", "");
+//		}
+		
+		String transferCode = getPara("transCode");
+		if(StringUtil.isBlank(transferCode)){
+			return error("01", "获取债权转让编号失败", null);
+		}
+		
+		//获取用户信息
+		if(StringUtil.isBlank(userCode)){
+			return error("02", "请重新登录", null);
+		}
+		
+		//获取转让标信息
+		LoanTransfer loanTransfer = loanTransferService.findById(transferCode);
+		if(null == loanTransfer){
+			return error("04", "债权标书获取异常", "");
+		}
+		String productType = loanTransfer.getStr("productType");
+		if(SysEnum.productType.E.val().equals(productType)){
+			return error("02", "易分期无法被承接", "");
+		}
+		if(!"A".equals(loanTransfer.getStr("transState"))){
+			return error("04", "债权标书已被承接或取消", "");
+		}
+		String traceCode = loanTransfer.getStr("traceCode");
+		LoanTrace loanTrace = loanTraceService.findById(traceCode);
+		if(loanTrace == null){
+			WebUtils.writePromptHtml("债权获取失败", "/Z02?navTab=2", "UTF-8",getResponse());
+			return error("04", "债权获取失败", "");
+		}
+		long overdueAmount = loanTrace.getLong("overdueAmount");
+		String loanRecyDate = loanTrace.getStr("loanRecyDate");//下一还款日期
+		//避免还款批次已提交,期间债权被承接,导致存管承接额为还款前金额,债权本地已还资金异常
+		//债权还款日为T+1  修改规则日 20180815
+		String tmpRecyDate = DateUtil.addDay(loanRecyDate, 1);
+		if(DateUtil.getNowDate().equals(tmpRecyDate)){
+			WebUtils.writePromptHtml("该债权今日还款未完成,完成后即可承接", "/Z02?navTab=2", "UTF-8",getResponse());
+			return error("05", "该债权今日还款未完成,完成后即可承接", null);
+		}
+
+		// 存管账户相关验证
+		if (CommonUtil.jxPort) {	// 江西银行存管验证
+			String jxAccountId = user.getStr("jxAccountId"); // 用户电子账号
+			if(StringUtil.isBlank(jxAccountId)){
+				WebUtils.writePromptHtml("未开通江西银行存管", "/Z02?navTab=2", "UTF-8",getResponse());
+				return error("03", "未开通江西银行存管", null);
+			}
+			JSONObject paymentAuthPageState = jxTraceService.paymentAuthPageState(jxAccountId);
+			if(paymentAuthPageState == null || !"1".equals(paymentAuthPageState.get("type"))){
+				return error("24", "缴费授权未开通,无法承接债权转让", "");
+			}
+		} else if (CommonUtil.fuiouPort) {	// 富友存管验证
+			String fuiouLoginId = user.getStr("loginId");	// 用户存管账号
+			if (StringUtil.isBlank(fuiouLoginId)) {
+				return error("08", "未开通存管账号", "");
+			}
+		} else {
+			return error("99", "存管接口对接中...", null);
+		}
+		
+		// 验证承接人账户资金是否存在异常
+		if (!fundsServiceV2.checkBalance(user)) {
+			return error("05", "用户资金异常", "");
+		}
+		
+		// 验证承接人可用余额是否足够
+		int transAmount = loanTransfer.getInt("transAmount");
+		long avBalance = fundsServiceV2.findAvBalanceById(userCode);
+		if(avBalance < transAmount){
+			WebUtils.writePromptHtml("账户可用余额不足!", "/Z02?navTab=2", "UTF-8",getResponse());
+			return error("05", "账户可用余额不足!", "");
+		}
+		
+		//验证此标是否有回款中
+		String authCode = loanTrace.getStr("authCode");//授权码
+		//发生过债转
+		if(loanTransferService.vilidateIsTransfer(traceCode)){
+			List<LoanTransfer> loanTransfers = loanTransferService.queryLoanTransferByTraceCode(traceCode, "B");
+			String transferAuthCode = loanTransfers.get(loanTransfers.size() - 1).getStr("authCode");//最后一债转authCode
+			if(!StringUtil.isBlank(transferAuthCode)){
+				authCode = transferAuthCode;
+			}
+		}
+		List<JXTrace> jxTraces = jxTraceService.queryTraceByReturnAmountState(DateUtil.getNowDate(), authCode);
+		if(jxTraces.size()>0){
+			return error("05", "该债权正在回款中，暂时无法承接", "");
+		}
+		
+		// 验证是否为承接自己的债权
+		if(userCode.equals(loanTransfer.getStr("payUserCode"))){
+			WebUtils.writePromptHtml("不能承接自己发出的债权", "/Z02?navTab=2", "UTF-8",getResponse());
+			return error("06", "不能承接自己发出的债权", "");
+		}
+
+		
+		//转换相关金额存入资金流水备注
+		Integer sysFee = loanTransfer.getInt("sysFee") ;//平台手续费
+		Integer transFee = loanTransfer.getInt("transFee");//转让人让利金额
+//		Integer riskFee = loanTransfer.getInt("riskFee");//风险备用金
+//		Integer userFee = loanTransfer.getInt("userFee");//用户额外获得收益
+		
+		double remark4transFee = new BigDecimal((float)transFee/10.0/10.0).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+		double remark4sysFee = new BigDecimal((float)sysFee/10.0/10.0).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+//		double remark4riskFee = new BigDecimal((float)riskFee/10.0/10.0).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+//		double remark4userFee = new BigDecimal((float)(transFee-riskFee)/10.0/10.0).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+		
+		//递减承接人可用余额
+//		String remark = "债权转让支出，让利金额：￥"+remark4transFee+"（用户收益：￥"+remark4userFee+"，风险备用金：￥"+remark4riskFee+"）";
+		
+		long ticket_amount = 0;
+		
+		String traceRemark = "债权转让收入，让利金额：￥"+remark4transFee+"，债权转让费：￥" + remark4sysFee;
+		
+		//查询是否转让过
+		List<LoanTransfer> isTransfer =  loanTransferService.queryLoanTransferByTraceCode(loanTransfer.getStr("traceCode") , "B");
+		int rewardticketrate=0;
+		if(null == isTransfer || isTransfer.size() <= 0 ){
+			// 计算抵扣奖券
+			try {
+				String json_tickets = loanTrace.getStr("loanTicket");
+				if(StringUtil.isBlank(json_tickets)==false){
+					JSONArray ja = JSONArray.parseArray(json_tickets);
+					for (int i = 0; i < ja.size(); i++) {
+						JSONObject jsonObj = ja.getJSONObject(i);
+						if(jsonObj.getString("type").equals("A")){
+							Long examount= jsonObj.getLong("examount");
+							String isDel=jsonObj.getString("isDel");
+							if(null==isDel||"".equals(isDel)){
+								if(null==examount||examount>50000){
+									ticket_amount = jsonObj.getLong("amount");
+									traceRemark += "，现金券金额：￥"+ticket_amount/10/10;
+								}
+							}else{
+								if("Y".equals(isDel)){
+									ticket_amount = jsonObj.getLong("amount");
+									traceRemark += "，现金券金额：￥"+ticket_amount/10/10;
+								}
+							}
+							//end
+						}
+						if(jsonObj.getString("type").equals("C")){
+							rewardticketrate+=jsonObj.getInteger("rate");
+						}
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		//转让人
+		String payUserCode = loanTransfer.getStr("payUserCode");
+		User payUser = userService.findById(payUserCode);
+		
+		if (CommonUtil.jxPort) {// 江西银行存管端口开关
+			String accountId = user.getStr("jxAccountId");// 购买方账号
+			String forAccountId = payUser.getStr("jxAccountId");// 卖出方账号
+			List<LoanTransfer> loanTransfers = loanTransferService.queryLoanTransferByTraceCode(traceCode, "B");
+			
+			String orgOrderId = "";// 原订单号
+			long orgTxAmount = 0;// 原交易金额
+			String orgJxTraceCode = "";//原交易流水
+			if (loanTransfers == null || loanTransfers.size() < 1) {// 没有成功债转记录,查询投标流水
+				orgJxTraceCode = loanTrace.getStr("jxTraceCode");
+			} else {// 有成功债转记录
+				orgJxTraceCode = loanTransfers.get(loanTransfers.size() - 1).getStr("jxTraceCode");// 获取最后一次成功债转jx流水号
+			}
+			if(StringUtil.isBlank(orgJxTraceCode)){//迁移标录入订单号
+				if(!StringUtil.isBlank(loanTrace.getStr("authCode"))){
+					if(StringUtil.isBlank(loanTrace.getStr("orderId"))){
+						FileOperate file = new FileOperate();
+//						String url = "F://cs//";
+						String url = "//home//jx_loanTrace//";
+						for(int i = 0;i<5;i++){
+							String urlName = url+"3005-BIDRESP-"+(301000+i)+"-20180523";
+							String[] text;
+							try {
+								text = file.readTxtLine(urlName, "GBK");
+							} catch (IOException e) {
+								WebUtils.writePromptHtml("新存管上线前债权转让失败", "/Z02?navTab=2", "UTF-8",getResponse());
+								return error("05", "新存管上线前债权转让失败", null);
+							}
+							for(int j = 0;j<text.length;j++){
+								String str = text[j];
+								String uid = str.substring(63,79).trim();
+								if(uid.equals(loanTrace.getInt("uid").toString())){
+									orgOrderId = str.substring(49,79).trim();
+									orgTxAmount = Long.parseLong(str.substring(79,92));
+									loanTrace.set("orderId", orgOrderId);
+									loanTrace.set("orgAmount", orgTxAmount);
+									loanTrace.update();
+									break;
+								}
+							}
+						}
+					}else{
+						orgOrderId = loanTrace.getStr("orderId");
+						orgTxAmount = loanTrace.getLong("orgAmount");
+					}
+				}else{
+					WebUtils.writePromptHtml("新存管上线前债权暂不支持转让", "/Z02?navTab=2", "UTF-8",getResponse());
+					return error("05", "新存管上线前债权暂不支持转让", null);
+				}
+			}else{
+				JXTrace jxTrace = jxTraceService.findById(orgJxTraceCode);
+				String requestMessage = jxTrace.getStr("requestMessage");//请求报文
+				JSONObject parseObject = JSONObject.parseObject(requestMessage);
+				orgOrderId = parseObject.getString("orderId");
+				String txAmount = parseObject.getString("tsfAmount");
+				if(StringUtil.isBlank(txAmount)){
+					txAmount = parseObject.getString("txAmount");
+					if(StringUtil.isBlank(txAmount)){
+						return error("06", "未找到该债权信息", "");
+					}
+				}
+				orgTxAmount = StringUtil.getMoneyCent(txAmount);//原债权金额
+			}
+			
+			String productId = loanTrace.getStr("loanCode");// 标号
+			Map<String, String> reqMap = JXService.getHeadReq();
+//			String jxTraceCode = reqMap.get("txDate") + reqMap.get("txTime") + reqMap.get("seqNo");
+//			boolean updateJxTraceCode = loanTransferService.updateJxTraceCode(jxTraceCode, transferCode);//债转流水添加jxTraceCode关联
+//			if(!updateJxTraceCode){
+//				BIZ_LOG_INFO(payUserCode, BIZ_TYPE.TRANSFER, "transferCode["+transferCode+"]关联jxTraceCode["+jxTraceCode+"]失败");
+//				WebUtils.writePromptHtml("网络异常", "/Z02?navTab=2", "UTF-8",getResponse());
+//				return error("15", "网络异常", "");
+//			}
+			//跳转江西银行页面
+			JXController.creditInvest(reqMap,accountId, transAmount, sysFee + ticket_amount, orgTxAmount,
+					forAccountId, orgOrderId, orgTxAmount, productId,transferCode, getResponse());
+			WebUtils.writePromptHtml("债权转让请求已发送", "/Z02?navTab=2", "UTF-8",getResponse());
+			return succ("债权转让请求已发送", null);
+		} else if (CommonUtil.fuiouPort) {
+			return error("13", "此版本不支持此功能", "");
+		} else {
+			return error("16", "网络错误", "");
+		}
+	}
+}

@@ -1,0 +1,11 @@
+package com.dutiantech.service;
+
+import com.dutiantech.model.ContractTemplate;
+
+public class ContractTemplateService extends BaseService {
+	
+	public ContractTemplate findById(String templateCode) {
+		return ContractTemplate.contractTemplateDao.findById(templateCode);
+	}
+	
+}

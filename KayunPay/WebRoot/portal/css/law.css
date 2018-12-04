@@ -1,0 +1,117 @@
+#about{
+	background-color: #fff;
+	border: 1px solid #e4e4e4;
+}
+.g-sd{width: 187px;}
+.g-sd li{
+	height: 62px;
+	padding-left: 45px;
+	line-height: 62px;
+	border-bottom: 1px solid #e4e4e4;
+	font:16px/62px "Hiragino Sans GB","Microsoft YaHei", "微软雅黑", SimSun, "宋体", sans-serif;
+}
+.g-sd li a{
+	display: block;
+	width: 100%;
+	height: 62px;
+	color: #333;
+}
+.g-sd li a:hover,.g-sd .active{color: #d92222;}
+.g-sd .active{border-left: 3px solid #d92222;}
+.g-about{
+	width: 970px;
+	padding-left: 22px;
+	font-size: 0;
+	background-color: #f4f4f4;
+	border-left: 1px solid #e4e4e4;
+}
+.m-about{
+	min-height: 600px;
+	_height: 600px;
+	padding:0 17px;
+	background-color: #fff;
+	border-left: 1px solid #e4e4e4;
+}
+.m-tt{
+	height: 60px;
+	border-bottom: 3px solid #f0f0f0;
+}
+.m-tt h3{
+	padding-left: 28px;
+	font:20px/60px "Hiragino Sans GB","Microsoft YaHei", "微软雅黑", SimSun, "宋体", sans-serif;
+	color: #333;
+}
+.m-ct{
+	padding: 30px 15px 50px;
+	font:14px/30px "Hiragino Sans GB","Microsoft YaHei", "微软雅黑", SimSun, "宋体", sans-serif;
+	color: #333;
+}
+.m-ct h1{font-size: 30px;}
+.m-ct h2{font-size: 24px;}
+.m-ct h3{font-size: 20px;}
+.m-ct h4{font-size: 18px;}
+.m-ct h5{font-size: 16px;}
+.m-ct h6{font-size: 14px;}
+/*收费标准*/
+.m-fee .u-nav{padding-left: 90px;}
+.m-fee .u-nav li{
+	position: relative;
+	float: left;
+	width: 136px;
+	height: 42px;
+	margin-right: 74px;
+	line-height: 42px;
+	font-size: 16px;
+	text-align: center;
+	cursor: pointer;
+	background-color: #e4e4e4;
+	border-radius: 5px;
+}
+.m-fee .u-nav .active{
+	color: #fff;
+	background-color: #d92222;
+}
+.m-fee .u-nav span{
+	position: absolute;
+	top:42px;
+    left:50%;
+    margin-left: -5px;
+    overflow: hidden;
+    height:0;
+    width:0;
+    font-size: 0;
+    line-height: 0;
+    border-color:#fff transparent transparent transparent ;
+    border-style:solid dashed dashed dashed;
+    border-width:5px;
+}
+.m-fee .u-nav .active span{border-top-color: #d92222;}
+.m-fee .u-box{padding-top: 45px;}
+/*友情链接*/
+.m-links a{
+	display: inline-block;
+	height: 26px;
+	line-height: 26px;
+	white-space: nowrap;
+	color: #666;
+}
+.m-links a:hover,.m-sitemap h3,.m-sitemap h3 a,.m-sitemap h3 a:hover{color: #d92222;}
+.m-links span{
+	display: inline-block;
+	margin: 4px 8px 0;
+	font-size: 12px;
+	color: #666;
+}
+.m-sitemap h3{
+    font-size: 14px;
+    font-weight: bold;
+}
+.m-sitemap p {
+    border-bottom: 1px solid #dfdfdf;
+    margin-bottom: 20px;
+    padding: 20px 0;
+}
+.m-sitemap p a{
+    margin-right: 20px;
+    white-space: nowrap;
+}

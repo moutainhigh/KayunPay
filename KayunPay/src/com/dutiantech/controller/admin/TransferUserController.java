@@ -1,0 +1,168 @@
+package com.dutiantech.controller.admin;
+
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.dutiantech.Message;
+import com.dutiantech.anno.AuthNum;
+import com.dutiantech.controller.BaseController;
+import com.dutiantech.interceptor.AuthInterceptor;
+import com.dutiantech.interceptor.PkMsgInterceptor;
+import com.dutiantech.model.TransferUser;
+import com.dutiantech.service.TransferUserService;
+import com.jfinal.aop.Before;
+import com.jfinal.core.ActionKey;
+import com.jfinal.plugin.activerecord.Page;
+@Before(value=AuthInterceptor.class)
+public class TransferUserController extends BaseController{
+	
+	private TransferUserService transferInfoService = getService(TransferUserService.class);
+	
+	/**
+	 * 分页查询后台债权人
+	 * @return
+	 */
+	@ActionKey("/queryTransferByPage")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message queryTransferByPage(){
+		//获取当前页码、每页显示数量
+		Integer pageNumber = getParaToInt("pageNumber", 1);
+		pageNumber=pageNumber > 0 ? pageNumber:1;
+		Integer pageSize=getParaToInt("pageSize", 10);
+		
+		//获取模糊查询信息
+		//allTransfer：债权人     allArea：所属区域
+		String allArea=getPara("allArea","");
+		String allTransfer=getPara("allTransfer","");
+		
+		Page<TransferUser> transferInfos = transferInfoService.findByPage(pageNumber, pageSize, allArea,allTransfer);
+		
+		if(pageNumber>transferInfos.getTotalPage()&&transferInfos.getTotalPage()>0){
+			pageNumber=transferInfos.getTotalPage();
+			transferInfos=transferInfoService.findByPage(pageNumber, pageSize, allArea,allTransfer);
+		}
+		return succ("ok", transferInfos);
+	}
+	
+	/**
+	 * 查询单个后台债权人
+	 * @return
+	 */
+	@ActionKey("/queryTransferById")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message queryTransferById(){
+		//获取债权人编号
+ 		String transferUserNo=getPara("transferUserNo", null);
+		
+		TransferUser transferInfo = transferInfoService.findById(transferUserNo);
+		
+		//若信息有加密，此处要做解密操作
+		
+		return succ("查询单个后台债权人完成", transferInfo);
+	}
+	
+	/**
+	 * 修改后台债权人信息
+	 * @return
+	 */
+	@ActionKey("/moTransfer")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message moTransfer(){
+		//获取页面债权人信息
+		String transferUserNo = getPara("transferUserNo");
+		if (null == transferUserNo || "".equals(transferUserNo)) {
+			return error("01", "修改失败", "债权人不存在");
+		}
+		Map<String, Object> para = new HashMap<String, Object>();
+		para.put("name", getPara("name"));
+		para.put("sex", getPara("sex"));//债权人性别
+		para.put("cardId", getPara("cardId"));
+		para.put("address", getPara("address",""));
+		para.put("mobile", getPara("mobile"));
+		para.put("bankNo", getPara("bankNo"));
+		para.put("bankUserName", getPara("bankUserName"));
+		para.put("bankName", getPara("bankName"));
+		para.put("area", getPara("area"));
+		para.put("companyName", getPara("companyName",""));
+		para.put("companyTel", getPara("companyTel",""));
+		para.put("companyAddress", getPara("companyAddress",""));
+		para.put("license", getPara("license",""));
+		para.put("trusteeName", getPara("trusteeName"));
+		para.put("trusteeCardId", getPara("trusteeCardId"));
+		para.put("area2", getPara("area2",""));
+		para.put("status", getPara("transferStatus","A"));
+		boolean result = transferInfoService.modTransfer(transferUserNo,para);
+		
+		if(result){
+			return succ("ok", result);
+		}
+		
+		return error("no", "修改失败", null);
+	}
+	
+	/**
+	 * 添加新债权人信息
+	 * @return
+	 */
+	@ActionKey("/addTransfer")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message addTransfer(){
+		//验证是债权人是否存在  cardId:身份证号   area:债权人所属地区
+		String cardId = getPara("cardId");
+		String area = getPara("area");
+		
+		List<TransferUser> transferUsers = transferInfoService.queryByCardIdArea(cardId, area);
+		if(transferUsers != null && transferUsers.size() != 0){
+			return error("01", "债权人已存在，请检查信息是否填写正确！", null);
+		}
+		Map<String, Object> transferInfo = new HashMap<String, Object>();
+		transferInfo.put("name", getPara("name"));
+		transferInfo.put("sex", getPara("sex"));//债权人性别
+		transferInfo.put("cardId", cardId);
+		transferInfo.put("address", getPara("address"));
+		transferInfo.put("mobile", getPara("mobile"));
+		transferInfo.put("bankNo", getPara("bankNo"));
+		transferInfo.put("bankUserName", getPara("bankUserName"));
+		transferInfo.put("bankName", getPara("bankName"));
+		transferInfo.put("area", area);
+		transferInfo.put("companyName", getPara("companyName"));
+		transferInfo.put("companyTel", getPara("companyTel"));
+		transferInfo.put("companyAddress", getPara("companyAddress"));
+		transferInfo.put("license", getPara("license"));
+		transferInfo.put("trusteeName", getPara("trusteeName"));
+		transferInfo.put("trusteeCardId", getPara("trusteeCardId"));
+		transferInfo.put("area2", getPara("area2"));
+		transferInfo.put("status", getPara("status","A"));
+		boolean result = transferInfoService.save(transferInfo);
+		if(result){
+			return succ("ok", result);
+		}
+		return error("no", "新增失败", null);
+	}
+	
+	/**
+	 * 根据身份证号、区域查询债权人信息
+	 * @return
+	 */
+	@ActionKey("/queryByCardIdArea")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message queryByCardIdArea(){
+		String cardId=getPara("cardId");
+		String area=getPara("area");
+		List<TransferUser> transferInfos = transferInfoService.queryByCardIdArea(cardId,area);
+		if(transferInfos!=null&&transferInfos.size()!=0){
+			return succ("ok", transferInfos.get(0));
+		}else {
+			return error("no", "未找到债权人！", null);
+		}
+	}
+	
+	
+}

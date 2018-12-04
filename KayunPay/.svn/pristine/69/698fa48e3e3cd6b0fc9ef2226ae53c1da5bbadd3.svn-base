@@ -1,0 +1,118 @@
+package com.dutiantech.controller;
+
+import java.util.List;
+
+import com.dutiantech.anno.AuthNum;
+import com.dutiantech.model.Funds;
+import com.dutiantech.model.User;
+import com.dutiantech.service.FuiouTraceService;
+import com.dutiantech.service.FundsServiceV2;
+import com.dutiantech.service.UserService;
+import com.dutiantech.util.CommonUtil;
+import com.dutiantech.util.DateUtil;
+import com.dutiantech.util.Property;
+import com.fuiou.data.QueryBalanceResultData;
+import com.fuiou.data.QueryUserInfsReqData;
+import com.fuiou.data.QueryUserInfsRspData;
+import com.fuiou.data.QueryUserInfsRspDetailData;
+import com.fuiou.service.FuiouService;
+import com.jfinal.core.ActionKey;
+
+public class FuiouController extends BaseController {
+
+	private FundsServiceV2 fundsServiceV2 = getService(FundsServiceV2.class);
+	private FuiouTraceService fuiouTraceService = getService(FuiouTraceService.class);
+	private UserService userService = getService(UserService.class);
+	public static String VER;
+	public static String MCHNT_CD;
+	
+	static {
+		VER = Property.getPropertyValueByKey("fuiou", "VER");
+		MCHNT_CD = Property.getPropertyValueByKey("fuiou", "MCHNT_CD");
+	}
+	/**
+	 * 查询用户是否已开通存管账号
+	 * 
+	 * @return
+	 */
+	public static boolean isFuiouAccount(User user) {
+		if (user == null) {
+			return false;
+		}
+		if (user.getStr("loginId") != null && !"".equals(user.getStr("loginId"))) {
+			String fuiouUid = user.getStr("loginId");
+			try {
+				fuiouUid = CommonUtil.decryptUserMobile(fuiouUid);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			QueryUserInfsReqData queryUserInfsReqData = new QueryUserInfsReqData();
+			queryUserInfsReqData.setVer(FuiouController.VER);
+			queryUserInfsReqData.setMchnt_cd(FuiouController.MCHNT_CD);
+			queryUserInfsReqData.setMchnt_txn_dt(DateUtil.getNowDate());
+			queryUserInfsReqData.setMchnt_txn_ssn(CommonUtil.genMchntSsn());
+			queryUserInfsReqData.setUser_ids(fuiouUid);
+			try {
+				QueryUserInfsRspData queryUserInfsRspData = FuiouService.queryUserInfs(queryUserInfsReqData);
+				List<QueryUserInfsRspDetailData> qqqDatas = queryUserInfsRspData.getResults();
+				if (null == qqqDatas.get(0).getMobile_no() || "".equals(qqqDatas.get(0).getMobile_no())) {
+					return false;
+				}
+			} catch (Exception e) {
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 查询平台资金信息与存管户是资金信息是否同步
+	 * 
+	 * @param userCode
+	 * @return true - 同步 false - 不同步
+	 */
+	public boolean isSync(String userCode) {
+		User user = userService.findById(userCode);
+		Funds funds = fundsServiceV2.getFundsByUserCode(userCode);
+		QueryBalanceResultData fuiouFunds = fuiouTraceService.BalanceFunds(user);
+		if (funds != null && fuiouFunds != null) {
+			if (funds.getLong("avBalance") == Long.parseLong(fuiouFunds.getCa_balance())
+					|| funds.getLong("frozeBalance") == Long.parseLong(fuiouFunds.getCf_balance())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 同步存管户资金到平台账号
+	 * 
+	 * @param userCode
+	 * @return 同步成功返回Funds 同步失败返回null
+	 */
+	public Funds syncAccount(String userCode) {
+		User user = userService.findById(userCode);
+		Funds funds = fundsServiceV2.getFundsByUserCode(userCode);
+		QueryBalanceResultData fuiouFunds = fuiouTraceService.BalanceFunds(user);
+		if (funds != null && fuiouFunds != null) {
+			funds = fundsServiceV2.syncAccount(userCode, Long.parseLong(fuiouFunds.getCa_balance()),
+					Long.parseLong(fuiouFunds.getCf_balance()));
+			return funds;
+		}
+		return null;
+	}
+
+	// 更换手机号通知接口
+	@ActionKey("/changUserMobileSign")
+	@AuthNum(value = 999)
+	public void changUserMobileSign() {
+		String resp_code = getPara("resp_code");
+		if ("0000".equals(resp_code)) {
+			redirect("/modifyHfMobile?code=0", true);
+		} else {
+			redirect("/modifyHfMobile?code=1", true);
+		}
+	}
+
+}

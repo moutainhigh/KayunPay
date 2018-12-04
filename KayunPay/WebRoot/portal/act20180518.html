@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>易融恒信-518理财节活动</title>
+<link href="/portal/css/activity/act20180518.css" rel="stylesheet" type="text/css" />
+<link type="text/css" href="/portal/css/public.css?v=1.0.0" rel="stylesheet">
+<link type="text/css" href="/portal/css/user.css?v=1.0.1" rel="stylesheet">
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+<script type="text/javascript" src="/portal/js/config.js?v=1.0.0" charset="utf-8"></script>
+</head>
+<body>
+	<div class="raise_head"></div>
+	<div class="raise_warp">
+		<div class="raise_main">
+			<div class="raise_txt">活动期间内，出借人累计投标金额（不含现金劵金额），<br>活动结束后可获得<span>等值加息1%的投资额度，</span><br>加息额度不可与会员专属加息、现金劵、加息劵叠加使用。</div>
+			<div class="raise_moneyBor">
+				<!-- <div class="raise_moneyFont">你的累计投资金额为<span>20.52</span>万</div> -->
+			</div>
+			<div class="raise_pic"><img src="/portal/images/activity/act20180518/raise_4.png" /></div>
+			<a href="/Z02" class="raise_btn"><img src="/portal/images/activity/act20180518/raise_5.png" /></a>
+		</div>
+		<div class="raise_listFont">
+			<div class="a_footerTitle">活动规则</div>
+				<div class="a_footerList">
+					<ul>
+						<li class="a_footer_li">
+							<div class="a_footerNum"></div>
+							<div class="a_footerFont">活动对象：易融恒信所有投资用户；</div>
+						</li>
+						<li class="a_footer_li">
+							<div class="a_footerNum"></div>
+							<div class="a_footerFont">除新手标、承接债权外，全场加息2%，以发标时间为准，不以投资时间为准；</div>
+						</li>
+						<li class="a_footer_li">
+							<div class="a_footerNum"></div>
+							<div class="a_footerFont">额度加息有效使用期限：2018年6月1日——2018年6月30日；</div>
+						</li>
+						<li class="a_footer_li">
+							<div class="a_footerNum"></div>
+							<div class="a_footerFont">额度加息活动期内债权承接不参与本次活动，债权转让参与本次活动；</div>
+						</li>
+						<li class="a_footer_li">
+							<div class="a_footerNum"></div>
+							<div class="a_footerFont">如使用额度加息投资后发生债权转让，则承接人不享受1%收益。</div>
+							<p class="a_footer_p">*如有其他疑问，请拨打客服热线：400-027-0707；本活动最终解释权归易融恒信所有。</p>
+						</li>
+					</ul>
+				</div>
+		</div>
+	</div>
+</body>
+<script>
+
+	function close_login_dialog() {
+		if (window.closeLoginDialog) {
+			window.closeLoginDialog();
+		}else {
+			$("#loginDialog").hide();
+			$("#yinying").hide();
+			$('body,html').css('overflow', 'auto');
+		}
+	}
+
+	// 登录模态框
+	function show_login_dialog() {
+		if ($("div").hasClass("login_dialog")) {
+			// 重复登录
+			$("#loginDialog").show();
+			$("#yinying").show();
+		} 
+		else {
+			var dislogElement = $('<div>').addClass('login_dialog').attr('id','loginDialog');
+			var closeElement = $('<div>').addClass('del').appendTo(dislogElement);
+			var h2Element = $('<h2>').html('用户登录');
+			var formElement = $('<div>').attr('id', 'login_form');
+			var accountElement = null;
+			accountElement = $('<input>')
+					.attr('name', 'account')
+					.attr('type', 'text')
+					.attr('maxlength', '30')
+					.attr('placeholder', '输入11位手机号码')
+					.blur(
+							function() {
+								if ($(this).val() == '') {
+									$('#login_account_err').show();
+									$('#login_account_err').find('span').remove();
+									$('#login_account_err').append($('<span>').html('请输入用户名'));
+								} else if (!/^1\d{10}$/.test($.trim($(this).val()))) {
+									$('#login_account_err').show();
+									$('#login_account_err').find('span').remove();
+									$('#login_account_err').append($('<span>').html('用户名不合法'));
+								} else {
+									$('#login_account_err').hide();
+								}
+							});
+			if (typeof (autologin) != 'undefined') {
+				accountElement.val(autologin);
+			}
+
+			$('<div>').addClass('item').append(
+					$('<i>').addClass('iconUser').css('marginTop', '17px')).append(
+					accountElement).append(
+					$('<p>').attr('id', 'login_account_ok').addClass('tips-right')
+							.addClass('u-tips')).append(
+					$('<p>').attr('id', 'login_account_err').addClass('tips-error')
+							.addClass('u-tips')).appendTo(formElement);
+
+			$('<div>').addClass('item').append(
+					$('<i>').addClass('iconPwd').css('marginTop', '17px')).append(
+					$('<input>').attr('type', 'password').attr('name', 'password')
+							.addClass('inp').attr('maxlength', '30').val('').attr(
+									'placeholder', '输入密码'))
+					.append(
+							$('<p>').attr('id', 'login_password_ok').addClass('tips-right').addClass('u-tips').html(
+									$('<i>').addClass('iconfont'))).append(
+							$('<p>').attr('id', 'login_password_err').addClass(
+									'tips-error').addClass('u-tips').html(
+									$('<i>').addClass('iconfont'))).appendTo(formElement);
+
+			$('<div>').addClass('button_panel').append(
+					$('<div>').addClass('loginBtn').attr('id', 'login_btn').html('登录').click(function() {
+						loginFnPop();
+					})).appendTo(formElement);
+
+			$('<div>').addClass('other')
+					.append('赶快加入易融恒信吧&nbsp;&nbsp;&nbsp;&nbsp;').append(
+							$('<a>').attr('href', '/register').html('立即注册'))
+					.append('！').appendTo(formElement);
+
+			closeElement.appendTo(dislogElement);
+			closeElement.click(close_login_dialog);
+			h2Element.appendTo(dislogElement);
+			formElement.appendTo(dislogElement);
+			init_yinying();
+
+			$('body,html').css('overflow', 'hidden');
+			to_center($('#yinying').show());
+			to_center(dislogElement.appendTo('body').show());
+
+			$("input[name='password']").focus(function() {
+				$(window).on("keydown", function(event) {
+					if (event.keyCode == 13) {
+						loginFnPop();
+					}
+				});
+			})
+		}
+	}
+	function init_yinying() {
+		if ($('#yinying').length == 0) {
+			$('<div>').attr('id', 'yinying').addClass('yinying').appendTo('body');
+		}
+	}
+
+	// 居中
+	function to_center(obj) {
+		var width = $(window).width();
+		var height = $(window).height();
+		var top = $(window).scrollTop();
+		var eleWidth = obj.width();
+		var eleHeight = obj.height();
+		obj.css({
+			left : (width - eleWidth) / 2,
+			top : top + (height - eleHeight) * 2 / 5
+		});
+	}
+	function loginFnPop() {
+		var loginName = $('#login_form').find('input[name=account]').val();
+		var loginPwd = $('#login_form').find('input[name=password]').val();
+		YRHX.Cookie().clear();
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("login"),
+			data : {
+				loginName : loginName,
+				loginPwd : loginPwd
+			},
+			success : function(sucData) {
+				setTimeout(function() {
+					YRHX.Cookie("loginName", loginName).set();
+					YRHX.Cookie("userCode", sucData.userCode).set();
+					YRHX.Cookie("userName", sucData.userName).set();
+					close_login_dialog();
+					if (window.loginSuccessCallback) {
+						window.loginSuccessCallback();
+					} else {
+						window.location.href=window.location.href;
+					}
+					
+				}, 300);
+			},
+			error : function(errData) {
+				alert('用户名或密码错误');
+			}
+		});
+	}
+	
+	function moneyNum(){
+		var userName = YRHX.Cookie("userName").get();
+		var loginCur='<div class="invest_login1">请<a href="javascript:show_login_dialog();">登录</a>后查看</div>';
+		if(userName != null) {
+			$(".raise_moneyFont").html("");
+			YRHX.ajax({
+				url : "/queryRewardRateAmount518",
+				success: function(sucData) {
+					var rewardRateAmount=sucData.rewardRateAmount;
+					var money="<div class='raise_moneyFont'>你的累计投资金额为<span>"+rewardRateAmount+"</span>万</div>";
+					$(".raise_moneyBor").append(money);
+				}
+			});
+		}
+		else{
+			
+			$(".raise_moneyBor").append(loginCur);
+		}
+	}
+	
+	
+	$(function(){
+		moneyNum();
+		
+	});
+	</script>
+</html>

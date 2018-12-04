@@ -1,0 +1,3 @@
+ALTER table t_withdraw_trace add loanApplyCode char(32);
+
+INSERT INTO `t_menu_v2` (`menu_id`, `menu_id_p`, `menu_name`, `menu_type`, `menu_url`, `menu_class`, `menu_method`, `menu_status`, `menu_desc`) VALUES ('0021', '14', '借款人提现', 'A', '/mLoanToWithdraw', 'com.dutiantech.controller.admin.ActionController', 'mLoanToWithdraw', 'A', '自动生成');

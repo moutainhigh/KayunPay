@@ -1,0 +1,157 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+	<!-- iframe body start -->
+	<form id="info-form" action="" data-am-validator>
+		<div class="am-tabs am-margin" data-am-tabs="{noSwipe: 1}">
+		<!-- <div data-am-widget="tabs" class="am-tabs am-margin" data-am-tabs-noswipe="1"> -->
+			<ul class="am-tabs-nav am-nav am-nav-tabs">
+				<li class="am-active"><a href="#tab1">账户基本情况</a></li>
+				<li class="am-active"><a href="#tab2">理财人账户</a></li>
+				<li class="am-active"><a href="#tab3">借款人账户</a></li>
+			</ul>
+			<div class="am-tabs-bd">
+				<div class="am-tab-panel am-fade am-in am-active am-form am-form-inline" id="tab1">
+					<div class="am-g am-margin-top field" name="userCode" type="text" text="用户编号" desc="" >
+					</div>
+					<div class="am-g am-margin-top field" name="userName" type="text" text="昵称" desc="" >
+					</div>
+					<div class="am-g am-margin-top field" name="avBalance" type="text" text="可用余额" desc="单位元" >
+					</div>
+					<div class="am-g am-margin-top field" name="frozeBalance" type="text" text="冻结余额" desc="单位元" >
+					</div>
+					<!--  
+					<div class="am-g am-margin-top field" name="avBalanceMem" type="text" text="可用余额（系统）" desc="单位元" >
+					</div>
+					<div class="am-g am-margin-top field" name="frozeBalanceMem" type="text" text="冻结余额（系统）" desc="单位元" >
+					</div>-->
+					<div class="am-g am-margin-top field" name="points" type="text" text="积分" >
+					</div>
+					<div class="am-g am-margin-top field" name="lastDateTime" type="text" text="最后操作时间" desc="账户系统中最后变动时间">
+					</div>
+				</div>
+				<div class="am-tab-panel am-fade am-in am-active am-form am-form-inline" id="tab2">
+					<div class="am-g am-margin-top field" name="beRecyCount" type="text" text="待收回笔数">
+					</div>
+					<div class="am-g am-margin-top field" name="beRecyPrincipal" type="text" text="待收回本金" desc="单位元">
+					</div>
+					<div class="am-g am-margin-top field" name="beRecyInterest" type="text" text="待收回利息" desc="单位元">
+					</div>
+					<div class="am-g am-margin-top field" name="reciedPrincipal" type="text" text="已回收本金" desc="单位元">
+					</div>
+					<div class="am-g am-margin-top field" name="reciedInterest" type="text" text="已回收利息" desc="单位元">
+					</div>
+				</div>
+				<div class="am-tab-panel am-fade am-form" id="tab3">
+					<div class="am-g am-margin-top field" name="loanTotal" type="text" text="借款总额（历史）"  desc="单位元" >
+					</div>
+					<div class="am-g am-margin-top field" name="loanCount" type="text" text="借款笔数" desc="借款笔数，正在还款笔数">
+					</div>
+					<div class="am-g am-margin-top field" name="loanSuccessCount" type="text" text="成功还款笔数" >
+					</div>
+					<div class="am-g am-margin-top field" name="loanBySysCount" type="text" text="平台代还笔数" >
+					</div>
+					<div class="am-g am-margin-top field" name="beRecyPrincipal4loan" type="text" text="待还本金"  desc="单位元" >
+					</div>
+					<div class="am-g am-margin-top field" name="beRecyInterest4loan" type="text" text="待还利息总额"  desc="单位元" >
+					</div>
+					<div class="am-g am-margin-top field" name="beRecyMFee4loan" type="text" text="待还管理费"  desc="单位元" >
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="am-margin">
+			<button id="cancelBtn" type="button" class="am-btn am-btn-primary am-btn-xs back-btn">返回</button>
+		</div>
+	</form>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script>
+		//---init
+		//biz code
+		$(".back-btn").click(function(){
+			window.history.go(-1);
+		});
+
+		function initFormData( keyCode ){
+			YRHX.ajax({
+				url : "/getFundsById" ,
+				data : {
+					fundsUserCode : keyCode 
+				},
+				success : function( sucData ){
+					sucData["avBalance"] = YRHX.toDecimal2(sucData["avBalance"]/100);
+					sucData["beRecyInterest"] = YRHX.toDecimal2(sucData["beRecyInterest"]/100);
+					sucData["beRecyInterest4loan"] = YRHX.toDecimal2(sucData["beRecyInterest4loan"]/100);
+					sucData["beRecyMFee4loan"] = YRHX.toDecimal2(sucData["beRecyMFee4loan"]/100);
+					sucData["beRecyPrincipal"] = YRHX.toDecimal2(sucData["beRecyPrincipal"]/100);
+					sucData["beRecyPrincipal4loan"] = YRHX.toDecimal2(sucData["beRecyPrincipal4loan"]/100);
+					sucData["frozeBalance"] = YRHX.toDecimal2(sucData["frozeBalance"]/100);
+					sucData["reciedInterest"] = YRHX.toDecimal2(sucData["reciedInterest"]/100);
+					sucData["reciedPrincipal"] = YRHX.toDecimal2(sucData["reciedPrincipal"]/100);
+					sucData["frozeBalanceMem"] = YRHX.toDecimal2(sucData["frozeBalanceMem"]/100);
+					sucData["avBalanceMem"] = YRHX.toDecimal2(sucData["avBalanceMem"]/100);
+					sucData["loanTotal"] = YRHX.toDecimal2(sucData["loanTotal"]/100);
+					
+					
+					sucData["beRecyCount"] = sucData["beRecyCount"]||"0" ;
+					sucData["loanBySysCount"] = sucData["loanBySysCount"]||"0" ;
+					sucData["loanCount"] = sucData["loanCount"]||"0" ;
+					sucData["loanSuccessCount"] = sucData["loanSuccessCount"]||"0" ;
+					sucData["loanTotal"] = sucData["loanTotal"]||"0" ;
+					sucData["points"] = YRHX.toDecimal2(sucData["points"]/100);
+					sucData["lastDateTime"] = (sucData["updateDate"]+""+sucData["updateTime"]).dateformat();
+					
+					$("#info-form").formUnSerialize( sucData ); 
+				},
+				error : function(data){
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+		}
+
+		var formType = YRHX.queryString("opType");
+		$("#info-form").formInit({
+			"formType" : "view" , 
+			"request" : "http://www.qq.com"
+		});
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		$("#info-form").validatorInit();
+		var keyCode = YRHX.queryString("key");
+		if( keyCode ){
+			initFormData( keyCode );
+		}		
+		
+	</script>
+</body>
+</html>

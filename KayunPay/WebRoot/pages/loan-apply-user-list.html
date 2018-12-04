@@ -1,0 +1,200 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body onkeydown="zhazha(event)">
+	<div class="am-g">
+		<!-- 标准功能按钮 Start  -->
+		<div class="am-u-sm-12 am-u-md-4">
+			<div class="am-btn-toolbar">
+				<div class="am-btn-group am-btn-group-xs">
+				<!--  
+					<button type="button" class="am-btn am-btn-default audit-okay-btn">
+						<span class="am-icon-archive"></span> 审核通过
+					</button>
+					<button type="button" class="am-btn am-btn-default audit-faild-btn">
+						<span class="am-icon-archive"></span> 审核失败
+					</button>-->
+				</div>
+			</div>
+		</div>
+		<!-- 标准功能按钮  End -->
+		<div class="am-u-sm-12 am-u-md-3">
+			<div class="am-input-group am-input-group-sm">
+				<input type="text" class="am-form-field allkey"><span
+					class="am-input-group-btn">
+					<button class="am-btn am-btn-default query-btn" type="button">搜索</button>
+				</span>
+			</div>
+		</div>
+	</div>
+	<!-- Table -->
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 15 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+						<li id="not"><input type="text" size="5" id="goValue" onkeypress="return IsNum(event)" value="1"/></li>
+						<li id="go"><input type="button" value="GO" onclick="$('#go').attr('index',$('#goValue').val())"/></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script>
+	function zhazha(e){
+		var keynum = 0;
+		if(window.event){
+			keynum = e.keyCode
+		}
+		else if(e.which){
+			keynum = e.which
+		}
+		if(keynum==13){
+			queryData(1);
+		}
+	}
+		var maxQueryNum = 10 ;
+		var queryUrl = "/getLoanUserFunds";
+		var size=0;//总页数
+		
+		$(".query-btn").click(function(){
+			queryData(1);
+			$("#goValue").val(1);//设置GO栏默认页码为1
+		});
+				
+		//查询实现
+		function queryData( pNum , pSize ){
+			//对页码参数验证
+			if(isNaN(pNum)){
+				alert("GO栏请输入数字！");
+				return;
+			}
+			if(size<1){
+				size=1;
+			}
+			if(pNum > size && size != 0){
+				pNum=size;
+				$("#goValue").val(pNum);
+			}
+			YRHX.ajax({
+				url : queryUrl,
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize ||maxQueryNum,
+					allkey : $(".allkey").val()
+				},
+				success : function(sucData){
+					size=Math.ceil(sucData["totalRow"]/maxQueryNum);//总页数
+					makeTable(sucData.list , {
+						index : sucData["pageNumber"] , 
+						max : sucData["pageSize"] ,
+						size : sucData["totalRow"]
+					});
+				},
+				error : function(data) {
+					alert(data.return_info || "获取信息失败");
+				}
+			});
+			
+		}
+
+		$("div.pad-div").initPagEvent( queryData );
+		
+		//init 
+		var loanStateData = YRHX.sortData(RES["DATA_MAP"]["map_applyState"]) ;
+		
+		function makeTable( tableData ,pageData){
+			$(".am-g").table({
+						dataFormat : function(rowObj) {
+							rowObj["beRecyPrincipal4loan"] = YRHX.toDecimal2(rowObj["beRecyPrincipal4loan"]/100 , "￥");
+							rowObj["beRecyInterest4loan"] = YRHX.toDecimal2(rowObj["beRecyInterest4loan"]/100 , "￥");
+							rowObj["loanTotal"] = YRHX.toDecimal2(rowObj["loanTotal"]/100 , "￥");
+							rowObj["loanCount"] = rowObj["loanCount"] + "";
+							rowObj["loanSuccessCount"] = rowObj["loanSuccessCount"] + "";
+							return rowObj;
+						},
+						max : 10,
+						pag : pageData,
+						header : [
+								{
+									name : "",type : "checkbox",key : "userCode"
+								},
+								{
+									name : "",text : "借款人昵称",html : "#{userName}"
+								},
+								{
+									name : "",text : "借款人姓名",html : "#{trueName}"
+								},
+								{
+									name : "",text : "待还本金",html : "#{beRecyPrincipal4loan}"
+								},
+								{
+									name : "",text : "待还利息",html : "#{beRecyInterest4loan}"
+								},
+								{
+									name : "",text : "待还笔数",html : "#{loanCount}"
+								},
+								{
+									name : "",text : "已还笔数",html : "#{loanSuccessCount}"
+								},
+								{
+									name : "",text : "借款总计",html : "#{loanTotal}"
+								},{
+									name : "",text : "操作",html : $.makeButtons([
+									    										{"text":"借款明细","url":"/mHKGL?fuserCode=#{userCode}","ico":"am-icon-pencil-square-o"}
+									    										])
+									    						}],
+						data : tableData
+					});
+			}
+		
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		queryData(1);
+	</script>
+</body>
+</html>

@@ -1,0 +1,745 @@
+<!doctype html>
+<html class="no-js">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+		<link rel="apple-touch-icon-precomposed" href="../assets/i/app-icon72x72@2x.png">
+		<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+		<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+		<link rel="stylesheet" href="../assets/css/admin.css">
+		<link type="text/css" href="/portal/css/user.css?v=1.0.1" rel="stylesheet">
+		<style type="text/css">
+			.message {
+				display: none;
+				position: absolute;
+				left: 50px;
+				top: 50px;
+				z-index: 999;
+			}
+		</style>
+	</head>
+	<body>
+		<div style="margin-left: 20px;margin-top: 8px;">
+			<div style="float: left;">
+				<b>回款查询日期:&nbsp;</b>
+				<input type="text" id="date" maxlength="8"/>
+				<input type="button" id="query" value="查询"/>
+			</div>
+			<div style="float:left;">
+				<a href="repaymentDayList" target="_blank" style="color:#000;"><input type="button" value="当日还款列表"/></a>
+			</div>
+		</div>
+		
+		<div id="version1">
+			<div style="margin-left: 20px;clear:both;float:left;width: 50%;">
+				<h3 style="height:10px;margin-top: 10px;margin-bottom:20px;">资金统计</h3>
+				<table>
+					<tr>
+						<td width="310px">批次代偿成功交易总金额:</td>
+						<td width="200px"><span id='sumBatchAmount'></span>元</td>
+					</tr>
+					<tr>
+						<td>批次代偿成功交易总手续费:</td>
+						<td><span id='sumTxFeeIn'></span>元</td>
+					</tr>
+					<tr>
+						<td>发送成功红包还款总金额(含返佣):</td>
+						<td><span id='sumSucVoucherAmount'></span>元</td>
+					</tr>
+					<tr>
+						<td>还款总本金利息(实际/预估):</td>
+						<td><span id='repaymentAmount'></span></td>
+					</tr>
+					<tr>
+						<td>总手续费(实际/预估):</td>
+						<td><span id='interestFee'></span></td>
+					</tr>
+				</table>
+				
+				<hr style="height:1px;width:500px;margin-top: 10px;margin-bottom:20px;border:none;border-top:1px dashed #AEAEAE;" />
+				
+				<h3 style="height:10px;margin-top: 10px;margin-bottom:20px;">数量统计</h3>
+				<table>
+					<tr>
+						<td width="300px">正常还款标结算数量(实结/应结):</td>
+						<td width="100px"><span id='loan'></span></td>
+					</tr>
+					<tr>
+						<td>提前还款标结算数量(实结/应结):</td>
+						<td><span id='earlyLoan'></span></td>
+					</tr>
+					<tr>
+						<td>批次数量(实发/应发):</td>
+						<td><span id='batch'></span></td>
+					</tr>
+					<tr>
+						<td>发送成功还款红包数量(含返佣):</td>
+						<td><span id='voucherPaySucNum'></span></td>
+					</tr>
+					<tr>
+						<td>批次资金未解冻批次数量:</td>
+						<td><span id='thawBatchNum'></span></td>
+						<td><input type="button" value="详情" class="detailed"/>
+							<input type="hidden" id='thawBatchNo'/>
+						</td>
+					</tr>
+					<tr>
+						<td>还款短信数量(实发/应发):</td>
+						<td><span id='SMS1'></span></td>
+					</tr>		
+				</table>
+				
+				<hr style="height:1px;width:500px;margin-top: 10px;margin-bottom:20px;border:none;border-top:1px dashed #AEAEAE;" />
+				
+				<h3 style="height:10px;margin-top: 10px;margin-bottom:20px;">失败处理专区</h3>
+				<table>
+					<tr>
+						<td width="300px">失败批次数量:</td>
+						<td width="50px"><span id='failBatchNum'></span></td>
+						<td width="200px"><input type="button" value="详情" class="detailed"/>
+							<!-- <input type="hidden" id='failBatchNo'/> -->
+							<!-- <input type="button" value="补发" id="batchSubstRepayResend"/> -->
+						</td>
+					</tr>
+					<tr>
+						<td>通道异常已处理批次数量:</td>
+						<td><span id='aisleBatchNum'></span></td>
+						<td><input type="button" value="详情" class="detailed"/>
+							<input type="hidden" id='aisleBatchNo'/>
+						</td>
+					</tr>
+					<tr>
+						<td>还款红包发送失败未处理数量(含返佣):</td>
+						<td><span id=voucherPayFailNum></span></td>
+						<!-- <td><input type="button" value="补发" id="voucherPayRetry"/></td> -->
+					</tr>
+				</table>
+			</div>
+			
+			<div style="margin-left: 20px;float: left;">
+				<h3 style="height:10px;margin-top: 10px;margin-bottom:20px;">明日还款资金预估</h3>
+				<table>
+					<tr>
+						<td width="250px">明日代偿还款预计:</td>
+						<td width="100px"><span id='sumNextBatchAmount'></span>元</td>
+					</tr>
+					<tr>
+						<td>明日红包还款(不含返佣)预计:</td>
+						<td><span id='sumNextVoucherAmount'></span>元</td>
+					</tr>
+				</table>
+				
+				<hr style="height:1px;width:500px;margin-top: 10px;margin-bottom:20px;border:none;border-top:1px dashed #AEAEAE;" />
+				
+				<h3 style="height:10px;margin-top: 10px;margin-bottom:20px;">逾期信息(仅当日回款前查询有效)</h3>
+				<table>
+					<tr>
+						<td width="300px">应回款总额:</td>
+						<td width="50px"><span id='sumAmount'></span>元</td>
+					</tr>
+					<tr>
+						<td>实际正常回款总额:</td>
+						<td><span id='sumYesAmount'></span>元</td>
+					</tr>
+					<tr>
+						<td>应回款标数:</td>
+						<td><span id='countLoan'></span></td>
+					</tr>
+					<tr>
+						<td>实际正常回款标数:</td>
+						<td><span id='countYesLoan'></span></td>
+					</tr>
+					<!-- <tr>
+						<td>当日垫付利息总额:</td>
+						<td><span id='sumAdvanceInterest'></span>元</td>
+					</tr>
+					<tr>
+						<td>当日垫付利息标的数:</td>
+						<td><span id='countAdvanceInterest'></span></td>
+					</tr> -->
+					<!-- <tr>
+						<td>实际逾期还款总额:</td>
+						<td><span id='sumYesOverdueAmount'></span>元</td>
+					</tr>
+					<tr>
+						<td>实际逾期还款标数:</td>
+						<td><span id='countYesOverdue'></span></td>
+					</tr> -->
+					<tr>
+						<td>逾期追回日期:<input type="text" id="overdueDate" maxlength="8"/></td>
+						<td><input type="button" value="下载" id="overdueExportFile"/></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		
+		<div id="version2">
+			<div style="margin-left: 20px;clear:both;float:left;width: 50%;">
+				<div style="margin-top: 10px;">
+					<b>还款进度:&nbsp;</b>
+					<span id="repaymentStatus">未开始</span>
+				</div>
+			
+				<hr style="height:1px;width:500px;margin-top: 10px;margin-bottom:20px;border:none;border-top:1px dashed #AEAEAE;" />
+				<h3 style="height:10px;margin-top: -20px;margin-bottom:20px;">标信息</h3>
+				<table>
+					<tr>
+						<td width="310px">应还总本金:</td>
+						<td width="250px"><span id='yhzbj'></span></td>
+					</tr>
+					<tr>
+						<td>应还总利息:</td>
+						<td><span id='yhzlx'></span></td>
+					</tr>
+					<tr>
+						<td>实际正常还款总本金:</td>
+						<td><span id='sjzchkzbj'></span></td>
+					</tr>
+					<tr>
+						<td>实际正常还款总利息:</td>
+						<td><span id='sjzchkzlx'></span></td>
+					</tr>
+					<tr>
+						<td>逾期还款总本金:</td>
+						<td><span id='yqhkzbj'></span></td>
+					</tr>
+					<tr>
+						<td>逾期垫付总利息:</td>
+						<td><span id='yqdfzlx'></span></td>
+					</tr>
+					<tr>
+						<td>实际回款率:</td>
+						<td><span id='sjhkl'></span></td>
+					</tr>
+					<tr>
+						<td height="10px"></td>
+					</tr>
+					<tr>
+						<td>正常还款标的数(实还/应还):</td>
+						<td><span id='zchkbds'></span></td>
+					</tr>
+					<tr>
+						<td>提前还款标的数(实还/应还):</td>
+						<td><span id='tqhkbds'></span></td>
+					</tr>
+					<tr>
+						<td>实际正常还款标的数(实还/应还):</td>
+						<td><span id='sjzchkbds'></span></td>
+					</tr>
+					<tr>
+						<td>实际提前还款标的数(实还/应还):</td>
+						<td><span id='sjtqhkbds'></span></td>
+					</tr>
+					<tr>
+						<td>逾期还本金标的数(实还/应还):</td>
+						<td><span id='yqhbjbds'></span></td>
+					</tr>
+					<tr>
+						<td>逾期垫付利息标的数(实还/应还):</td>
+						<td><span id='yqdflxbds'></span></td>
+					</tr>
+					<tr>
+						<td>逾期不垫付利息标的数(实还/应还):</td>
+						<td><span id='yqbdflxbds'></span></td>
+					</tr>
+					<tr>
+						<td>非结算日还款标的数:</td>
+						<td><span id='fjsrhkbds'></span></td>
+					</tr>
+				</table>
+				
+				<hr style="height:1px;width:500px;margin-top: 10px;margin-bottom:20px;border:none;border-top:1px dashed #AEAEAE;" />
+				
+				<h3 style="height:10px;margin-top: -20px;margin-bottom:20px;">批次信息</h3>
+				<table>
+					<tr>
+						<td>代偿生成批次数量(实生成/应生成):</td>
+						<td><span id='dcscpcsl'></span></td>
+					</tr>
+					<tr>
+						<td width="300px">批次代偿总本金(实还/应还):</td>
+						<td width="250px"><span id='pcdczbj'></span></td>
+					</tr>
+					<tr>
+						<td>批次代偿总利息(实还:部分缴费授权未开通/应还):</td>
+						<td><span id='pcdczlx'></span></td>
+					</tr>
+					<tr>
+						<td>批次代偿实收总手续费:</td>
+						<td><span id='pcdcshzsxf'></span></td>
+					</tr>
+					<tr>
+						<td>正常还款批次数(实发/应发):</td>
+						<td><span id='zchkpcs'></span></td>
+					</tr>
+					<tr>
+						<td>逾期本金批次数(实发/应发):</td>
+						<td><span id='yqbjpcs'></span></td>
+					</tr>
+					<tr>
+						<td>逾期垫付利息批次数(实发/应发):</td>
+						<td><span id='yqdflxpcs'></span></td>
+					</tr>
+					<tr>
+						<td>批次资金解冻数量(已解冻/应解冻):</td>
+						<td><span id='pczjjdsl'></span></td>
+					</tr>
+					<tr>
+						<td>失败批次数量(已处理/失败):</td>
+						<td><span id='sbpcsl'></span></td>
+					</tr>
+				</table>
+			</div>
+			
+			<div style="margin-left: 20px;float:left;">
+				<h3 style="height:10px;margin-top: 10px;margin-bottom:20px;">红包信息</h3>
+				<table>
+					<tr>
+						<td width="250px">红包总本金(实出账:本金-未开户/应还):</td>
+						<td width="250px"><span id='hbzbj'></span></td>
+					</tr>
+					<tr>
+						<td>红包总利息(实出账:利息-手续费-未开户/应还):</td>
+						<td><span id='hbzlx'></span></td>
+					</tr>
+					<tr>
+						<td>红包返佣实发总额:</td>
+						<td><span id='hbfysfze'></span></td>
+					</tr>
+					<tr>
+						<td>实发红包数量:</td>
+						<td><span id='sfhbsl'></span></td>
+					</tr>
+					<tr>
+						<td>失败红包数量(已处理/失败):</td>
+						<td><span id='sbhbsl'></span></td>
+					</tr>
+				</table>
+				
+				<hr style="height:1px;width:500px;margin-top: 10px;margin-bottom:20px;border:none;border-top:1px dashed #AEAEAE;" />
+
+				<h3 style="height:10px;margin-top: -20px;margin-bottom:20px;">未开户信息</h3>
+				<table>
+					<tr>
+						<td>未开户还款总额(本金+利息+佣金):</td>
+						<td><span id='wkhhkze'></span></td>
+					</tr>
+				</table>
+				
+				<hr style="height:1px;width:500px;margin-top: 10px;margin-bottom:20px;border:none;border-top:1px dashed #AEAEAE;" />
+
+				<h3 style="height:10px;margin-top: -20px;margin-bottom:20px;">短信信息</h3>
+				<table>
+					<tr>
+						<td width="250px">还款短信数量(已发/应发):</td>
+						<td width="100px"><span id='SMS2'></span></td>
+					</tr>
+				</table>
+				
+				<hr style="height:1px;width:500px;margin-top: 10px;margin-bottom:20px;border:none;border-top:1px dashed #AEAEAE;" />
+		
+				<h3 style="height:10px;margin-top: -20px;margin-bottom:20px;">公布信息</h3>
+				<table>
+					<tr>
+						<td width="310px">应还总额:</td>
+						<td width="250px"><span id='bhqtyhze'></span></td>
+					</tr>
+					<tr>
+						<td>实际还款总额:</td>
+						<td><span id='bhqtsjhkzje'></span></td>
+					</tr>
+					<tr>
+						<td>逾期追回还款总额:</td>
+						<td><span id='yqzhbjhkze'></span></td>
+					</tr>
+					<tr>
+						<td>公布回款率:</td>
+						<td><span id='gbhkl'></span></td>
+					</tr>
+					<tr>
+						<td>应还标的数(不含齐通):</td>
+						<td><span id='bhqtyhbds'></span></td>
+					</tr>
+					<tr>
+						<td>实际还款标的数(不含齐通):</td>
+						<td><span id='bhqtsjhkbds'></span></td>
+					</tr>
+				</table>				
+				<hr style="height:1px;width:500px;margin-top: 10px;margin-bottom:20px;border:none;border-top:1px dashed #AEAEAE;" />
+				
+				<div>
+					<h3 style="height:10px;margin-top: -20px;margin-bottom:20px;">功能区<span style="color:red;">(点错要赔的)</span></h3>
+					
+					<span>批次明细:</span>
+					<input type="button" value="未解冻批次" class="detailed"/>
+					<input type="hidden" id='thawBatchNos'/>
+					
+					<input type="button" value="失败批次" class="detailed"/>
+					<input type="hidden" id='failBatchNos'/>
+					
+					<input type="button" value="失败已处理批次" class="detailed"/>
+					<input type="hidden" id='aisleBatchNos'/>
+					
+					<input type="button" value="补发批次" class="detailed"/>
+					<input type="hidden" id='reissueBatchNos'/>
+					<br />
+					
+					<span>失败批次号:</span>
+					<input type="text" id="failBatchNo" maxlength="5" size="5"/>
+					<input type="button" value="设置已处理" id="updateFailBatchNoStatus"/>
+					<span>(非通道异常,人工处理后,更改统计状态)</span>
+					<br />
+					
+					<span>补发:</span>
+					<input type="button" value="批次补发(仅通道)" id="batchSubstRepayResend"/>
+					<input type="button" value="红包补发" id="voucherPayRetry"/>
+					<br />
+					
+					<span>当前逾期中的标信息:</span>
+					<input type="button" value="点击导出" class = 'overdueListIng'/>
+					<br />
+					<span>取消逾期列表:</span>
+					<input type="text" class='exportOverList'>
+					<input type="button" value="取消逾期点击导出" class = 'exportOverdueList'/>
+					<br />
+					
+					<span>债转方案数据:</span>
+					<input type="button" value="点击导出" class = 'exportTransferPlan'/>
+					<!-- <div style="margin-top: 5px;width:360px;padding:5px;border:1px  double  red">
+						<span>当日回款按钮:&nbsp;</span>
+						<input type="text" id="smsMsg" style="width:70px;height:25px" maxlength="6"/>
+						<input type="hidden" id="opCode"/>
+						<span id="sendMsgBtn" style="text-decoration:underline;cursor:pointer;color:#72ACE3;">获取验证码</span>
+						<input type="button" id="autoRecy4loan" value="开始回款"/>
+					</div> -->
+				</div>
+			</div>
+		</div>
+		
+		<div id="yinying" class="yinying" style="background-color: #f3f3f3;"></div>
+		<div class="message" style="position: fixed;left: 50px;top: 0px;z-index: 999;">
+			<div  style="display: inline-block;width: 600px;margin-left: 50px;">
+				<span style="color: black;">详情:</span>
+				<textarea id="detailedVal" rows="20" cols="80" readonly="readonly"></textarea>
+			</div>
+			<div><button id="closeMessage" type="button" style="margin-left: 50%;" value="关闭">关闭</button></div>
+		</div>
+		
+		<!-- prompt start -->
+		<script src="../assets/js/jquery.min.js"></script>
+		<!--<![endif]-->
+		<script src="../app/js/res.js"></script>
+		<script src="../app/js/biz.js"></script>
+		<script src="../app/js/table-widget.js"></script>
+		<script src="../app/js/form-widget.js"></script>
+		<script src="../app/js/isNum.js"></script>
+		<script type="text/javascript" src="/portal/js/jxErr.js"></script>
+		<script type="text/javascript" src="/portal/js/jxTraceState.js"></script>
+		<script>
+			function getDay(num, str) {
+			    var today = new Date();
+			    var nowTime = today.getTime();
+			    var ms = 24*3600*1000*num;
+			    today.setTime(parseInt(nowTime + ms));
+			    var oYear = today.getFullYear();
+			    var oMoth = (today.getMonth() + 1).toString();
+			    if (oMoth.length <= 1) oMoth = '0' + oMoth;
+			    var oDay = today.getDate().toString();
+			    if (oDay.length <= 1) oDay = '0' + oDay;
+			    return oYear + str + oMoth + str + oDay;
+			}
+			
+			function addDate(date,days){ 
+				var d=new Date(date.substring(0,4)+"-"+date.substring(4,6)+"-"+date.substring(6,8)); 
+				d.setDate(d.getDate()+days); 
+				var month=d.getMonth()+1; 
+				var day = d.getDate(); 
+				if(month<10){ 
+				month = "0"+month; 
+				} 
+				if(day<10){ 
+				day = "0"+day; 
+				} 
+				var val = d.getFullYear()+""+month+""+day; 
+				return val; 
+			}
+		
+			//设置默认查询时间样式
+			$("#date").attr("placeholder",getDay(-1,""));
+			$("#overdueDate").attr("placeholder",getDay(-1,""));
+			$(".exportOverList").attr("placeholder",getDay(0,""));
+			
+			if(getDay(0,"") >=20180909 ){
+				$("#version1").hide();
+			}
+		
+			function queryData(date) {
+				if(date == null || date.length == 0){
+					date = getDay(-1,"");
+				}
+				if(date.length != 8){
+					alert("请输入正确年月日,例20180101");
+					return;
+				}
+				YRHX.ajax({
+					url: "/repaymentByDay",
+					data:{
+						date:date
+					},
+					success: function(sucData) {
+						$("#opCode").val(sucData.opCode);
+						if(date >= 20180917 ){//version2.0
+							$("#SMS2").text(sucData.SMS);
+							$("#dcscpcsl").text(sucData.dcscpcsl);
+							$("#pcdczbj").text(sucData.pcdczbj);
+							$("#pcdczlx").text(sucData.pcdczlx);
+							$("#pcdcshzsxf").text(sucData.pcdcshzsxf);
+							$("#zchkpcs").text(sucData.zchkpcs);
+							$("#yqbjpcs").text(sucData.yqbjpcs);
+							$("#yqdflxpcs").text(sucData.yqdflxpcs);
+							$("#pczjjdsl").text(sucData.pczjjdsl);
+							$("#sbpcsl").text(sucData.sbpcsl);
+							$("#hbzbj").text(sucData.hbzbj);
+							$("#hbzlx").text(sucData.hbzlx);
+							$("#hbfysfze").text(sucData.hbfysfze);
+							$("#wkhhkze").text(sucData.wkhhkze);
+							$("#bhqtyhze").text(sucData.bhqtyhze);
+							$("#bhqtsjhkzje").text(sucData.bhqtsjhkzje);
+							$("#bhqtyhbds").text(sucData.bhqtyhbds);
+							$("#bhqtsjhkbds").text(sucData.bhqtsjhkbds);
+							$("#sfhbsl").text(sucData.sfhbsl);
+							$("#sbhbsl").text(sucData.sbhbsl);
+							$("#yhzbj").text(sucData.yhzbj);
+							$("#yhzlx").text(sucData.yhzlx);
+							$("#sjzchkzbj").text(sucData.sjzchkzbj);
+							$("#sjzchkzlx").text(sucData.sjzchkzlx);
+							$("#yqhkzbj").text(sucData.yqhkzbj);
+							$("#yqzhbjhkze").text(sucData.yqhkzbj);
+							$("#yqdfzlx").text(sucData.yqdfzlx);
+							$("#zchkbds").text(sucData.zchkbds);
+							$("#tqhkbds").text(sucData.tqhkbds);
+							$("#sjzchkbds").text(sucData.sjzchkbds);
+							$("#sjtqhkbds").text(sucData.sjtqhkbds);
+							$("#yqhbjbds").text(sucData.yqhbjbds);
+							$("#yqdflxbds").text(sucData.yqdflxbds);
+							$("#yqbdflxbds").text(sucData.yqbdflxbds);
+							$("#fjsrhkbds").text(sucData.fjsrhkbds);
+							$("#thawBatchNos").val(sucData.thawBatchNos);
+							$("#thawBatchNos").prev().val("未解冻批次("+sucData.thawBatchNos.length+")");
+							$("#failBatchNos").val(sucData.failBatchNos);
+							$("#failBatchNos").prev().val("失败批次("+sucData.failBatchNos.length+")");
+							$("#aisleBatchNos").val(sucData.aisleBatchNos);
+							$("#aisleBatchNos").prev().val("失败已处理批次("+sucData.aisleBatchNos.length+")");
+							$("#reissueBatchNos").val(sucData.reissueBatchNos);
+							$("#reissueBatchNos").prev().val("补发批次("+sucData.reissueBatchNos.length+")");
+							$("#repaymentStatus").text(sucData.repaymentStatus);
+							$("#sjhkl").text(sucData.sjhkl);
+							$("#gbhkl").text(sucData.gbhkl);
+						}else{//version1.0	
+							//正常还款标数量
+							$("#loan").text(sucData.loan);
+							//提前还款标数量
+							$("#earlyLoan").text(sucData.earlyLoan);
+							//当日应发批次数量
+							$("#batch").text(sucData.batch);
+							//当日批次成功交易总金额
+							$("#sumBatchAmount").text(sucData.sumBatchAmount);
+							//当日批次成功交易总手续费
+							$("#sumTxFeeIn").text(sucData.sumTxFeeIn);
+							//当日预计还款总金额(本金+利息)
+							$("#repaymentAmount").text(sucData.repaymentAmount);
+							//当日预计总手续费
+							$("#interestFee").text(sucData.interestFee);
+							//明日代偿还款预计金额
+							$("#sumNextBatchAmount").text(sucData.sumNextBatchAmount);
+							//明日红包还款预计金额
+							$("#sumNextVoucherAmount").text(sucData.sumNextVoucherAmount);
+							//当日失败批次数量
+							$("#failBatchNum").text(sucData.failBatchNos.length);
+							$("#failBatchNo").val(sucData.failBatchNos);
+							//当日通道异常已处理批次数量
+							$("#aisleBatchNum").text(sucData.aisleBatchNos.length);
+							$("#aisleBatchNo").val(sucData.aisleBatchNos);
+							//当日批次资金未解冻批次数量
+							$("#thawBatchNum").text(sucData.thawBatchNos.length);
+							$("#thawBatchNo").val(sucData.thawBatchNos);
+							//当日发送成功还款红包数量(含返佣)
+							$("#voucherPaySucNum").text(sucData.voucherPaySucNum);
+							//当日发送成功红包还款总金额(含返佣)
+							$("#sumSucVoucherAmount").text(sucData.sumSucVoucherAmount);
+							//当日还款红包发送失败未处理数量
+							$("#voucherPayFailNum").text(sucData.voucherPayFailNum);
+							//当日已发还款短信数量
+							$("#SMS1").text(sucData.SMS);
+							//当日应回款总额
+							$("#sumAmount").text(sucData.sumAmount);
+							//当日实际回款总额
+							$("#sumYesAmount").text(sucData.sumYesAmount);
+							//当日应回款标数
+							$("#countLoan").text(sucData.countLoan);
+							//当日实际回款标数
+							$("#countYesLoan").text(sucData.countYesLoan);
+						}
+					},
+					error: function(data) {
+						YRHX.alert1("警告", data.return_info || "获取信息失败");
+					}
+				})
+			}
+
+			 $(document).on("click","#closeMessage",function(){
+			 	$(".message").css("display","none");
+			 	$("#yinying").hide();
+			 	$('body').css('overflow','auto');
+			 }) 
+
+			$("#query").click(function() {
+				var date = $("#date").val().length == 0 ? getDay(-1,""):$("#date").val();
+				if(date >=20180909 ){
+					$("#version1").hide();
+					$("#version2").show();
+				}else{
+					$("#version1").show();
+					$("#version2").hide();
+				}
+				queryData(date);
+			});
+					
+			$(".detailed").click(function(){
+				$(".message").css("display","block");
+				$("#yinying").show();
+				$('body').css('overflow','hidden');
+				$("#detailedVal").text($(this).next().val());
+			})
+			
+			//还款红包补发
+			$("#voucherPayRetry").click(function(){
+				var date = $("#date").val();
+				if(date != null && date.length != 0 && date.length != 8){
+					alert("请输入正确年月日");
+					return;
+				}
+				YRHX.ajax({
+					url: "/voucherPayRetry",
+					data:{
+						txDate:date
+					},
+					success: function(sucData) {
+						queryData(date);
+						alert(sucData);
+					},
+					error: function(data) {
+						YRHX.alert1("警告", data.return_info || "获取信息失败");
+					}
+				})
+			})
+			
+			//还款批次补发(目前只处理通道异常)
+			$("#batchSubstRepayResend").click(function(){
+				var date = $("#date").val();
+				if(date != null && date.length != 0 && date.length != 8){
+					alert("请输入正确年月日");
+					return;
+				}
+				YRHX.ajax({
+					url: "/batchSubstRepayResend",
+					data:{
+						txDate:date
+					},
+					success: function(sucData) {
+						queryData(date);
+						alert(sucData);
+					},
+					error: function(data) {
+						YRHX.alert1("警告", data.return_info || "获取信息失败");
+					}
+				})
+			})
+			
+			//开始当日回款
+			$("#autoRecy4loan").click(function(){
+				if(confirm("确定开始昨日回款吗？")){
+					var smsMsg = $("#smsMsg").val();
+					if(smsMsg == null || smsMsg.length != 6){
+						YRHX.alert1("请输入有效短信验证码");
+						return;
+					}
+					window.open("/autoRecy4loan?key=nicaizhecanshushiganshade201703031944&smsMsg="+smsMsg);
+				}else{
+					YRHX.alert1("没事别乱点，服务器炸了要赔的！！！");
+				}
+			})
+			
+			//下载逾期追回列表
+			$("#overdueExportFile").click(function(){
+				var date = $("#overdueDate").val();
+				if(date == null || date.length == 0){
+					date = getDay(-1,"");
+				}
+				if(date.length != 8){
+					alert("请输入正确年月日,例20180101");
+					return;
+				}
+				window.open("/overdueExportFile?date="+date);
+			})
+			
+			//获取回款短信验证码
+			$("#sendMsgBtn").click(function(){
+				var opCode = $("#opCode").val();
+				YRHX.ajax({
+					url : "/sendMsgAuthLoan",
+					data : {
+						opCode:opCode
+					},
+					success : function(sucData){
+						YRHX.alert1("验证码发送成功");
+					},
+					error : function(data){
+						YRHX.alert1(data.return_info || "验证码服务异常");
+					}
+				});
+			});
+			
+			//设置失败批次已处理
+			$("#updateFailBatchNoStatus").click(function(){
+				var txDate = $("#date").val().length == 0 ? getDay(0,""):addDate($("#date").val(),1);
+				var failBatchNo = $("#failBatchNo").val();
+				YRHX.ajax({
+					url : "/updateRepaymentCountBatchStatus",
+					data : {
+						txDate:txDate,
+						batchNo:failBatchNo
+					},
+					success : function(sucData){
+						YRHX.alert1(sucData.return_info || "获取信息失败");
+					},
+					error : function(data){
+						YRHX.alert1(data.return_info || "获取信息失败");
+					}
+				});
+			});
+			
+			$(".overdueListIng").click(function(){
+				window.open("/exportExcel?bb=overdueList&endDate=20180815&beginDate=20180815");
+			});
+			$(".exportOverdueList").click(function(){
+				var date = $(".exportOverList").val();
+				window.open("/exportOverdue?date="+date);
+			});
+			$(".exportTransferPlan").click(function(){
+				window.open("/exportTransferPlan");
+			});
+		</script>
+		<script src="../assets/js/amazeui.min.js"></script>
+		<script>
+			queryData();
+		</script>
+	</body>
+
+</html>

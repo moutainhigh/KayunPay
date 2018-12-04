@@ -1,0 +1,73 @@
+* {	margin: 0;padding: 0;}
+body {margin: 0;padding: 0; font-family: "Myriad Set Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif,"微软雅黑";}
+ul, ol, li {list-style: none;}
+:focus {outline: 0;}
+a { color: #000;text-decoration: none;}
+img { border: 0;}
+i {  font-style: normal;}
+table { border-collapse:collapse;}
+
+
+.in_warp{ width:100%; overflow: hidden;}
+.in_top{ padding-top:114.7%; background:url(../images/top.jpg) no-repeat; background-size:100%; }
+.in_pass{ padding-top:128%; background:url(../images/plate2_main.jpg) no-repeat; background-size:100%; }
+.in_content{ padding-top:213.25%; background:url(../images/plate3_main.jpg) no-repeat; background-size:100%; position: relative; }
+.in_listbox{ width:90%; position: absolute; top: 4%; left: 50%; margin-left: -45%; }
+.in_title{ background:#2674bc; border-radius: 5px; padding:0.5rem 0.5rem;}
+.in_title1{ height: 1.0rem; background:#15446e; border-radius: 25px;}
+.in_list{ width: 90%; height: 8.8rem; background:#fff; box-shadow:0px 12px 11px #999 inset; margin:-18px auto 0; }
+.in_list table thead{ width: 100%;}
+.in_list table thead th{ height: 30px; font-size: 0.8rem;}
+.in_list table tbody tr td{ text-align: center; color: #2474bb; height: 1.4rem; font-size: 0.7rem;}
+.in_money{ width:90%; position: absolute; top: 27%; left: 50%; margin-left: -45%; text-align: center;}
+.in_num1,.in_num2{ color: #fff; font-size: 0.8rem; font-family: "microsoft yahei"; }
+.in_num1 span,.in_num2 span{ font-size: 1.0rem; margin:0 6px; font-weight:bold; display: inline-flex;}
+.in_but{ width:34%;box-shadow: 0 3px 0 #f39800; padding:0.2rem 0; background:#ffd96a; color: #2474bb; text-align:center; font-size: 0.6rem; border-radius: 25px; cursor: pointer; position: absolute; top: 35%; left: 50%; margin-left: -17%;}
+.in_content2{ width:100%; background:#2674bc; padding:20px 0;}
+.in_contentPic{ width:80%; margin: 0 auto;}
+.in_contentPic img { width:100%;}
+.in_share{ background:#ffd96a; color: #2674bc; text-align: center; width:40%; font-weight: bold; margin: 0 auto; padding:0.3rem; border-radius: 25px; cursor: pointer;}
+.in_footer{ padding:5% 5%; background:#227ed5; overflow: hidden;}
+.in_footerBox{ width:100%; }
+.in_footTitle{ font-size: 1.0rem; color: #fff; letter-spacing: 1px;}
+.in_footList{ counter-reset:section;}
+.in_footList ul{ overflow: hidden;}
+.in_foot_li{ margin-top:10px; overflow: hidden;}
+.in_footNum{ width:20px; height: 20px; line-height: 20px; font-size: 0.8rem; text-align:center; color: #fff;border-radius:100%; background:#1539a8; float: left;}
+.in_footNum:before{ counter-increment: section; content:"" counter(section);}
+.in_footFont{ width: 90%; float: left; margin-left:6px; color: #fff; font-size: 0.8rem;}
+.in_foot_p{ color: #fff; display: inline-block; margin: 6px 0 0 30px; font-size: 0.8rem;}
+
+/* 邀请详情页 start */
+.in_popup{ width:95%; margin: 5% auto; z-index: 15; /*background:#5badf8;*/}
+.in_popupMain{ /*margin:0 auto; overflow: hidden; position: relative;*/}
+.in_popup_title{ background:#2674bc; border-radius: 5px; padding:7px 0;}
+.in_popup_title1{ width: 95%; height: 20px; background:#15446e; border-radius: 25px; margin: 0 auto;}
+.in_popupList{ background:#fff; box-shadow:0px 12px 11px #999 inset; border-bottom: 1px solid #ccc; overflow-y: auto; width: 90%; margin: -16px auto 0; }
+.in_popupList table thead{ width: 100%;}
+.in_popupList table thead th{ height: 30px; font-size: 0.9rem;}
+.in_popupList table tbody tr td{ text-align: center; color: #2474bb; height: 1.6rem; font-size: 0.7rem;}
+/* 邀请详情页 end */
+.invest_login1{ text-align: center; margin: 35px 0 0 0;}
+.invest_login1 a{ text-decoration: underline; color: #8a0214;}
+.invest_login2{ font-size: 0.8rem; color: #000;}
+.invest_login2 a{ text-decoration: underline; color: #8a0214;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

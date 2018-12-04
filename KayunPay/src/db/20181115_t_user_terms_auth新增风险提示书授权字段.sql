@@ -1,0 +1,1 @@
+alter table t_user_terms_auth add riskReminder char(1) default '' comment '风险提示书授权(1:授权)' after repayAuth;

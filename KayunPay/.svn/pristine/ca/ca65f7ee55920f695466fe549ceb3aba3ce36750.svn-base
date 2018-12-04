@@ -1,0 +1,201 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="stylesheet" href="../assets/plugin/ztree/css/zTreeStyle.css">
+</head>
+<body>
+	<!-- iframe body start -->
+	<form id="info-form" action="" data-am-validator>
+		<div class="am-tabs am-margin" data-am-tabs="{noSwipe: 1}">
+			<ul class="am-tabs-nav am-nav am-nav-tabs">
+				<li class="am-active"><a href="#tab1">债权人详情</a></li>
+			</ul>
+			<div class="am-tabs-bd">
+				<div class="am-tab-panel am-fade am-in am-active am-form am-form-inline" id="tab1">
+					<div class="am-g am-margin-top field" name="transferUserNo" type="text" text="债权人编号" add="hide" edit="disabled" view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="transferStatus" type="select" text="债权人状态" id="transferStatus" map="transferStatus" desc="" add="hide">
+					</div>
+					<div class="am-g am-margin-top field" name="name" type="text" text="债权人姓名*" minlength=2 maxlength=10 placeholder="请输入两位以上字符"  view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="cardId" type="text" text="债权人身份证号*" minlength=18 maxlength=18 placeholder="请输入18位身份证号" view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="address" type="text" text="债权人住所" maxlength=50 view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="mobile"  type="text" text="债权人手机号*" minlength=11 maxlength=11 placeholder="请输入11位手机号"  view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="bankNo" type="text" text="债权人银行卡号*" minlength=16 maxlength=19 placeholder="请输入16-19位银行卡号" view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="bankUserName" required="required" minlength=2 maxlength=10 type="text" placeholder="请输入两位以上字符" text="银行卡开户姓名*" view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="bankName" type="text" text="开户行全称" maxlength=30 view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="area" type="text" text="债权人所属区域*" minlength=2 maxlength=50 placeholder="如:大理" view="disabled"  >
+					</div>
+					<div class="am-g am-margin-top field" name="companyName" type="text" text="单位名称" maxlength=30 view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="companyTel" type="text" text="单位电话号码*" minlength=8 maxlength=11 placeholder="请输入8-11位电话号码" view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="companyAddress" type="text" text="单位地址" maxlength=50 view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="license" type="text" text="企业执照" maxlength=50 view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="trusteeName" type="text" text="委托人姓名*" minlength=2 maxlength=20 placeholder="请输入两位以上字符" view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="trusteeCardId" type="text" text="委托人身份证号码*" minlength=18 maxlength=18 placeholder="请输入18位身份证号" view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="area2" type="text" text="委托人所属地区" maxlength=50 view="disabled">
+					</div>
+					
+				</div>
+			</div>
+		</div>
+		<div class="am-margin">
+			<button id="submitBtn" type="button" class="am-btn am-btn-primary am-btn-xs submit-btn">提交</button>
+			<button id="cancelBtn" type="button" class="am-btn am-btn-primary am-btn-xs back-btn">返回</button>
+		</div>
+	</form>
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<script src="../assets/plugin/ztree/js/jquery.ztree.all-3.5.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/verify.js"></script>
+	<script>
+	
+		//---init
+		function initFormData( key ){
+			YRHX.ajax({
+				url : "/queryTransferById" ,
+				data : {
+					transferUserNo : key 
+				},
+				success : function( sucData ){
+					sucData["transferStatus"]=sucData["status"];
+					$("#info-form").formUnSerialize( sucData ); 
+				},
+				error : function( data ){
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+		}
+		
+		
+		$(".submit-btn").click(function(){
+			var flag=false;
+			//验证表单数据合法性
+			for(var index in thats){
+				 if(index=="length"){//忽略读取集合长度
+					 break;
+				 }
+				var num=inputCheckout(nums,thats[index],thats);
+				if(num!=undefined){
+					$(".submit-btn").attr("disabled",true);
+					flag=true;
+				}
+			} 
+			
+			if(flag){
+				return;
+			}
+			//表单提交
+			if( $("#info-form").validateForm() ){
+				var zz = $("#info-form").formSerialize();
+				YRHX.ajax({
+					url : $("#info-form").attr("action"),
+					data : zz,
+					success : function( sucData ){
+						//确定之后页面后退
+						YRHX.alert2("操作成功！");
+					},error:function( data ){
+						if(data.return_code=="-315"){
+							var error_Msg = "";
+							$.each(data.return_data,function(key,value){
+								error_Msg = error_Msg + value+"<br>";
+							});
+							YRHX.alert("警告",error_Msg);
+						}else{
+							YRHX.alert("警告",data.return_info || "获取信息失败");
+						}
+					}
+				});
+			}
+		});
+		
+		
+		$(".back-btn").click(function(){
+			window.history.go(-1);
+		});
+		var opMap = {} ;
+		opMap["add"] = {
+			"formType" : "add" , 
+			"request" : "/addTransfer"
+		};
+		opMap["edit"] = {
+			"formType" : "edit" , 
+			"request" : "/moTransfer"
+		};
+		opMap["view"] = {
+			"formType" : "view" , 
+			"request" : "www.yrhx.com"
+		};
+		var opType = YRHX.queryString("opType")||"view"  ;
+		if( opType == "view"){
+			$(".submit-btn").hide();
+		}
+		$("#info-form").formInit(opMap[YRHX.queryString("opType")||"view" ]);	
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		var setting = {
+			check: {
+				enable: true
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+		
+		$("#info-form").validatorInit();
+		var keyCode = YRHX.queryString("key");
+		if( keyCode ){
+			initFormData( keyCode );
+		}else{
+			//YRHX.alert1("警告", "获取信息失败!");
+		}
+		
+		var flag=true;
+		//需验证name数字数组
+		var nums=["cardId","mobile","bankNo","companyTel","trusteeCardId"];
+		//需验证name集合对象
+		var thats=$("input[name=name]").add($("input[name=cardId]")).add($("input[name=mobile]"))
+		.add($("input[name=bankNo]")).add($("input[name=bankUserName]")).add($("input[name=area]"))
+		.add($("input[name=companyTel]")).add($("input[name=trusteeName]")).add($("input[name=trusteeCardId]"));
+		//验证数据合法性
+		thats.blur(function(){
+			 var num=inputCheckout(nums,this,thats);
+			 if(num==undefined){
+				 $(".submit-btn").attr("disabled",false);//解除提交按钮禁用
+			 }
+		})
+	</script>
+</body>
+</html>

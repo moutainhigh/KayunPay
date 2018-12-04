@@ -1,0 +1,271 @@
+package com.dutiantech.plugins;
+
+import java.io.IOException;
+import java.util.Map;
+
+import javax.servlet.ServletOutputStream;
+
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
+public class PDFReport {
+
+	public Map<String, Object> contractMap;
+
+	Document document = new Document();// 建立一个Document对象
+
+	protected static Font Titlefont;// 设置字体大小
+	protected static Font headfont;// 设置字体大小
+	protected static Font keyfont;// 设置字体大小
+	protected static Font textfontBig;// 设置字体大小
+	protected static Font textfont;// 设置字体大小
+	protected static Font textfont2;// 设置字体大小
+	protected static String DZHT_URL;// 电子合同路径
+
+	static {
+		BaseFont bfChinese;
+		try {
+			bfChinese = BaseFont.createFont("SIMKAI.TTF", BaseFont.IDENTITY_H,
+					BaseFont.NOT_EMBEDDED);
+			// bfChinese = BaseFont.createFont();
+			Titlefont = new Font(bfChinese, 26, Font.BOLD);// 设置字体大小
+			headfont = new Font(bfChinese, 12, Font.BOLD);// 设置字体大小
+			keyfont = new Font(bfChinese, 10, Font.BOLD);// 设置字体大小
+			textfontBig = new Font(bfChinese, 14, Font.NORMAL);// 设置字体大小
+			textfont = new Font(bfChinese, 10, Font.NORMAL);// 设置字体大小
+			textfont2 = new Font(bfChinese, 8, Font.NORMAL);// 设置字体大小
+			DZHT_URL = "dzht.png";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public PDFReport(ServletOutputStream os) {
+		document.setPageSize(PageSize.A4);// 设置页面大小
+		try {
+			PdfWriter writer = PdfWriter.getInstance(document, os);
+			this.setFooter(writer);
+			writer.setFullCompression();
+			writer.setPdfVersion(PdfWriter.VERSION_1_4);
+			document.open();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	int maxWidth = 520;
+
+	public PdfPCell createCell(String value, Font font, int align) {
+		PdfPCell cell = new PdfPCell();
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		cell.setHorizontalAlignment(align);
+		cell.setPhrase(new Phrase(value, font));
+		return cell;
+	}
+
+	public PdfPCell createCell(String value, Font font) {
+		PdfPCell cell = new PdfPCell();
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		cell.setPhrase(new Phrase(value, font));
+		return cell;
+	}
+
+	public PdfPCell createCell(String value, Font font, int align, int colspan) {
+		PdfPCell cell = new PdfPCell();
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		cell.setHorizontalAlignment(align);
+		cell.setColspan(colspan);
+		cell.setPhrase(new Phrase(value, font));
+		return cell;
+	}
+
+	public PdfPCell createCell(String value, Font font, int align, int colspan,
+			boolean boderFlag) {
+		PdfPCell cell = new PdfPCell();
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		cell.setHorizontalAlignment(align);
+		cell.setColspan(colspan);
+		cell.setPhrase(new Phrase(value, font));
+		cell.setPadding(3.0f);
+		if (!boderFlag) {
+			cell.setBorder(0);
+			cell.setPaddingTop(15.0f);
+			cell.setPaddingBottom(8.0f);
+		}
+		return cell;
+	}
+
+	public PdfPTable createTable(int colNumber) {
+		PdfPTable table = new PdfPTable(colNumber);
+		try {
+			table.setTotalWidth(maxWidth);
+			table.setLockedWidth(true);
+			table.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table.getDefaultCell().setBorder(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return table;
+	}
+
+	public PdfPTable createTable(float[] widths) {
+		PdfPTable table = new PdfPTable(widths);
+		try {
+			table.setTotalWidth(maxWidth);
+			table.setLockedWidth(true);
+			table.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table.getDefaultCell().setBorder(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return table;
+	}
+
+	public PdfPTable createBlankTable() {
+		PdfPTable table = new PdfPTable(1);
+		table.getDefaultCell().setBorder(0);
+		table.addCell(createCell("", keyfont));
+		table.setSpacingAfter(20.0f);
+		table.setSpacingBefore(20.0f);
+		return table;
+	}
+
+	public Image createImage(String url, float newWidth, float newHeight) {
+		Image img = null;
+		try {
+			img = Image.getInstance(this.getClass().getResource("").getPath()
+					+ url);// 选择图片
+			img.setAlignment(1);
+			img.scaleAbsolute(100, 102);// 控制图片大小
+			img.setAbsolutePosition(newWidth, newHeight);// 控制图片位置
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return img;
+	}
+
+	// 下划线
+	public Chunk createChunk(String ct) {
+		// 创建Chunk对象，设置下划线的厚度为0.1
+		Chunk underline = new Chunk(ct, textfont);
+		underline.setUnderline(1f, -2f);
+		return underline;
+	}
+
+	public Paragraph createParagraphChunk(String ct, Font font, int alignment) {
+		// 创建Chunk对象，设置下划线的厚度为0.1
+		Chunk underline = new Chunk(ct, textfont);
+		underline.setUnderline(1f, -2f);
+		Paragraph paragraph = new Paragraph();
+		paragraph.add(underline);
+		paragraph.setAlignment(alignment);
+		paragraph.setSpacingBefore(10);
+		return paragraph;
+	}
+
+	// 短句
+	public Phrase createPhrase(String ct) {
+		Phrase phrase = new Phrase();
+		phrase.add(createParagraph(ct, textfont, Paragraph.ALIGN_LEFT));
+		return phrase;
+	}
+
+	// 短句
+	public Phrase createPhrase(Chunk ck) {
+		Phrase phrase = new Phrase();
+		phrase.add(ck);
+		return phrase;
+	}
+
+	/**
+	 * 创建输出内容
+	 * 
+	 * @return
+	 */
+	public Paragraph createParagraph(Phrase[] ph, Font font, int alignment) {
+		Paragraph paragraph = new Paragraph();
+		for (int i = 0; i < ph.length; i++) {
+			paragraph.add(ph[i]);
+		}
+		paragraph.setFont(font);
+		paragraph.setAlignment(alignment);
+		paragraph.setSpacingBefore(10);
+		return paragraph;
+	}
+
+	/**
+	 * 创建输出内容
+	 * 
+	 * @return
+	 */
+	public Paragraph createParagraph(String ct, Font font, int alignment) {
+		Paragraph paragraph = new Paragraph(ct, font);
+		paragraph.setAlignment(alignment);
+		paragraph.setSpacingBefore(10);
+		return paragraph;
+	}
+
+	
+	private int pageHeight;
+	private int pageWidth;
+	
+	private void setFooter(PdfWriter writer) throws DocumentException,IOException {
+		// HeaderFooter headerFooter = new HeaderFooter(this);
+		// 更改事件，瞬间变身 第几页/共几页 模式。
+		PdfReportM1HeaderFooter headerFooter = new PdfReportM1HeaderFooter();// 就是上面那个类
+		writer.setBoxSize("art", PageSize.A4);
+		writer.setPageEvent(headerFooter);
+	}
+
+	public int getPageHeight() {
+		return pageHeight;
+	}
+
+	public void setPageHeight(int pageHeight) {
+		this.pageHeight = pageHeight;
+	}
+
+	public int getPageWidth() {
+		return pageWidth;
+	}
+
+	public void setPageWidth(int pageWidth) {
+		this.pageWidth = pageWidth;
+	}
+
+	public void generatePDF() throws DocumentException {
+	}
+
+	public Map<String, Object> getContractMap() {
+		return contractMap;
+	}
+
+	public void setContractMap(Map<String, Object> contractMap) {
+		this.contractMap = contractMap;
+	}
+
+	public void generatePDFForYfq() throws DocumentException{
+		
+	}
+	public void generatePDFQtr() throws DocumentException{
+		
+	}
+	public void generatePDFMonth() throws DocumentException{
+		
+	}
+	public void generatePDFHalf() throws DocumentException{
+	
+}
+}

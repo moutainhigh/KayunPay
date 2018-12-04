@@ -1,0 +1,101 @@
+/* 鍏ㄥ眬鏍峰紡 */
+* {	margin: 0;padding: 0;}
+body { margin: 0;padding: 0; font-size:14px; background:#fff; font-family: "微软雅黑", "Helvetica Neue", "Helvetica", "Arial", sans-serif,"寰蒋闆呴粦";overflow: hidden;}
+ul,dl,ol,li{ list-style:none;}
+a,a:active,a:focus,input,textarea{outline:none;}
+a{color:#000; text-decoration:none; cursor:pointer;}
+a:hover{text-decoration: none;}
+img { border: 0;}
+
+
+.service{ width:760px; box-shadow: 0 0 24px 0 rgba(65,129,255,0.25); background:#fff; position:absolute; top:50%; left: 50%; margin-left: -400px; margin-top:-360px;}
+.service_header{ height:50px; background:#4181ff; overflow: hidden; padding-top:10px;}
+.service_logo{ padding-left:30px; font-size: 16px; line-height: 37px; color: #fff; float: left; }
+.service_close{ float: right; width:11px; height:11px; cursor: pointer; margin-right:10px; background:url(/portal/images/close3.png) no-repeat;}
+.service_warp{ height:670px;}
+.service_menu{ position: absolute; top:20px; right:175px; overflow: hidden;}
+.service_menu ul li{ float: left; cursor: pointer; margin:0 6px; padding:10px 27px 10px 45px; font-size: 14px; color: #fff; border-radius: 4px 4px 0 0;}
+.menu1{ background:#81b5ff url(/portal/images/ico13.png) 22px no-repeat; }
+.menu2{ background:#81b5ff url(/portal/images/ico12.png) 22px no-repeat; }
+.menu_selected{background:#fff url(/portal/images/ico11.png) 22px no-repeat; color: #4181ff!important; }
+.menu_selected1{background:#fff url(/portal/images/ico14.png) 22px no-repeat; color: #4181ff!important; }
+.service_main{ background:#f9fdff;}
+.service_content{ display: none;width: 580px}
+.service_news{ max-height:547px; min-height:547px; padding:0 20px; overflow-y: auto; overflow-x: hidden;}
+.service_time{ margin:30px 0; color: #a0a1a3; text-align: center;}
+.service_newBox{ overflow: hidden;}
+.newBox_name{ overflow: hidden; margin-bottom:35px;}
+.new_headpic{ float: left; margin-right:5px; background:url(/portal/images/name1.png) no-repeat; height:38px; width: 38px;}
+.new_nessage{ float: left; position: relative; background:#e4ecff; border-radius: 3px; color: #333230; padding:18px; margin-left:10px; max-width: 420px;}
+.new_nessage p{ margin-bottom: 10px;}
+.ico1{ position: absolute; top: 15px; left: -7px; background:url(/portal/images/ico15.png) no-repeat; width:8px; height:13px;}
+.ico2{ position: absolute; top: 15px; right: -7px; background:url(/portal/images/ico16.png) no-repeat; width:8px; height:13px;}
+
+.rightMsg{ text-align: right; position: relative;}
+.new_headpic1{ float: right; margin-left: 5px; background:url(/portal/images/name2.png) no-repeat; width:38px; height: 38px;}
+.rightMsg .new_nessage{ background:#4181ff; float: right; margin-right:10px; color: #fff; padding:12px 18px; font-size: 14px;}
+
+.service_input{ border-top:1px solid #d2e3fd; background:#fff; display: block; z-index: 100; width:100%;}
+.footer_text{ position: relative; background:#fff;}
+.footer_panel{ line-height: 22px; height:22px; position: relative; padding: 10px 0 10px 10px;}
+.chatSwitch{ display: block; margin-right:10px; color: #4181ff; position: absolute; top: 9px; right:0; cursor: pointer;}
+.textArea{ position: relative; height:60px; margin-bottom: 4px; max-height: 98px;}
+.textareaPre{ min-height: 34px; height: 100%; padding:0 82px 0 10px; white-space: pre-wrap; visibility: hidden; max-height: 160px; color: #999; font-size: 12px; border:none; word-wrap: break-word; clear: both;}
+.footer_grey{ overflow: hidden; width: 100%; height:60px; position: absolute; top: 0; left: 0; z-index: 100; white-space: pre-wrap; resize: none; font-size: 16px; border: none; padding:0 82px 0 10px; box-sizing: border-box; word-wrap:break-word; max-height: 98px; overflow-y: auto;}
+.send_btn{ position: absolute; right:11px; bottom:0; display: inline-block; z-index: 101; text-align: center; margin:0; padding:0; cursor:pointer; border:none; width:42px; height:28px; line-height: 28px; border-radius: 2px; color: #fff; background:#e0e9e8;}
+.send_btnhover{background:#4181ff!important;}
+.answerBtn{ color: #1d72f3; margin-top:10px; display: block;}
+.answerBtn2{ color: #1d72f3; margin-top:10px; display: block;}
+.ser_mes{ width:497px; margin:0 auto;}
+.mess_title{ text-align: center; font-size: 16px; padding-top:45px;}
+.mess_input{ overflow: hidden; margin-top:10px;}
+.mess_input span{ width:85px; text-align: right; height:30px; line-height:30px; display: inline-block; font-size: 14px; float: left; margin-right: 10px; }
+.mess_name,.mess_phone,.mess_username,.mess_meail{ background:#fff; float: left; width:200px; height:20px; padding:5px; border:1px solid #d3dde6;}
+.mess_textarea{ background:#fff; width:340px; height:140px; border:1px solid #d3dde6; float: left; padding:5px; resize: none;}
+.mess_input p{ color: red; margin-left: 5px; float: left;}
+.mess_btn{ background:#4181ff; cursor: pointer; width:135px; height:40px; text-align: center; line-height: 40px; color: #fff; font-size: 18px; margin:30px auto 0; border-radius: 4px; }
+
+.mess_input p:last-child { margin-left:90px ;} 
+/*瀹氫箟婊氬姩鏉￠珮瀹藉強鑳屾櫙 楂樺鍒嗗埆瀵瑰簲妯珫婊氬姩鏉＄殑灏哄*/  
+::-webkit-scrollbar  
+{  
+    width: 6px;  
+    height: 6px;  
+    background-color: #fff;  
+}  
+  
+/*瀹氫箟婊氬姩鏉¤建閬� 鍐呴槾褰�+鍦嗚*/  
+::-webkit-scrollbar-track  
+{  
+    border-radius: 10px;  
+    /*background-color: #F5F5F5;  */
+}  
+  
+/*瀹氫箟婊戝潡 鍐呴槾褰�+鍦嗚*/  
+::-webkit-scrollbar-thumb  
+{  
+    border-radius: 10px; 
+    background-color: #c5ddff;  
+} 
+.zzfw tr td{text-align: center;vertical-align: middle;padding-top: 16px;padding-left: 22px}
+.wtfx{margin-top:30px;margin-left: 16px;border-top: 1px #D2E3FD solid;}
+.wtfx .qclassify ul li{display: block;margin-top: 16px}
+.submitSuccess{z-index: 10;width: 318px;height: 226px;background: url('/portal/images/smillbg.png');position: absolute;top:300px;left:40%;display: none}
+.closeblue{position: relative;float: right;margin-right: 10px;margin-top: 10px}
+.submitSuccess p{font-size: 30px;color:#4181FF;position: relative;top:150px;left:30px;}
+.closeblue{cursor: pointer}
+.yinying {
+	display: none;
+	position: absolute;
+	left: 0px;
+	top: 0px!important;
+	width: 100%;
+	height: 100%;
+	background: #000000;
+	z-index: 9;
+	opacity: 0.7;
+	-ms-opacity: 0.7;
+	-o-opacity: 0.7;
+	-webkit-opacity: 0.7;
+	-moz-opacity: 0.7;
+}

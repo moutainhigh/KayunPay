@@ -1,0 +1,2 @@
+alter table t_repayment_count add yqbdflxbds int(11) default 0 comment '逾期不垫付利息标的数' after whyqdflxbds;
+alter table t_repayment_count add whyqbdflxbds int(11) default 0 comment '未还逾期不垫付利息标的数' after yqbdflxbds;

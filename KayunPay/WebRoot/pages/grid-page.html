@@ -1,0 +1,222 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+	<div class="am-g">
+		<!-- 标准功能按钮 Start  -->
+		<div class="am-u-sm-12 am-u-md-4">
+			<div class="am-btn-toolbar">
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default" id="newBtn">
+						<span class="am-icon-plus"></span> 新增
+					</button>
+					<button type="button" class="am-btn am-btn-default">
+						<span class="am-icon-archive"></span> 审核
+					</button>
+					<button type="button" class="am-btn am-btn-default">
+						<span class="am-icon-trash-o"></span> 删除
+					</button>
+				</div>
+			</div>
+		</div>
+		<!-- 标准功能按钮  End -->
+		<!-- 条件区 Start -->
+		<form class="am-form-inline ext-form" role="form" data-am-validator>
+			<div class="am-form-group">
+				<input name="input.email" type="email" class="am-form-field"
+					placeholder="电子邮件" required>
+			</div>
+			<div class="am-form-group">
+				<select data-am-selected="{btnSize: 'sm'}" name="sel.b">
+					<option value="option1">所有类别</option>
+					<option value="option2">IT业界</option>
+					<option value="option3">数码产品</option>
+					<option value="option3">笔记本电脑</option>
+					<option value="option3">平板电脑</option>
+					<option value="option3">只能手机</option>
+					<option value="option3">超极本</option>
+				</select>
+			</div>
+			<div class="am-form-group">
+				<select data-am-selected="{btnSize: 'sm'}" name="sel.a">
+					<option value="option1">所有类别</option>
+					<option value="option2">IT业界</option>
+					<option value="option3">数码产品</option>
+					<option value="option3">笔记本电脑</option>
+					<option value="option3">平板电脑</option>
+					<option value="option3">只能手机</option>
+					<option value="option3">超极本</option>
+				</select>
+			</div>
+			<button type="button" class="am-btn am-btn-default query-btn">查询</button>
+		</form>
+		<div class="am-u-sm-12 am-u-md-3"></div>
+		<!-- 
+				<div class="am-u-sm-12 am-u-md-3">
+					<div class="am-input-group am-input-group-sm">
+						<input type="text" class="am-form-field"><span
+							class="am-input-group-btn">
+							<button class="am-btn am-btn-default" type="button">搜索</button>
+						</span>
+					</div>
+				</div> -->
+	</div>
+
+	<!-- 条件区  End -->
+	<!-- Table -->
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 15 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script>
+		var queryIndex = 0;
+		var queryMax = 10;
+		var queryMaxPage = 1;
+		var queryUrl = "";
+		//查询实现
+		function queryData() {
+
+		}
+
+		$(".query-btn").click(
+				function() {
+					var checkResult = $('.ext-form').data('amui.validator')
+							.isFormValid();
+					if (checkResult) {
+						console.log($('.ext-form').formSerialize());
+					}
+				});
+
+		$("#newBtn").click(function() {
+			$('#my-prompt').modal({
+				relatedTarget : this,
+				closeViaDimmer : false,
+				width : "900px",
+				height : "700px",
+				onConfirm : function(e) {
+					alert('你输入的是：' + e.data || '')
+				},
+				onCancel : function(e) {
+					var that = $(this);
+					console.log(that.find("input"));
+					that.find("input").val("");
+				}
+			});
+		});
+
+		function makeTable(tableData) {
+			$(".am-g")
+					.table(
+							{
+								dataFormat : function(rowObj) {
+									rowObj["a"] = (rowObj["a"] + "+1");
+									return rowObj;
+								},
+								max : 10,
+								pag : {
+									index : 6 ,
+									max : 20 , 
+									size : 119
+								},
+								header : [
+										{
+											name : "",
+											type : "checkbox",
+											html : "",
+											key : "userCode"
+										},
+										{
+											name : "",
+											text : "ID",
+											html : "#{a}"
+										},
+										{
+											name : "",
+											text : "用户名",
+											html : "John Clark"
+										},
+										{
+											name : "",
+											text : "最后成交任务",
+											html : "<a href='#'>Business management</a>"
+										},
+										{
+											name : "",
+											text : "成交订单",
+											html : "<span class='am-badge am-badge-success'>+20</span>"
+										},
+										{
+											name : "",
+											text : "管理",
+											html : "<div class='am-btn-group am-btn-group-xs'>"
+													+ "<button class='am-btn am-btn-default am-btn-xs am-text-secondary'><span class='am-icon-pencil-square-o'></span> 编辑</button>"
+													+ "<button class='am-btn am-btn-default am-btn-xs am-hide-sm-only'><span class='am-icon-copy'></span> 复制</button>"
+													+ "<button class='am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only'><span class='am-icon-trash-o'></span> 删除</button>"
+													+ "</div></div>"
+										} ],
+								data : tableData
+							});
+		}
+
+		makeTable([ {
+			a : 1
+		}, {
+			a : 1
+		}, {
+			a : 1
+		}, {
+			a : 1
+		}, {
+			a : 1
+		} ]);
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+</body>
+</html>

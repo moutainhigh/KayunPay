@@ -1,0 +1,1284 @@
+package com.dutiantech.controller.admin;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.dutiantech.Message;
+import com.dutiantech.anno.AuthNum;
+import com.dutiantech.controller.BaseController;
+import com.dutiantech.controller.admin.validator.LoanAuditNoticeValidator;
+import com.dutiantech.controller.admin.validator.LoanCreateNoticeValidator;
+import com.dutiantech.controller.admin.validator.LoanDeleteLoanValidator;
+import com.dutiantech.controller.admin.validator.LoanDeleteNoticeValidator;
+import com.dutiantech.controller.admin.validator.LoanPubLoanByAuditValidator;
+import com.dutiantech.controller.admin.validator.LoanPubLoanByQuick;
+import com.dutiantech.controller.admin.validator.LoanUpdateLoanStateValidator;
+import com.dutiantech.interceptor.AuthInterceptor;
+import com.dutiantech.interceptor.PkMsgInterceptor;
+import com.dutiantech.model.LoanApply;
+import com.dutiantech.model.LoanInfo;
+import com.dutiantech.model.LoanNotice;
+import com.dutiantech.model.LoanOverdue;
+import com.dutiantech.model.LoanTrace;
+import com.dutiantech.model.LoanTransfer;
+import com.dutiantech.model.OPUserV2;
+import com.dutiantech.service.FundsServiceV2;
+import com.dutiantech.service.LoanInfoService;
+import com.dutiantech.service.LoanNoticeService;
+import com.dutiantech.service.LoanOverdueService;
+import com.dutiantech.service.LoanTraceService;
+import com.dutiantech.service.LoanTransferService;
+import com.dutiantech.service.OPUserV2Service;
+import com.dutiantech.service.SettlementEarlyService;
+import com.dutiantech.service.UserService;
+import com.dutiantech.util.CommonUtil;
+import com.dutiantech.util.DateUtil;
+import com.dutiantech.util.MD5Code;
+import com.dutiantech.util.StringUtil;
+import com.dutiantech.util.SysEnum;
+import com.dutiantech.util.UIDUtil;
+import com.jfinal.aop.Before;
+import com.jfinal.core.ActionKey;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.tx.Tx;
+
+public class LoanController extends BaseController {
+	
+	private LoanInfoService loanInfoService = getService(LoanInfoService.class);
+	
+	private LoanTraceService loanTraceService = getService(LoanTraceService.class);
+	
+	private UserService userService = getService(UserService.class);
+	
+	private LoanNoticeService loanNoticeService = getService(LoanNoticeService.class);
+	
+	private LoanTransferService loanTransferService = getService(LoanTransferService.class);
+	
+	private LoanOverdueService overdueTraceService = getService(LoanOverdueService.class);
+	
+	private OPUserV2Service opUserService = getService( OPUserV2Service.class ) ;
+	
+	private FundsServiceV2 fundsServiceV2 = getService(FundsServiceV2.class);
+	
+	private SettlementEarlyService settlementEarlyService = getService(SettlementEarlyService.class);
+	
+	/**
+	 * 新增提前还款配置
+	 * @return
+	 */
+	@ActionKey("/addSettlementEarlySettings")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message addSettlementEarlySettings(){
+		String loanCode = getPara("loanCode","");
+		if(StringUtil.isBlank(loanCode))
+			return error("01", "借款标编码不可为空", false);
+		
+		String earlyDate = getPara("earlyDate","");
+		if(StringUtil.isBlank(loanCode))
+			return error("02", "提前还款日期不可为空", false);
+		
+		LoanInfo loan = loanInfoService.findById(loanCode);
+		
+		String backDate = loan.getStr("backDate");
+		int result = DateUtil.compareDateByStr("yyyyMMdd", earlyDate, backDate);
+		if(result > 0){
+			return error("03", "提前还款日不可大于此借款标的下一还款日期",false);
+		}
+		
+		
+		int loanTimeLimit = loan.getInt("loanTimeLimit");
+		int earlyLimit = loan.getInt("reciedCount")+1;
+		String userCode = loan.getStr("userCode");
+		String userTrueName = loan.getStr("userName");
+		String userMobile = "";
+		String y = userService.findByField(userCode, "userMobile").getStr("userMobile");
+		try {
+			y = CommonUtil.decryptUserMobile(y);
+			if(CommonUtil.isMobile(y)){
+				userMobile = y;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(userMobile);
+		boolean z = settlementEarlyService.save(loanCode, userCode, userMobile, userTrueName, earlyDate, earlyLimit, loanTimeLimit);
+		if(z)
+			return succ("提前还款设置成功", true);
+		
+		return error("110", "操作未生效", false);
+	}
+	
+	@ActionKey("/modifyLoanInfo")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message modifyLoanInfo(){
+		//获取发标人信息
+		String opCode = getUserCode() ;
+		String opName = opUserService.findUserNameById(opCode);
+		LoanInfo loan = getModel( LoanInfo.class ) ;
+		if(loan.getInt("benefits4new")>0){
+			loan.set("minLoanAmount", 10000);
+			loan.set("maxLoanAmount", 1000000);
+		}
+		String loanState = loanInfoService.findStateById(loan.getStr("loanCode"));
+		if(loanState.equals(SysEnum.loanState.J.val())){
+			return error("01", "招标中不可修改发标资料", "");
+		}
+		if(loanState.equals(SysEnum.loanState.N.val())){
+			return error("02", "还款中不可修改发标资料", "");
+		}
+		if(loanState.equals(SysEnum.loanState.O.val()) || loanState.equals(SysEnum.loanState.P.val()) || loanState.equals(SysEnum.loanState.Q.val())){
+			return error("03", "已完成的贷款标不可修改发标资料", "");
+		}
+		if(loanState.equals(SysEnum.loanState.T.val())){
+			return error("04", "贷款标状态不符合修改发标资料要求", "");
+		}
+		loan.set("opCode", opCode);
+		loan.set("opName", opName);
+		loan.remove("userName");
+		loan.remove("userCardId");
+		loan.set("loanState", SysEnum.loanState.H.val());
+		if(loan.getInt("benefits4new")>0){
+			loan.set("loanTitle", "100元起投 限额10000元");
+			loan.set("loanArea", "新手标");
+		}
+		loan.update() ;
+		return succ("操作完成", true) ;
+	}
+	
+	@ActionKey("/madeLoanByApply")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,Tx.class,PkMsgInterceptor.class} )
+	public Message madeLoanByApply(){
+		
+		int loanApplyNo= getParaToInt("loanApplyNo",0);
+		int madeTotal = getParaToInt("total",0);
+		
+		if( loanApplyNo == 0 ){
+			return error("03", "no apply", loanApplyNo ) ;
+		}
+		
+		//获取申请
+		LoanApply loanApply = LoanApply.loanApplyDao.findById( loanApplyNo ) ;
+		if( loanApply == null )
+			return error("09", "无此申请!", null ) ;
+		
+		if(!loanApply.getStr("applyState").equals(SysEnum.applyState.D.val())){
+			return error("119", "此条发标申请的状态不是【信审通过】", loanApplyNo);
+		}
+		
+		String applyState = loanApply.getStr("applyState");
+		if( "D".equals(applyState) == true ){
+			//转换为LoanInfo
+			LoanInfo loan = apply2loan(loanApply) ;
+			//期限 还款方式判断
+			String refundType = loanApply.getStr("refundType");
+			long loanAmount = loanApply.getLong("loanAmount");
+			int rateByYear = loanApply.getInt("rateByYear") ;
+			int loanTimeLimit = loanApply.getInt("loanTimeLimit") ;
+			loan.set("isAutoLoan", 1);
+			if( madeTotal == 1 ){
+				/*不拆分标*/
+				loan.set("refundType", refundType) ;
+				String uid = UIDUtil.generate();
+				loan.set("loanCode", uid ) ;
+				try {
+					loan.set("loanIndexByUser", MD5Code.md5(uid+loan.getStr("userCode")) ) ;
+				} catch (Exception e) {
+				}
+				loan.set("rateByYear", rateByYear );
+				loan.set("loanAmount", loanAmount ) ;
+				loan.set("loanBalance", loanAmount ) ;
+				loan.set("loanTimeLimit", loanTimeLimit ) ;
+				loan.save() ;
+				
+			}else{
+				/*----------------拆分标 开始--------------------*/
+				if( "A".equals(refundType) ){
+					//等额本息，按月拆分
+					madeTotal = loanTimeLimit ;
+				}else if( "B".equals( refundType ) ){
+					//先息后本，按金额拆分
+					if( madeTotal == 0 ){
+						madeTotal = loanTimeLimit ;	//默认按还款期限拆分
+					}
+				}else{
+					return error("06", "未知还款类型", refundType ) ;
+				}
+				loan.set("refundType", "B") ;
+				long leftAmount = loanAmount ;	//整数处理
+				for(int si = 1 ; si <= madeTotal ; si ++ ){
+					long amount = 0 ; 
+					int rate = rateByYear;
+					int limit = loanTimeLimit;
+					if( si == madeTotal ){
+						//最后一次
+						amount = leftAmount ;
+						if( "A".equals(refundType) ){
+							limit = si;
+							rate = LoanInfo.RATE_MAP.get(si);
+						}
+					}else{
+						if( "A".equals(refundType) ){
+							amount = CommonUtil.f_0014loan( loanAmount , loanTimeLimit , rateByYear ,  si)[0];	//本金
+							System.out.println("批次：" + si );
+							limit = si;
+							rate = LoanInfo.RATE_MAP.get(si);
+//							loan.set("loanTimeLimit", si ) ;
+//							loan.set("rateByYear", LoanInfo.RATE_MAP.get(si));
+						}else{
+							amount = loanAmount / madeTotal ;
+//							loan.set("loanTimeLimit", loanTimeLimit ) ;
+//							loan.set("rateByYear", rateByYear);
+						}
+						long tmpLeftAmount = amount%100 ;
+//						leftAmount += tmpLeftAmount ;
+						amount = amount - tmpLeftAmount;
+						leftAmount = leftAmount - amount ;
+					}
+					
+					loan.set("loanTimeLimit", limit ) ;
+					loan.set("rateByYear", rate);				
+					
+					
+					String uid = UIDUtil.generate();
+					loan.set("loanCode", uid ) ;
+					try {
+						loan.set("loanIndexByUser", MD5Code.md5(uid+loan.getStr("userCode")) ) ;
+					} catch (Exception e) {
+						loan.set("loanIndexByUser", uid ) ;
+						e.printStackTrace();
+					}
+					
+					//loan.set("rateByYear", LoanInfo.RATE_MAP.get(si));
+					loan.set("loanAmount", amount ) ;
+					loan.set("loanBalance", amount ) ;
+					loan.save() ;
+				}
+				/*----------------拆分标 结束--------------------*/
+			}
+			
+		}else{
+			return error("02", "未通过审核或已制作新标!" , applyState ) ;
+		}
+		
+		loanApply.set("applyState", SysEnum.applyState.E.val());
+		loanApply.set("modifyDate", DateUtil.getNowDate() );
+		loanApply.set("modifyDateTime", DateUtil.getNowDateTime() );
+		boolean doResult = loanApply.update() ;
+		if( doResult == true ){
+			return succ("处理完成!", null ) ;
+		}else{
+			return error("11", "标处理完成，但更新申请状态失败", null ) ;
+		}
+	}
+	
+	
+	
+	private LoanInfo apply2loan(LoanApply apply){
+		String nowDate = DateUtil.getNowDate();
+		String nowTime = DateUtil.getNowTime();
+		OPUserV2 tmp = opUserService.findById(apply.getStr("applyUserCode"));
+		OPUserV2 user = getUserInfo();
+		LoanInfo loan = new LoanInfo() ;
+		String loanArea = " ";
+		int loanNo = apply.getInt("loanNo") ;
+		if(!StringUtil.isBlank(tmp.getStr("isBranch")) && tmp.getStr("isBranch").equals("y")){
+			loanArea = tmp.getStr("branchArea");
+		}
+		String tmpContractNo = "";
+		try {
+			tmpContractNo = apply.getStr("contractNo");
+			if(StringUtil.isBlank(tmpContractNo))
+				tmpContractNo = "";
+		} catch (Exception e) {
+			tmpContractNo = "";
+		}
+		loan.set("contractNo", tmpContractNo);
+		loan.set("productType", apply.getStr("productType"));
+		loan.set("loanArea", loanArea);
+		loan.set("loanCode", UIDUtil.generate() ) ;
+		loan.set("loanNo", loanNo ) ;
+		loan.set("loanTitle", apply.getStr("loanTitle") ) ;
+		loan.set("createDate", nowDate );
+		loan.set("createTime", nowTime );
+		loan.set("updateDate", nowDate );
+		loan.set("updateTime", nowTime );
+//		loan.set("loanAmount", apply.getLong("loanAmount") ) ;
+//		loan.set("loanBalance", apply.getLong("loanAmount") ) ;
+		loan.set("maxLoanCount", 999 ) ;
+		loan.set("maxLoanAmount", 100000000 ) ;
+		loan.set("minLoanAmount", 5000);
+		loan.set("userCode", apply.getStr("loanUserCode") ) ;
+//		loan.set("loanDesc", apply.getStr("loanDesc") ) ;
+		loan.set("loan_pic", apply.getStr("loanPics") ) ;
+		loan.set("userName", apply.getStr("loanTrueName") ) ;
+		try {
+			loan.set("userCardId", CommonUtil.encryptUserCardId( apply.getStr("loanCardId") )) ;
+		} catch (Exception e) {
+			loan.set("userCardId", apply.getStr("loanCardId") ) ;
+		}
+		//loan desc
+		String loanDesc = apply.getStr("loanDesc") ;
+		StringBuffer buff = new StringBuffer("");
+		try{
+			JSONArray array = JSONArray.parseArray(loanDesc) ;
+			int len = array.size() ;
+			String[] numConv =  new String[]{"一","二","三","四","五","六","七","八","九","十"} ;
+			for(int i = 0 ; i < len ; i ++){
+				JSONObject json = array.getJSONObject(i) ;
+				String index = numConv[ i];
+				buff.append("\n<t>" +index +"、" + json.getString("title") + "：</t>\n") ;
+				buff.append("  " + json.getString("content") +"\n");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		loan.set("loanDesc", buff.toString() ) ;
+		loan.set("loanState", SysEnum.loanState.H.val() ) ;	//审核发标材料
+		loan.set("opCode", user.getStr("op_code") ) ;
+		loan.set("opName", user.getStr("op_name") ) ;
+		loan.set("refundType", apply.getStr("refundType") ) ;
+		loan.set("rateByYear", apply.getInt("rateByYear") ) ;
+		String loanType = apply.getStr("loanType");
+		if( SysEnum.loanType.D.val().equals( loanType ) ){
+			//流转标，补全债权人信息
+			loan.set("loanType", SysEnum.loanType.D.val() );
+			loan.set("loanTypeDesc", SysEnum.loanType.D.desc());
+			String applyCode = apply.getStr("applyUserCode");
+			OPUserV2 opUser = OPUserV2.OPUserV2Dao.findById(applyCode);
+			loan.set("creditorName", opUser.getStr("creditorName"));
+			loan.set("creditorCardId", opUser.getStr("creditorCardId") );
+		}else{
+			loan.set("loanType", loanType );
+			loan.set("loanTypeDesc", SysEnum.loanType.valueOf( loanType ).desc() );
+			loan.set("creditorName", "非债权标");
+			loan.set("creditorCardId", "1" );
+		}
+		
+		return loan ;
+	}
+	
+	/**
+	 * 更改标书状态
+	 */
+	@ActionKey("/updateLoanState")
+	@AuthNum(value=999)
+	@Before({LoanUpdateLoanStateValidator.class,AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message updateLoanState(){
+		//拦截器验证不可为空-------begin
+		String loanCode = getPara("loanCode");
+		String loanState = getPara("loanState");
+		String oLoanState = getPara("oLoanState");
+		//拦截器验证不可为空-------end
+		LoanInfo loan = loanInfoService.findById(loanCode);
+		if(!userService.validateUserState(loan.getStr("userCode"))){
+			return error("02", "借款人用户状态不是【正常】", null);
+		}
+		if(loanInfoService.updateLoanState(loanCode, loanState,oLoanState))
+			return succ("更新标书状态操作完成", true);
+		else
+			return error("01", "更新标书状态操作未生效", false);
+	}
+	
+	/**
+	 * 审核发标
+	 * @return
+	 */
+	@ActionKey("/pubLoanByAudit")
+	@AuthNum(value=999)
+	@Before({LoanPubLoanByAuditValidator.class,AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message pubLoanByAudit(){
+		String loanCodes = getPara("loanCode");
+		String[] loanCodea = loanCodes.split(",");
+		int success = 0;
+		for (int i = 0; i < loanCodea.length; i++) {
+			String loanCode = loanCodea[i];
+			String pubDate = getPara("pubDate");
+			String pubTime = getPara("pubTime");
+			LoanInfo loan = loanInfoService.findById(loanCode);
+			if(!userService.validateUserState(loan.getStr("userCode"))){
+				return error("03", "借款人用户["+loan.getStr("userName")+"]状态不是【正常】", null);
+			}
+			if(!loan.get("loanState").equals("H")){
+				return error("02", loan.getStr("loanNo")+loan.getStr("loanTitle")+"-必须为待审核的标,才可以进行立即发标", false);
+			}
+			if(!loanInfoService.isFlow(loanCode)){
+				return error("04", loan.getStr("loanNo")+loan.getStr("loanTitle")+"-该借款标是流转标,请检查债权人信息是否完善", null);
+			}
+			if(StringUtil.isBlank(loan.getStr("loanArea"))){
+				return error("05", loan.getStr("loanNo")+loan.getStr("loanTitle")+"-请检查标的来源(地区/机构)，不可为空", null);
+			}
+			if(loanInfoService.pubLoan(loanCode, pubDate, pubTime)){
+				success ++;
+			}
+		}
+		if(success>0){
+			return succ("定时发标操作完成", true);
+		}
+		return error("01", "立即发标操作未生效", false);
+	}
+	
+	/**
+	 * 快速发标
+	 * @return
+	 */
+	@ActionKey("/pubLoanByQuick")
+	@AuthNum(value=999)
+	@Before({LoanPubLoanByQuick.class,AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message pubLoanByQuick(){
+		String loanCodes = getPara("loanCode");
+		String[] loanCodea = loanCodes.split(",");
+		int success = 0;
+		for (int i = 0; i < loanCodea.length; i++) {
+			String loanCode = loanCodea[i];
+			String pubDate = DateUtil.getNowDate();
+			String pubTime = DateUtil.getNowTime();
+			LoanInfo loan = loanInfoService.findById(loanCode);
+			if(!userService.validateUserState(loan.getStr("userCode"))){
+				return error("03", "借款人用户["+loan.getStr("userName")+"]状态不是【正常】", null);
+			}
+			if(!loan.get("loanState").equals("H")){
+				return error("02", loan.getStr("loanNo")+loan.getStr("loanTitle")+"-必须为待审核的标,才可以进行立即发标", false);
+			}
+			if(!loanInfoService.isFlow(loanCode)){
+				return error("04", loan.getStr("loanNo")+loan.getStr("loanTitle")+"-该借款标是流转标,请检查债权人信息是否完善", null);
+			}
+			if(StringUtil.isBlank(loan.getStr("loanArea"))){
+				return error("05", loan.getStr("loanNo")+loan.getStr("loanTitle")+"-请检查标的来源(地区/机构)，不可为空", null);
+			}
+			if(loanInfoService.pubLoan(loanCode, pubDate, pubTime)){
+				success ++;
+			}
+		}
+		if(success>0){
+			return succ("立即发标操作完成", true);
+		}
+		return error("01", "立即发标操作未生效", false);
+	}
+	
+	/**
+	 * 删除贷款标
+	 * @return
+	 */
+	@ActionKey("/deleteLoanById")
+	@AuthNum(value=999)
+	@Before({LoanDeleteLoanValidator.class,AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message deleteById(){
+		String loanCode = getPara("loanCode");
+		long x = loanTraceService.countTraces(loanCode);
+		if(x>0){
+			return error("02", "该借款标已有投标记录，不可删除，请尝试【流标】操作", null);
+		}
+//		LoanInfo loan = loanInfoService.findById(loanCode);
+//		if(!userService.validateUserState(loan.getStr("userCode"))){
+//			return error("02", "借款人用户状态不是【正常】", null);
+//		}
+		if(loanInfoService.deleteById(loanCode)){
+			return succ("操作完成", true);
+		}
+		return error("01", "借款标当前流程状态无法删除", false);
+	}
+	
+	/**
+	 * 根据id查询单个标书明细
+	 */
+	@ActionKey("/getLoanInfoById")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getLoanInfoById(){
+		String loanCode = getPara("loanCode","");//拦截器验证不可为空
+		
+		LoanInfo loanInfo = loanInfoService.findById(loanCode);
+		String x = loanInfo.get("userCardId");
+		try {
+			String y = CommonUtil.decryptUserCardId(x);
+			loanInfo.put("userCardId", y);
+		} catch (Exception e) {
+			return error("02", "查询用户身份证信息解密时发生错误", false);
+		}
+		return succ("查询单个标书信息明细完成", loanInfo);
+	}
+
+	@ActionKey("/getFullLoanInfoList")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getFullLoanInfoList(){
+
+		Integer pageNumber = getParaToInt("pageNumber",1);
+		
+		pageNumber = pageNumber > 0 ? pageNumber : 1;
+		Integer pageSize = getParaToInt("pageSize",10);
+		
+		String allkey = getPara("allkey", "");
+		if( pageSize > 10 )
+			pageSize = 10 ;
+		
+		Page<LoanInfo> infos = loanInfoService.findByPage4full(pageNumber, pageSize,allkey) ;
+		return succ("ok", infos) ;
+	}
+	
+	/**
+	 * 分页查询标书
+	 */
+	@ActionKey("/getLoanInfoList")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getLoanInfoList(){
+		
+		Integer pageNumber = getParaToInt("pageNumber",1);
+		
+		pageNumber = pageNumber > 0 ? pageNumber : 1;
+		
+		Integer pageSize = getParaToInt("pageSize",10);
+		
+		String beginDate = getPara("beginDate","");
+		
+		String endDate = getPara("endDate","");
+		
+		String rBeginDateTime = getPara("rBeginDateTime","");
+		
+		if(StringUtil.isBlank(rBeginDateTime) || rBeginDateTime.length()!=15 || rBeginDateTime.indexOf("-")!=8){
+			rBeginDateTime = null;
+		}
+		
+		String rEndDateTime = getPara("rEndDateTime","");
+		
+		if(StringUtil.isBlank(rEndDateTime) || rEndDateTime.length()!=15 || rEndDateTime.indexOf("-")!=8){
+			rEndDateTime = null;
+		}
+		
+		String loanState = getPara("loanState","");
+		
+		String loanType = getPara("loanType","");
+		
+		String allkey = getPara("allkey", "") ;
+		
+		Map<String,Object> result = loanInfoService.findByPage4Noob2(null,pageNumber, pageSize, beginDate, endDate,rBeginDateTime,rEndDateTime, loanState,loanType,allkey);
+		Map<String,Object> result_sum = loanInfoService.findByPage4Noob2WithSum(null,pageNumber, pageSize, beginDate, endDate,rBeginDateTime,rEndDateTime, loanState,loanType,allkey);
+		result.putAll( result_sum);
+		return succ("分页查询标书完成", result);
+	}
+	
+	/**
+	 * 分页查询标书
+	 */
+	@ActionKey("/getLoanInfoList4Recy")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getLoanInfoList4Recy(){
+		
+		Integer pageNumber = getParaToInt("pageNumber",1);
+		
+		pageNumber = pageNumber > 0 ? pageNumber : 1;
+		
+		Integer pageSize = getParaToInt("pageSize",10);
+		
+		String beginDate = getPara("beginDate","");
+		
+		String endDate = getPara("endDate","");
+		
+		String allkey = getPara("allkey", "") ;
+		
+		String userCode = getPara("fuserCode","");
+		
+		String backDate = getPara("backDate","");
+		
+		String loanState = getPara("loanState", "");
+		if(StringUtil.isBlank(loanState)){
+			loanState = "N,O,P,Q";
+		}
+		
+		if(backDate.equals("y")){
+			backDate = DateUtil.getNowDate();
+			loanState = "N";
+		}
+		
+		Map<String,Object> result = loanInfoService.findByPage4Noob(userCode,pageNumber, pageSize, beginDate, endDate, loanState,allkey,backDate);
+//		Map<String,Object> result_sum = loanInfoService.findByPage4NoobWithSum(userCode,pageNumber, pageSize, beginDate, endDate, loanState,allkey,backDate);
+//		result.putAll(result_sum);
+		if(StringUtil.isBlank(allkey)){
+			Map<String,Object> result_sum2 = loanInfoService.findByPage4NoobWithSum2(userCode,pageNumber, pageSize, beginDate, endDate, loanState,allkey,backDate);
+			result.putAll(result_sum2);
+		}
+		if((int)result.get("totalRow") == 0){
+			long yhbj = fundsServiceV2.sumAdmountByDate(DateUtil.getNowDate());
+			long yhlx = fundsServiceV2.sumInterestByDate(DateUtil.getNowDate());
+			result.put("jryhbj", yhbj);
+			result.put("jryhlx", yhlx);
+		}
+		return succ("分页查询标书完成", result);
+	}
+	
+	
+	/**
+	 * 查询今日还款的标
+	 */
+	@ActionKey("/getTodayJieSuanList")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getTodayLoanList(){
+		
+		Integer pageNumber = getParaToInt("pageNumber",1);
+		
+		pageNumber = pageNumber > 0 ? pageNumber : 1;
+		
+		Integer pageSize = getParaToInt("pageSize",10);
+		
+		String allkey = getPara("allkey", "");
+		
+		Page<LoanInfo> pageLoanInfo = loanInfoService.findByTodayJieSuan(null,pageNumber, pageSize,allkey);
+		
+		if(pageNumber > pageLoanInfo.getTotalPage() && pageLoanInfo.getTotalPage() > 0){
+			pageNumber = pageLoanInfo.getTotalPage();
+			pageLoanInfo = loanInfoService.findByTodayJieSuan(null,pageNumber, pageSize,allkey);
+		}
+		return succ("分页查询标书完成", pageLoanInfo);
+	}
+	
+	/**
+	 * 根据ID查询一条标书流水明细
+	 */
+	@ActionKey("/getLoanTraceById")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getLoanTraceById(){
+		
+		String traceCode = getPara("traceCode","");
+		
+		LoanTrace loanTrace = loanTraceService.findById(traceCode);
+		
+		return succ("查询单条标书流水明细完成", loanTrace);
+		
+	}
+	
+	/**
+	 * 分页查询用户的投标流水
+	 */
+	@ActionKey("/getPayUserLoanTraceList")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getPayUserLoanTraceList(){
+		
+		Integer pageNumber = getParaToInt("pageNumber",1);
+		
+		pageNumber = pageNumber > 0 ? pageNumber : 1;
+		
+		Integer pageSize = getParaToInt("pageSize",10);
+		
+		String beginDateTime = getPara("beginDate","");
+		
+		beginDateTime = StringUtil.isBlank(beginDateTime)?"":beginDateTime+"000000";
+		
+		String endDateTime = getPara("endDate","");
+		
+		endDateTime = StringUtil.isBlank(endDateTime)?"":endDateTime+"235959";
+		
+		String payUserCode = getPara("payUserCode","");
+		
+		Map<String,Object> result = loanTraceService.findByPageJoinUser4Noob(pageNumber, pageSize, beginDateTime, endDateTime, payUserCode);
+		
+		Map<String,Object> result_sum = loanTraceService.findByPageJoinUser4NoobWithSum(pageNumber, pageSize, beginDateTime, endDateTime, payUserCode);
+		
+		result.putAll(result_sum);
+		
+		return succ("分页查询标书流水完成", result);
+	}
+	
+	/**
+	 * 分页查询投标流水
+	 */
+	@ActionKey("/getLoanTraceList")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getLoanTraceList(){
+		
+		Integer pageNumber = getParaToInt("pageNumber",1);
+		
+		pageNumber = pageNumber > 0 ? pageNumber : 1;
+		
+		Integer pageSize = getParaToInt("pageSize",10);
+		
+		String beginDateTime = getPara("beginDate","");
+		
+		beginDateTime = StringUtil.isBlank(beginDateTime)?"":beginDateTime+"000000";
+		
+		String endDateTime = getPara("endDate","");
+		
+		endDateTime = StringUtil.isBlank(endDateTime)?"":endDateTime+"235959";
+		
+		String loanUserCode = getPara("loanUserCode","");
+		
+		String payUserCode = getPara("payUserCode","");
+		
+		String loanCode = getPara("loanCode","");
+		
+		String allkey = getPara("allkey", "");
+		
+		Page<LoanTrace> pageLoanTrace = loanTraceService.findByPage(pageNumber, pageSize, beginDateTime, endDateTime, loanUserCode, payUserCode, loanCode,allkey);
+		if(pageNumber>pageLoanTrace.getTotalPage() && pageLoanTrace.getTotalPage()>0){
+			pageNumber = pageLoanTrace.getTotalPage();
+			pageLoanTrace = loanTraceService.findByPage(pageNumber, pageSize, beginDateTime, endDateTime, loanUserCode, payUserCode, loanCode,allkey);
+		}
+		
+		return succ("分页查询标书流水完成", pageLoanTrace);
+	}
+	
+	/**
+	 * 分页查询发标公告
+	 */
+	@ActionKey("/getLoanNoticeList")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getLoanNoticeList(){
+		
+		Integer pageNumber = getParaToInt("pageNumber",1);
+		
+		pageNumber = pageNumber > 0 ? pageNumber : 1;
+		
+		Integer pageSize = getParaToInt("pageSize",10);
+		
+		String beginDateTime = getPara("beginDate","");
+		
+		beginDateTime = StringUtil.isBlank(beginDateTime)?"":beginDateTime+"000000";
+		
+		String endDateTime = getPara("endDate","");
+		
+		endDateTime = StringUtil.isBlank(endDateTime)?"":endDateTime+"000000";
+		
+		String state = getPara("state","");
+		
+		String allkey = getPara("allkey","");
+		
+		Page<LoanNotice> pageLoanNotice = loanNoticeService.findByPage2(pageNumber, pageSize, beginDateTime, endDateTime,state,allkey);
+		if(pageNumber>pageLoanNotice.getTotalPage() && pageLoanNotice.getTotalPage()>0){
+			pageNumber = pageLoanNotice.getTotalPage();
+			pageLoanNotice = loanNoticeService.findByPage(pageNumber, pageSize, beginDateTime, endDateTime,state,allkey);
+		}
+		return succ("分页查询发标公告完成", pageLoanNotice);
+	}
+	
+	@ActionKey("/getLoanNoticeById")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getLoanNoticeById(){
+		String noticeCode = getPara("noticeCode","");
+		LoanNotice loanNotice = loanNoticeService.findById(noticeCode);
+		return succ("查询单个发标公告明细完成", loanNotice);
+	}
+	
+	@ActionKey("/createLoanNotice")
+	@AuthNum(value=999)
+	@Before({LoanCreateNoticeValidator.class,AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message createLoanNotice(){
+		String content = getPara("content");
+		String overDateTime = getPara("overDateTime");
+		
+		if(loanNoticeService.save(content, overDateTime)){
+			return succ("创建发标公告完成", true);
+		}
+		return error("01", "创建发标公告失败", false);
+	}
+	
+	@ActionKey("/auditLoanNotice")
+	@AuthNum(value=999)
+	@Before({LoanAuditNoticeValidator.class,AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message auditLoanNotice(){
+		String noticeCode = getPara("noticeCode");
+		String state = getPara("state","2");
+		
+		if(loanNoticeService.audit(noticeCode, state)){
+			return succ("审核发标公告完成", true);
+		}
+		return error("01", "审核发标公告失败", false);
+	}
+	
+	@ActionKey("/deleteLoanNoticeById")
+	@AuthNum(value=999)
+	@Before({LoanDeleteNoticeValidator.class,AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message deleteLoanNoticeById(){
+		String noticeCode = getPara("noticeCode");
+		
+		if(loanNoticeService.deleteById(noticeCode)){
+			return succ("删除发标公告完成", true);
+		}
+		return error("01", "删除发标公告失败", false);
+	}
+
+	/**
+	 * 分页查询债权转让记录
+	 * @return
+	 */
+	@ActionKey("/getLoanTransferList")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getLoanTransferList(){
+		
+		Integer pageNumber = getParaToInt("pageNumber",1);
+		
+		pageNumber = pageNumber > 0 ? pageNumber : 1;
+		
+		Integer pageSize = getParaToInt("pageSize",10);
+		
+		String beginDateTime = getPara("beginDate","");
+		
+		String endDateTime = getPara("endDate","");
+		
+		String transState = getPara("transState","");
+		
+		String allkey = getPara("allkey","");
+		
+		Page<LoanTransfer> pageLoanTransfer = loanTransferService.findByPage(pageNumber, pageSize, beginDateTime, endDateTime,transState,allkey);
+		if(pageNumber>pageLoanTransfer.getTotalPage() && pageLoanTransfer.getTotalPage()>0){
+			pageNumber = pageLoanTransfer.getTotalPage();
+			pageLoanTransfer = loanTransferService.findByPage(pageNumber, pageSize, beginDateTime, endDateTime,transState,allkey);
+		}
+		return succ("分页查询债权转让记录完成", pageLoanTransfer);
+	}
+	
+	/**
+	 * 添加逾期记录
+	 * @return
+	 */
+	@ActionKey("/addOverdueLoan")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message addOverdueLoan(){
+		String loanNo = getPara("loanNo","");
+		String remark = getPara("remark","");
+		long overdueAmount = getParaToLong("overdueAmount", 0L);
+		String overdueDate = getPara("overdueDate","");
+		
+		if(StringUtil.isBlank(overdueDate)){
+			return error("1", "逾期时间不能为空!", null );
+		}
+		
+		overdueDate = overdueDate.replace("-", "");
+		
+		if(StringUtil.isBlank(loanNo)){
+			return error("1", "借款编号不能为空!", null );
+		}
+//		int overdueLimit = 0;
+//		try {
+//			overdueLimit = getParaToInt("overdueLimit");
+//		} catch (Exception e) {
+//			return error("1", "逾期期数!", null );
+//		}
+		
+		/**
+		 * 获取标列表
+		 */
+		List<LoanInfo> loanInfoList = loanInfoService.findByLoanNo(loanNo);
+		if(null == loanInfoList || loanInfoList.size() <= 0){
+			return error("2", "未查询到该标信息!", null );
+		}
+		//循环插入逾期表
+		long loanAmount = 0;
+		for (int i = 0; i < loanInfoList.size(); i++) {
+			loanAmount += loanInfoList.get(i).getLong("loanAmount");
+		}
+		
+		int limit = loanInfoList.get(0).get("loanTimeLimit");
+		
+//		if(limit < overdueLimit){
+//			return error("3", "逾期期数错误!", null );
+//		}
+		
+//		int rate = loanInfoList.get(0).getInt("rateByYear") + loanInfoList.get(0).getInt("rewardRateByYear");
+		
+		String rt = loanInfoList.get(0).get("refundType");
+		
+//		String overdueDate = CommonUtil.anyRepaymentDate4string(loanInfoList.get(0).getStr("effectDate"), overdueLimit);
+		
+		if(Integer.parseInt(DateUtil.getNowDate()) < Integer.parseInt(overdueDate)){
+			return error("3", "该标还没有逾期呢!", null );
+		}
+		
+		//计算逾期金额
+//		long overdueAmount = 0;
+//		long[] amount = CommonUtil.f_000(loanAmount, limit, rate, overdueLimit, rt);
+//		overdueAmount = amount[0] + amount[1];
+		
+		Map<String, Object> para = new HashMap<String, Object>();
+		para.put("loanCode", loanInfoList.get(0).get("loanCode"));
+		para.put("loanNo", loanNo);
+		para.put("loanUserCode", loanInfoList.get(0).get("userCode"));
+		para.put("loanUserName", loanInfoList.get(0).get("userName"));
+		para.put("loanAmount", loanAmount);
+		para.put("loanTitle", loanInfoList.get(0).get("loanTitle"));
+		para.put("loanTimeLimit", limit);
+		para.put("repayIndex", loanInfoList.get(0).get("reciedCount"));
+		para.put("principal", 0);
+		para.put("interest", 0);
+		para.put("overdueAmount", overdueAmount);
+		para.put("refundType", rt);
+		para.put("overdueDate", overdueDate);
+		para.put("overdueTime", "000000");
+		para.put("remark", remark);
+		boolean b = overdueTraceService.save(para);
+		if(b == false){
+			return error("4", "添加失败!", null );
+		}
+		return succ("添加成功", "");
+	}
+	
+	/**
+	 * 根据ID查询单个债权转让记录的明细
+	 * @return
+	 */
+	@ActionKey("/getLoanTransferById")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getLoanTransferById(){
+		String transCode = getPara("transCode","");
+		LoanTransfer loanTransfer = loanTransferService.findById(transCode);
+		return succ("查询单个债权转让明细完成", loanTransfer);
+	}
+	
+	
+	/**
+	 * 分页查询逾期记录
+	 * @return
+	 */
+	@ActionKey("/getLoanOverdueList")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getLoanOverdueList(){
+		
+		Integer pageNumber = getPageNumber();
+		
+		Integer pageSize = getPageSize() ;
+		
+		String beginDateTime = getPara("beginDate","");
+		
+		String endDateTime = getPara("endDate","");
+		
+		String disposeStatus = getPara("disposeStatus","");
+		
+		String allkey = getPara("allkey","");
+		
+		Page<LoanOverdue> pageOverdueTrace = overdueTraceService.findByPage(pageNumber, pageSize, beginDateTime, endDateTime,disposeStatus,allkey);
+//		if(pageNumber>pageOverdueTrace.getTotalPage() && pageOverdueTrace.getTotalPage()>0){
+//			pageNumber = pageOverdueTrace.getTotalPage();
+//			pageOverdueTrace = overdueTraceService.findByPage(pageNumber, pageSize, beginDateTime, endDateTime,disposeStatus,allkey);
+//		}
+		return succ("分页查询逾期记录完成", pageOverdueTrace);
+	}
+	
+	
+	/**
+	 * 修改逾期记录
+	 * @return
+	 */
+	@ActionKey("/disposeOverdue")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message disposeOverdue(){
+		String overdueCode = getPara("overdueCode");
+		String disposeStatus = getPara("disposeStatus");
+		String remark = getPara("remark");
+		if(StringUtil.isBlank(overdueCode)){
+			return error("01", "逾期标识为空!", "");
+		}
+		if(StringUtil.isBlank(disposeStatus)){
+			return error("01", "处理状态不能为空!", "");
+		}
+		
+		boolean b = overdueTraceService.disposeOverdue(overdueCode,disposeStatus,remark);
+		if(b == false){
+			return error("02", "操作异常!", "");
+		}
+		return succ("操作成功", "");
+	}
+	
+	
+	
+	
+	/**
+	 * 根据ID查询单个逾期记录明细
+	 * @return
+	 */
+	@ActionKey("/getLoanOverdueById")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getLoanOverdueById(){
+		String overdueCode = getPara("overdueCode","");
+		LoanOverdue overdueTrace = overdueTraceService.findById(overdueCode);
+		return succ("查询单个逾期记录明细完成", overdueTrace);
+	}
+	
+	/**
+	 * 删除逾期记录
+	 * @return
+	 */
+	@ActionKey("/deleteLoanOverdue")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message deleteLoanOverdue(){
+		String overdueCode = getPara("overdueCode","");
+		if(StringUtil.isBlank(overdueCode)){
+			return error("01", "参数错误", "");
+		}
+		boolean b = overdueTraceService.deleteOverdue(overdueCode);
+		if(b == false){
+			return error("02", "删除失败", "");
+		}
+		return succ("删除成功", "");
+	}
+	
+	
+	
+//	@ActionKey("/settlement1")
+//	@AuthNum(value=157,pval=26,type=1,desc="正常还款")
+//	@Before({LoanPubLoanByQuick.class,AuthInterceptor.class})
+//	public Message settlement1(){
+//		String loanCode = getPara("loanCode");
+//		LoanInfo loanInfo = loanInfoService.findById(loanCode);
+//		String loanUserCode = loanInfo.get("userCode","") ;
+//		long avBalance = fundsService.findAvBalanceById(loanUserCode);//【借款人】可用余额
+//		int[] tmpAmount = getTmpAmount(loanInfo) ;
+//		int beRecyPrincipal4loan = tmpAmount[0] ;
+//		int beRecyInterest4loan = tmpAmount[1] ;
+//		//【借款人】可用余额不够此次还款
+//		if((beRecyPrincipal4loan + beRecyInterest4loan) > avBalance){
+//			return error("02", loanCode, loanCode);
+//		}
+//		boolean isOk = false;
+//		String faildDesc = "";
+//		try{
+//			isOk = doLoan(loanInfo);
+//			faildDesc = "清算时发现异常标流水!";
+//		}catch(Exception e){
+//			e.printStackTrace();
+//			isOk = false ;
+//			faildDesc = "清算异常：" + e.getMessage() ;
+//		}
+//		if( isOk == true){
+//			//标结算成功，处理成功
+//			loanInfoService.update4clearSuccess(loanInfo, SysEnum.loanState.N) ;
+//			return succ("还款成功", true);
+//		}else{
+//			//标结算失败，处理失败,将标信息置为异常并记录
+//			logSettlementService.saveLoan(loanCode, loanInfo.getStr("loanTitle"), "标结算异常，原因：" + faildDesc);
+//			//修改异常流水状态
+//			loanInfoService.update4clearException(loanCode, SysEnum.loanState.T);
+//		}
+//		return error("01", "还款失败", null);
+//	}
+//	
+//	@ActionKey("/settlement2")
+//	@AuthNum(value=158,pval=12,type=1,desc="系统代还(借款人可用余额不足)")
+//	@Before({LoanPubLoanByQuick.class,AuthInterceptor.class})
+//	public Message settlement2(){
+//		String loanCode = getPara("loanCode");
+//		LoanInfo loanInfo = loanInfoService.findById(loanCode);
+//		boolean isOk = false;
+//		String faildDesc = "";
+//		try{
+//			isOk = doLoan(loanInfo);
+//			faildDesc = "清算时发现异常标流水!";
+//		}catch(Exception e){
+//			e.printStackTrace();
+//			isOk = false ;
+//			faildDesc = "清算异常：" + e.getMessage() ;
+//		}
+//		if( isOk == true){
+//			//标结算成功，处理成功
+//			loanInfoService.update4clearSuccess(loanInfo, SysEnum.loanState.N) ;
+//			return succ("还款成功", true);
+//		}else{
+//			//标结算失败，处理失败,将标信息置为异常并记录
+//			logSettlementService.saveLoan(loanCode, loanInfo.getStr("loanTitle"), "标结算异常，原因：" + faildDesc);
+//			//修改异常流水状态
+//			loanInfoService.update4clearException(loanCode, SysEnum.loanState.T);
+//		}
+//		return error("01", "还款失败", null);
+//	}
+//	
+//	private boolean doLoan(LoanInfo loanInfo ){
+//		//查询借款人账户余额是否充足
+//		String loanUserCode = loanInfo.get("userCode","") ;
+//		String loanCode = loanInfo.getStr("loanCode");
+//		long avBalance = fundsService.findAvBalanceById(loanUserCode);//【借款人】可用余额
+//		//TODO 年奖励让在另外一个任务计算
+////		int rewardRateByYear = loanInfo.getInt("rewardRateByYear");//奖励年利率
+//		int[] tmpAmount = getTmpAmount(loanInfo) ;
+//		int beRecyPrincipal4loan = tmpAmount[0] ;
+//		int beRecyInterest4loan = tmpAmount[1] ;
+//		//【借款人】可用余额不够此次还款
+//		if((beRecyPrincipal4loan + beRecyInterest4loan) > avBalance){
+//			//isProxy = true;//代还
+//			//不考虑平台代扣钱，根据借款人账户资金正负判断
+//			/** 增加逾期流水  **/
+//			Map<String, Object> para = new HashMap<String, Object>();
+//			para.put("loanCode", loanCode);
+//			para.put("loanUserCode", loanUserCode);
+//			para.put("loanUserName", loanInfo.getStr("userName"));
+//			para.put("loanAmount", loanInfo.getLong("loanAmount"));
+//			para.put("loanTitle", loanInfo.getStr("loanTitle"));
+//			para.put("loanTimeLimit", loanInfo.getInt("loanTimeLimit"));
+//			para.put("principal", beRecyPrincipal4loan);
+//			para.put("interest", beRecyInterest4loan);
+//			para.put("overdueAmount", (beRecyPrincipal4loan + beRecyInterest4loan)-avBalance);
+//			para.put("refundType", loanInfo.getStr("refundType"));
+//			para.put("repayIndex", loanInfo.getInt("reciedCount")+1);
+//			overdueTraceService.save(para);
+//			userService.updateUserState(loanUserCode, SysEnum.userState.S.val());
+//		}
+//		
+//		//获取理财人的标流水
+//		List<LoanTrace> loanTraces = loanTraceService.findAllByLoanCode( loanCode ) ;
+//		List<String> faildResult = new ArrayList<String>();
+//		doLoanTrace( 0 , loanInfo , loanTraces , faildResult );
+//		boolean loanTraceResult = true;
+//		if( faildResult.size() > 0 ){
+//			//发现有标流水处理异常
+//			//logSettlementService.saveTrace(loanInfo ,  "日结算失败！详情：" + faildResult );
+//			Log.info( "标编号：" + loanCode + "，日结算失败！详情：" + faildResult );
+//			loanTraceResult = false ;	
+//		}
+//		int loanTimeLimit = loanInfo.getInt("loanTimeLimit");//还款期数 
+//		int reciedCount = loanInfo.getInt("reciedCount");
+//		boolean x1 = fundsService.updateByRepayment4LoanUser(loanUserCode, beRecyPrincipal4loan, beRecyInterest4loan, 0, 0);
+//		boolean isLastLimit = (loanTimeLimit-reciedCount) == 1 ? true : false;//(还款期数-已还期数)==1 ? 最后一次到期还款 :
+//		if(x1){
+//			if(isLastLimit){
+//				boolean x2 = fundsService.updateByRepaymentOver4LoanUser(loanUserCode);
+//				if(!x2)
+//					return false;
+//			}
+//			if(loanTraceResult){
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
+//	
+//	/**
+//	 * 	处理标流水
+//	 * @return
+//	 */
+//	private void doLoanTrace(int index , LoanInfo loan , List<LoanTrace> traces , List<String> result ){
+//		
+//		if( traces.size() == index ){
+//			return ;
+//		}
+//		LoanTrace trace = traces.get(index) ;
+//		index ++ ;//next
+////		String loanUserCode = loan.getStr("userCode") ;
+//		String traceCode = trace.get("traceCode"); 
+//		String payUserCode = trace.get("payUserCode","");//投标人编码 
+//		int payAmount = trace.getInt("payAmount");//投标金额 
+//		String trace_refundType = trace.get("refundType","O");//投标还款方式 
+//		int trace_rateByYear = trace.getInt("rateByYear");//投标年利率 
+//		//年奖励利息开服务单独计算
+//		int loanTimeLimit = loan.getInt("loanTimeLimit");//还款期数 
+//		int reciedCount = loan.getInt("reciedCount");
+//		boolean isLastLimit = (loanTimeLimit-reciedCount) == 1 ? true : false;//(还款期数-已还期数)==1 ? 最后一次到期还款 :
+//		int[] tmp2 = new int[]{0,0};
+//		if(trace_refundType.equals( SysEnum.refundType.A.val() )){//按月等额本息
+//			tmp2 = CommonUtil.f_001(payAmount, reciedCount+1 , trace_rateByYear , loanTimeLimit );
+//		}else if(trace_refundType.equals( SysEnum.refundType.B.val() )){//按月付息，到期还本
+//			tmp2 = CommonUtil.f_002(payAmount, trace_rateByYear, loanTimeLimit , isLastLimit);
+//		}else if(trace_refundType.equals( SysEnum.refundType.C.val() )){//到期还本息
+//			tmp2 = CommonUtil.f_003(payAmount, trace_rateByYear, loanTimeLimit , isLastLimit);
+//		}
+//		int principal = tmp2[0];
+//		int interest = tmp2[1];
+//		
+//		try{
+//			boolean x2 = fundsService.updateByRepayment4PayUser(payUserCode, principal, interest, 0);
+//			if(x2){
+//				if(isLastLimit){//最后一期还款完成，投标人资金账户；投标流水状态
+//					fundsService.updateByRepaymentOver4PayUser(payUserCode);
+//					//最外面标结算完成后批量改状态
+////					loanTraceService.updateTraceState(traceCode, SysEnum.traceState.B.val(),  traceState);
+//				}
+//				doLoanTrace( index , loan , traces , result );
+//			}
+//		}catch(Exception e){
+//			e.printStackTrace();
+//			String loanCode = trace.getStr("loanCode");
+//			String loanTitle = trace.getStr("loanTitle");
+//			loanTraceService.updateTraceState(traceCode, SysEnum.traceState.E.val(),trace.getStr("traceState"));
+//			logSettlementService.saveTrace(loanCode, traceCode, loanTitle, "处理标流水异常：" + e.getMessage() ) ;
+//			result.add("\r\n"+traceCode+"处理标流水异常：" + e.getMessage());
+//			doLoanTrace( index , loan , traces , result );
+//		}
+//		
+//	}
+//	
+//	private int[] getTmpAmount(LoanInfo loanInfo){
+//		String refundType = loanInfo.getStr("refundType");//还款方式 
+//		long loanAmount = loanInfo.getLong("loanAmount");//贷款金额
+//		int reciedCount = loanInfo.getInt("reciedCount");//已还笔数 
+//		int rateByYear = loanInfo.getInt("rateByYear");//年利率
+//		int loanTimeLimit = loanInfo.getInt("loanTimeLimit");//还款期数 
+//		boolean isLastLimit = checkIsLastLimit(loanInfo) ;
+//		int[] tmpAmount = new int[]{0,0};//[本金,利息]
+//		if(refundType.equals("A")){//按月等额本息
+//			tmpAmount = CommonUtil.f_001(loanAmount, reciedCount+1,rateByYear, loanTimeLimit);
+//		}else if(refundType.equals("B")){//按月付息，到期还本
+//			tmpAmount = CommonUtil.f_002(loanAmount, rateByYear, loanTimeLimit, isLastLimit);
+//		}else if(refundType.equals("C")){//到期还本息
+//			tmpAmount = CommonUtil.f_003(loanAmount, rateByYear, loanTimeLimit, isLastLimit);
+//		}
+//		
+//		return tmpAmount ;
+//	}
+//	
+//	private boolean checkIsLastLimit(LoanInfo loanInfo ){
+//		int loanTimeLimit = loanInfo.getInt("loanTimeLimit");//还款期数 
+//		int reciedCount = loanInfo.getInt("reciedCount");//已还笔数
+//		boolean isLastLimit = (loanTimeLimit-reciedCount) == 1 ? true : false;//(还款期数-已还期数)==1 ? 最后一次到期还款 : 
+//		return isLastLimit ;
+//	}
+	
+//	@ActionKey("/revokeLoan")
+//	@AuthNum(value=999,pval=32,type=1,desc="撤回借款标")
+//	@Before({LoanAuditLoanByLoanValidator.class,AuthInterceptor.class,Tx.class})
+//	public Message revokeLoan(){
+//		String loanCode = getPara("loanCode");
+//		if( StringUtil.isBlank( loanCode ) == true )
+//			return error("01", "请求参数异常!", null) ;
+//		
+//		if( loanCode.length() != 32)
+//			return error("02", "请求参数异常！", null );
+//		
+//		LoanInfo loan = loanInfoService.findById(loanCode);
+//		if( SysEnum.loanState.J.val().equals( loan.getStr("loanState") ) == false){
+//			return error("02", "当前标的状态为：" + loan.getStr("loanState") + ",不满足审核条件！",
+//					null ) ;
+//		}
+//		
+//		//新人福利 benefits4new
+//		List<LoanTrace> traces = loanTraceService.findAllByLoanCode( loanCode );
+//		//失败流水记录
+//		
+//		for(LoanTrace trace : traces ){
+//			//处理标流水
+//			String payUserCode = trace.getStr("payUserCode");
+//			long payAmount = trace.getLong("payAmount");
+//			//冻结资金转可用资金
+//			fundsServiceV2.revokeLoan4Funds(payUserCode, payAmount) ;
+//			trace.delete();
+//		}
+//		
+//		//更新标状态
+//		loan.set("updateDate", DateUtil.getNowDate() ) ;
+//		loan.set("updateTime", DateUtil.getNowTime() ) ;
+//		loan.set("loanState", loanState.S.val() ) ;
+//		loan.set("loanBalance", loan.getLong("loanAmount"));
+//		loan.set("releaseDate", "");
+//		loan.set("releaseTime", "");
+//		if( loan.update() == false ){
+//			return error("06","操作未生效",false);
+//		}
+//		return succ("流标处理完成!",true);
+//		
+//	}
+}

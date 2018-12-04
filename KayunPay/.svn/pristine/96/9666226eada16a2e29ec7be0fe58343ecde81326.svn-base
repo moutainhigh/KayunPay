@@ -1,0 +1,81 @@
+package com.dutiantech.model;
+
+import java.util.List;
+
+import com.dutiantech.util.StringUtil;
+import com.dutiantech.util.SysEnum;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Model;
+
+public class User extends Model<User> {
+	
+	private static final long serialVersionUID = -2680295761436973353L;
+	
+	public static final User userDao = new User();
+	
+	// 是否为出借人
+	public boolean isInvester() {
+		if (SysEnum.UserType.J.val().equals(getStr("userType")) || SysEnum.UserType.C.val().equals(getStr("userType"))) {
+			return false;
+		}
+		return true;
+	}
+	
+	// 是否为借款人
+	public boolean isBorrower() {
+		if (SysEnum.UserType.J.val().equals(getStr("userType")) || SysEnum.UserType.C.val().equals(getStr("userType"))) {
+			return true;
+		}
+		return false;
+	}
+	
+	// 是否冻结
+	public boolean isFrozen() {
+		if (!StringUtil.isBlank(getStr("userState")) && !SysEnum.userState.N.val().equals(getStr("userState")) && !SysEnum.userState.F.val().equals(getStr("userState"))) {
+			return true;
+		}
+		return false;
+	}
+	
+	public String getEvaluateResult(){
+		String evaluateResult = "";
+		String evaluates = getStr("evaluationLevel");
+		if(StringUtil.isBlank(evaluates)){
+			return "未测评";
+		}
+		char evaluate = evaluates.charAt(0);
+		switch (evaluate) {
+		case 'A':
+			evaluateResult = "保守型";
+			break;
+		case 'B':
+			evaluateResult = "稳健型";
+			break;
+		case 'C':
+			evaluateResult = "进取型";
+			break;
+		case 'D':
+			evaluateResult = "冒险型";
+			break;
+		default:
+			evaluateResult = "未测评";
+			break;
+		}
+		return evaluateResult;
+	}
+	
+	/**
+	 * 是否资金异常用户
+	 * @return	true-是
+	 * 			false-否
+	 */
+	public boolean isBlacklist() {
+		String userCode = getStr("userCode");
+		String sql = "SELECT payUserCode from t_loan_trace where loanCode in(SELECT loanCode from t_settlement_early where earlyDate BETWEEN 20180521 and 20180528 and estatus != 'D') and not isnull(authCode) GROUP BY payUserCode";
+		List<String> lstBlackList = Db.query(sql);
+		if (lstBlackList.contains(userCode)) {
+			return true;
+		}
+		return false;
+	}
+}

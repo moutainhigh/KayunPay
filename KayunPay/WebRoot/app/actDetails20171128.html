@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>全名大闯关，三重关卡等你来</title>
+		<link href="/app/css/act20171128.css" type="text/css" rel="stylesheet" />
+		<script type="text/javascript" src="/app/js/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript" src="/app/js/core.js"></script>
+	</head>
+	<body>
+		<div class="in_popup">
+			<div class="in_popupMain">
+				<div class="in_popup_title">
+					<div class="in_popup_title1"></div>
+				</div>
+				<div class="in_popupList">
+					<table>
+						<thead>
+							<tr>
+								<th width="130px">被邀请人</th>
+								<th width="190px">投资金额</th>
+								<th width="130px">投资时间</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>	
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		//邀请详情
+		function InvitationDetails(){
+			YRHX.ajax({
+				url : "/app_queryInviteDetailsByUserCode",
+				dataType:'jsonp',
+				data:{"beginDate":"20171201","endDate":""},
+				success : function(data) {
+					var html="<tr><td>#{userName}</td><td>#{traceAmount}</td><td>#{traceDate}</td></tr>";
+					var tableHtml = $(".in_popupList table tbody");
+					tableHtml.html();
+					var listTxt = data["list"];
+					for (var i = 0; i < listTxt.length; i++) {
+						var row = listTxt[i];
+						var len = row["userName"].length;
+						if (0 == row["userName"].indexOf("*")) {
+							row["userName"] = row["userName"]
+						} 
+						else {
+							if (len < 3) {
+								row["userName"] = row["userName"] + "***";
+							} else if (len < 11) {
+								row["userName"] = row["userName"].substr(0,3)+ "***";
+							} else if (len == 11) {
+								row["userName"] = row["userName"].substr(0,3)+ "***" + row["userName"].substr(7);
+							} else {
+								row["userName"] = row["userName"].substr(0,3)+ "***";
+							}
+						}
+						var tmpHtml = html.makeHtml(row);
+						tableHtml.append(tmpHtml);
+					}
+				}
+			});
+		}
+		
+		$(function(){
+			InvitationDetails();	
+		});		
+	</script>
+</html>

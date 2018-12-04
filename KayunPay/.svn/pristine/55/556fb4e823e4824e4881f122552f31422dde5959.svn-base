@@ -1,0 +1,832 @@
+package com.dutiantech.service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.dutiantech.model.LoanInfo;
+import com.dutiantech.model.LoanTrace;
+import com.dutiantech.model.LoanTransfer;
+import com.dutiantech.util.CommonUtil;
+import com.dutiantech.util.DateUtil;
+import com.dutiantech.util.StringUtil;
+import com.dutiantech.util.UIDUtil;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+
+public class LoanTransferService extends BaseService {
+	
+	private static final String basic_selectFields = " transCode,traceCode,loanCode,loanTitle,rateByYear,rewardRateByYear,payAmount,payUserCode,payUserName,loanRecyCount,refundType,transState,leftAmount,nextRecyDay,gotUserCode,gotUserName,transDate,transTime,gotDate,gotTime,transFee,sysFee,riskFee,userFee,transRate,transAmount,authCode ";
+
+
+	/**
+	 * 按日期 状态 查询债权转让笔数
+	 */
+	public long queryTransferByDate(String date,String transState){
+		if(StringUtil.isBlank(transState)){
+			return Db.queryLong("select count(transCode) from t_loan_transfer where transDate = ? or gotDate = ?",date,date);
+		}else{
+			return Db.queryLong("select count(transCode) from t_loan_transfer where transState = ? and (transDate = ? or gotDate = ?)",transState,date,date);
+		}
+	}
+
+	
+	/**
+	 * 判断投标流水是不是转让过的债权
+	 * @param traceCode
+	 * @return	true已转让过   false未转让过
+	 */
+	public boolean vilidateIsTransfer(String traceCode){
+		long x = Db.queryLong("select count(transCode) from t_loan_transfer where transState = 'B' and traceCode = ?",traceCode);
+		if(x>0){
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 分页查询债权转让记录
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param beginDate
+	 * @param endDate
+	 * @param transState
+	 * @return
+	 */
+	public Page<LoanTransfer> findByPage(Integer pageNumber, Integer pageSize, String beginDate, String endDate, String transState, String allkey){
+		String sqlSelect = "select "+basic_selectFields;
+		String sqlFrom = " from t_loan_transfer ";
+		String sqlOrder = " order by uid desc";
+
+		StringBuffer buff = new StringBuffer("");
+		List<Object> ps = new ArrayList<Object>();
+		
+		String[] keys = new String[]{"loanTitle","payUserName","gotUserName"};
+		makeExp4AnyLike(buff, ps, keys, allkey, "and","or");
+		
+		makeExp(buff, ps, "gotDate", ">=" , beginDate , "and");
+		makeExp(buff, ps, "gotDate", "<=" , endDate , "and");
+		makeExp(buff, ps, "transState", "=" , transState , "and");
+		
+
+		return LoanTransfer.loanTransferDao.paginate(pageNumber, pageSize, sqlSelect, sqlFrom+makeSql4Where(buff)+sqlOrder , ps.toArray()) ;
+		
+	}
+	/**
+	 * 查询单个债权明细
+	 * @param transCode
+	 * @return
+	 */
+	public LoanTransfer findById(String transCode){
+		LoanTransfer loanTransfer = LoanTransfer.loanTransferDao.findById(transCode);
+		return loanTransfer;
+	}
+	
+	
+	/**
+	 * 保存债权转让
+	 * @param transFee		让利金额
+	 * @param loanTrace		投标流水信息
+	 * @return
+	 */
+	public boolean saveLoanTransfer(Integer transFee ,Integer leftScore, LoanTrace loanTrace){
+		LoanTransfer loanTransfer = new LoanTransfer();
+		loanTransfer.set("transCode", UIDUtil.generate());
+		loanTransfer.set("traceCode", loanTrace.getStr("traceCode"));
+		loanTransfer.set("loanCode", loanTrace.getStr("loanCode"));
+		loanTransfer.set("loanNo", loanTrace.getStr("loanNo"));
+		loanTransfer.set("loanTitle", loanTrace.getStr("loanTitle"));
+		loanTransfer.set("rateByYear", loanTrace.getInt("rateByYear"));
+		loanTransfer.set("rewardRateByYear", loanTrace.getInt("rewardRateByYear"));
+		loanTransfer.set("payAmount", loanTrace.getLong("payAmount"));
+		loanTransfer.set("payUserCode", loanTrace.getStr("payUserCode"));
+		loanTransfer.set("payUserName", loanTrace.getStr("payUserName"));
+		loanTransfer.set("loanRecyCount", loanTrace.getInt("loanRecyCount"));
+		loanTransfer.set("refundType", loanTrace.getStr("refundType"));
+		loanTransfer.set("transState", "A");
+		loanTransfer.set("transDate", DateUtil.getNowDate());
+		loanTransfer.set("transTime", DateUtil.getNowTime());
+		loanTransfer.set("transFee", transFee);
+		loanTransfer.set("transScore", leftScore ) ;
+		
+		//产品类型
+		LoanInfo loanInfo = LoanInfo.loanInfoDao.findByIdLoadColumns(loanTrace.getStr("loanCode"), "productType");
+		loanTransfer.set("productType", loanInfo.getStr("productType"));
+		
+		//下一个还款日
+		String loanRecyDate = loanTrace.getStr("loanRecyDate");
+		loanTransfer.set("nextRecyDay",loanRecyDate);
+		
+		//剩余金额
+		long amount = loanTrace.getLong("leftAmount");
+
+		//利率年利率+奖励利率
+//		Integer rate = loanTrace.getInt("rateByYear") + loanTrace.getInt("rewardRateByYear") ;
+		//贷款期限
+//		Integer limit = loanTrace.getInt("loanTimeLimit");
+		//已还款期数
+//		String refundType = loanTrace.getStr("refundType") ;
+//		long[] firstBenXi = CommonUtil.f_000(amount, limit, rate, 1, refundType ) ;
+//		sysFee = firstBenXi[1]/3 ;
+		
+		//剩余本金(总贷款金额  - 已还本金)
+//		long leftAmount = amount - reciedAmount;
+		long leftAmount = loanTrace.getLong("leftAmount");
+		loanTransfer.set("leftAmount", leftAmount);
+		
+		//计算风险备用金,用户获得的部分
+		int baseFee = (int)(leftAmount / 10.0 / 10.0);
+//		int overAmount = transFee - baseFee;
+		int risk = 0;//风险备用金部分
+		int userFee = 0;//用户获得的部分
+//		if(overAmount > 0){
+//			risk = (int)(overAmount/10.0/10.0 * Integer.parseInt(CACHED.get("ZQ.risk").toString()));
+//			userFee = overAmount - risk;
+//		}
+		loanTransfer.set("riskFee",risk);
+		loanTransfer.set("userFee",userFee);
+		//下期待收利息
+		long nextInterest = loanTrace.getLong("nextInterest");
+		//若用加息券第一次债转  计算下期代收利息
+		String isTransfer=loanTrace.getStr("isTransfer");
+		if("C".equals(isTransfer)){
+			String ttype="";
+			String json_tickets = loanTrace.getStr("loanTicket");
+			if(StringUtil.isBlank(json_tickets)==false){
+				JSONArray ja = JSONArray.parseArray(json_tickets);
+				for (int i = 0; i < ja.size(); i++) {
+					JSONObject jsonObj = ja.getJSONObject(i);
+					ttype=jsonObj.getString("type");
+				}
+			}
+			if("C".equals(ttype)&&"A".equals(loanTrace.getStr("refundType"))){
+				int rate = loanTrace.getInt("rateByYear")+loanTrace.getInt("rewardRateByYear");
+				long[] nextbenxi=CommonUtil.f_000(leftAmount, loanTrace.getInt("loanRecyCount"), rate, 1, loanTrace.getStr("refundType"));
+				nextInterest=nextbenxi[1];
+			}
+		}
+		String preRecyDate = CommonUtil.anyRepaymentDate4string(loanRecyDate, -1);//上个回款日
+		
+		//上个回款日到今天的天数差
+		long daysCom = CommonUtil.compareDateTime(DateUtil.getNowDate() , preRecyDate , "yyyyMMdd");
+		
+		//按一个月平均30天，平均每天利息
+		long pjlx = CommonUtil.yunsuan(""+nextInterest, "30", "chu", 0).longValue();
+		//应补利息
+		long yblx = CommonUtil.yunsuan(""+pjlx, ""+daysCom, "cheng", 0).longValue();
+		//实际付款(剩余本金-让利金额+应补利息+风险备用金部分)
+		loanTransfer.set("transAmount",leftAmount - transFee + yblx + risk);
+		loanTransfer.set("mac","0000");
+		//核算让利利率
+		int transRate = 0;
+//		int rate = loanTrace.getInt("rateByYear")+loanTrace.getInt("rewardRateByYear");
+//		Long lixi = CommonUtil.f_004(leftAmount, rate , loanTrace.getInt("loanRecyCount"), loanTrace.getStr("refundType"))[1];
+		//transRate = (int)(new BigDecimal((float)(transFee-risk)/lixi).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue()*rate);
+		transRate = (int)(new BigDecimal((float)(transFee-risk)/leftAmount/loanTrace.getInt("loanRecyCount")*12*100*100).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue()); 
+		//平台手续费( 让利高于2%收转让本金的 5 % 低于2%  收本金的 1.5%)
+		long sysFee = 0;
+		double tmp = CommonUtil.yunsuan(amount+"", "1000.00", "chu", 2).doubleValue();
+		if(transRate>200){
+			sysFee = CommonUtil.yunsuan(tmp+"", "50", "cheng", 0).longValue();
+		}else{
+			sysFee = CommonUtil.yunsuan(tmp+"", "15", "cheng", 0).longValue();
+		}
+		//平台手续费
+		loanTransfer.set("sysFee",sysFee);
+		loanTransfer.set("transRate",transRate);
+		
+		return loanTransfer.save();
+	}
+	
+	/**
+	 * 保存逾期债权转让或平台兑付
+	 * @param transFee		让利金额
+	 * @param loanTrace		投标流水信息
+	 * @return
+	 */
+	public boolean saveOverdueLoanTransfer(Integer transFee ,Integer leftScore, LoanTrace loanTrace){
+		LoanTransfer loanTransfer = new LoanTransfer();
+		loanTransfer.set("transCode", UIDUtil.generate());
+		loanTransfer.set("traceCode", loanTrace.getStr("traceCode"));
+		loanTransfer.set("loanCode", loanTrace.getStr("loanCode"));
+		loanTransfer.set("loanNo", loanTrace.getStr("loanNo"));
+		loanTransfer.set("loanTitle", loanTrace.getStr("loanTitle"));
+		loanTransfer.set("rateByYear", loanTrace.getInt("rateByYear"));
+		loanTransfer.set("rewardRateByYear", loanTrace.getInt("rewardRateByYear"));
+		loanTransfer.set("payAmount", loanTrace.getLong("payAmount"));
+		loanTransfer.set("payUserCode", loanTrace.getStr("payUserCode"));
+		loanTransfer.set("payUserName", loanTrace.getStr("payUserName"));
+		loanTransfer.set("loanRecyCount", loanTrace.getInt("loanRecyCount"));
+		loanTransfer.set("refundType", loanTrace.getStr("refundType"));
+		loanTransfer.set("transState", "A");
+		loanTransfer.set("transDate", DateUtil.getNowDate());
+		loanTransfer.set("transTime", DateUtil.getNowTime());
+		loanTransfer.set("transFee", transFee);
+		loanTransfer.set("transScore", leftScore ) ;
+		
+		//产品类型
+		LoanInfo loanInfo = LoanInfo.loanInfoDao.findByIdLoadColumns(loanTrace.getStr("loanCode"), "productType");
+		loanTransfer.set("productType", loanInfo.getStr("productType"));
+		
+		//下一个还款日
+		String loanRecyDate = loanTrace.getStr("loanRecyDate");
+		loanTransfer.set("nextRecyDay",loanRecyDate);
+		
+		//剩余金额
+		long amount = loanTrace.getLong("leftAmount")+loanTrace.getLong("overdueAmount");
+
+		//利率年利率+奖励利率
+//		Integer rate = loanTrace.getInt("rateByYear") + loanTrace.getInt("rewardRateByYear") ;
+		//贷款期限
+//		Integer limit = loanTrace.getInt("loanTimeLimit");
+		//已还款期数
+//		String refundType = loanTrace.getStr("refundType") ;
+//		long[] firstBenXi = CommonUtil.f_000(amount, limit, rate, 1, refundType ) ;
+//		sysFee = firstBenXi[1]/3 ;
+		
+		//剩余本金(总贷款金额  - 已还本金)
+//		long leftAmount = amount - reciedAmount;
+		long leftAmount = loanTrace.getLong("leftAmount");
+		loanTransfer.set("leftAmount", leftAmount);
+		
+		//计算风险备用金,用户获得的部分
+		int baseFee = (int)(leftAmount / 10.0 / 10.0);
+//		int overAmount = transFee - baseFee;
+		int risk = 0;//风险备用金部分
+		int userFee = 0;//用户获得的部分
+//		if(overAmount > 0){
+//			risk = (int)(overAmount/10.0/10.0 * Integer.parseInt(CACHED.get("ZQ.risk").toString()));
+//			userFee = overAmount - risk;
+//		}
+		loanTransfer.set("riskFee",risk);
+		loanTransfer.set("userFee",userFee);
+		//下期待收利息
+		long nextInterest = loanTrace.getLong("nextInterest");
+		//若用加息券第一次债转  计算下期代收利息
+		String isTransfer=loanTrace.getStr("isTransfer");
+		if("C".equals(isTransfer)){
+			String ttype="";
+			String json_tickets = loanTrace.getStr("loanTicket");
+			if(StringUtil.isBlank(json_tickets)==false){
+				JSONArray ja = JSONArray.parseArray(json_tickets);
+				for (int i = 0; i < ja.size(); i++) {
+					JSONObject jsonObj = ja.getJSONObject(i);
+					ttype=jsonObj.getString("type");
+				}
+			}
+			if("C".equals(ttype)&&"A".equals(loanTrace.getStr("refundType"))){
+				int rate = loanTrace.getInt("rateByYear")+loanTrace.getInt("rewardRateByYear");
+				long[] nextbenxi=CommonUtil.f_000(leftAmount, loanTrace.getInt("loanRecyCount"), rate, 1, loanTrace.getStr("refundType"));
+				nextInterest=nextbenxi[1];
+			}
+		}
+		String preRecyDate = CommonUtil.anyRepaymentDate4string(loanRecyDate, -1);//上个回款日
+		
+//		//上个回款日到今天的天数差
+//		long daysCom = CommonUtil.compareDateTime(DateUtil.getNowDate() , preRecyDate , "yyyyMMdd");
+//		
+//		//按一个月平均30天，平均每天利息
+//		long pjlx = CommonUtil.yunsuan(""+nextInterest, "30", "chu", 0).longValue();
+//		//应补利息
+//		long yblx = CommonUtil.yunsuan(""+pjlx, ""+daysCom, "cheng", 0).longValue();
+		//实际付款(剩余本金-让利金额+应补利息+风险备用金部分)
+		long overdueAmount = loanTrace.getLong("overdueAmount");
+		loanTransfer.set("transAmount",leftAmount+overdueAmount+ - transFee + risk);
+		loanTransfer.set("mac","0000");
+		//核算让利利率
+		int transRate = 0;
+//		int rate = loanTrace.getInt("rateByYear")+loanTrace.getInt("rewardRateByYear");
+//		Long lixi = CommonUtil.f_004(leftAmount, rate , loanTrace.getInt("loanRecyCount"), loanTrace.getStr("refundType"))[1];
+		//transRate = (int)(new BigDecimal((float)(transFee-risk)/lixi).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue()*rate);
+		if(loanTrace.getInt("loanRecyCount")>0){
+		transRate = (int)(new BigDecimal((float)(transFee-risk)/amount/loanTrace.getInt("loanRecyCount")*12*100*100).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue()); 
+		}
+		//平台手续费( 让利高于2%收转让本金的 5 % 低于2%  收本金的 1.5%)
+		double tmp = CommonUtil.yunsuan(amount+"", "1000.00", "chu", 2).doubleValue();
+		long sysFee = 0;
+		if("E".equals(loanTrace.getStr("refundType"))||"F".equals(loanTrace.getStr("refundType"))){
+			sysFee=loanTransfer.getLong("transAmount");
+		}else if("H".equals(loanTrace.getStr("refundType"))){
+			sysFee = CommonUtil.yunsuan(tmp+"", "20", "cheng", 0).longValue();
+		}
+		//平台手续费
+		loanTransfer.set("sysFee",sysFee);
+		loanTransfer.set("transRate",transRate);
+		return loanTransfer.save();
+	}
+	
+	/**
+	 * 修改债权状态  到 已 转让
+	 * @param transferCode
+	 * @return
+	 */
+	public boolean updateTransferState(String transferCode,String gotUserCode,String gotUserName){
+		int update = Db.update(
+				"update t_loan_transfer set nextRecyDay = '',transState = 'B',gotUserCode = ? ,gotUserName = ? ,gotDate = ? , gotTime = ? where transCode = ? and transState = 'A' ",
+				gotUserCode,gotUserName,DateUtil.getNowDate(),DateUtil.getNowTime(),transferCode);
+		if(update == 1){
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 统计转让债权本金总额
+	 * @param userCode
+	 * @return
+	 */
+	public Long sumLeftAmount(String userCode){
+		Record record = Db.findFirst(
+				"select sum(leftAmount) leftAmount from t_loan_transfer where payUserCode = ?", userCode);
+		Object object = record.getColumns().get("leftAmount");
+		if(null == object){
+			return 0L;
+		}
+		return Long.parseLong(object.toString());
+	}
+	
+	/**
+	 * 统计指定时间债权总金额
+	 * */
+	public long sumGotAmount4Date(String beginDate,String endDate){
+		String sql = "select sum(transAmount) transAmount from t_loan_transfer where transState = 'B' ";
+		if(!StringUtil.isBlank(beginDate)){
+			sql += " and gotDate >= "+beginDate;
+		}
+		if(!StringUtil.isBlank(endDate)){
+			sql += " and gotDate <= "+endDate;
+		}
+		Record record = Db.findFirst(sql);
+		Object object = record.getColumns().get("transAmount");
+		if(null == object){
+			return 0L;
+		}
+		return Long.parseLong(object.toString());
+	}
+	
+	/**
+	 * 统计承接债权本金总额
+	 * @param userCode
+	 * @return
+	 */
+	public Long sumGotAmount(String userCode){
+		Record record = Db.findFirst(
+				"select sum(leftAmount) leftAmount from t_loan_transfer where gotUserCode = ?", userCode);
+		Object object = record.getColumns().get("leftAmount");
+		if(null == object){
+			return 0L;
+		}
+		return Long.parseLong(object.toString());
+	}
+	
+	/**
+	 * 查询转让的债权
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param userCode
+	 * @return
+	 */
+	public Page<LoanTransfer> queryLoanTransfer(Integer pageNumber , Integer pageSize , String userCode){
+		return LoanTransfer.loanTransferDao.paginate(pageNumber, pageSize,"select * ", 
+			"from t_loan_transfer where payUserCode = ? and refundType not in ('E','F') order by uid desc" , userCode);
+	}
+	
+	/**
+	 * 查询承接的债权
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param userCode
+	 * @return
+	 */
+	public Page<LoanTransfer> queryGotLoanTransfer(Integer pageNumber , Integer pageSize , String userCode){
+		return LoanTransfer.loanTransferDao.paginate(pageNumber, pageSize,"select * ", 
+			"from t_loan_transfer where gotUserCode = ? order by uid desc" , userCode);
+	}
+	
+	/**
+	 * 查询兑付标信息
+	 * */
+	public Page<LoanTransfer> findByPage4PayLoan(int pageNumber,int pageSize,String refundType,String transState,String beginDate,String endDate,String userCode){
+		String sqlSelect = "select * ";
+		String sqlFrom = "from t_loan_transfer ";
+		String sqlOrder = " order By transDate desc,transTime desc";
+		String sqlWhere = " where  transState != 'C' ";
+		
+		StringBuffer buff = new StringBuffer("");
+		List<Object> ps = new ArrayList<Object>();
+		if(!StringUtil.isBlank(userCode)){
+			makeExp(buff, ps, "payUserCode", "=", userCode, "and");
+		}
+		if(!StringUtil.isBlank(refundType)){
+			makeExp(buff, ps, "refundType", "=", refundType, "and");
+		}else{
+			sqlWhere += " and refundType in ('E','F') ";
+		}
+		if(!StringUtil.isBlank(transState)){
+			makeExp(buff, ps, "transState", "=", transState, "and");
+		}
+		if(!StringUtil.isBlank(beginDate)){
+			makeExp(buff, ps, "transDate", ">=", beginDate, "and");
+		}
+		if(!StringUtil.isBlank(endDate)){
+			makeExp(buff, ps, "transDate", "<=", endDate, "and");
+		}
+		return LoanTransfer.loanTransferDao.paginate(pageNumber, pageSize, sqlSelect,  
+				sqlFrom+sqlWhere+makeSql4WhereHasWhere(buff)+sqlOrder,ps.toArray());
+	}
+	
+	/**
+	 * 前端 (承接债权列表 使用 )
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param orderParam 
+	 * @param transState 
+	 * @param orderType 
+	 * @return
+	 */
+	public Page<LoanTransfer> queryCanTransfer(Integer pageNumber , Integer pageSize,
+			String minLimit,String maxLimit, String transState, String orderParam, String orderType ){
+		String sqlSelect = "select * ";
+		String sqlFrom = "from t_loan_transfer ";
+		String sqlOrder = "";
+		String sqlWhere = "where loanCode not in (select loanCode from t_loan_overdue where disposeStatus = 'n' group by loanCode) and refundType not in('E','F','H') ";
+		
+		StringBuffer buff = new StringBuffer("");
+		List<Object> ps = new ArrayList<Object>();
+		
+		if("AB".equals(transState)){
+			sqlWhere += "and (transState = 'A' or transState = 'B') ";
+		}else{
+			makeExp(buff, ps, "transState", "=", transState, "and");
+		}
+		
+		if(StringUtil.isBlank(minLimit) == false){
+			makeExp(buff, ps, "loanRecyCount", ">=", minLimit, "and");
+		}
+		if(StringUtil.isBlank(maxLimit) == false){
+			makeExp(buff, ps, "loanRecyCount", "<=", maxLimit, "and");
+		}
+		
+		//排序
+		if((StringUtil.isBlank(orderParam)&&!"B".equals(transState))||"allRate".equals(orderParam)){
+			if("DESC".equals(orderType)){
+				sqlOrder = " order by (rateByYear+rewardRateByYear+transRate) desc ";
+			}else{
+				sqlOrder = " order by (rateByYear+rewardRateByYear+transRate) asc ";
+			}
+		}else if("rate".equals(orderParam)){
+			if("DESC".equals(orderType)){
+				sqlOrder = " order by (rateByYear+rewardRateByYear) desc ";
+			}else{
+				sqlOrder = " order by (rateByYear+rewardRateByYear) asc ";
+			}
+		}else if("B".equals(transState)||"transDateTime".equals(orderParam)){
+			if("DESC".equals(orderType)){
+				sqlOrder = " order by transDate desc,transTime desc ";
+			}else{
+				sqlOrder = " order by transDate asc,transTime asc ";
+			}
+		}else if("transState".equals(orderParam)){
+			sqlOrder = " order by transState asc,transDate desc,transTime desc ";
+		}else{
+			sqlOrder = " order by %s %s";
+			sqlOrder = String.format(sqlOrder, orderParam,orderType);
+		}
+		
+		return LoanTransfer.loanTransferDao.paginate(pageNumber, pageSize, sqlSelect,  
+				sqlFrom+sqlWhere+makeSql4WhereHasWhere(buff)+sqlOrder,ps.toArray());
+	}
+	
+	public Integer queryTransferCount(String transState) {
+		Record record = Db.findFirst(
+				"select count(1) transferCount from t_loan_transfer where transState = ? ", transState);
+		Object object = record.getColumns().get("transferCount");
+		if(null == object){
+			return 0;
+		}
+		return Integer.parseInt(object.toString());
+	}
+	
+	/**
+	 * 根据流水编号  债权状态 查询债权转让
+	 * @param traceCode
+	 * @param transState
+	 * @return
+	 */
+	public List<LoanTransfer> queryLoanTransferByTraceCode(String traceCode,
+			String transState) {
+		
+		String sql = "select * from t_loan_transfer where traceCode = ? and transState = ? order by gotDate,gotTime";
+		
+		return LoanTransfer.loanTransferDao.find(sql, traceCode , transState);
+		
+	}
+   /**
+    *  根据usercode查询债转信息
+    * */
+	public LoanTransfer queryLoanTransferByUser(String traceCode,String transState,String userCode,String beiginDate,String endDate){
+		String sql = "select * from t_loan_transfer where traceCode = ? and transState = ? and gotUserCode=? and gotDate>=? and gotDate<=? order by gotDate desc,gotTime desc limit 0,1";
+		return LoanTransfer.loanTransferDao.findFirst(sql, traceCode , transState,userCode,beiginDate,endDate);
+	}
+	 /**
+	 *  根据userMobile查询债转信息 20170906
+	 * */
+	public LoanTransfer queryLoanTransferByMobile(String traceCode,String transState,String userMobile,String beiginDate,String endDate){
+		String sql = "select * from t_loan_transfer t1 left join t_user t2 on t1.gotUserCode=t2.userCode where t1.traceCode = ? and t1.transState = ? and t1.gotUserCode=? and t1.gotDate>=? and t1.gotDate<=? order by t1.gotDate desc,t1.gotTime desc limit 0,1";
+		return LoanTransfer.loanTransferDao.findFirst(sql, traceCode , transState,userMobile,beiginDate,endDate);
+	}
+	/**
+	* 获取债转记录 ws 20170913
+	* 标号 债转状态 用户编号 
+	* */
+	public List<LoanTransfer> getLoanTransfer8User(String traceCode,String transState,String userCode){
+		String sql = "select * from t_loan_transfer where traceCode = ? and transState = ? and gotUserCode=?  order by gotDate desc,gotTime desc ";
+		return LoanTransfer.loanTransferDao.find(sql, traceCode , transState,userCode);
+	}
+	/**
+	* 获取债转记录 ws 20170913
+	* 标号 债转状态 用户编号 
+	* */
+	public LoanTransfer getLoanTransfer8UserDate(String traceCode,String transState,String userCode,int beginDate,int endDate){
+		String sql = "select * from t_loan_transfer where traceCode = ? and transState = ? and payUserCode=? and gotDate<=? and gotDate>=? order by gotDate desc,gotTime desc ";
+		return LoanTransfer.loanTransferDao.findFirst(sql, traceCode , transState,userCode,endDate,beginDate);
+	}
+	/**
+	 * 按时间查询债权转让（CFCA使用）
+	 * @param effectDate
+	 * @param effectTime
+	 * @return
+	 */
+	public List<LoanTransfer> queryLoanTransferByDate(String effectDate,
+			String effectTime) {
+		String sqlSelect = "select * ";
+		String sqlFrom = "from t_loan_transfer ";
+		String sqlWhere = "where transState = 'B' and CONVERT(CONCAT(gotDate,gotTime),SIGNED) >= ? ";
+		return LoanTransfer.loanTransferDao.find(sqlSelect + sqlFrom + sqlWhere,effectDate+effectTime);
+	}
+
+	public Page<LoanTransfer> findByPage4flt(int pageNumber, int pageSize,
+			String beginDate, String endDate) {
+		String sqlSelect = "select * ";
+		String sqlFrom = " from t_loan_transfer t1 where payUserCode in (SELECT usercode from t_flt_userinfo ) ";
+		
+		StringBuffer buff = new StringBuffer("");
+		List<Object> ps = new ArrayList<Object>();
+		makeExp(buff, ps, "gotDate", ">=" , beginDate , "and");
+		makeExp(buff, ps, "gotDate", "<=" , endDate , "and");
+		return LoanTransfer.loanTransferDao.paginate(pageNumber, pageSize, sqlSelect, sqlFrom+makeSql4WhereHasWhere(buff)+" ORDER BY gotDate,gotTime" , ps.toArray()) ;
+	}
+	
+	/** WJW
+	 * 根据jxTraceCode查询单条债转记录
+	 * @param jxTraceCode
+	 * @return
+	 */
+	public LoanTransfer findByJxTraceCode(String jxTraceCode){
+		String sql = "select * from t_loan_transfer where jxTraceCode=?";
+		List<LoanTransfer> loanTransfers = LoanTransfer.loanTransferDao.find(sql,jxTraceCode);
+		return loanTransfers.size() > 0 ? loanTransfers.get(0) : null;
+		
+	}
+	
+	/**
+	 * 更改jxTraceCode,orderId WJW
+	 * @param jxTraceCode
+	 * @param orderId
+	 * @param transCode
+	 * @return
+	 */
+	public boolean updateJxTraceCodeAndOrderId(String jxTraceCode,String orderId,String transCode){
+		return Db.update("update t_loan_transfer set jxTraceCode=?,orderId=? where transCode=?",jxTraceCode,orderId,transCode) > 0;
+	}
+
+	/**
+	 * 根据authCode查询债权转让记录 WJW
+	 * @param authCode	授权码
+	 * @return
+	 */
+	public LoanTransfer findByAuthCode(String authCode){
+		String sql = "select * from t_loan_transfer where authCode=?";
+		return LoanTransfer.loanTransferDao.findFirst(sql,authCode);
+	}
+
+	/**
+	 * 更改债权转让记录authCode
+	 * @param authCode	债转成功授权码
+	 * @param transCode	债转code
+	 * @return
+	 */
+	public boolean updateAuthCode(String authCode,String transCode){
+		String sql = "update t_loan_transfer set authCode=? where transCode=?";
+		return Db.update(sql,authCode,transCode) > 0;
+	}
+	/**
+	 * 债权转让添加江西存管信息
+	 * */
+	public boolean updateJxInfo(String authCode,String jxTraceCode,String transCode){
+		String sql = "update t_loan_transfer set authCode=? , jxTraceCode=? where transCode=?";
+		return Db.update(sql,authCode,jxTraceCode,transCode) > 0;
+	}
+	/**
+	 * 根据表编号 查询所有债转记录
+	 * */
+	public List<LoanTransfer> queryList4loanCode(String loanCode,String state){
+		return LoanTransfer.loanTransferDao.find("select * from t_loan_transfer where loanCode=? and transState=? ",loanCode,state);
+	}
+	
+	/**
+	 * 查询最新债转成功记录
+	 * */
+	public List<LoanTransfer> queryNewTransfer(int limit){
+		return LoanTransfer.loanTransferDao.find("SELECT * from t_loan_transfer where transState='B' ORDER BY CONCAT(gotdate,gottime) desc LIMIT ?",limit);
+	}
+	
+	/**
+	 * 分页查询逾期债权转让列表
+	 * */
+	public Page<LoanTransfer> queryOverdueLoanTransfer(int pageNumber,int pageSize,String transState,String transStatus,String orderType,String orderParam,String payUserCode,String refundType){
+		String sqlSelect = "select * ";
+		String sqlFrom = "from t_loan_transfer ";
+		String sqlOrder = "";
+//		String sqlWhere = "where loanCode in (select loanCode from t_loan_overdue where disposeStatus = 'n' and disposeDateTime = '' ) ";
+		String sqlWhere = "where refundType in ('E','F','H') ";
+		StringBuffer buff = new StringBuffer("");
+		List<Object> ps = new ArrayList<Object>();
+		if("1".equals(transStatus)){
+			sqlWhere += "and jxTraceCode is null ";
+		}else if("2".equals(transStatus)){
+			sqlWhere += "and jxTraceCode is not null ";
+		}
+		if(!StringUtil.isBlank(refundType)){
+			makeExp(buff, ps, "refundType", "=", refundType, "and");
+		}
+		if("AB".equals(transState)){
+			sqlWhere += "and (transState = 'A' or transState = 'B') ";
+		}else{
+			makeExp(buff, ps, "transState", "=", transState, "and");
+		}
+		if(!StringUtil.isBlank(payUserCode)){
+			makeExp(buff, ps, "payUserCode", "=", payUserCode, "and");
+		}
+		//排序
+		if((StringUtil.isBlank(orderParam)&&!"B".equals(transState))||"allRate".equals(orderParam)){
+			if("DESC".equals(orderType)){
+				sqlOrder = " order by (rateByYear+rewardRateByYear+transRate) desc ";
+			}else{
+				sqlOrder = " order by (rateByYear+rewardRateByYear+transRate) asc ";
+			}
+		}else if("rate".equals(orderParam)){
+			if("DESC".equals(orderType)){
+				sqlOrder = " order by (rateByYear+rewardRateByYear) desc ";
+			}else{
+				sqlOrder = " order by (rateByYear+rewardRateByYear) asc ";
+			}
+		}else if("B".equals(transState)||"transDateTime".equals(orderParam)){
+			if("DESC".equals(orderType)){
+				sqlOrder = " order by transDate desc,transTime desc,uid desc ";
+			}else{
+				sqlOrder = " order by transDate asc,transTime asc,uid asc ";
+			}
+		}else if("transState".equals(orderParam)){
+			sqlOrder = " order by transState asc,transDate desc,transTime desc ";
+		}else{
+			sqlOrder = " order by %s %s";
+			sqlOrder = String.format(sqlOrder, orderParam,orderType);
+		}
+		return LoanTransfer.loanTransferDao.paginate(pageNumber, pageSize, sqlSelect,  
+				sqlFrom+sqlWhere+makeSql4WhereHasWhere(buff)+sqlOrder,ps.toArray());
+	}
+	
+	/**
+	 * 分页查询机构债权转让列表（50%让利）
+	 * */
+	public Page<LoanTransfer> queryTransfer4JG(int pageNumber,int pageSize,String transState,String orderType,String orderParam){
+		String sqlSelect = "select * ";
+		String sqlFrom = "from t_loan_transfer ";
+		String sqlOrder = "";
+//		String sqlWhere = "where loanCode in (select loanCode from t_loan_overdue where disposeStatus = 'n' and disposeDateTime = '' ) ";
+		String sqlWhere = "where refundType = 'H' ";
+		StringBuffer buff = new StringBuffer("");
+		List<Object> ps = new ArrayList<Object>();
+		
+		if("AB".equals(transState)){
+			sqlWhere += "and (transState = 'A' or transState = 'B') ";
+		}else{
+			makeExp(buff, ps, "transState", "=", transState, "and");
+		}
+		//排序
+		if((StringUtil.isBlank(orderParam)&&!"B".equals(transState))||"allRate".equals(orderParam)){
+			if("DESC".equals(orderType)){
+				sqlOrder = " order by (rateByYear+rewardRateByYear+transRate) desc ";
+			}else{
+				sqlOrder = " order by (rateByYear+rewardRateByYear+transRate) asc ";
+			}
+		}else if("rate".equals(orderParam)){
+			if("DESC".equals(orderType)){
+				sqlOrder = " order by (rateByYear+rewardRateByYear) desc ";
+			}else{
+				sqlOrder = " order by (rateByYear+rewardRateByYear) asc ";
+			}
+		}else if("B".equals(transState)||"transDateTime".equals(orderParam)){
+			if("B".equals(transState)){
+				if("DESC".equals(orderType)){
+					sqlOrder = " order by gotDate desc,gotTime desc,uid desc ";
+				}else{
+					sqlOrder = " order by gotDate asc,gotTime asc,uid asc";
+				}
+			}else{
+				if("DESC".equals(orderType)){
+					sqlOrder = " order by transDate desc,transTime desc,uid desc ";
+				}else{
+					sqlOrder = " order by transDate asc,transTime asc,uid asc";
+				}
+			}
+		}else if("transState".equals(orderParam)){
+			sqlOrder = " order by transState asc,transDate desc,transTime desc ";
+		}else{
+			sqlOrder = " order by %s %s";
+			sqlOrder = String.format(sqlOrder, orderParam,orderType);
+		}
+		return LoanTransfer.loanTransferDao.paginate(pageNumber, pageSize, sqlSelect,  
+				sqlFrom+sqlWhere+makeSql4WhereHasWhere(buff)+sqlOrder,ps.toArray());
+	}
+	/**
+	 * 统计兑付金额
+	 * */
+	public long sumTransferDuiAmount(String userCode,String transState,String refundType){
+		return Db.queryBigDecimal("select COALESCE(sum(transFee+transAmount),0) from t_loan_transfer where payUserCode = ? and transState = ? and refundType = ?",userCode,transState,refundType).longValue();
+	};
+	/**
+	 * 按日期 状态查询债权转让笔数   时间范围内 20181031 hw
+	 */
+	public long queryTransferByDate2(String start,String end ,String transState){
+		if(StringUtil.isBlank(transState)){
+			return Db.queryLong("select count(transCode) from t_loan_transfer where (transDate between ? and ?) or (gotDate between ? and ?)",start,end ,start,end);
+		}else{
+			return Db.queryLong("select count(transCode) from t_loan_transfer where transState = ? and  ((transDate between ? and ?) or (gotDate between ? and ?))",transState,start,end,start,end);
+		}
+	}
+	/**
+	 * 查询昨日承接5折债转的编号  20181031 hw
+	 */
+	public long[] numTransferFive(String yesterdayGotDate){
+		String sql = "select count(*) from t_loan_transfer where transState='B' and refundType = 'H' and gotDate <= ? ";//查询截止昨天的编号
+		Long yesterdayNum = Db.queryLong(sql,yesterdayGotDate);//查询截止昨天的编号
+		
+		String sql2 = "select count(*) from t_loan_transfer where transState='B' and refundType = 'H' and gotDate = ?";
+		Long yesNum = Db.queryLong(sql2,yesterdayGotDate);//昨天承接得数量
+		//昨天最大编号H
+		long maxNum = yesterdayNum;
+		//昨天最小的编号
+		long minNum = yesterdayNum - yesNum + 1;
+		
+		if(yesNum == 0){
+			maxNum = 0;
+			minNum = 0;
+		}
+		
+		return new long[]{maxNum,minNum};
+	}
+	
+	/**
+	 * 根据订单号查询债转记录 WJW
+	 * @param orderId
+	 * @return
+	 */
+	public LoanTransfer findByOrderId(String orderId){
+		String sql = "select * from t_loan_transfer where orderId=?";
+		return LoanTransfer.loanTransferDao.findFirst(sql,orderId);
+	}
+	
+	/**
+	 * 根据债转流水状态,承接日期,是否含有jxTraceCode查询不同refundType对应资金总额 WJW
+	 * @param transState	承接状态
+	 * @param gotDate		承接日期
+	 * @param isJxTraceCode	null:不作为查询条件,true:jxTraceCode不为null,false:为null
+	 * @return
+	 */
+	public List<LoanTransfer> queryLoanTransfer(String transState,String gotDate,Boolean isJxTraceCode){
+		String sqlFrom = "select refundType,COALESCE(sum(transAmount),0) sumTransAmount from t_loan_transfer";
+		String sqlWhere = " where transState=?";
+		String sqlGroupby = " group by refundType";
+		if(!StringUtil.isBlank(gotDate)){
+			sqlWhere += "and gotDate='" + gotDate+"'";
+		}
+		if(isJxTraceCode != null){
+			if(isJxTraceCode){
+				sqlWhere += "and jxTraceCode is not null";
+			}else {
+				sqlWhere += "and jxTraceCode is null";
+			}
+		}
+		return LoanTransfer.loanTransferDao.find(sqlFrom + sqlWhere + sqlGroupby,transState);
+	}
+	
+}
+
+
+
+

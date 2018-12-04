@@ -1,0 +1,307 @@
+package com.dutiantech.service;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.dutiantech.CACHED;
+import com.dutiantech.controller.pay.SafeUtil;
+import com.dutiantech.model.BanksV2;
+import com.dutiantech.plugins.HttpRequestor;
+import com.dutiantech.util.StringUtil;
+import com.jfinal.plugin.activerecord.Db;
+
+public class BanksService  extends BaseService {
+
+	String MER_NO = String.valueOf( CACHED.get("S2.paymerno_lianlian") );
+	String NOTIFY_HOST = String.valueOf( CACHED.get("S2.notify_host_lianlian") );
+	
+	/**
+	 * 查询用户绑定银行卡
+	 * @param userCode
+	 * @return
+	 */
+	public List<BanksV2> findBanks4User(String userCode){
+		return BanksV2.bankV2Dao.find("select * from t_banks_v2 where userCode = ? and status = 0 " , userCode);
+	}
+
+	/**
+	 * 查询用户绑定银行卡数量
+	 * @param userCode
+	 * @return
+	 */
+	public Integer countBanks4User(String userCode){
+		return Db.queryLong("select count(1) from t_banks_v2 where userCode = ? and status = 0 " , userCode).intValue();
+	}
+	
+	/**
+	 * 看看银行卡的cardCity是不是空的
+	 * @param userCode
+	 * @return  true 非空   false 空
+	 */
+	public boolean validateCardCity(String userCode){
+		try {
+			String cardCtiy = Db.queryStr("select cardCity from t_banks_v2 where userCode = ?",userCode);
+			if(!StringUtil.isBlank(cardCtiy)){
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return false;
+	}
+	
+	/**
+	 * 检查是否绑定理财卡
+	 * @param userCode
+	 * @return true 已绑定 false未绑定
+	 */
+	public boolean validateBanks(String userCode){
+		long sb  = Db.queryLong("select COALESCE(count(userCode),0) from t_banks_v2 where userCode = ?",userCode);
+		if(sb>0){
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 更新用户理财卡的cardCity
+	 * @param userCode
+	 * @param cardCity
+	 * @return
+	 */
+	public boolean updateCardCity(String userCode,String cardCity){
+		BanksV2 banks = BanksV2.bankV2Dao.findById(userCode);
+		banks.set("cardCity", cardCity);
+		return banks.update();
+	}
+	
+	/**
+	 * 更新用户理财卡卡号
+	 * @param userCode
+	 * @param bankNo
+	 * @param bankName
+	 * @param bankType
+	 * @return
+	 */
+	public boolean updateBankNo(String userCode,String bankNo,String bankName,String bankType){
+		BanksV2 banks = new BanksV2();
+		banks.set("userCode", userCode);
+		banks.set("bankNo", bankNo);
+		banks.set("bankType", bankName);
+		banks.set("bankName", bankType);
+		return banks.update();
+	}
+	
+	/**
+	 * 是否绑过该卡
+	 * @param userCode
+	 * @param bankNo 
+	 * @return true 已被绑  false 未被绑定
+	 */
+	public boolean isAuthCard(String userCode,String bankNo){
+		try {
+			Map<String , String > requestInfo = new TreeMap<String , String>();
+			requestInfo.put("oid_partner", MER_NO );
+			requestInfo.put("sign_type", "RSA");
+			requestInfo.put("user_id", userCode);
+//			requestInfo.put("platform", "yrhx.com");
+			requestInfo.put("pay_type", "D");
+//			requestInfo.put("no_agree", agreeCode);
+			requestInfo.put("card_no", bankNo);
+			requestInfo.put("offset", "0");
+			sign4lianlianWithRSA( requestInfo ) ;
+			HttpRequestor http = new HttpRequestor() ;
+			String responseBody = http.doPost("https://queryapi.lianlianpay.com/bankcardbindlist.htm", JSONObject.toJSONString(requestInfo) ) ;
+			@SuppressWarnings("unchecked")
+			Map<String , String > responseData = JSONObject.parseObject(responseBody , TreeMap.class ) ;
+			String resultCode = responseData.get("ret_code");
+			if( "8901".equals(resultCode) || "3007".equals(resultCode) ){
+				return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return true;
+		}
+		return true;
+	}
+	
+	public int unbindBank4LianLian(String userCode){
+		int successCount = 0;
+		try {
+			Map<String , String > requestInfo = new TreeMap<String , String>();
+			requestInfo.put("oid_partner", "201505261000341507" );
+			requestInfo.put("sign_type", "RSA");
+			requestInfo.put("user_id", userCode);
+			requestInfo.put("offset", "0");
+			requestInfo.put("pay_type", "D");
+			sign4lianlianWithRSA( requestInfo );
+			HttpRequestor http = new HttpRequestor() ;
+			String responseBody = http.doPost("https://queryapi.lianlianpay.com/bankcardbindlist.htm", JSONObject.toJSONString(requestInfo) ) ;
+			@SuppressWarnings("unchecked")
+			Map<String , Object > responseData = JSONObject.parseObject(responseBody , TreeMap.class ) ;
+			String resultCode = (String) responseData.get("ret_code");
+			if( "0000".equals(resultCode) == true ){
+				JSONArray zz = (JSONArray) responseData.get("agreement_list");
+				for (int i = 0; i < zz.size(); i++) {
+					JSONObject xx = (JSONObject) zz.get(i);
+					Map<String , String > requestInfo1 = new TreeMap<String , String>();
+					requestInfo1.put("oid_partner", "201505261000341507" );
+					requestInfo1.put("sign_type", "RSA");
+					requestInfo1.put("user_id", userCode);
+					requestInfo1.put("offset", "0");
+					requestInfo1.put("no_agree",xx.getString("no_agree"));
+					requestInfo1.put("pay_type", "D");
+					sign4lianlianWithRSA( requestInfo1 );
+					String responseBody1 = http.doPost("https://traderapi.lianlianpay.com/bankcardunbind.htm", JSONObject.toJSONString(requestInfo1) ) ;
+					@SuppressWarnings("unchecked")
+					Map<String , Object > responseData1 = JSONObject.parseObject(responseBody1 , TreeMap.class ) ;
+					String resultCode1 = (String) responseData1.get("ret_code");
+					if(resultCode1.equals("0000")){
+						successCount++;
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(successCount>0){
+			Db.update("delete  from t_banks_v2 where userCode = ?",userCode);
+		}
+		return successCount;
+	}
+	
+	
+	/**
+	 * 查询卡号
+	 * @param cardNo
+	 * @return
+	 */
+	public Map<String , String > queryBankInfoByBin(String cardNo){
+		
+		Map<String , String > requestInfo = new TreeMap<String , String>();
+		requestInfo.put("oid_partner", MER_NO );
+		requestInfo.put("sign_type", "RSA");
+		requestInfo.put("card_no", cardNo);
+//		requestInfo.put("oid_partner", "");
+		sign4lianlianWithRSA( requestInfo ) ;
+		
+		HttpRequestor http = new HttpRequestor() ;
+		try {
+			String responseBody = http.doPost("https://queryapi.lianlianpay.com/bankcardbin.htm", JSONObject.toJSONString(requestInfo) ) ;
+			@SuppressWarnings("unchecked")
+			Map<String , String > responseData = JSONObject.parseObject(responseBody , TreeMap.class ) ;
+			
+			String resultCode = responseData.get("ret_code");
+			if( "0000".equals(resultCode) == false ){
+				//return error("04", "查询异常," + responseData.get("ret_msg"), null );
+				return null;
+			}
+			
+			if( checkSign4lianlianWithRSA( responseData ) == false ){
+				//签名验证失败
+//				renderText("00");
+				//return error("04", "请求远程接口失败" , null ) ;
+				return null;
+			}
+
+			responseData.remove("ret_code");
+			responseData.remove("ret_msg");
+			responseData.remove("sign_type");
+			responseData.remove("sign");
+			return responseData;
+			//return succ("ok", responseData ) ;
+			
+		} catch (Exception e) {
+			//return error("03", "请求异常," + e.getMessage(), null ) ;
+			return null;
+		}
+		
+		
+	}
+	
+	
+	
+	public boolean checkSign4lianlianWithRSA( Map<String, String> response ){
+		String pubKey = String.valueOf( CACHED.get("S2.rsa_pubkey_lianlian"));
+		String signValue = response.get("sign") ;
+		response.remove("sign") ;
+		
+		Iterator<String> keys = response.keySet().iterator() ;
+		StringBuffer buff = new StringBuffer() ;
+		while(keys.hasNext() ) {
+			String key = keys.next() ;
+			String value = response.get(key) ;
+			if( StringUtil.isBlank(value) == false ){
+				if(buff.length() > 0 ){
+					buff.append("&");
+				}
+				buff.append(key + "=" + value );
+			}else{
+				//remove 
+				//params.remove(key) ;
+			}
+		}
+		
+		return SafeUtil.checksign(pubKey, buff.toString(), signValue) ;
+	}
+	
+	public void sign4lianlianWithRSA(Map<String, String> params){
+		Iterator<String> keys = params.keySet().iterator() ;
+		StringBuffer buff = new StringBuffer() ;
+		while(keys.hasNext() ) {
+			String key = keys.next() ;
+			String value = params.get(key) ;
+			if( StringUtil.isBlank(value) == false ){
+				if(buff.length() > 0 ){
+					buff.append("&");
+				}
+				buff.append(key + "=" + value );
+			}else{
+				//remove 
+				//params.remove(key) ;
+			}
+		}
+		String tmpString = buff.toString() ;
+		String priKey = String.valueOf( CACHED.get("S2.rsa_prikey_lianlian"));
+		String signValue = SafeUtil.sign( priKey , tmpString ) ;
+		if( signValue != null ){
+			params.put("sign", signValue ) ;
+		}
+	}
+
+	/**
+	 * 根据银行卡号查询银行卡信息
+	 * @param bankNo	银行卡号
+	 * @return
+	 */
+	public BanksV2 findByBankNo(String bankNo) {
+		return BanksV2.bankV2Dao.findFirst("SELECT * FROM t_banks_v2 WHERE bankNo = ?", bankNo);
+	}
+	
+	/**
+	 * 查询用户理财卡信息
+	 * @param userCode
+	 * @return
+	 */
+	public BanksV2 findByUserCode(String userCode){
+		return BanksV2.bankV2Dao.findById(userCode);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

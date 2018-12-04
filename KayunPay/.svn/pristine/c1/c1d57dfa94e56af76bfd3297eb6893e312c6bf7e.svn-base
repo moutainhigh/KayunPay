@@ -1,0 +1,20 @@
+package com.dutiantech.config.routes;
+
+import com.dutiantech.controller.FuiouController;
+import com.dutiantech.controller.PublicController;
+import com.dutiantech.controller.pay.LianLianPayController;
+import com.dutiantech.controller.pay.SYXPayController;
+import com.jfinal.config.Routes;
+
+public class PublicRoutes extends Routes{
+
+	@Override
+	public void config() {
+		add("pub_controal" , PublicController.class );
+		add("pay4lianlian" , LianLianPayController.class );
+		add("pay4syx" , SYXPayController.class );
+		add("fuiouController", FuiouController.class);
+	}
+
+	
+}

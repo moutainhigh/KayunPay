@@ -1,0 +1,206 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+	<div class="am-g">
+		<!-- 标准功能按钮 Start  -->
+		<div class="am-u-sm-12 am-u-md-4">
+			<div class="am-btn-toolbar">
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default add-btn">
+						<span class="am-icon-archive "> 新增</span>
+					</button>
+				</div>
+			</div>
+		</div>
+		<!-- 标准功能按钮  End -->
+		<!-- 条件区 Start -->
+		<div class="am-u-sm-12 am-u-md-3">
+		
+		<form class="am-form-inline ext-form" role="form" data-am-validator>
+			<div class="am-form-group">
+				<select data-am-selected="{btnSize: 'sm'}" name="userState" id="userStateSel">
+				</select>
+			</div>
+		</form>
+		</div>
+		<div class="am-u-sm-12 am-u-md-3">
+			<div class="am-input-group am-input-group-sm">
+				<input type="text" class="am-form-field dimSearch"><span
+					class="am-input-group-btn">
+					<button class="am-btn am-btn-default query-btn" type="button">搜索</button>
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- 条件区  End -->
+	<!-- Table -->
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 15 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+						<li id="not"><input type="text" id="goValue" onkeypress="return IsNum(event)" value="1" class="am-form-field" style="width:50px;"/></li>
+						<li id="go"><input type="button" value="GO" onclick="$('#go').attr('index',$('#goValue').val())" class="am-btn am-btn-default query-btn"/></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script>
+		var maxQueryNum = 10 ;
+		var queryUrl = "/queryContractsByPage";
+		var size=0;//总页数
+		
+		//查询实现
+		function queryData( pNum , pSize ){
+			//对页码参数验证
+			if(isNaN(pNum)){
+				alert("GO栏请输入数字！");
+				return;
+			}
+			if(size<1){
+				size=1;
+			}
+			if(pNum > size && size != 0){
+				pNum=size;
+				$("#goValue").val(pNum);
+			}
+			YRHX.ajax({
+				url : queryUrl,
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize ||maxQueryNum,
+					dimSearch:$(".dimSearch").val()
+				},
+				success : function(sucData){
+					size=Math.ceil(sucData["totalRow"]/maxQueryNum);//总页数
+					makeTable(sucData.list , {
+						index : sucData["pageNumber"] , 
+						max : sucData["pageSize"] ,
+						size : sucData["totalRow"]
+					});
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+			
+		}
+		
+		$(".query-btn").click(function(){
+			queryData(1);
+			$("#goValue").val(1);//设置GO栏默认页码为1
+		});
+		
+		$("div.pad-div").find("ul.am-pagination").find("li").not("#not").click(function(){
+			var that = $(this);
+			if( that.hasClass("am-disabled") == false ){
+				var pageNum = that.attr("index");
+				$("#goValue").val(pageNum);//更改GO栏页码
+				queryData(pageNum , maxQueryNum );
+			}
+		});
+		
+		//初始化信息列表
+		function makeTable( tableData ,pageData){
+			$(".am-g").table({
+						dataFormat : function(rowObj) {
+							rowObj["updateDateTime"]=rowObj["updateDateTime"].dateformat();
+							return rowObj;
+						},
+						max : 10,
+						pag : pageData,
+						header : [
+								{
+									name : "",type : "checkbox",key : "contractCode"
+								},
+								{
+									name : "",text : "序号",html : "#{uid}"
+								},
+								{
+									name : "",text : "合同标题",html : "#{title}"
+								},
+								{
+									name : "",text : "操作员",html : "#{opCode}"
+								},
+								{
+									name : "",text : "最后更新日期",html : "#{updateDateTime}"
+								},
+								{
+									name : "",text : "操作",
+									html : $.makeButtons([
+                                          	{"text":"预览","url":"preAndDownContractsPDF?key=#{contractCode}","target":"_blank","ico":"am-icon-pencil-square-o"},
+                                          	{"text":"下载","url":"preAndDownContractsPDF?key=#{contractCode}&type=1","ico":"am-icon-pencil-square-o"},
+                                           	//{"text":"删除","url":"javascript:delContract('#{contractCode}',"+pageData.index+");","ico":"am-icon-pencil-square-o"}
+                                          	])
+								}],
+						data : tableData
+					});
+			}
+			
+		//删除合同信息
+		/* function delContract(contractCode,pageNumber){
+			YRHX.ajax({
+				url:"/delContractsById",
+				data:{
+					contractCode:contractCode
+				},
+				success:function(sucData){
+					//YRHX.alert1()   此处跳出弹窗，不刷新页面，可添加回调函数
+					YRHX.alert1("删除成功！",queryData(pageNumber));
+				},
+				error:function(data){
+					
+				}
+			});
+		} */
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		queryData(1);
+		//进入添加页面
+		$(".add-btn").click(function(){
+			window.location.href = "pageContractsFrom?opType=add";
+		});
+		
+		
+	</script>
+</body>
+</html>

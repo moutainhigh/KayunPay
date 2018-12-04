@@ -1,0 +1,1340 @@
+package com.dutiantech.controller.app;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.dutiantech.CACHED;
+import com.dutiantech.Message;
+import com.dutiantech.anno.AuthNum;
+import com.dutiantech.anno.ResponseCached;
+import com.dutiantech.controller.BaseController;
+import com.dutiantech.interceptor.AppInterceptor;
+import com.dutiantech.interceptor.PkMsgInterceptor;
+import com.dutiantech.model.AutoLoan_v2;
+import com.dutiantech.model.BizLog.BIZ_TYPE;
+import com.dutiantech.model.Funds;
+import com.dutiantech.model.LoanApply;
+import com.dutiantech.model.LoanInfo;
+import com.dutiantech.model.LoanTrace;
+import com.dutiantech.model.SMSLog;
+import com.dutiantech.model.Tickets;
+import com.dutiantech.model.User;
+import com.dutiantech.service.AutoLoanService;
+import com.dutiantech.service.AutoMapSerivce;
+import com.dutiantech.service.FuiouTraceService;
+import com.dutiantech.service.FundsServiceV2;
+import com.dutiantech.service.FundsTraceService;
+import com.dutiantech.service.LoanApplyService;
+import com.dutiantech.service.LoanInfoService;
+import com.dutiantech.service.LoanTraceService;
+import com.dutiantech.service.SMSLogService;
+import com.dutiantech.service.TicketsService;
+import com.dutiantech.service.UserService;
+import com.dutiantech.util.CommonUtil;
+import com.dutiantech.util.DateUtil;
+import com.dutiantech.util.Number;
+import com.dutiantech.util.StringUtil;
+import com.fuiou.data.CommonRspData;
+import com.fuiou.data.QueryBalanceResultData;
+import com.jfinal.aop.Before;
+import com.jfinal.core.ActionKey;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+
+public class AppLoanInfoController extends BaseController {
+	
+	private LoanInfoService loanInfoService = getService(LoanInfoService.class);
+	private LoanApplyService loanApplyService = getService(LoanApplyService.class);
+	private TicketsService ticketService = getService(TicketsService.class);
+	private LoanTraceService loanTraceService = getService(LoanTraceService.class);
+	private FuiouTraceService fuiouTraceService=getService(FuiouTraceService.class);
+	private FundsServiceV2 fundsServiceV2 = getService(FundsServiceV2.class);
+	private FundsTraceService fundsTraceService = getService(FundsTraceService.class ) ;
+	private SMSLogService smsLogService = getService(SMSLogService.class);
+	private UserService userService = getService(UserService.class);
+	private AutoLoanService autoLoanService = getService(AutoLoanService.class);
+	private AutoMapSerivce autoMapService = getService(AutoMapSerivce.class);
+
+	/**
+	 * 查询标书投资项目列表
+	 * 
+	 * @param pageNumber
+	 * @param pageSize
+	 */
+	@ActionKey("/appQueryFinancialBid")
+	@AuthNum(value = 999)
+	@Before({ PkMsgInterceptor.class })
+	@ResponseCached(cachedKey = "t_queryFinancialBid", cachedKeyParm = "pageNumber|pageSize|type|minLimit|maxLimit|productType", mode = "remote", time = 2)
+	public void appQueryFinancialBid() {
+		Message msg = null;
+		int pageNumber = getPageNumber();
+		int pageSize = getPageSize();
+		String type = "";
+		String minLimit = "1";
+		String maxLimit = "24";
+		String productType = "";
+		String loanState = "J,M,N,O,P,Q,R";
+
+		DecimalFormat df = new DecimalFormat("0.00");
+		Map<String, Object> map = new HashMap<String, Object>();
+		Page<LoanInfo> loanInfos = loanInfoService.findByPortal(pageNumber,
+				pageSize, loanState, type, productType, minLimit, maxLimit);
+		//
+		List<LoanInfo> list = loanInfos.getList();
+		for (int i = 0; i < list.size(); i++) {
+			LoanInfo loanInfo = list.get(i);
+			int bfb = (int) (100 * (loanInfo.getLong("loanAmount") - loanInfo
+					.getLong("loanBalance")) / loanInfo.getLong("loanAmount"));
+			String percent = df.format(bfb / 100.00);
+			loanInfo.put("percent", percent);
+			String reward = String.valueOf(loanInfo.getInt("rewardRateByYear")/100.0);
+			loanInfo.put("reward", reward);
+		}
+		//
+		map.put("loanInfos", loanInfos);
+		map.put("serverTime", DateUtil.getNowDateTime());
+		msg = succ("获取成功", map);
+		renderJson(msg);
+	}
+	
+	/**
+	 * 查询详细的标书信息页面
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@ActionKey("/appQueryBidDetail")
+	@Before({ PkMsgInterceptor.class })
+	@ResponseCached(cachedKey = "appQueryBidDetail", cachedKeyParm = "loanCode", mode = "remote", time = 2)
+	public void appQueryBidDetail() throws Exception {
+		Message msg = null;
+		String loanCode = getPara("loanCode");
+		if (StringUtil.isBlank(loanCode)) {
+			msg = error("01", "参数错误", "");
+			renderJson(msg);
+		}
+
+		LoanInfo loanInfo = loanInfoService.findById(loanCode);
+		Map<String, Object> tmp = new HashMap<String, Object>();
+		tmp.put("rateByYear", loanInfo.getInt("rateByYear"));
+		if (loanInfo.getInt("benefits4new") == 0) {
+			tmp.put("rewardRateByYear", loanInfo.getInt("rewardRateByYear"));
+			tmp.put("newRewardRateByYear", String.valueOf(loanInfo.getInt("rewardRateByYear")/100.0));
+		} else {
+			tmp.put("benefits4new", loanInfo.getInt("benefits4new"));
+			tmp.put("newBenefits4new", loanInfo.getInt("benefits4new")/100.0);
+		}
+		tmp.put("loanBalance", loanInfo.getLong("loanBalance"));
+		tmp.put("loanTimeLimit", loanInfo.getInt("loanTimeLimit"));
+		String tmpRefundType = loanInfo.getStr("refundType");
+		if ("A".equals(tmpRefundType)) {
+			tmpRefundType = "等额本息";
+		} else if ("B".equals(tmpRefundType)) {
+			tmpRefundType = "先息后本";
+		}
+		tmp.put("refundType", tmpRefundType);
+		tmp.put("loanAmount", loanInfo.getLong("loanAmount"));
+		tmp.put("releaseDate", loanInfo.getStr("releaseDate"));
+		tmp.put("releaseTime", loanInfo.getStr("releaseTime"));
+		String endDateTime = DateUtil
+				.subDay(loanInfo.getStr("releaseDate"), -3)
+				+ loanInfo.getStr("releaseTime");
+		tmp.put("endDateTime", endDateTime);
+		String tmpLastPayLoanDateTime = loanInfo.getStr("lastPayLoanDateTime");
+		String lastPayLoanDateTime = "";
+		if ("00000000000000".equals(tmpLastPayLoanDateTime)) {
+			lastPayLoanDateTime = "";
+		} else {
+			lastPayLoanDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+					.format(new SimpleDateFormat("yyyyMMddHHmmss")
+							.parse(tmpLastPayLoanDateTime));
+		}
+		tmp.put("lastPayLoanDateTime", lastPayLoanDateTime);
+		String loanNo = loanInfo.getStr("loanNo");
+		String productType = loanInfo.getStr("productType");
+		if ("A".equals(productType)) {
+			productType = "质押宝";
+		} else if ("B".equals(productType)) {
+			productType = "车稳盈";
+		} else if ("C".equals(productType)) {
+			productType = "房稳赚";
+		} else if ("D".equals(productType)) {
+			productType = "其它";
+		} else if ("G".equals(productType)) {
+			productType = "稳定投";
+		}
+		String loanTitle = productType + loanNo;
+		tmp.put("loanTitle", loanTitle);
+		tmp.put("loanNO", loanNo);
+		
+		tmp.put("loanBrief", "");
+		int tmpLoanNo = Integer.parseInt(loanNo);
+		LoanApply loanApply = loanApplyService.findById(tmpLoanNo);
+		String loanDesc = loanApply.getStr("loanDesc");
+		JSONArray array = JSONArray.parseArray(loanDesc);
+		for (int i = 0; i < array.size(); i++) {
+			JSONObject json = array.getJSONObject(i);
+			String title = json.getString("title");
+			String content = json.getString("content");
+			if (title.indexOf("借款人") != -1) {
+				tmp.put("loanBrief", content.replaceAll("\n", ""));
+				break;
+			}
+		}
+
+		tmp.put("loanCode", loanInfo.getStr("loanCode"));
+		tmp.put("serverTime", DateUtil.getNowDateTime());
+		int bfb = (int) (100 * (loanInfo.getLong("loanAmount") - loanInfo
+				.getLong("loanBalance")) / loanInfo.getLong("loanAmount"));
+		tmp.put("bfb", bfb);
+
+		msg = succ("获取成功", tmp);
+		renderJson(msg);
+	}
+	
+	/**
+	 * 标书详情页面_项目描述
+	 * @return
+	 */
+	@ActionKey("/appQueryLoanDesc")
+	@AuthNum(value = 999)
+	@Before({ PkMsgInterceptor.class })
+	public void appQueryLoanDesc() {
+		Message msg=null;
+		String loanCode = getPara("loanCode");
+		if (StringUtil.isBlank(loanCode)) {
+			msg= error("01", "参数错误", "");
+			renderJson(msg);
+		}
+		
+		Map<String, Object> tmp = new HashMap<String, Object>();
+		LoanInfo loanInfo = loanInfoService.findById(loanCode);
+		int loanNo = Integer.parseInt(loanInfo.getStr("loanNo"));
+		LoanApply loanApply = loanApplyService.findById(loanNo);
+		String loanDesc = loanApply.getStr("loanDesc");
+		JSONArray array = JSONArray.parseArray(loanDesc);
+		for (int i = 0; i < array.size(); i++) {
+			JSONObject json = array.getJSONObject(i);
+			String title = json.getString("title");
+			String content = json.getString("content");
+			if (title.indexOf("借款人") != -1) {
+				tmp.put("loanBrief", content.replaceAll("\n", ""));
+			} else if (title.indexOf("借款用途") != -1) {
+				tmp.put("loanUseWay", content);
+			} else if (title.indexOf("车辆") != -1) {
+				String clxx = content.replaceAll("<br>", "");
+				tmp.put("clxx", clxx.replaceAll("\n", ""));
+			} else if (title.indexOf("外勤") != -1) {
+				tmp.put("wqkc", content);
+			} else if (title.indexOf("风控") != -1) {
+				tmp.put("fksh", content);
+			}
+		}
+
+		msg = succ("获取成功", tmp);
+		renderJson(msg);
+	}
+	
+	/**
+	 * 标书详情页面_借款人信息
+	 * @return
+	 * @throws SecurityException 
+	 * @throws NoSuchFieldException 
+	 */
+	@SuppressWarnings("unchecked")
+	@ActionKey("/appQueryLoanUser")
+	@AuthNum(value = 999)
+	@Before({ PkMsgInterceptor.class })
+	public void appQueryLoanUser() throws NoSuchFieldException, SecurityException {
+		Message msg=null;
+		String loanCode = getPara("loanCode");
+		if (StringUtil.isBlank(loanCode)) {
+			msg= error("01", "参数错误", "");
+			renderJson(msg);
+		}
+
+		LoanInfo loanInfo = loanInfoService.findById(loanCode);
+		Map<String, Object> tmp = new HashMap<String, Object>();
+		String loanUserInfo = loanApplyService.findLoanUserDetail(loanInfo
+				.getStr("loanNo"));
+		if (StringUtil.isBlank(loanUserInfo) == false) {
+			JSONObject xx = JSONObject.parseObject(loanUserInfo);
+			if (null != xx) {
+				tmp.put("loanUserName", xx.get("loanUserName"));
+
+				if ("0".equals(xx.get("hasMarital"))) {
+					tmp.put("hasMarital", "未婚");
+				}
+				if ("1".equals(xx.get("hasMarital"))) {
+					tmp.put("hasMarital", "已婚");
+				}
+
+				tmp.put("userCSHY", xx.get("userCSHY"));
+
+				tmp.put("userZW", xx.get("userZW"));
+
+				if ("0".equals(xx.get("hasHouse"))) {
+					tmp.put("hasHouse", "无");
+				}
+				if ("1".equals(xx.get("hasHouse"))) {
+					tmp.put("hasHouse", "有");
+				}
+
+				if ("0".equals(xx.get("hasCar"))) {
+					tmp.put("hasCar", "无");
+				}
+				if ("1".equals(xx.get("hasCar"))) {
+					tmp.put("hasCar", "有");
+				}
+
+				if ("0".equals(xx.get("hasMortgage"))) {
+					tmp.put("hasHouseLoan", "无");
+				}
+				if ("1".equals(xx.get("hasMortgage"))) {
+					tmp.put("hasHouseLoan", "有");
+				}
+
+				if ("0".equals(xx.get("hasCarLoan"))) {
+					tmp.put("hasCarLoan", "无");
+				}
+				if ("1".equals(xx.get("hasCarLoan"))) {
+					tmp.put("hasCarLoan", "有");
+				}
+
+				tmp.put("loanAddress", xx.get("loanAddress"));
+			}
+		}
+		String loan_pic = loanInfo.getStr("loan_pic");
+		JSONArray array = JSONArray.parseArray(loan_pic);
+		for (int i = 0; i < array.size(); i++) {
+			JSONObject json = array.getJSONObject(i);
+			String url = "http://image1.yrhx.com/" + json.getString("code") + "/loan";
+			json.put("url", url);
+			json.remove("code");
+		}
+		List<Object> objects = (List<Object>) JSONArray.toJSON(array);
+		tmp.put("loan_pic", objects);
+
+		msg = succ("获取成功", tmp);
+		renderJson(msg);
+	}
+	
+	/**
+	 * 标书详情页面_投标流水记录
+	 * 
+	 * @return
+	 * @throws ParseException
+	 */
+	@ActionKey("/appQueryLoanTrace")
+	@AuthNum(value = 999)
+	@Before({ PkMsgInterceptor.class })
+	public void appQueryLoanTrace() throws ParseException {
+		Message msg = null;
+		String loanCode = getPara("loanCode");
+		if (StringUtil.isBlank(loanCode)) {
+			msg = error("01", "参数错误", "");
+			renderJson(msg);
+		}
+
+		List<LoanTrace> listLoanTrace = LoanTrace.loanTraceDao
+				.find("select payUserName,loanDateTime,payAmount,loanType,rankValue from t_loan_trace where loanCode = ? order by loanDateTime asc",
+						loanCode);
+		for (int i = 0; i < listLoanTrace.size(); i++) {
+			LoanTrace tmp = listLoanTrace.get(i);
+			String tmpLoanType = tmp.getStr("loanType");
+			if ("M".equals(tmpLoanType)) {
+				tmpLoanType = "手动[网页端]";
+			} else if ("N".equals(tmpLoanType)) {
+				tmpLoanType = "手动[移动端]";
+			} else if ("A".equals(tmpLoanType)) {
+				tmpLoanType = "自动" + "[" + tmp.getLong("rankValue") + "]";
+			}
+			listLoanTrace.get(i).put("loanType", tmpLoanType);
+			String tmpLoanDateTime = tmp.getStr("loanDateTime");
+			String loanDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+					.format(new SimpleDateFormat("yyyyMMddHHmmss")
+							.parse(tmpLoanDateTime));
+			tmp.put("loanDateTime", loanDateTime);
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("traces", listLoanTrace);
+		msg = succ("获取成功", map);
+		renderJson(msg);
+	}
+	
+	/**
+	 * 标详细信息统一接口(Apple)
+	 * 
+	 * @throws ParseException
+	 */
+	@ActionKey("/appQueryLoanInfo4Apple")
+	@AuthNum(value = 999)
+	@Before({ PkMsgInterceptor.class })
+	@SuppressWarnings("unchecked")
+	public void appQueryLoanInfo4Apple() throws ParseException {
+		Message msg = null;
+		String loanCode = getPara("loanCode");
+		if (StringUtil.isBlank(loanCode)) {
+			msg = error("01", "参数错误", "");
+			renderJson(msg);
+		}
+
+		LoanInfo loanInfo = loanInfoService.findById(loanCode);
+		Map<String, Object> tmp = new HashMap<String, Object>();
+
+		// 项目详情
+		tmp.put("rateByYear", loanInfo.getInt("rateByYear"));
+		if (loanInfo.getInt("benefits4new") == 0) {
+			tmp.put("rewardRateByYear", loanInfo.getInt("rewardRateByYear"));
+			tmp.put("newRewardRateByYear", String.valueOf(loanInfo.getInt("rewardRateByYear")/100.0));
+		} else {
+			tmp.put("benefits4new", loanInfo.getInt("benefits4new"));
+			tmp.put("newBenefits4new", String.valueOf(loanInfo.getInt("benefits4new")/100.0));
+		}
+		tmp.put("loanBalance", loanInfo.getLong("loanBalance"));
+		tmp.put("loanTimeLimit", loanInfo.getInt("loanTimeLimit"));
+		String tmpRefundType = loanInfo.getStr("refundType");
+		if ("A".equals(tmpRefundType)) {
+			tmpRefundType = "等额本息";
+		} else if ("B".equals(tmpRefundType)) {
+			tmpRefundType = "先息后本";
+		}
+		tmp.put("refundType", tmpRefundType);
+		tmp.put("loanAmount", loanInfo.getLong("loanAmount"));
+		tmp.put("releaseDate", loanInfo.getStr("releaseDate"));
+		tmp.put("releaseTime", loanInfo.getStr("releaseTime"));
+		String endDateTime = DateUtil
+				.subDay(loanInfo.getStr("releaseDate"), -3)
+				+ loanInfo.getStr("releaseTime");
+		tmp.put("endDateTime", endDateTime);
+		String tmpLastPayLoanDateTime = loanInfo.getStr("lastPayLoanDateTime");
+		String lastPayLoanDateTime = "";
+		if ("00000000000000".equals(tmpLastPayLoanDateTime)) {
+			lastPayLoanDateTime = "";
+		} else {
+			lastPayLoanDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+					.format(new SimpleDateFormat("yyyyMMddHHmmss")
+							.parse(tmpLastPayLoanDateTime));
+		}
+		tmp.put("lastPayLoanDateTime", lastPayLoanDateTime);
+		String loanNo = loanInfo.getStr("loanNo");
+		String productType = loanInfo.getStr("productType");
+		if ("A".equals(productType)) {
+			productType = "质押宝";
+		} else if ("B".equals(productType)) {
+			productType = "车稳盈";
+		} else if ("C".equals(productType)) {
+			productType = "房稳赚";
+		} else if ("D".equals(productType)) {
+			productType = "其它";
+		} else if ("G".equals(productType)) {
+			productType = "稳定投";
+		}
+		String loanTitle4Apple = productType + loanNo;
+		tmp.put("loanTitle4Apple", loanTitle4Apple);
+		tmp.put("loanNO", loanNo);
+
+		tmp.put("loanCode", loanInfo.getStr("loanCode"));
+		tmp.put("serverTime", DateUtil.getNowDateTime());
+		int bfb = (int) (100 * (loanInfo.getLong("loanAmount") - loanInfo
+				.getLong("loanBalance")) / loanInfo.getLong("loanAmount"));
+		tmp.put("bfb", bfb);
+
+		// 项目描述
+		int tmpLoanNo = Integer.parseInt(loanInfo.getStr("loanNo"));
+		LoanApply loanApply = loanApplyService.findById(tmpLoanNo);
+		String loanDesc = loanApply.getStr("loanDesc");
+		JSONArray array = JSONArray.parseArray(loanDesc);
+		for (int i = 0; i < array.size(); i++) {
+			JSONObject json = array.getJSONObject(i);
+			String title = json.getString("title");
+			String content = json.getString("content");
+			if (title.indexOf("借款人") != -1) {
+				tmp.put("loanBrief", content.replaceAll("\n", ""));
+			} else if (title.indexOf("借款用途") != -1) {
+				tmp.put("loanUseWay", content);
+			} else if (title.indexOf("车辆") != -1) {
+				String clxx = content.replaceAll("<br>", "");
+				tmp.put("clxx", clxx.replaceAll("\n", ""));
+			} else if (title.indexOf("外勤") != -1) {
+				tmp.put("wqkc", content);
+			} else if (title.indexOf("风控") != -1) {
+				tmp.put("fksh", content);
+			}
+		}
+
+		// 借款人资料
+		String loanUserInfo = loanApplyService.findLoanUserDetail(loanInfo
+				.getStr("loanNo"));
+		if (StringUtil.isBlank(loanUserInfo) == false) {
+			JSONObject xx = JSONObject.parseObject(loanUserInfo);
+			if (null != xx) {
+				tmp.put("loanUserName", xx.get("loanUserName"));
+
+				if ("0".equals(xx.get("hasMarital"))) {
+					tmp.put("hasMarital", "未婚");
+				}
+				if ("1".equals(xx.get("hasMarital"))) {
+					tmp.put("hasMarital", "已婚");
+				}
+
+				tmp.put("userCSHY", xx.get("userCSHY"));
+
+				tmp.put("userZW", xx.get("userZW"));
+
+				if ("0".equals(xx.get("hasHouse"))) {
+					tmp.put("hasHouse", "无");
+				}
+				if ("1".equals(xx.get("hasHouse"))) {
+					tmp.put("hasHouse", "有");
+				}
+
+				if ("0".equals(xx.get("hasCar"))) {
+					tmp.put("hasCar", "无");
+				}
+				if ("1".equals(xx.get("hasCar"))) {
+					tmp.put("hasCar", "有");
+				}
+
+				if ("0".equals(xx.get("hasMortgage"))) {
+					tmp.put("hasHouseLoan", "无");
+				}
+				if ("1".equals(xx.get("hasMortgage"))) {
+					tmp.put("hasHouseLoan", "有");
+				}
+
+				if ("0".equals(xx.get("hasCarLoan"))) {
+					tmp.put("hasCarLoan", "无");
+				}
+				if ("1".equals(xx.get("hasCarLoan"))) {
+					tmp.put("hasCarLoan", "有");
+				}
+
+				tmp.put("loanAddress", xx.get("loanAddress"));
+			}
+		}
+		String loan_pic = loanInfo.getStr("loan_pic");
+		JSONArray arr = JSONArray.parseArray(loan_pic);
+		for (int i = 0; i < arr.size(); i++) {
+			JSONObject json2 = arr.getJSONObject(i);
+			String url = "http://image1.yrhx.com/" + json2.getString("code")
+					+ "/loan";
+			json2.put("url", url);
+			json2.remove("code");
+		}
+		List<Object> objects = (List<Object>) JSONArray.toJSON(arr);
+		tmp.put("loan_pic", objects);
+
+		// 投标流水
+		List<LoanTrace> listLoanTrace = LoanTrace.loanTraceDao
+				.find("select payUserName,loanDateTime,payAmount,loanType,rankValue from t_loan_trace where loanCode = ? order by loanDateTime asc",
+						loanCode);
+		for (int i = 0; i < listLoanTrace.size(); i++) {
+			String tmpLoanType = listLoanTrace.get(i).getStr("loanType");
+			if ("M".equals(tmpLoanType)) {
+				tmpLoanType = "手动[网页端]";
+			} else if ("N".equals(tmpLoanType)) {
+				tmpLoanType = "手动[移动端]";
+			} else if ("A".equals(tmpLoanType)) {
+				tmpLoanType = "自动" + "[" + listLoanTrace.get(i).getLong("rankValue") + "]";
+			}
+			listLoanTrace.get(i).put("loanType", tmpLoanType);
+			String tmpLoanDateTime = listLoanTrace.get(i)
+					.getStr("loanDateTime");
+			String loanDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+					.format(new SimpleDateFormat("yyyyMMddHHmmss")
+							.parse(tmpLoanDateTime));
+			listLoanTrace.get(i).put("loanDateTime", loanDateTime);
+		}
+		tmp.put("traces", listLoanTrace);
+
+		msg = succ("获取成功", tmp);
+		renderJson(msg);
+		
+	}
+	/**
+	 * 查询立即投标页面信息 ws for 安卓
+	 * */
+	@ActionKey("/app_queryloanInfo")
+	@AuthNum(value=999)
+	@Before({AppInterceptor.class,PkMsgInterceptor.class})
+	public void AppQueryLoanInfo(){
+		String userCode=getUserCode();
+		Message msg=null;
+		User user=userService.findById(userCode);
+		String loginId=user.getStr("loginId");
+		if("".equals(loginId)||null==loginId){
+			msg=error("01", "未激活存管", null);
+			renderJson(msg);
+			return;
+		}
+		String loanCode=getPara("loanCode");
+		LoanInfo loanInfo = LoanInfo.loanInfoDao.findById(loanCode);
+		Funds funds = Funds.fundsDao.findById(userCode);
+		long loanBalance = loanInfo.getLong("loanBalance");
+		if(loanBalance==0){
+			msg=error("02", "抢光了", null);
+			renderJson(msg);
+			return;
+		}
+		Map<String,Object> result = new HashMap<String, Object>();
+		long avBalance = funds.getLong("avBalance");
+		String refundType = loanInfo.getStr("refundType");
+		int loanMonth=loanInfo.getInt("loanTimeLimit");
+//		result.put("loanBalance", Number.longToString(loanBalance));
+//		result.put("avBalance", Number.longToString(avBalance));
+		// WCF 20170817
+		DecimalFormat df = new DecimalFormat("0.00");
+		result.put("avBalance", df.format(avBalance/100.00));
+		result.put("loanBalance", df.format(loanBalance/100.00));
+		// end
+		result.put("refundType",refundType);
+		int rateByYear=loanInfo.getInt("rateByYear");
+		int rewardRateByYear=loanInfo.getInt("rewardRateByYear");
+		int benefits4new=loanInfo.getInt("benefits4new");
+		double rateByYearTotle=(double)(rateByYear+rewardRateByYear+benefits4new)/120000;
+		result.put("rate", String.valueOf(rateByYearTotle));
+		rateByYearTotle=Math.pow(rateByYearTotle+1, loanMonth);
+		result.put("rateByYearTotle", String.valueOf(rateByYearTotle));
+		result.put("loanMonth",String.valueOf(loanMonth) );
+		String releaseDate=loanInfo.getStr("releaseDate");
+		String releaseTime=loanInfo.getStr("releaseTime");
+		result.put("releaseDate",releaseDate );
+		result.put("releaseTime",releaseTime );
+		msg=succ("result", result);
+		renderJson(msg);
+		return;
+	}
+	/**
+	 * 查询立即投标页面信息 ws for ios
+	 * */
+	@ActionKey("/app_queryloanInfoios")
+	@AuthNum(value=999)
+	@Before({AppInterceptor.class,PkMsgInterceptor.class})
+	public void AppQueryLoanInfo2(){
+		String userCode=getUserCode();
+		Message msg=null;
+		User user=userService.findById(userCode);
+		String loginId=user.getStr("loginId");
+		if("".equals(loginId)||null==loginId){
+			msg=error("01", "未激活存管", null);
+			renderJson(msg);
+			return;
+		}
+		String loanCode=getPara("loanCode");
+		LoanInfo loanInfo = LoanInfo.loanInfoDao.findById(loanCode);
+		Funds funds = Funds.fundsDao.findById(userCode);
+		long loanBalance = loanInfo.getLong("loanBalance");
+		if(loanBalance==0){
+			msg=error("02", "抢光了", null);
+			renderJson(msg);
+			return;
+		}
+		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
+		Map<String,Object> result = new HashMap<String, Object>();
+		long avBalance = funds.getLong("avBalance");
+		String refundType = loanInfo.getStr("refundType");
+		int loanMonth=loanInfo.getInt("loanTimeLimit");
+//		result.put("loanBalance", Number.longToString(loanBalance));
+//		result.put("avBalance", Number.longToString(avBalance));
+		// WCF 20170817
+		DecimalFormat df = new DecimalFormat("0.00");
+		result.put("avBalance", df.format(avBalance/100.00));
+		result.put("loanBalance", df.format(loanBalance/100.00));
+		// end
+		result.put("refundType",refundType);
+		int rateByYear=loanInfo.getInt("rateByYear");
+		int rewardRateByYear=loanInfo.getInt("rewardRateByYear");
+		int benefits4new=loanInfo.getInt("benefits4new");
+		double rateByYearTotle=(double)(rateByYear+rewardRateByYear+benefits4new)/120000;
+		result.put("rate", String.valueOf(rateByYearTotle));
+		rateByYearTotle=Math.pow(rateByYearTotle+1, loanMonth);
+		result.put("rateByYearTotle", String.valueOf(rateByYearTotle));
+		result.put("loanMonth",String.valueOf(loanMonth) );
+		String releaseDate=loanInfo.getStr("releaseDate");
+		String releaseTime=loanInfo.getStr("releaseTime");
+		result.put("releaseDate",releaseDate );
+		result.put("releaseTime",releaseTime );
+		list.add(result);
+		msg=succ("result", list);
+		renderJson(msg);
+		return;
+	}
+	/**
+	 * 点击投标 ws
+	 * */
+	@ActionKey("/app_creatloantrace")
+	@AuthNum(value=999)
+	@Before({AppInterceptor.class,PkMsgInterceptor.class})
+	public void AppCreatLoanTrace(){
+		String userCode=getUserCode();
+		Message msg=null;
+		String amt = getPara("amount");
+		if(null==amt||"".equals(amt)){
+			msg=error("33", "请输入正确金额", "");
+			return;
+		}
+		long amount = (long) (Double.parseDouble(amt)*100);
+		String loanCode = getPara("loanCode");
+		
+		LoanInfo loanInfo = LoanInfo.loanInfoDao.findById(loanCode);
+		// 暂时关闭手动投标
+//		int benefits4new = loanInfo.getInt("benefits4new");
+//		if( benefits4new == 0 ){
+//			msg=error("21", "暂不支持手动投标", null );
+//			renderJson(msg);
+//			return;
+//		}
+		
+		String resDate=loanInfo.getStr("releaseDate")+loanInfo.getStr("releaseTime");
+		String nowDate=DateUtil.getNowDateTime();
+		if(DateUtil.compareDateByStr("yyyyMMddHHmmss", resDate, nowDate)>=0){
+			msg=error("03", "还未到时间", null);
+			renderJson(msg);
+			return;
+		}
+		User user = userService.findById(userCode);
+		if(user.getStr("loginId")==null ||("").equals(user.getStr("loginId"))){
+			msg= error("01", "未开通存管账户，无法进行投标操作!", null ) ;
+			return;
+		}
+		if( amount <= 0 ){
+			msg= error("30", "投标金额错误!", null ) ;
+			return;
+		}
+		if( StringUtil.isBlank( loanCode ) == true ){
+			msg= error("31", "参数错误!", null ) ;
+			renderJson(msg);
+			return;
+		}
+		if( loanCode.length() != 32){
+			msg= error("32", "参数错误!", null ) ;
+			renderJson(msg);
+			return;
+		}
+		String ticketCodes = "";
+		try {
+			ticketCodes = getPara("ticket","");
+		} catch (Exception e) {
+			ticketCodes = "";
+		}
+		if( StringUtil.isBlank(ticketCodes) == false ){
+			String[] tcs = ticketCodes.split(",");
+			if(tcs!=null && tcs.length > 0 ){
+				for (int i = 0; i < tcs.length; i++) {
+					Tickets ticket = ticketService.findByCode(tcs[i]);
+					if(ticket!=null&&!"A".equals(ticket.getStr("tstate"))){
+						msg=error("33", "此现金券券已使用或失效，请重新选择", "");
+						renderJson(msg);
+						return;
+					}
+					}
+				}
+			}
+		msg= doLoan4bidding( loanCode , amount , user,"M" , 0 ,ticketCodes , 0 ) ;
+		renderJson(msg);
+	}
+	private Message doLoan4bidding(String loanCode , long amount , User user,String loantype ,long rankValue , String ticketCodes ,long onceMinAmount ){
+
+		
+		String userCode = user.getStr("userCode") ;
+		//验证是否开通存管 ws 20170818
+		if(null==user.getStr("loginId")||"".equals(user.getStr("loginId"))||"null".equals(user.getStr("loginId"))){
+			return error("21", "用户还未激活存管账户", null);
+		}
+		//用户资金验证
+		Funds funds = fundsServiceV2.findById(userCode);
+		QueryBalanceResultData fuiouFunds =	fuiouTraceService.BalanceFunds(user);
+		if (funds.getLong("avBalance") != Long.parseLong(fuiouFunds.getCa_balance()) || 
+				funds.getLong("frozeBalance") != Long.parseLong(fuiouFunds.getCf_balance())) {
+			return error("20", "用户资金异常", null);
+		}
+		//end
+		LoanInfo loan = loanInfoService.findById(loanCode);
+
+		//判断标书是否存在并状态是否正常
+		if( loan == null || "J".equals(loan.getStr("loanState")) == false ){
+			return error("02", "未找到相关标信息", null ) ;
+		}
+		/*
+		 * 	1,检查标设置
+		 * 	2,判断用户是否负责投标条件
+		 * 	3,投标
+		 */
+		int minLoanAmount = loan.getInt("minLoanAmount");
+		long loanBalance = loan.getLong("loanBalance");
+		
+		//判断是否满标
+		if( loanBalance <= 0 ){
+			return error("03", "已满标，请查看其他标", null ) ;
+		}
+		
+		//检查是否已经到投标时间
+		String releaseDateTime = loan.getStr("releaseDate")+loan.getStr("releaseTime");
+		if( "M".equals(loantype) == true ){
+			int compareDateByStr = DateUtil.compareDateByStr("yyyyMMddHHmmss",
+					DateUtil.getNowDateTime(), releaseDateTime);
+			if(compareDateByStr != 0 && compareDateByStr != 1){
+				return error("09", "未到投标时间，请查看其他标", null );
+			}
+		}else{
+			//rankValue = autoLoanService.queryRank(userCode)[1];
+			//rankValue = AutoLoan_v2.autoLoanDao.findFirst("select * from t_auto_loan_v2 where userCode=?",userCode).getInt("aid");
+		}
+		
+		/*
+		 *	增加新手标检查
+		 *		1、通过判断benefits4new 判断该为是否为新手标
+		 *		2、判断当前时间是否为发标时间9点以后，如果是，则不坐新手限制。
+		 *		3、新手限制条件，判断用户活跃积分是否小于100，小于等于100则为新手
+		 */
+		int benefits4new = loan.getInt("benefits4new");
+		if( benefits4new > 0 ){
+			int rewardRateByYear = loan.getInt("rewardRateByYear");
+			//检查是否过了不限制的时间
+			String passTime = "213000";//默认晚9点半后不限制投新手标
+			try {
+				passTime = (String) CACHED.get("S3.xsbgqsj");
+			} catch (Exception e) {
+				
+			}
+			//String openDateTime = DateUtil.getNowDate() + passTime;
+			String openDateTime = loan.getStr("releaseDate") + passTime;
+			int compareDateByStr = -1;
+			compareDateByStr = DateUtil.compareDateByStr("yyyyMMddHHmmss",
+					DateUtil.getNowDateTime(), openDateTime);
+			if(compareDateByStr<1){
+				long userScore = user.getLong("userScore");
+				int tmp = 3000;
+				try {
+					tmp = tmp * Integer.valueOf((String) CACHED.get("S3.xsjfbs"));
+				} catch (Exception e) {
+				}
+				if( userScore >= tmp ){
+					return error("15", "此标为新人专享", null ) ;
+				}
+			}
+			loan.set("rewardRateByYear", (rewardRateByYear + benefits4new ) ) ;	//将新手奖励增加到奖励年利率里
+		}
+		
+		
+		/**
+		 * 	TODO 解析券，记录券信息
+		 */
+		List<Tickets> tickets = new ArrayList<Tickets>();//所有类型券的集合
+		int ticketAmount = 0 ;//现金券的抵扣金额
+		long exAmount = 0;//现金券的使用条件，最少投资金额,默认0
+		if( StringUtil.isBlank(ticketCodes) == false ){
+			String[] tcs = ticketCodes.split(",");
+			if(tcs!=null && tcs.length > 0 ){
+				for (int i = 0; i < tcs.length; i++) {
+					Tickets ticket = ticketService.findByCode2(tcs[i]);
+					if( ticket != null ){
+						tickets.add(ticket);
+						if(ticket.getStr("ttype").equals("A")){
+							ticketAmount = ticketAmount + ticket.getInt("amount");
+							String strUseEx = ticket.getStr("useEx");
+							if( StringUtil.isBlank(strUseEx) == false ){
+								JSONObject json = JSONObject.parseObject( strUseEx ) ;
+								int limit = json.getIntValue("limit");
+								int rate = json.getIntValue("rate");
+								long tmp = json.getLongValue("amount") ;
+								if(tmp!=0 && amount < tmp){
+									return error("77", "请检查理财券使用金额是否符合条件", false);
+								}
+								if(limit != 0 && loan.getInt("loanTimeLimit") < limit){
+									return error("77", "请检查理财券使用期限是否符合条件", false);
+								}
+								if(rate != 0 && (loan.getInt("rateByYear") + loan.getInt("rewardRateByYear")) < rate ){
+									return error("77", "请检查理财券使用利率是否符合条件", false);
+								}
+								//判断是否符合券可投标期限 20170727 ws
+								String la=String.valueOf(loan.getInt("loanTimeLimit"));
+								if(la.length()==1){
+									la="0"+la;
+								}
+								if(null!=ticket.getStr("loanMonth")&&ticket.getStr("loanMonth").length()>1&&ticket.getStr("loanMonth").indexOf(la)<0){
+									return error("77", "请检查理财券使用标期是否符合条件", false);
+								}
+								//end
+								if(tmp > exAmount){
+									exAmount = tmp;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		//去小数
+		amount = amount - amount%100 ;
+		
+		//真实投标金额(投标金额-券金额)
+		long trueAmount = amount-ticketAmount;
+		
+		long avBalance = Funds.fundsDao.findByIdLoadColumns(userCode, "avBalance").getLong("avBalance");
+		if(avBalance < trueAmount){
+			return error("999", "可用余额不足!", null);
+		}
+		
+		int maxLoanAmount = loan.getInt("maxLoanAmount");
+		if( maxLoanAmount > 0 && amount > maxLoanAmount ){
+			//如果最大投标金额 小于 其中一个现金券的使用条件金额
+			if(tickets != null && tickets.size() > 0){
+				if(maxLoanAmount < exAmount){
+					return error("05", "可投金额不足,无法使用该券!","") ;
+				}
+			}
+			//重新计算投标金额+券金额
+			//自动投标不受标限制限制,贝贝要求的
+			if( loantype.equals("A") == false )
+				amount = maxLoanAmount;
+			trueAmount =  amount - ticketAmount;
+		}
+		
+		
+		//投标金额小于最小投标金额时返回错误
+		if( amount < minLoanAmount && loanBalance >= minLoanAmount){
+			return error("04", "投标金额最小要求为：" + minLoanAmount/10/10 + "元", minLoanAmount ) ;
+		}
+		
+		//当可投金额小于投标金额时, 自动将可投金额置为投标金额
+		if( amount > loanBalance ){
+			if(tickets != null && tickets.size() > 0){
+				if(loanBalance < exAmount){
+					return error("05", "可投金额不足,无法使用该券!","") ;
+				}
+			}
+			//TODO 当为自动投标时，不做余额兼容，不投出有设有最小投标金额的
+//			if( loantype.equals("A") == true )
+//				return error("14", "投标金额最小要求为：" + minLoanAmount/10/10 + "元", minLoanAmount ) ;
+			//重新计算投标金额+券金额
+			amount = loanBalance ;
+			
+			if( onceMinAmount > amount ){
+				return error("14", "单次投标金额不满足最小投标金额要求", minLoanAmount ) ;
+			}
+			
+			trueAmount = amount - ticketAmount;
+		}
+		
+		int maxLoanCount = loan.getInt("maxLoanCount");
+		Map<String , Long> totalMap = loanTraceService.totalByLoan4user(loanCode , userCode );
+		long userLoanCount = totalMap.get("count") ;
+		long userTotalAmount = totalMap.get("totalAmount");
+		if( userLoanCount > maxLoanCount ){
+			return error("06", "投标次数已超限,当前最大投标次数：" + maxLoanCount + "次", maxLoanCount ) ;
+		}
+		
+		//验证投标总额
+		if( (userTotalAmount + amount) > maxLoanAmount ){
+			amount = maxLoanAmount - userTotalAmount ;
+			trueAmount = amount - ticketAmount;
+			if( amount <= 0 ){
+				return error("07", "投标总额已超，您的该标的投资总额为：" + userTotalAmount/10/10 + "元" , userTotalAmount) ;
+			}
+		}
+		
+//		int zdjl = 0;//自动投标奖励利率
+//		if( "A".equals( loantype ) == true ){
+//			if( autoOnceAmount > amount ){
+//				return error("21", "投标金额不符" , "" ) ;
+//			}
+//			try {
+//				int x = loan.getInt("loanTimeLimit");
+//				if(x>=1 && x <=6){
+//					zdjl = Integer.valueOf( (String) CACHED.get("S1.autoLoanRate16"));
+//				}else if(x >= 7 && x<=18){
+//					zdjl = Integer.valueOf( (String) CACHED.get("S1.autoLoanRate718"));
+//				}
+//				
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//				zdjl = 0;
+//			}
+//		}
+		//TODO 更新现金券使用状态
+		try {
+			if( tickets!=null && tickets.size() > 0){
+				for (int i = 0; i < tickets.size(); i++) {
+					Tickets tts = tickets.get(i);
+					if(tts.getStr("ttype").equals("A")){
+						if(!"A".equals(tts.getStr("tstate"))){
+							return error("33", "此现金券已使用或失效，请重新选择","") ;
+						}
+						Tickets tmp = ticketService.useTicket4A(userCode, tts.getStr("tCode"), amount, loan ) ;
+						if( tmp == null ){
+							return error("10", "现金券异常:"+tts.getStr("tCode"),"") ;
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error("10", "理财券异常","") ;
+		}
+		
+//		if( amount > ticketAmount)
+//			amount = amount - ticketAmount ;
+		/*
+		 * 	1，可用资金转冻结资金
+		 * 	2，减少标可用余额，失败回滚资金操作，成功增加流水
+		 * 	3，增加资金流水，增加投标流水
+		 */
+		//操作失败则会抛出异常
+		
+		Funds afterFunds = null;
+		boolean bidResult = false;
+		try{
+			
+//			int ydjl = 0;
+			String userAgent = "";
+			try {
+				userAgent  = getRequest().getHeader( "USER-AGENT" ).toLowerCase(); 
+			} catch (Exception e) {
+				userAgent = "";
+			}
+			if(null == userAgent){    
+	            userAgent = "";    
+	        }
+	        //判断是否为移动端访问  
+	        if( CommonUtil.check(userAgent)){  
+	        	//ydjl = 20;
+	        	loantype = "N";
+	        }
+			
+	        //可用余额转冻结余额
+	        afterFunds = fundsServiceV2.avBalance2froze(userCode, trueAmount );
+	    	//投标 冻结投资人账户余额 2017.5.26 rain  
+	    	CommonRspData commonRspDataTender=fuiouTraceService.freeze(user, trueAmount);
+			if( ("0000").equals(commonRspDataTender.getResp_code())){
+				
+//				if(loanBalance-amount<1){
+//					loanInfoService.updateLoanByFull(loanCode);//如果投满了，设置满标
+//				} 
+				//TODO 预投标资金流水，备注信息会记录抵扣金额
+				//TODO 单个现金券会记录到投标流水
+				bidResult = loanInfoService.update4prepareBid( loan, amount,
+						userCode , loantype , rankValue , tickets,0) ;
+				if(bidResult == true){
+					//投标成功，记录资金流水
+					fundsTraceService.bidTrace(userCode , amount, afterFunds.getLong("avBalance"), 
+							afterFunds.getLong("frozeBalance"), 0 ,ticketAmount );
+					//手动投标发送短信
+					if(loantype.equals("A") == false){
+						try {
+							String mobile = userService.getMobile(userCode);
+							
+							String content = CommonUtil.SMS_MSG_MLOAN.replace("[userName]", user.getStr("userName")).replace("[loanNo]", loan.getStr("loanNo"))
+									.replace("[payAmount]", CommonUtil.yunsuan(amount+"", "100", "chu", 2).doubleValue()+"");
+							SMSLog smsLog = new SMSLog();
+							smsLog.set("mobile", mobile);
+							smsLog.set("content", content);
+							smsLog.set("userCode", userCode);
+							smsLog.set("userName", user.getStr("userName"));
+							smsLog.set("type", "12");smsLog.set("typeName", "手动投标");
+							smsLog.set("status", 9);
+							smsLog.set("sendDate", DateUtil.getNowDate());
+							smsLog.set("sendDateTime", DateUtil.getNowDateTime());
+							smsLog.set("break", "");
+							smsLogService.save(smsLog);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+					return succ("投标成功,投标金额：" + trueAmount/10.0/10.0 + "元", null );
+				}else{
+					fuiouTraceService.unFreeFunds(user, trueAmount);
+					fundsServiceV2.frozeBalance2avBalance(userCode, trueAmount );
+					if(tickets != null && tickets.size() > 0){
+						for (int i = 0; i < tickets.size(); i++) {
+							//代金券回滚
+							ticketService.rollBackTicket(tickets.get(i).getStr("tCode"));
+						}
+					} 
+//					return error("21", "投标流水添加失败", null);
+					return error("21", "投标失败", null);
+				}
+			}
+			else{
+				//操作失败，解冻投资人的金额  2017.6.7 rain
+				//冻结资金回滚
+				fundsServiceV2.frozeBalance2avBalance(userCode, trueAmount );
+				if(tickets != null && tickets.size() > 0){
+					for (int i = 0; i < tickets.size(); i++) {
+						//代金券回滚
+						ticketService.rollBackTicket(tickets.get(i).getStr("tCode"));
+					}
+				}
+				return error("08", "存管系统异常，投标失败" , null);
+			}
+		}catch(Exception e){
+			e.printStackTrace( );
+			return error("EX", "操作异常:" + e.getMessage() , null ) ;
+		}
+		
+	
+	}
+	
+	/**
+	 * 保存并开启自动投标 ws
+	 * */
+	@ActionKey("/app_autoloan")
+	@AuthNum(value=999)
+	@Before({AppInterceptor.class,PkMsgInterceptor.class})
+	public void AppAutoLoan(){
+		String userCode = getUserCode();
+		Message msg=null;
+		AutoLoan_v2 autoLoan = new AutoLoan_v2();
+		autoLoan.set("autoType", getPara("autoType","A"));
+		autoLoan.set("onceMaxAmount", getParaToLong("onceMaxAmount",9999999L)*100);
+		autoLoan.set("onceMinAmount", getParaToLong("onceMinAmount",50L)*100);
+		autoLoan.set("autoMinLim", getParaToInt("autoMinLim",1));
+		autoLoan.set("autoMaxLim", getParaToInt("autoMaxLim",24));
+		autoLoan.set("refundType", getPara("refundType","D"));
+		if ("N".equals(autoLoan.get("refundType"))) {
+			autoLoan.set("refundType", "D");
+		}
+		if(autoLoan.getStr("autoType").equals("A")){
+			autoLoan.set("onceMaxAmount", 999999900L);
+			autoLoan.set("onceMinAmount", 5000L);
+			autoLoan.set("refundType", "D");
+		}
+		
+		//验证数据有效性
+		if(autoLoan.getLong("onceMaxAmount") < 5000){
+			autoLoan.set("onceMaxAmount", 999999900L);
+		}
+		if(autoLoan.getLong("onceMinAmount") < 5000){
+			autoLoan.set("onceMinAmount", 5000L);
+		}
+		if(autoLoan.getLong("onceMaxAmount") < 5000){
+			msg= error("01", "最大金额必须大于50", null);
+			renderJson(msg);
+			return;
+		}
+		if(autoLoan.getLong("onceMinAmount") < 5000){
+			msg= error("01", "最小投标金额必须大于50", null);
+			renderJson(msg);
+			return;
+		}
+		if(autoLoan.getLong("onceMinAmount") > autoLoan.getLong("onceMaxAmount")){
+			msg= error("01", "最小投标金额不能大于最大投标金额", null);
+			renderJson(msg);
+			return;
+		}
+		
+		if(StringUtil.isBlank(autoLoan.getStr("productType"))){
+			autoLoan.set("productType", "");
+		}
+		
+		String priorityMode = getPara("priorityMode","N");
+		
+		String useTicket = getPara("useTicket","N");
+		
+		String autoType = "B";
+		
+		try {
+			autoType = autoLoan.getStr("autoType");
+			if(StringUtil.isBlank(autoType)){
+				autoType = "B";
+			}
+		} catch (Exception e) {
+			autoType = "B";
+		}
+		try {
+			if(useTicket.equals("A")){
+				if(StringUtil.isBlank(priorityMode)){
+					priorityMode = "A";
+				}
+				if(priorityMode.equals("A") == false && priorityMode.equals("B") == false){
+					priorityMode = "A";
+				}
+			}
+		} catch (Exception e) {
+			
+		}
+		//保存
+		
+		String userName = "";
+		try {
+			userName = userService.findByField(userCode, "userName").getStr("userName");
+			if(StringUtil.isBlank(userName)){
+				msg= error("21", "用户名异常",false);
+				renderJson(msg);
+				return;
+			}
+		} catch (Exception e) {
+			msg= error("21", "用户名异常",false);
+			renderJson(msg);
+			return;
+		}
+		autoLoan.set("userCode", userCode);
+		autoLoan.set("productType", "ABCD");
+		int fff =1;
+		try {
+			fff = autoMapService.validateAutoState(userCode);
+		} catch (Exception e) {
+			fff = 1;
+		}
+		boolean result = autoMapService.saveAutoLoanSettings(userCode, userName, autoLoan.getLong("onceMinAmount"), autoLoan.getLong("onceMaxAmount"), autoLoan.getInt("autoMinLim"), autoLoan.getInt("autoMaxLim"), autoLoan.getStr("refundType"), autoLoan.getStr("productType"),priorityMode,useTicket,autoType);
+		if(result == false){
+			BIZ_LOG_ERROR(userCode, BIZ_TYPE.AUTOLOAN, "保存自动投标配置失败", null);
+			msg= error("01", "保存失败", "");
+			renderJson(msg);
+			return;
+		}
+		try {
+			if(fff==0){
+				String nowDate = DateUtil.getNowDate();
+				int x = DateUtil.compareDateByStr("yyyyMMdd",nowDate,"20161211" );
+				int y = DateUtil.compareDateByStr("yyyyMMdd",nowDate,"20161218" );
+				if((x == 0 || x == 1) && (y == -1 || y == 0)){
+					//11张30元券+11张50元券
+					for (int i = 0; i < 11; i++) {
+						ticketService.saveADV(userCode, "30元现金抵扣券", DateUtil.addDay(DateUtil.getNowDate(), 30), 3000, 500000);
+						ticketService.saveADV(userCode, "50元现金抵扣券", DateUtil.addDay(DateUtil.getNowDate(), 30), 5000, 1000000);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			BIZ_LOG_ERROR(userCode, BIZ_TYPE.AUTOLOAN, "首次保存自动投标送券异常", e);
+		}
+		String info="";
+		info+="最小金额:"+autoLoan.getLong("onceMinAmount");
+		info+="|最大金额:"+autoLoan.getLong("onceMaxAmount");
+		info+="|最小期限:"+autoLoan.getInt("autoMinLim");
+		info+="|最大期限:"+autoLoan.getInt("autoMaxLim");
+		info+="|还款方式:"+autoLoan.getStr("refundType");
+		info+="|自动投标类型:"+autoLoan.getStr("autoType");
+		info+="|是否使用现金券:"+useTicket;
+		info+="|现金券使用优先方式:"+priorityMode;
+		BIZ_LOG_INFO(userCode, BIZ_TYPE.AUTOLOAN, "保存自动投标配置成功",info);
+		
+		msg= succ("保存成功", "");
+		renderJson(msg);
+	}
+	
+	
+	/**
+	 * 查询自动投标信息 ws
+	 * */
+	@ActionKey("/app_queryautoloanInfo")
+	@AuthNum(value=999)
+	@Before({AppInterceptor.class,PkMsgInterceptor.class})
+	public void AppQueryAutoLoanInfo(){
+		String userCode = getUserCode();
+		Message msg=null;
+		Map<String,Object> map = new HashMap<String, Object>();
+		AutoLoan_v2 autoLoan_v2 = autoLoanService.findByUserCode(userCode);
+		if(null==autoLoan_v2){
+			msg=error("01", "还未开启自动投标", null);
+			renderJson(msg);
+			return;
+		}
+		Funds funds = Funds.fundsDao.findById(userCode);
+		long avBa = funds.getLong("avBalance");
+		String avBalance = Number.longToString(avBa);
+		int x = 0;//排名
+		try {
+			x = autoMapService.queryRankVal(userCode);
+		} catch (Exception e) {
+			x = 0;
+		}
+		String autoType = autoLoan_v2.getStr("autoType");
+		String autoMinLim = String.valueOf(autoLoan_v2.getInt("autoMinLim"));
+		String autoMaxLim = String.valueOf(autoLoan_v2.getInt("autoMaxLim"));
+		String useTicket = autoLoan_v2.getStr("useTicket");
+		String priorityMode = autoLoan_v2.getStr("priorityMode");
+		map.put("avBalance", avBalance);
+		map.put("rank", x);
+		map.put("autoType", autoType);
+		map.put("autoMinLim", autoMinLim);
+		map.put("autoMaxLim", autoMaxLim);
+		map.put("useTicket", useTicket);
+		map.put("priorityMode", priorityMode);
+		map.put("onceMinAmount", "50");
+		map.put("onceMaxAmount", "999999");
+		map.put("refundType", "D");
+		if("B".equals(autoType)){//自定义
+			String onceMinAmount=String.valueOf(autoLoan_v2.getLong("onceMinAmount")/100);
+			String onceMaxAmount=String.valueOf(autoLoan_v2.getLong("onceMaxAmount")/100);
+			String refundType=autoLoan_v2.getStr("refundType");
+			map.put("onceMinAmount", onceMinAmount);
+			map.put("onceMaxAmount", onceMaxAmount);
+			map.put("refundType", refundType);
+		}
+		msg= succ(autoLoan_v2.getStr("autoState"), map);
+		renderJson(msg);
+	}
+	
+	/**
+	 * 关闭自动投标 ws
+	 * */
+	@ActionKey("/app_closeautoloan")
+	@AuthNum(value=999)
+	@Before({AppInterceptor.class,PkMsgInterceptor.class})
+	public void AppCloseAutoLoan(){
+		String userCode = getUserCode();
+		Message msg=null;
+		autoMapService.changeAutoState2C(userCode);
+		//记录日志
+		BIZ_LOG_INFO(userCode, BIZ_TYPE.AUTOLOAN, "设置自动投标状态成功");
+		msg= succ("成功关闭自动投标", "");
+		renderJson(msg);
+	}
+	/**
+	 * 自动投标队列详情 ws
+	 * */
+	@ActionKey("/app_autoloanarray")
+	@AuthNum(value=999)
+	@Before({AppInterceptor.class,PkMsgInterceptor.class})
+	public void AppAutoLoanArray(){
+		String userCode = getUserCode();
+		Message msg=null;
+		Map<String,Object> result = new HashMap<String, Object>();
+		int auint= autoMapService.validateAutoState(userCode);
+		if(auint != 1){
+			msg=error("01", "未保存自动投标", result);
+			renderJson(msg);
+			return;
+		}else{
+			int rankVal = autoMapService.queryRankVal(userCode);
+			if(rankVal>0){
+				AutoLoan_v2 aa = autoLoanService.findByUserCode(userCode, "A");
+				List<Record> list = autoMapService.queryRankDetail(rankVal,aa.getInt("autoMinLim"),aa.getInt("autoMaxLim"));
+				List<Map<String, Object>> resList=new ArrayList<Map<String,Object>>();
+				for(int i=0;i<list.size();i++){
+					Map<String, Object> map = new HashMap<String, Object>();
+					Record record = list.get(i);
+					int loanlimit=record.getInt("loanLimit");
+					if((loanlimit>18&&loanlimit<24)||(loanlimit>12&&loanlimit<18)){
+						continue;
+					}
+					String amt = String.valueOf(record.get("amount"));
+					long amount = Long.parseLong(amt);
+					map.put("amount", Number.longToString(amount));
+					map.put("loanLimit", String.valueOf(record.get("loanLimit")));
+					map.put("quantity", String.valueOf(record.get("quantity")));
+					resList.add(map);
+					msg=succ("查询完成", resList);
+				}
+			}else{
+				msg=error("01", "未保存自动投标", result);
+				renderJson(msg);
+				return;
+			}
+		}
+		renderJson(msg);
+	}
+	
+	
+}

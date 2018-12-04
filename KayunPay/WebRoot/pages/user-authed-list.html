@@ -1,0 +1,210 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body onkeydown="zhazha(event)">
+	<div class="am-g">
+		<!-- 标准功能按钮 Start  -->
+		<div class="am-u-sm-12 am-u-md-4">
+			<div class="am-btn-toolbar">
+				<div class="am-btn-group am-btn-group-xs">
+				</div>
+			</div>
+		</div>
+		<!-- 标准功能按钮  End -->
+		<!-- 条件区 Start -->
+		
+		<div class="am-u-sm-12 am-u-md-3"></div>
+		<div class="am-u-sm-12 am-u-md-3">
+			<div class="am-input-group am-input-group-sm">
+				<input type="text" class="am-form-field allkey"><span
+					class="am-input-group-btn">
+					<button class="am-btn am-btn-default query-btn" type="button">搜索</button>
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- 条件区  End -->
+	<!-- Table -->
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 0 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+						<li id="not"><input type="text" size="5" id="goValue" onkeypress="return IsNum(event)" value="1"/></li>
+						<li id="go"><input type="button" value="GO" onclick="$('#go').attr('index',$('#goValue').val())"/></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script>
+	
+	function zhazha(e){
+		var keynum = 0;
+		if(window.event){
+			keynum = e.keyCode
+		}
+		else if(e.which){
+			keynum = e.which
+		}
+		if(keynum==13){
+			queryData(1);
+		}
+	}
+	
+		var maxQueryNum = 10 ;
+		var queryUrl = "/getAuthedInfoByPage";
+		var userFormUrl = "pageUserForm";
+		var size=0;//总页数
+				
+		$(".query-btn").click(function(){
+			queryData(1);
+			$("#goValue").val(1);//设置GO栏默认页码为1
+		});
+		//查询实现
+		function queryData( pNum , pSize ){
+			//对页码参数验证
+			if(isNaN(pNum)){
+				alert("GO栏请输入数字！");
+				return;
+			}
+			if(size<1){
+				size=1;
+			}
+			if(pNum > size && size != 0){
+				pNum=size;
+				$("#goValue").val(pNum);
+			}
+			YRHX.ajax({
+				url : queryUrl,
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize ||maxQueryNum,
+					allkey : $(".allkey").val() 
+				},
+				success : function(sucData){
+					size=Math.ceil(sucData["totalRow"]/maxQueryNum);//总页数
+					if( !sucData ){
+						sucData = {};
+						sucData.list = [];
+					}
+					makeTable(sucData.list , { 
+						index : sucData["pageNumber"] , 
+						max : sucData["pageSize"] ,
+						size : sucData["totalRow"]
+					});
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+			
+		}
+		
+		$(".query-btn").click(function(){
+			queryData(1);
+		});
+		
+		$("div.pad-div").initPagEvent( queryData );
+		
+		//init 
+		var userStateData = YRHX.sortData(RES["DATA_MAP"]["userState"]) ;
+		var isAuthedData = YRHX.sortData(RES["DATA_MAP"]["isAuthed"]) ;
+		
+		function makeTable( tableData ,pageData){
+			$(".am-g").table({
+						dataFormat : function(rowObj) {
+							rowObj["userState"] = userStateData[ rowObj["userState"] ] ;
+							rowObj["vipInterestRate"] = YRHX.toDecimal2(rowObj["vipInterestRate"]/100 )+"%";
+							rowObj["vipRiskRate"] = YRHX.toDecimal2(rowObj["vipRiskRate"]/100 )+"%";
+							rowObj["lastLoginDateTime"] = rowObj["lastLoginDateTime"].dateformat() ;
+							rowObj["isAuthed"] =  isAuthedData[ rowObj["isAuthed"] ] ;
+							if(!rowObj["userCardName"] || rowObj["userCardName"] == null || rowObj["userCardName"].length <1){
+								rowObj["userCardName"] = " ";
+							}
+							return rowObj;
+						},
+						max : 10,
+						pag : pageData,
+						header : [
+								{
+									name : "",type : "checkbox",key : "userCode"
+								},
+								{
+									name : "",text : "昵称",html : "#{userName}"
+								},
+								{
+									name : "",text : "姓名",html : "#{userCardName}"
+								},
+								{
+									name : "",text : "VIP等级",html : "#{vipLevelName}"
+								},
+								{
+									name : "",text : "用户状态",html : "#{userState}"
+								},
+								{
+									name : "",text : "认证状态",html : "#{isAuthed}"
+								},
+								{
+									name : "",text : "最后登录日期时间",html : "#{lastLoginDateTime}"
+								},
+								{
+									name : "",text : "操作",html : $.makeButtons([{"text":"审核认证","url":"pageUserAuthedForm?opType=edit&pUserCode=#{userCode}","ico":"am-icon-pencil-square-o"},
+									                                             {"text":"存管操作","url":"pageUserDeposit?opType=edit&pUserCode=#{userCode}","ico":"am-icon-pencil-square-o"}
+									])
+								}],
+						data : tableData
+					});
+			}
+		
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		queryData(1);
+	</script>
+</body>
+</html>

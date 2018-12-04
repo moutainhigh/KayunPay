@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>易融恒信开通存管-完善个人信息</title>
+    <link href="/portal/css/public.css?v=1.0.2" rel="stylesheet" type="text/css"/>
+    <link type="text/css" href="/portal/css/user.css?v=1.0.1" rel="stylesheet">
+</head>
+<body>
+<header id="header" class="header"></header>
+<main class="main_grey" style="background:#f6f0ed;">
+	<div class="depository_main">
+		<div class="depository_title">开通江西银行存管</div>
+		<div class="depository_menu" style="width:767px;">
+			<div class="depository_menu_user depository_menuHover">
+				<div class="depository_menu_num">1</div>
+				<p>绑卡</p>
+			</div>
+			<div class="depository_menu_bor"></div>
+			<div class="depository_m1 depository_menu_user">
+				<div class="depository_menu_num">2</div>
+				<p>设置存管账户密码</p>
+			</div>
+			<div class="depository_menu_bor1"></div>
+			<div class="depository_m2 depository_menu_user">
+				<div class="depository_menu_num">3</div>
+				<p>缴费授权</p>
+			</div>
+		</div>
+		<div class="depository_user">
+			<form>
+				<div class="depository_userBox">
+					<span class="depository_ico">*</span>
+					<label>真实姓名：</label>
+					<input value="" type="text" name="" placeholder="请输入您的真实姓名" class="depository_name" />
+				</div>
+				<div class="depository_userBox">
+					<span class="depository_ico">*</span>
+					<label>身份证号：</label>
+					<input value="" type="text" name="" placeholder="请输入您的身份证号码" class="depository_id" />
+				</div>
+				<div class="depository_banks" style="margin-top:20px;">提示：请确保输入手机号与绑定银行卡预留手机号保持一致。</div>
+				<a href="#" class="depository_bankSkip">去绑卡</a>
+			</form>
+		</div>
+		<div class="depository_user">
+			<div class="depository_ok"><img src='/portal/images/prompt_yes.png'/></div>
+			<div class="depository_banks">您已成功开通江西银行存管账户<br />请您设置存管账户密码</div>
+			<a href="javascript:;" class="depository_bankPwd">设置存管账户密码</a>
+		</div>
+		<div class="depository_user">
+			<div class="depository_empower">应江西银行要求，为方便处理出借人提现、债权转让等操作产生的手续费，平台统一默认授权设置缴费金额、期限。</div>
+			<form>
+				<div class="depository_userBox">
+					<span class="depository_ico">*</span>
+					<label>签约最大金额：</label>
+					<span class="depository_sp">2万</span>
+					<!-- <input value="" type="text" name="" placeholder="请输入签约最大金额" class="depository_money" />
+					<span class="depository_sp">缴费授权单笔最大签约金额25万</span> -->
+				</div>
+				<div class="depository_userBox">
+					<span class="depository_ico">*</span>
+					<label>签约期限：</label>
+					<span class="depository_sp1">5年</span>
+					<!-- <input id="datepicker" class="depository_date form-control" type="text" placeholder="请选择签约到期日">
+					<span class="depository_sp1">最长有效期限5年</span> -->
+				</div>
+				<a href="/paymentAuthPage" class="depository_submit">下一步</a>
+			</form>
+		</div>
+	</div>
+</main>
+
+<footer id="footer" class="footer"></footer>
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js?v=1.0.0"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js?v=1.0.0"></script>
+<script type="text/javascript" src="/portal/js/config.js?v=1.0.0"></script>
+<script>topNavSelect = 4;</script>
+<script type="text/javascript" src="/portal/js/circleProgress.js?v=1.0.0" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/public.js?v=1.0.1"></script>
+<script>
+	$(function(){
+		// 初始化状态
+		YRHX.ajax({
+			url: CONFIG.getRequestURI("getAuthInfo"),
+			success: function (sucData) {
+				/* $(".depository_name").val(sucData.trueName);
+				$(".depository_name").attr("disabled", "disabled");
+				$(".depository_id").val(sucData.cardId);
+				$(".depository_id").attr("disabled", "disabled"); */
+				if(sucData.isAuth=="2"){
+					$(".depository_name").val(sucData.trueName);
+					$(".depository_name").attr("disabled", "disabled");
+					$(".depository_id").val(sucData.cardId);
+					$(".depository_id").attr("disabled", "disabled");
+				}
+			},
+			error: function (errData) {
+				$.popTips("popTipErr", errData.return_info);
+			}
+		});
+		
+		//绑卡
+		$(".depository_bankSkip").click(function(){
+			$(".depository_userBox p").remove();
+			var name=$(".depository_name").val();
+			var idNum=$(".depository_id").val();
+			var phone=$(".depository_phone").val();
+			var html='<p>*姓名不能为空</p>';
+			var html1='<p>*身份证输入不合法</p>';
+			var html2='<p>*手机号不合法</p>';
+			if(name==""){
+				$(".depository_name").after(html);
+				return false;
+			}
+			else if($(".depository_id").prop("disabled")==false){
+				if(!(/(^\d{15}$)|(^\d{17}([0-9]|X)$)/.test(idNum))){
+					$(".depository_id").after(html1);
+					return false;
+				}
+			}
+			YRHX.ajax({
+				url : "/depositBindCard",
+				data : {
+					"trueName" : name,
+					"cardId" : idNum,
+					"mobile" : phone
+				},
+				async: false,
+				success : function(sucData) {
+					window.location.href='/depositBindCard?trueName='+name+'&cardId='+idNum+'&verifyOrderId='+sucData;
+				},
+				error : function(data) {
+					$.popTips("popTipErr",data.return_info || "获取信息失败");
+				}
+			});
+		});
+		
+		//首次设置密码
+		$(".depository_bankPwd").click(function(){
+			YRHX.ajax({
+				url : "/setDepositPwd",
+				success : function(sucData) {
+				window.location.href='/setDepositPwd?verifyOrderId='+sucData;
+				},
+				error : function(data) {
+					$.popTips("popTipErr",data.return_info || "获取信息失败");
+				}
+			});
+		});
+		
+		//判断激活存管进行到哪一步
+		var verifyPwd = YRHX.queryString("verifyPwd");
+		var step = YRHX.queryString("step");
+		$(".depository_menu_user").removeClass("depository_menuHover");
+		if(step==1){
+			$("#setPwdDescription").html("您好，"+YRHX.Cookie("userName").get()+"！平台已自动为您开通了江西银行存管电子账户。<br/>存管电子账号为：<span style='color:#F26359;'>"+YRHX.Cookie("loginId").get()+"</span><br><br>为了您的账户资金安全，请您设置存管交易密码。");
+			$(".depository_menu_user").eq(0).addClass("depository_menuHover");
+			$(".depository_user").eq(0).show();
+			return false;
+		}
+		else if(step==2){
+			if(verifyPwd == "y"){
+				YRHX.Cookie("verifyPwd",verifyPwd).set();
+			}
+			$(".depository_menu_user").eq(0).addClass("depository_menuHover");
+			$(".depository_menu_user").eq(1).addClass("depository_menuHover");
+			$(".depository_user").eq(1).show();
+			return false;
+		}
+		else if(step==3){
+			$(".depository_menu_user").eq(0).addClass("depository_menuHover");
+			$(".depository_menu_user").eq(1).addClass("depository_menuHover");
+			$(".depository_menu_user").eq(2).addClass("depository_menuHover");
+			$(".depository_user").eq(2).show();
+			return false;
+		}
+		
+		
+	})
+</script>
+
+</body>
+</html>     

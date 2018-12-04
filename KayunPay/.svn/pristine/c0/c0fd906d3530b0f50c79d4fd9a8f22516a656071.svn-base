@@ -1,0 +1,252 @@
+package com.dutiantech.controller.admin;
+
+import com.dutiantech.anno.AuthNum;
+import com.dutiantech.controller.BaseController;
+import com.dutiantech.model.RechargeTrace;
+import com.dutiantech.model.SMSLog;
+import com.dutiantech.model.User;
+import com.dutiantech.model.WithdrawTrace;
+import com.dutiantech.model.BizLog.BIZ_TYPE;
+import com.dutiantech.model.RechargeTrace.BANK_STATE;
+import com.dutiantech.model.RechargeTrace.TRACE_STATE;
+import com.dutiantech.service.FuiouTraceService;
+import com.dutiantech.service.FundsServiceV2;
+import com.dutiantech.service.SMSLogService;
+import com.dutiantech.service.UserService;
+import com.dutiantech.service.WithdrawFreeService;
+import com.dutiantech.service.WithdrawTraceService;
+import com.dutiantech.util.CommonUtil;
+import com.dutiantech.util.DateUtil;
+import com.dutiantech.util.SysEnum;
+import com.dutiantech.util.SysEnum.FuiouTraceType;
+import com.fuiou.data.RechargeAndWithdrawalRspData;
+import com.fuiou.service.FuiouRspParseService;
+import com.jfinal.core.ActionKey;
+
+/**
+ * @author WCF 用于接收富友发送的异步通知
+ */
+public class FuiouAsyncController extends BaseController {
+
+	private static String SWITCH = "ON"; // 充值状态修改开关，避免同步异步同时执行
+	private SMSLogService smsLogService = getService(SMSLogService.class);
+	private UserService userService = getService(UserService.class);
+	private FuiouTraceService fuiouTraceService = getService(FuiouTraceService.class);
+	private FundsServiceV2 fundsServiceV2 = getService(FundsServiceV2.class);
+	private WithdrawTraceService withdrawTraceService = getService(WithdrawTraceService.class);
+	private WithdrawFreeService withdrawFreeService = getService(WithdrawFreeService.class);
+
+	/**
+	 * 充值接收通知---异步
+	 */
+	@ActionKey("/rechargeAsync")
+	@AuthNum(value = 999)
+	public void rechargeAsync() {
+		try {
+			RechargeAndWithdrawalRspData rspData = FuiouRspParseService.rechargeAndWithdrawalNotifyParse(getRequest());
+			String mchnt_cd = rspData.getMchnt_cd();
+			String mchnt_txn_ssn = rspData.getMchnt_txn_ssn();
+			String amt = rspData.getAmt();
+
+			RechargeTrace trace = RechargeTrace.rechargeTraceDao.findById(mchnt_txn_ssn);
+			if (trace == null) {
+				renderHtml(FuiouRspParseService.notifyRspXml("0001", mchnt_cd, mchnt_txn_ssn));
+				return;
+			}
+
+			if ("ON".equals(FuiouAsyncController.SWITCH)) {
+				FuiouAsyncController.SWITCH = "OFF";
+				// 如果交易状态已更新，直接返回成功响应
+				if ("B".equals(trace.getStr("traceState"))) {
+					renderHtml(FuiouRspParseService.notifyRspXml("0000", mchnt_cd, mchnt_txn_ssn));
+					FuiouAsyncController.SWITCH = "ON";
+					return;
+				}
+				String userCode = trace.getStr("userCode");
+				if (mchnt_cd == null || !mchnt_cd.equals(CommonUtil.MCHNT_CD)) {
+					// 记录日志
+					BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "充值失败_商户号不符", null);
+					renderHtml(FuiouRspParseService.notifyRspXml("0002", mchnt_cd, mchnt_txn_ssn));
+					FuiouAsyncController.SWITCH = "ON";
+					return;
+				}
+				long payAmount = Long.parseLong(amt);
+				if (amt == null || payAmount != trace.getLong("traceAmount")) {
+					// 记录日志
+					BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "充值失败_充值金额不符", null);
+					renderHtml(FuiouRspParseService.notifyRspXml("0003", mchnt_cd, mchnt_txn_ssn));
+					FuiouAsyncController.SWITCH = "ON";
+					return;
+				}
+
+				// 更新订单状态
+				trace.set("bankState", BANK_STATE.SUCCESS.key());
+				trace.set("traceState", TRACE_STATE.SUCCESS.key());
+				if ("FAST".equals(trace.getStr("rechargeType"))) {
+					trace.set("traceRemark", "快捷支付,充值成功");
+					trace.set("bankRemark", "快捷支付,充值成功");
+				}
+				if ("WY".equals(trace.getStr("rechargeType"))) {
+					trace.set("traceRemark", "网银支付,充值成功");
+					trace.set("bankRemark", "网银支付,充值成功");
+				}
+				if ("PHONE".equals(trace.getStr("rechargeType"))) {
+					trace.set("traceRemark", "手机支付,充值成功");
+					trace.set("bankRemark", "手机支付,充值成功");
+				}
+				trace.set("okDateTime", DateUtil.getNowDateTime());
+				try {
+					String mobile = userService.getMobile(userCode);
+					String content = CommonUtil.SMS_MSG_RECHARAGE_ONLINE
+							.replace("[userName]", trace.getStr("userName"))
+							.replace("[payAmount]", amt.substring(0, amt.length() - 2) + "");
+					SMSLog smsLog = new SMSLog();
+					smsLog.set("mobile", mobile);
+					smsLog.set("content", content);
+					smsLog.set("userCode", userCode);
+					smsLog.set("userName", trace.getStr("userName"));
+					smsLog.set("type", "12");
+					smsLog.set("typeName", "在线充值");
+					smsLog.set("status", 9);
+					smsLog.set("sendDate", DateUtil.getNowDate());
+					smsLog.set("sendDateTime", DateUtil.getNowDateTime());
+					smsLog.set("break", "");
+					smsLogService.save(smsLog);
+				} catch (Exception e) {
+					// 记录日志
+					BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "充值短信发送失败", null);
+					renderHtml(FuiouRspParseService.notifyRspXml("0004", mchnt_cd, mchnt_txn_ssn));
+					FuiouAsyncController.SWITCH = "ON";
+					return;
+				}
+				if (trace.update()) {
+					// 修改资金账户 添加资金流水
+					String remark = "";
+					if ("FAST".equals(trace.getStr("rechargeType"))) {
+						remark = "快捷支付,充值成功";
+					}
+					if ("WY".equals(trace.getStr("rechargeType"))) {
+						remark = "网银支付,充值成功";
+					}
+					if ("PHONE".equals(trace.getStr("rechargeType"))) {
+						remark = "手机支付,充值成功";
+					}
+					fundsServiceV2.recharge(userCode, payAmount, 0, remark, SysEnum.traceType.C.val());
+					User user = userService.findById(userCode);
+					fuiouTraceService.fuiouTraceContent(mchnt_txn_ssn, user, payAmount, FuiouTraceType.A);
+					
+					BIZ_LOG_INFO(userCode, BIZ_TYPE.RECHARGE, "充值异步修改资金" + payAmount);
+					renderHtml(FuiouRspParseService.notifyRspXml("0000", mchnt_cd, mchnt_txn_ssn));
+					FuiouAsyncController.SWITCH = "ON";
+					return;
+				} else {
+					// 记录日志
+					BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "充值流水更新失败", null);
+					renderHtml(FuiouRspParseService.notifyRspXml("0005", mchnt_cd, mchnt_txn_ssn));
+					FuiouAsyncController.SWITCH = "ON";
+					return;
+				}
+			} else {
+				return;
+			}
+		} catch (Exception e1) {
+			FuiouAsyncController.SWITCH = "ON";
+			e1.printStackTrace();
+		}
+		return;
+	}
+
+	/**
+	 * 提现接收通知---异步
+	 */
+	@ActionKey("/withdrawalAsync")
+	@AuthNum(value = 999)
+	public void withdrawalAsync() {
+		try {
+			Thread.sleep(5000);
+			RechargeAndWithdrawalRspData rspData = FuiouRspParseService.rechargeAndWithdrawalNotifyParse(getRequest());
+			String mchnt_cd = rspData.getMchnt_cd();
+			String mchnt_txn_ssn = rspData.getMchnt_txn_ssn();
+			String amt = rspData.getAmt();
+
+			WithdrawTrace withdrawTrace = withdrawTraceService.findById(mchnt_txn_ssn);
+
+			if (withdrawTrace == null) {
+				renderHtml(FuiouRspParseService.notifyRspXml("1001", mchnt_cd, mchnt_txn_ssn));
+				return;
+			}
+			// 如果交易状态已更新，直接返回成功响应
+			if ("3".equals(withdrawTrace.getStr("status"))) {
+				renderHtml(FuiouRspParseService.notifyRspXml("0000", mchnt_cd, mchnt_txn_ssn));
+				return;
+			}
+			String isScore = withdrawTrace.getStr("isScore");
+			String useFree = withdrawTrace.getStr("useFree");
+			long sxf = (long) withdrawTrace.getInt("sxf");
+			long amount = Long.parseLong(amt);
+			long withdrawAmount = withdrawTrace.getLong("withdrawAmount");
+			String userCode = withdrawTrace.getStr("userCode");
+			if (mchnt_cd == null || !mchnt_cd.equals(CommonUtil.MCHNT_CD)) {
+				// 记录日志
+				BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "提现失败_商户号不符", null);
+				renderHtml(FuiouRspParseService.notifyRspXml("1002", mchnt_cd, mchnt_txn_ssn));
+				return;
+			}
+			if (amt == null || !(withdrawAmount == amount + sxf)) {
+				// 记录日志
+				BIZ_LOG_ERROR(userCode, BIZ_TYPE.RECHARGE, "提现失败_提现金额不符", null);
+				renderHtml(FuiouRspParseService.notifyRspXml("1003", mchnt_cd, mchnt_txn_ssn));
+				return;
+			}
+
+			// wzUser为吴总平台账号,此处用于客户提现手续费划拨
+			User wzUser = userService.findByMobile(CommonUtil.OUTCUSTNO);
+			User user = userService.findById(userCode);
+
+			if (sxf > 0) {
+				fuiouTraceService.refund(sxf, FuiouTraceType.I, user, wzUser);
+			}
+
+			// 如果使用会员免费提现次数，记录一次
+			if (useFree.equals("y")) {
+				boolean ok = withdrawFreeService.setFreeCount(userCode, 1);
+				if (ok) {
+					BIZ_LOG_INFO(userCode, BIZ_TYPE.WITHDRAWALS, "用户提现成功，提现金额 ：" + withdrawAmount / 10.0 / 10.0);
+				}
+			}
+			// 扣除提现抵扣积分
+			if ("1".equals(isScore) && user.getInt("vipLevel") < 7 && (useFree.equals("y") == false)) {
+				fundsServiceV2.doPoints(userCode, 1, 20000, "扣除提现抵扣积分");
+				BIZ_LOG_INFO(userCode, BIZ_TYPE.POINT, "扣除提现抵扣积分");
+			}
+
+			withdrawTrace.set("okDateTime", DateUtil.getNowDateTime());
+			withdrawTrace.set("status", "3");
+			withdrawTrace.set("withdrawRemark", "提现成功");
+			if (withdrawTrace.update()) {
+				fuiouTraceService.fuiouTraceContent(mchnt_txn_ssn, user, withdrawAmount, FuiouTraceType.B);
+			} else {
+				renderHtml(FuiouRspParseService.notifyRspXml("1004", mchnt_cd, mchnt_txn_ssn));
+				return;
+			}
+
+			// 修改资金账户可用余额
+			boolean withdrawals4Fuiou = fundsServiceV2.withdrawals4Fuiou(
+					userCode, withdrawAmount, withdrawTrace.getInt("sxf"), "提现成功");
+			if (withdrawals4Fuiou == false) {
+				BIZ_LOG_ERROR(userCode, BIZ_TYPE.WITHDRAWALS, "申请提现失败 ", null);
+				renderHtml(FuiouRspParseService.notifyRspXml("1005", mchnt_cd, mchnt_txn_ssn));
+				return;
+			} else {
+				BIZ_LOG_INFO(userCode, BIZ_TYPE.WITHDRAWALS, "提现异步修改资金" + withdrawAmount);
+				renderHtml(FuiouRspParseService.notifyRspXml("0000", mchnt_cd, mchnt_txn_ssn));
+				return;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+}

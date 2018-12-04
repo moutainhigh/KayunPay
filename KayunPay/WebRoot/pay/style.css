@@ -1,0 +1,85 @@
+body{
+    background-color: #f0f0f0;
+}
+.paySuc{
+	width: 1180px;
+	margin: 0 auto;
+	margin-top: 30px;
+	margin-bottom:30px;
+	background: #fff;
+    overflow: hidden;
+    padding:180px 0;
+}
+.suc_l{
+	float:left;
+	width:500px;
+	text-align:right;
+}
+.suc_r{
+	float: left;
+	width: 600px;
+	text-align: left;
+	margin-left: 13px;
+	line-height: 35px;
+	padding-top: 10px;
+}
+.suc_r h2{
+	font-size:30px;
+}
+.suc_r p{
+	margin:0;
+	font-size:14px;
+}
+.suc_r a{
+	color:#F03D2D;
+}
+
+.payFail{
+	width: 1180px;
+	margin: 0 auto;
+	margin-top: 30px;
+	margin-bottom:30px;
+	background: #fff;
+    overflow: hidden;
+	
+}
+.fail_result{
+	height: 175px;
+	border-bottom: 1px solid #E5E5E5;
+	margin: 90px 20px 0 20px;
+}
+.fail_ques{
+	clear:both;
+	font-size:14px;
+	padding:20px;
+	padding-bottom:40px;
+}
+.fail_ques h2{
+	font-size:22px;
+	color:#383838;
+	margin-top:20px;
+	padding-left:10px;
+}
+.question{
+	margin:20px 20px 0 20px;
+	line-height:30px;
+}
+.question>p{
+	margin:0;
+}
+.que_q{
+	color:#222;
+}
+.que_a{
+	color:#666;
+}
+.question span{
+	margin-right:5px;
+}
+
+
+
+
+
+
+

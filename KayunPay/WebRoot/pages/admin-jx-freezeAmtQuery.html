@@ -1,0 +1,142 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+<style type="text/css">
+.dashedLine {
+    height: 1px;
+	width: 100%;
+	margin: 20px 0;
+	border-top: 1px dashed #e4e4e4;
+}
+  
+</style>
+</head>
+<!-- <body onkeydown="zhazha(event)"> -->
+<body>
+		<h3 style="color: green; margin-left: 20px">电子账户各项冻结金额查询</h3>
+		<div id="jxFreeze">
+		   <div style="margin-left: 100px;display: inline;">
+		          电子/手机账号：<input id='accountId' name = 'accountId' style="width: 200px;">
+		   </div>
+		   
+		   <div style="display: inline;">
+		      <button id='jxQuery'>查询</button>
+		   </div> 
+		</div>
+		<div id = "jxresult" style="margin-left:100px;display: none" >
+		<div class="dashedLine"></div>
+		<div class="dashedLine"></div>
+		 <h4 style="color: green;">查询结果如下：</h4>
+		 <table border="1">
+		    <tr>
+		      <td>电子账户：</td>
+		      <td><input id='accountIdResult'  readonly="readonly"></td>
+		    </tr>
+		    <tr>
+		      <td>姓名：</td>
+		      <td><input id='nameResult'  readonly="readonly"></td>
+		    </tr>
+		    <tr>
+		      <td>账面余额：</td>
+		      <td><input id='currBalResult'  readonly="readonly"></td>
+		    </tr>
+		    <tr>
+		      <td>可用余额：</td>
+		      <td><input id='availBalResult'  readonly="readonly"></td>
+		    </tr>
+		    <tr>
+		      <td> 投标冻结金额：</td>
+		      <td><input id='bidAmtResult'  readonly="readonly"></td>
+		    </tr>
+		    <tr>
+		      <td>还款冻结金额：</td>
+		      <td><input id='repayAmtResult'  readonly="readonly"></td>
+		    </tr>
+		    <tr>
+		      <td>无密债权冻结金额 ：</td>
+		      <td><input id='trnAmtResult'  readonly="readonly"></td>
+		    </tr>
+		    <tr>
+		      <td> 还款/债转后冻结金额：</td>
+		      <td><input id='plAmtResult'  readonly="readonly"></td>
+		    </tr>
+		    <tr>
+		      <td>代偿冻结金额：</td>
+		      <td><input id='dcAmtResult'  readonly="readonly"></td>
+		    </tr>
+		 </table>
+		 
+		</div>
+		
+		
+
+
+	<!-- prompt start -->
+
+	
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script type="text/javascript" src="/portal/js/jxErr.js"></script>
+	<script>
+		
+		
+		$("#jxQuery").click(function(){
+			var accountId = $("#accountId").val();
+			if(accountId == ''){
+				alert("电子账户不能为空");
+				return;
+			};
+			YRHX.ajax({
+				url : "/freezeAmtQuery",
+				data: {"accountId":accountId},
+				success:function(data){
+					    $("#jxresult").css('display','block');
+					    $("#accountIdResult").val(data.accountId);
+					    $("#nameResult").val(data.name);
+					    $("#currBalResult").val(data.currBal);
+					    $("#availBalResult").val(data.availBal);
+					    $("#bidAmtResult").val(data.bidAmt);
+					    $("#repayAmtResult").val(data.repayAmt);
+					    $("#trnAmtResult").val(data.trnAmt);
+					    $("#plAmtResult").val(data.plAmt);
+					    $("#dcAmtResult").val(data.dcAmt);
+				},error:function(data){
+					if(data.return_info == ''){
+						  var returnCode = data.return_code;
+						  var message = jxErr(returnCode);
+						  YRHX.alert1(message || "获取信息失败");
+						  
+						}else{
+							YRHX.alert1(data.return_info || "获取信息失败");
+						}
+				}
+				
+			});
+			
+		})
+
+		
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+	</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+package com.dutiantech.config.routes;
+
+import com.dutiantech.controller.admin.ActionController;
+import com.dutiantech.controller.admin.AuditLoanController;
+import com.dutiantech.controller.admin.AuthV2Controller;
+import com.dutiantech.controller.admin.AutoLoanController;
+import com.dutiantech.controller.admin.AutoLoanV3Controller;
+import com.dutiantech.controller.admin.BizLogController;
+import com.dutiantech.controller.admin.CFCAController;
+import com.dutiantech.controller.admin.CountController;
+import com.dutiantech.controller.admin.ExportFileController;
+import com.dutiantech.controller.admin.FileController;
+import com.dutiantech.controller.admin.FundsController;
+import com.dutiantech.controller.admin.LoanApplyController;
+import com.dutiantech.controller.admin.LoanController;
+import com.dutiantech.controller.admin.LotteryTaskController;
+import com.dutiantech.controller.admin.MarketController;
+import com.dutiantech.controller.admin.MenuV2Controller;
+import com.dutiantech.controller.admin.NoticeController;
+import com.dutiantech.controller.admin.OPUserV2Controller;
+import com.dutiantech.controller.admin.RoleController;
+import com.dutiantech.controller.admin.SMSTaskController;
+import com.dutiantech.controller.admin.SecretController;
+import com.dutiantech.controller.admin.SettlementController;
+import com.dutiantech.controller.admin.TempController;
+import com.dutiantech.controller.admin.SysConfigController;
+import com.dutiantech.controller.admin.TaskControler;
+import com.dutiantech.controller.admin.TestController;
+import com.dutiantech.controller.admin.TicketController;
+import com.dutiantech.controller.admin.TransferController;
+import com.dutiantech.controller.admin.TransferInfoController;
+import com.dutiantech.controller.admin.UserController;
+import com.dutiantech.controller.admin.XingeController;
+import com.jfinal.config.Routes;
+
+public class AdminRoutes extends Routes {
+
+	@Override
+	public void config() {
+		add("admin_test" , TestController.class );	
+		add("admin_funds", FundsController.class);
+		add("admin_loan", LoanController.class);
+		add("admin_user", UserController.class);
+		add("admin_file", FileController.class);
+		add("admin_auditLoan",AuditLoanController.class);
+		add("admin_autoLoan",AutoLoanController.class);
+		add("admin_settlement",SettlementController.class);
+		add("admin_task", TaskControler.class);
+
+		add("admin_opUserV2", OPUserV2Controller.class);
+		add("admin_authV2", AuthV2Controller.class);
+		add("admin_menuV2",MenuV2Controller.class);
+		add("admin_action" , ActionController.class);
+		add("admin_role" , RoleController.class);
+		add("loanApply" , LoanApplyController.class);
+		add("admin_bizLog" , BizLogController.class);
+		add("admin_notice" , NoticeController.class);
+		add("admin_market" , MarketController.class);
+		
+		add("admin_transfer",TransferController.class);
+		
+		add("admin_count",CountController.class);
+
+		add("admin_exportFile",ExportFileController.class);
+		add("admin_setting",SysConfigController.class);
+		
+		add("admin_sms_send",SMSTaskController.class);
+		
+		add("secret_hack",SecretController.class);
+		
+		add("admin_ticket",TicketController.class);
+
+		add("admin_app_XingePush",XingeController.class);
+		
+		add("admin_lottery",LotteryTaskController.class);
+		add("admin_auto_loan_v3" , AutoLoanV3Controller.class );
+		
+		add("admin_cfca" , CFCAController.class );
+		
+		// temp controll before fuiou interface update
+		add("admin_temp", TempController.class);
+		add("admin_transfer_info",TransferInfoController.class);
+	}
+
+}

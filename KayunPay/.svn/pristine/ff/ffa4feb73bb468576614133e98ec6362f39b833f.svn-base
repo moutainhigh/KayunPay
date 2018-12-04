@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>易融恒信-安全可靠透明的投资平台,p2p网贷平台</title>
+    <meta name="keywords" content="易融恒信,网贷平台,p2p网贷平台排名,p2p投资,p2b网贷,p2p投资平台,小投资,武汉贷款,武汉小额投资,武汉网贷公司,武汉易融恒信"/>
+    <meta name="description" content="易融恒信,致力于做华中地区最好的p2p网贷平台,为投资者提供最安全,最靠谱,最透明的互联网金融p2p投资平台,咨询电话400-027-0707"/>
+    <link type="text/css" href="/portal/css/public.css" rel="stylesheet">
+    <link type="text/css" href="/portal/css/aboutUs.css" rel="stylesheet">
+    <!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+<body>
+<div class="wrapper"><!--[if lt IE 9]>
+    <script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+    <header id="header" class="header"></header>
+   	<div class='topic_head'></div>
+   	<main class='topic_main'>
+   		<div class='topic_choose'><span class='cur'>线上活动</span><span>专题专栏</span></div>
+   		<div class='topic_list_con'>
+   			<div class='topic_list' id='box1'></div>
+   			<div class='topic_list' style='display:none;' id="box2"></div>
+   		</div>
+   		<div class='clearfix'></div>
+   	</main>
+    <footer id="footer" class="footer"></footer>
+</div>
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/config.js?v=1.2.18" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js?v=1.2.18" charset="utf-8"></script>
+<script>   topNavSelect= '4';</script>
+<script type="text/javascript" src="/portal/js/public.js?v=1.8.27"></script>
+<script type="text/javascript" src="/portal/js/aboutUs.js?v=1.6"></script>
+<script type="text/javascript" src="/portal/js/pub/widget-table.js?v=1.6"></script>
+
+<script>
+$('.topic_choose span').click(function(){
+	var that = $(this);
+	var index = that.index();
+	that.addClass('cur').siblings().removeClass('cur');
+	$('.topic_list_con .topic_list').eq(index).show().siblings().hide();
+});
+var data1=[
+		{href:'http://topic.yrhx.com/zt/2017/20171207/',img:'http://topic.yrhx.com/zt/ztlist/20171207.jpg',isShow:'inline-block',title:'封标赢取年会入场券',state:'已结束',state_class:'over',profile:'年度盛典等你来',time:'2017/12/01'},
+		{href:'/act20171201',img:'http://topic.yrhx.com/zt/ztlist/20171201.jpg',isShow:'inline-block',title:'全民大闯关',state:'进行中',state_class:'moving',profile:'全民大闯关',time:'2017/12/01'},
+		{href:'http://topic.yrhx.com/zt/2017/20171117',img:'http://topic.yrhx.com/zt/ztlist/20171117.jpg',isShow:'inline-block',title:'让神券飞，嗨赚感恩节',state:'已结束',state_class:'over',profile:'让神券飞，嗨赚感恩节',time:'2017/11/11-2017/12/17'},
+		{href:'/act20171118',img:'http://topic.yrhx.com/zt/ztlist/20171118.jpg',isShow:'inline-block',title:'礼我同行',state:'已结束',state_class:'over',profile:'礼我同行',time:'2017/11/11-2017/12/17'},
+		{href:'/act201711',img:'http://topic.yrhx.com/zt/ztlist/20171111.jpg',isShow:'inline-block',title:'肆无前例，FUN4嗨',state:'已结束 ',state_class:'over',profile:'肆无前例，FUN4嗨',time:'2017/11/11-2017/11/17'},           	
+		{href:'/X00?id=1253',img:'http://topic.yrhx.com/zt/ztlist/20171027.jpg',isShow:'inline-block',title:'易融恒信4周年，全场加息',state:'已结束 ',state_class:'over',profile:'易融恒信4周年，全场加息',time:'2017/10/11-2017/11/10'},
+		{href:'/act201710',img:'http://topic.yrhx.com/zt/ztlist/20171001.jpg',isShow:'inline-block',title:'金秋十月，翻牌有礼',state:'已结束 ',state_class:'over',profile:'金秋十月，翻牌有礼',time:'2017/10/01-2017/10/31'},           
+		{href:'/act0901',img:'http://topic.yrhx.com/zt/ztlist/20170831.jpg',isShow:'inline-block',title:'苹果出什么，我们送什么！',state:'已结束',state_class:'over',profile:'苹果出什么，我们送什么！',time:'2017/09/01-2017/09/30'},
+		{href:'/X00?id=1231',img:'http://topic.yrhx.com/zt/ztlist/20170816.jpg',isShow:'inline-block',title:'庆存管 馈投友',state:'已结束',state_class:'over',profile:'庆存管 馈投友',time:'2017/08/16-2017/08/31'},
+		{href:'/act0801',img:'http://topic.yrhx.com/zt/ztlist/20170731.jpg',isShow:'inline-block',title:'抢点现金买西瓜',state:'已结束',state_class:'over',profile:'抢点现金买西瓜',time:'2017/07/12-2017/08/31'},
+		{href:'http://www.yrhx.com/X00?id=1221',img:'http://topic.yrhx.com/zt/ztlist/20170712.jpg',isShow:'inline-block',title:'迎存管 馈投友',state:'已结束',state_class:'over',profile:'迎存管 馈投友',time:'2017/07/12'},
+		{href:'http://topic.yrhx.com/zt/2017/20170708/',img:'http://topic.yrhx.com/zt/ztlist/20170708.jpg',isShow:'inline-block',title:'冲榜领豪礼',state:'已结束',state_class:'over',profile:'冲榜领豪礼',time:'2017/07/08-2017/07/31'},
+		{href:'http://topic.yrhx.com/zt/2017/20170707/',img:'http://topic.yrhx.com/zt/ztlist/20170707.jpg',isShow:'inline-block',title:'初心不改 相伴前行',state:'已结束',state_class:'over',profile:'初心不改 相伴前行',time:'2017/07/07-2017/07/18'},
+		{href:'http://topic.yrhx.com/zt/2017/20170607/',img:'http://topic.yrhx.com/zt/ztlist/20170607.jpg',isShow:'inline-block',title:'\"红\"色诱惑·天赐良\"机\"',state:'已结束',state_class:'over',profile:'\"红\"色诱惑·天赐良\"机\"',time:'2017/06/07-2017/07/07'},
+		{href:'http://topic.yrhx.com/zt/2017/20170606/',img:'http://topic.yrhx.com/zt/ztlist/20170606.jpg',isShow:'inline-block',title:'签到攒积分',state:'进行中',state_class:'moving',profile:'签到攒积分',time:'2017/06/06'},           
+		{href:'http://topic.yrhx.com/zt/2017/20170503/',img:'http://topic.yrhx.com/zt/ztlist/20170503.jpg',isShow:'inline-block',title:'欢乐颂',state:'已结束',state_class:'over',profile:'欢乐颂',time:'2017/05/05-2017/05/31'},
+		{href:'http://topic.yrhx.com/zt/2017/20170405/',img:'http://topic.yrhx.com/zt/ztlist/20170405.jpg',isShow:'inline-block',title:'花开成海，返现绽放',state:'已结束',state_class:'over',profile:'花开成海，返现绽放',time:'2017/04/10-2017/05/31'}, 
+		{href:'http://topic.yrhx.com/zt/2017/20170421/',img:'http://topic.yrhx.com/zt/ztlist/20170421.jpg',isShow:'inline-block',title:'易友会',state:'已结束',state_class:'over',profile:'易友会，2017第一季度运营汇报邀请函',time:'2017/04/14-2017/04/15'}, 
+		{href:'http://topic.yrhx.com/zt/2017/20170308',img:'http://topic.yrhx.com/zt/ztlist/20170308.jpg',isShow:'inline-block',title:'四大美女齐相邀',state:'已结束',state_class:'over',profile:'四大美女齐相邀',time:'2017/03/08-2017/03/31'},           
+		{href:'http://topic.yrhx.com/zt/2017/20170212',img:'http://topic.yrhx.com/zt/ztlist/20170212.jpg',isShow:'inline-block',title:' 晒幸福，撒狗粮',state:'已结束',state_class:'over',profile:'晒幸福，撒狗粮，赢214元情人节现金',time:'2017/02/14-2017/02/20'},
+		{href:'http://topic.yrhx.com/zt/2017/20170210',img:'http://topic.yrhx.com/zt/ztlist/20170210.jpg',isShow:'inline-block',title:' 舌尖上的灯谜',state:'已结束',state_class:'over',profile:'舌尖上的灯谜，猜灯谜赢大奖',time:'2017/02/10-2017/02/12'},
+		{href:'http://topic.yrhx.com/zt/2017/20170209',img:'http://topic.yrhx.com/zt/ztlist/20170209.jpg',isShow:'inline-block',title:' 2017高效运行模式开启',state:'已结束',state_class:'over',profile:'2017中州金融高效运行模式开启！',time:'2017/02/10'},
+		{href:'http://topic.yrhx.com/zt/2016/20161218',img:'http://topic.yrhx.com/zt/ztlist/20161218.jpg',isShow:'inline-block',title:' 双旦加息',state:'已结束',state_class:'over',profile:'易融恒信助力年末，双旦加息！',time:'2016/12/19-2017/01/18'},
+    	{href:'http://topic.yrhx.com/zt/2016/20161209',img:'http://topic.yrhx.com/zt/ztlist/20161209.jpg',isShow:'inline-block',title:'易融恒信自动投标焕然升级',state:'已结束',state_class:'over',profile:'自动投标功能全新升级，活动期间内首次开启均可享有880元现金券礼包。',time:'2016/12/11-2016/12/18'}
+		/*	{href:'http://topic.yrhx.com/zt/2016/20161110',img:'http://topic.yrhx.com/zt/ztlist/20161110.jpg',isShow:'inline-block',title:'三周年加息来袭',state:'已结束',state_class:'over',profile:'庆祝易融恒信三周年，回馈答谢投资人，全场加息1%',time:'2016/11/11-2016/12/10'}
+		{href:'http://topic.yrhx.com/zt/2016/20160902',img:'http://topic.yrhx.com/zt/ztlist/20160902.jpg',isShow:'inline-block',title:'老友新邻，友福同享',state:'已结束',state_class:'over',profile:'518元注册就拿走，专享年化18%高息标；邀请好友注册送50元现金券。',time:'2016/11/11-平台公告时间为准'}*/
+	];
+var data2=[
+		{href:'http://topic.yrhx.com/zt/2017/20171204',img:'http://topic.yrhx.com/zt/ztlist/20171204.jpg',isShow:'none',title:'2018未来，势.可为',state:'进行中',state_class:'moving',profile:'易融恒信2018年度盛典',time:'2017/12/04'},
+		{href:'http://topic.yrhx.com/zt/2017/20171114',img:'http://topic.yrhx.com/zt/ztlist/20171114.jpg',isShow:'none',title:'第三季度运营报告',state:'进行中',state_class:'moving',profile:'第三季度运营报告',time:'2017/11/14'},
+		{href:'http://topic.yrhx.com/zt/2017/20171111',img:'http://topic.yrhx.com/zt/ztlist/20171110.jpg',isShow:'none',title:'砥砺四载，以诚致远',state:'进行中',state_class:'moving',profile:'砥砺四载，以诚致远',time:'2017/11/11'},           
+		{href:'http://topic.yrhx.com/zt/2017/20171025',img:'http://topic.yrhx.com/zt/ztlist/20171025.jpg',isShow:'none',title:'拖车大战',state:'进行中',state_class:'moving',profile:'拖车大战',time:'2017/10/25'},
+		{href:'http://topic.yrhx.com/zt/2017/20170828',img:'http://topic.yrhx.com/zt/ztlist/20170828.jpg',isShow:'none',title:'贷后战狼',state:'进行中',state_class:'moving',profile:'贷后战狼',time:'2017/08/28'},           
+		{href:'http://topic.yrhx.com/zt/2017/20170815',img:'http://topic.yrhx.com/zt/ztlist/20170815.jpg',isShow:'none',title:'银行存管正式上线',state:'进行中',state_class:'moving',profile:'银行存管正式上线',time:'2017/08/16'},
+		{href:'http://topic.yrhx.com/zt/2017/20170814',img:'http://topic.yrhx.com/zt/ztlist/20170814.jpg',isShow:'none',title:'手把手教你开通银行存管',state:'进行中',state_class:'moving',profile:'手把手教你开通银行存管',time:'2017/08/16'},
+		{href:'http://topic.yrhx.com/zt/2017/20170725',img:'http://topic.yrhx.com/zt/ztlist/20170725.jpg',isShow:'none',title:'初心不改 亿路有你',state:'进行中',state_class:'moving',profile:'初心不改 亿路有你',time:'2017/07/25'},
+		{href:'http://topic.yrhx.com/zt/2017/20170620',img:'http://topic.yrhx.com/zt/ztlist/20170620.jpg',isShow:'none',title:'贷后金刚就在你身边',state:'进行中',state_class:'moving',profile:'贷后金刚就在你身边',time:'2017/06/20'},
+		{href:'http://topic.yrhx.com/zt/2017/20170524',img:'http://topic.yrhx.com/zt/ztlist/20170524.jpg',isShow:'none',title:'大揭秘 中州贷后\"资产卫士\"浮出水面',state:'进行中',state_class:'moving',profile:'大揭秘 中州贷后\"资产卫士\"浮出水面',time:'2017/05/24'},           
+		{href:'http://topic.yrhx.com/zt/2017/20170523',img:'http://topic.yrhx.com/zt/ztlist/20170523.jpg',isShow:'none',title:'开启资金存管新篇章',state:'进行中',state_class:'moving',profile:'易融恒信待收额突破4亿',time:'2017/05/23'},           
+		//{href:'http://topic.yrhx.com/zt/2017/20170505',img:'http://topic.yrhx.com/zt/ztlist/20170505.jpg',isShow:'none',title:'开启资金存管新篇章',state:'进行中',state_class:'moving',profile:'开启资金存管新篇章',time:'2017/05/05'},
+		{href:'http://topic.yrhx.com/zt/2017/20170424',img:'http://topic.yrhx.com/zt/ztlist/20170424.jpg',isShow:'none',title:'速度与激情中州贷后的追车大战',state:'进行中',state_class:'moving',profile:'速度与激情中州贷后的追车大战',time:'2017/04/24'},
+		{href:'http://topic.yrhx.com/zt/2017/20170324',img:'http://topic.yrhx.com/zt/ztlist/20170324.jpg',isShow:'none',title:'易融恒信猎豹出动',state:'进行中',state_class:'moving',profile:'易融恒信2017与时间赛跑，猎豹出动',time:'2017/03/23'},
+		{href:'http://topic.yrhx.com/zt/2017/20170227',img:'http://topic.yrhx.com/zt/ztlist/20170227.jpg',isShow:'none',title:'易融恒信联手安存',state:'进行中',state_class:'moving',profile:'易融恒信联手安存,安全防护再升级',time:'2017/03/01'},
+		{href:'http://topic.yrhx.com/yk/2016/year/',img:'http://topic.yrhx.com/zt/ztlist/20170115.jpg',isShow:'none',title:'2016运营年报',state:'进行中',state_class:'moving',profile:'2016易融恒信运营状况总览',time:'2017/01/15'},  
+		{href:'http://topic.yrhx.com/zt/2016/20161222',img:'http://topic.yrhx.com/zt/ztlist/20161222.jpg',isShow:'none',title:'投资人交流沙龙',state:'进行中',state_class:'moving',profile:'不论是初识还是旧交，易融恒信平台都随时欢迎每一位投资人的监督和关注...',time:'2016/12/22'},  
+		{href:'http://topic.yrhx.com/zt/2016/20161221',img:'http://topic.yrhx.com/zt/ztlist/20161221.jpg',isShow:'none',title:'黑社会？',state:'进行中',state_class:'moving',profile:'贷后催收，实际上是一个专业性很强的职业，是和时间、人性的赛跑',time:'2016/12/21'},
+		{href:'http://topic.yrhx.com/zt/2016/20161213',img:'http://topic.yrhx.com/zt/ztlist/20161213.jpg',isShow:'none',title:'合规，我先行',state:'进行中',state_class:'moving',profile:'易融恒信携手CFCA打造电子安全锁，保障投资人资金安全。',time:'2016/12/13'},
+		{href:'http://topic.yrhx.com/zt/2016/20161112',img:'http://topic.yrhx.com/zt/ztlist/20161112.jpg',isShow:'none',title:'易融恒信三周年庆',state:'已结束',state_class:'over',profile:'11月11日，易融恒信召开“知变·致远”易融恒信三周年庆典活动。',time:'2016/11/11'},
+		{href:'http://topic.yrhx.com/zt/2016/20161127',img:'http://topic.yrhx.com/zt/ztlist/20161127.jpg',isShow:'none',title:'中州贷后在行动',state:'进行中',state_class:'moving',profile:'客户逾期怎么办？车辆二押怎么办？客户骗贷怎么办？',time:'2016/11/27'},
+		{href:'http://topic.yrhx.com/zt/2016/20161019',img:'http://topic.yrhx.com/zt/ztlist/20161019.jpg',isShow:'none',title:'贷后在行动',state:'进行中',state_class:'moving',profile:'急行千里追卡宴，星夜赶回大本营，昆明中州三个贷后小故事。',time:'2016/10/19'},
+		{href:'http://topic.yrhx.com/zt/2016/20160927',img:'http://topic.yrhx.com/zt/ztlist/20160927.jpg',isShow:'none',title:'全面解析房稳赚',state:'进行中',state_class:'moving',profile:'紧追市场形势，锁定武汉楼市，产品评估监控：从源头把握风险。',time:'2016/09/27'},
+		{href:'http://topic.yrhx.com/zt/2016/20160914',img:'http://topic.yrhx.com/zt/ztlist/20160914.jpg',isShow:'none',title:'如何保障您的资金安全',state:'进行中',state_class:'moving',profile:'专访中州车贷总经理祁守涛，专业人做专业事，优质资产争夺战。',time:'2016/09/14'},
+		{href:'http://topic.yrhx.com/zt/2016/20160907',img:'http://topic.yrhx.com/zt/ztlist/20160907.jpg',isShow:'none',title:'中州车贷现场直击',state:'进行中',state_class:'moving',profile:'中州专业且经验丰富的贷后团队，着力维护公司利益，为您的投资保驾护航。',time:'2016/09/07'}
+		
+     ];
+     
+function listHtml(data,container){
+	for(var i=0 ;i<data.length;i++){
+		var ListHtml = "<div class='topic_list_item'><a target='_blank' href='"+data[i]["href"]+"'>";
+		ListHtml += "<img src='"+data[i]['img']+"'/>";
+		ListHtml += "<div class='topic_title'><span>"+data[i]['title']+"</span><i style='display:"+ data[i]['isShow'] +"' class='"+ data[i]['state_class'] +"'>"+data[i]['state']+"</i></div>";
+		ListHtml += "<div class='topic_info'>"+ data[i]['profile'] +"</div>";
+		ListHtml += "<div class='topic_time'><i></i>"+ data[i]['time'] +"</div>";
+		ListHtml += "</a></div>";
+		$(container).append(ListHtml);
+	}	
+}
+listHtml(data1,'#box1');
+listHtml(data2,'#box2');
+</script>
+
+</body>
+</html>

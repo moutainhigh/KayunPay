@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>积分商城</title>
+    <meta name="keywords" content="易融恒信,网贷平台,p2p网贷平台排名,p2p投资,p2b网贷,p2p投资平台,小投资,武汉贷款,武汉小额投资,武汉网贷公司,武汉易融恒信"/>
+    <meta name="description" content="易融恒信,致力于做华中地区最好的p2p网贷平台,为投资者提供最安全,最靠谱,最透明的互联网金融p2p投资平台,咨询电话400-027-0707"/>
+    <link type="text/css" href="/portal/css/public.css" rel="stylesheet">
+    <link type="text/css" href="/portal/css/aboutUs.css" rel="stylesheet">
+    <link type="text/css" href="/portal/css/user.css?v=1.0.1" rel="stylesheet">
+	<link type="text/css" href="/portal/css/datapicker/datepicker.css" rel="stylesheet">
+	
+    <script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js?v=1.0.0" charset="utf-8"></script>
+    <script type="text/javascript" src="/portal/js/pub/core.js?v=1.0.0" charset="utf-8"></script>
+    <script type="text/javascript" src="/portal/js/pub/widget-table.js"></script>
+	<script type="text/javascript" src="/portal/js/pub/app.js"></script>
+	
+	<script type="text/javascript" src="/portal/js/config.js?v=1.0.0" charset="utf-8"></script>
+	<script type="text/javascript" src="/portal/js/public.js?v=1.0.0"></script>
+	<script type="text/javascript" src="/portal/js/aboutUs.js"></script>	
+	<script type="text/javascript" src="/portal/js/user.js"></script>
+	
+	<script type="text/javascript" src="/portal/css/datapicker/bootstrap-datepicker.js"></script>
+	
+	<script>   topNavSelect= '4';</script>
+	
+	
+    <!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+<body>
+<div class="wrapper"><!--[if lt IE 9]>
+    <script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+    <header id="header" class="header"></header>
+   	<div class='topic_head_pointMall'></div>
+   	<div class="topic_below">
+   		<div class="PM_signed" id="PM_signed"></div>
+   		<div class="PM_fengYunBang" id="PM_fengYunBang"></div>
+   		<div class="PM_duiHuanBang" id="PM_duiHuanBang"></div>
+   	</div>   	
+   	<main class='topic_main'>
+   		<div class='topic_choose'>
+   			<span class='cur'>全部</span>
+   			<span >投资券</span>
+   			<span>实物商品</span>
+   			<span>电子卡</span>
+   		</div>
+   		<div class='topic_list_con'>
+   			<div class='topic_list' id='box1'></div>
+   			<div class='topic_list' style='display:none;' id="box2"></div>
+   			<div class='topic_list' style='display:none;' id="box3"></div>
+   			<div class='topic_list' style='display:none;' id="box4"></div>
+   		</div>
+   		
+   		<div class="background"></div><!-- 弹出灰色背景div -->
+   		<div class="pointDetails"></div><!-- 弹出积分详情div -->
+   		<div class="exchangeRecord"></div><!-- 弹出兑换明细div -->
+   		<div class='clearfix'></div>
+   		<div class='market_list'>
+   			<div class='page_panel' id='market1' ></div>
+   			<div class='page_panel' id='market2' style='display:none;'></div>
+   			<div class='page_panel' id='market3' style='display:none;'></div>
+   			<div class='page_panel' id='market4' style='display:none;'></div>
+   		</div>
+   		
+   	</main>
+   	
+    <footer id="footer" class="footer"></footer>
+</div>
+<div id="yinying" class="yinying"></div>
+<script>
+$('.topic_choose span').click(function(){
+	var that = $(this);
+	var index = that.index();
+	that.addClass('cur').siblings().removeClass('cur');
+	$('.topic_list_con .topic_list').eq(index).show().siblings().hide();
+	$('.market_list .page_panel').eq(index).show().siblings().hide();
+});
+
+/* data1里放置：全部商品
+data2里放置：理财券
+data3里放置：实物商品
+data4里放置：电子卡 */
+
+$.queryMarket = function(pageNumber, pageSize) {	
+	YRHX.ajax({
+				url : CONFIG.getRequestURI("queryMarketByPage"),
+				data : {
+					"pageNumber" : pageNumber || 1,
+					"pageSize" : pageSize || 16
+				},
+				success : function(sucData) {					
+					var returnData = sucData.market.list;
+					$("#box1").html("");
+					if (returnData.length > 0) {
+						for (var i = 0; i < returnData.length; i++) {
+							var tmp=returnData[i];
+							var data1=[{img:tmp["mPic"],isShow:'none',product:tmp["mName"],state:'进行中',state_class:'moving',value:tmp["point"],mCode:tmp["mCode"],rest:'剩余    '+tmp["remainCount"]+' 个'}];
+							listHtml(data1,'#box1');
+						}					
+			 	    //分页
+					$("#market1").pag(
+							sucData["pageNumber"],
+							sucData["pageSize"],
+							sucData["totalRow"],
+							function() {
+								var reqIndex = $(this)
+										.attr("index");
+								$.queryMarket(reqIndex || 1);
+							});
+				} else {
+					//暂无数据
+					$("#box1").noData();
+				   
+				}
+				},
+				error : function(errData) {
+					$.popTips("popTipErr", errData.return_info);
+				}
+	});
+};
+
+$.queryMarket();
+
+$.queryMarket_LCQ = function(pageNumber, pageSize) {
+	YRHX.ajax({
+				url : CONFIG.getRequestURI("queryMarketLCQByPage"),
+				data : {
+					"pageNumber" : pageNumber || 0,
+					"pageSize" : pageSize || 16
+				},
+				success : function(sucData) {
+					var returnData = sucData.market.list;
+					$("#box2").html("");
+					if (returnData.length > 0) {						
+						for (var i = 0; i < returnData.length; i++) {
+							var tmp=returnData[i];
+							var data2=[{img:tmp["mPic"],isShow:'none',product:tmp["mName"],state:'进行中',state_class:'moving',value:tmp["point"],mCode:tmp["mCode"],rest:'剩余    '+tmp["remainCount"]+' 个'}];
+							listHtml(data2,'#box2');
+						}
+						//分页
+						$("#market2").pag(
+								sucData["pageNumber"],
+								sucData["pageSize"],
+								sucData["totalRow"],
+								function() {
+									var reqIndex = $(this)
+											.attr("index");
+									$.queryMarket_LCQ(reqIndex || 1);
+								});
+					}else {
+						//暂无数据
+						$("#box2").noData();
+					   
+					}
+				},
+				error : function(errData) {
+					$.popTips("popTipErr", errData.return_info);
+				}
+	});
+};
+
+$.queryMarket_LCQ();
+
+$.queryMarket_SWSP = function(pageNumber, pageSize) {
+	YRHX.ajax({
+				url : CONFIG.getRequestURI("queryMarketSWSPByPage"),
+				data : {
+					"pageNumber" : pageNumber || 0,
+					"pageSize" : pageSize || 16
+				},
+				success : function(sucData) {
+					var returnData = sucData.market.list;
+					$("#box3").html("");
+					if (returnData.length > 0) {
+						for (var i = 0; i < returnData.length; i++) {
+							var tmp=returnData[i];
+							var data3=[{img:tmp["mPic"],isShow:'none',product:tmp["mName"],state:'进行中',state_class:'moving',value:tmp["point"],mCode:tmp["mCode"],rest:'剩余    '+tmp["remainCount"]+' 个'}];
+							listHtml(data3,'#box3');
+						}
+						//分页
+						$("#market3").pag(
+								sucData["pageNumber"],
+								sucData["pageSize"],
+								sucData["totalRow"],
+								function() {
+									var reqIndex = $(this)
+											.attr("index");
+									$.queryMarket_SWSP(reqIndex || 1);
+								});
+					}else {
+						//暂无数据
+						$("#box3").noData();
+					   
+					}
+				},
+				error : function(errData) {
+					$.popTips("popTipErr", errData.return_info);
+				}
+	});
+};
+
+$.queryMarket_SWSP();
+
+$.queryMarket_DZK = function(pageNumber, pageSize) {
+	YRHX.ajax({
+				url : CONFIG.getRequestURI("queryMarketDZKByPage"),
+				data : {
+					"pageNumber" : pageNumber || 0,
+					"pageSize" : pageSize || 16
+				},
+				success : function(sucData) {
+					var returnData = sucData.market.list;
+					$("#box4").html("");
+					if (returnData.length > 0) {
+						for (var i = 0; i < returnData.length; i++) {
+							var tmp=returnData[i];
+							var data4=[{img:tmp["mPic"],isShow:'none',product:tmp["mName"],state:'进行中',state_class:'moving',value:tmp["point"],mCode:tmp["mCode"],rest:'剩余    '+tmp["remainCount"]+' 个'}];
+							listHtml(data4,'#box4');
+						}
+						//分页
+						$("#market4").pag(
+								sucData["pageNumber"],
+								sucData["pageSize"],
+								sucData["totalRow"],
+								function() {
+									var reqIndex = $(this)
+											.attr("index");
+									$.queryMarket_DZK(reqIndex || 1);
+								});
+					}else {
+						//暂无数据
+						$("#box4").noData();
+					   
+					}
+				},
+				error : function(errData) {
+					$.popTips("popTipErr", errData.return_info);
+				}
+	});
+};
+
+$.queryMarket_DZK();
+     
+function listHtml(data,container){
+	for(var i=0 ;i<data.length;i++){
+		var ListHtml = "<div class='topic_list_item_product'>";
+			ListHtml += "<img src='"+data[i]['img']+"'/>";
+			ListHtml += "<div class='topic_title_product'>"+data[i]['product']+"</div>";
+			ListHtml += "<div class='product_below'>";
+			ListHtml += "<div class='topic_value'>"+ data[i]['value']/100 + " 积分" + "</div>";
+			ListHtml += "<span>/</span>"
+			ListHtml += "<div class='topic_rest'>"+ data[i]['rest'] +"</div>";
+			ListHtml += "</div>";
+			ListHtml += "<div class='item_down'><button value='"+data[i]['mCode']+"' class='exchange_btn' onclick='open_product(this.value)'>兑换</button></div>";
+			ListHtml += "</div>";
+			$(container).append(ListHtml);
+	}	
+}
+
+//查询用户积分
+function queryPoints() {
+	var userName=YRHX.Cookie("userName").get();
+	YRHX.ajax({
+		url : CONFIG.getRequestURI("querySumScoreByCookie"),
+		data:{'userName':userName},
+		success : function(sucData) {
+			var Welcome = ""+sucData['points']/100+"";
+			$('.PM_signed_middle span').text(Welcome);
+			$("#hyjf").text(sucData["scores"] / 100);
+			$("#kyjf").text(sucData["points"] / 100);
+			$("#currntScore").text(sucData["points"] / 100);
+			$('.PM_signed_top span').text(userName);
+		},
+		error : function(errData) {
+			$.popTips("popTipErr", errData.return_info);
+		}
+	}); 
+}
+
+function isLogin(){
+	var userName=YRHX.Cookie("userName").get();
+	if(userName){
+		singedHtml('#PM_signed');
+		queryPoints();	
+	}else{
+		welcomeHtml('#PM_signed');
+	}
+		 
+}
+isLogin();
+ function singedHtml(container){
+	var SingedHtml = "<div class='PM_signed_top'><img src='/portal/images/touxiang.png'>Hi，<span id='username'></span></div>";
+		SingedHtml += "<div class='PM_signed_middle'><br/><h4>积分</h4><span style=\"display:block\" id='KYJF'></span><button class='qiandao_btn' value='签到领积分'>签到领积分</button></div>";   
+		SingedHtml += "<hr width='100%' color=#f3f3f3 size=1>";
+		SingedHtml += "<div class='PM_signed_bottom'><img src='/portal/images/icons/point_detail.png'><a href='' id='queryPoints' onclick='return false'>积分明细</a>";
+		SingedHtml += "<span>|</span><img src='/portal/images/icons/exchange_record.png'><a href='' id='ex_record' onclick='return false'>兑换记录</a></div>";
+		$(container).append(SingedHtml);	
+}
+
+YRHX.ajax({
+	url : CONFIG.getRequestURI("isSign"),
+	success : function(sucData) {
+		$(".qiandao_btn").val("已签到");
+		$(".qiandao_btn").text("已签到");
+		$(".qiandao_btn").unbind("click");
+	},
+	error : function(errData) {
+	}
+});
+ 
+function welcomeHtml(container){
+	var WelcomeHtml = "<br/><br/><br/><h4>投资有积分</h4><h4>即可兑奖</h4><br/><br/><br/><a href='/login' class='login'>请登录</a>"
+	$(container).append(WelcomeHtml);
+}
+
+function fengyunHtml(container){
+	var FengyunHtml = "<div class='PM_fengYunBang_topic'><span>达人风云榜</span><img src='/portal/images/icons/calender_right.png' class='to_right' onclick='to_right()'><img src='/portal/images/icons/calender_left.png' class='to_left' onclick='to_letf()'></div>";
+		FengyunHtml += "<div class='PM_fengYunBang_table'>";
+		
+		FengyunHtml += "<div class='t1'><table><tr style='background-color:#f3f3f3'><th>排名</th></tr>";
+		FengyunHtml += "<tr><td><img src='/portal/images/icons/rank1.png'></td></tr>";
+		FengyunHtml += "<tr><td><img src='/portal/images/icons/rank2.png'></td></tr>";
+		FengyunHtml += "<tr><td><img src='/portal/images/icons/rank3.png'></td></tr>";
+		FengyunHtml += "<tr><td><i class='rankNo'>4</i></td></tr>";
+		FengyunHtml += "<tr><td><i class='rankNo'>5</i></td></tr></table></div>";
+		FengyunHtml += "<div class='t2'><table><thead><tr style='background-color:#f3f3f3'><th>达人</th><th>积分</th></tr></thead>";
+		FengyunHtml += "<tbody></tbody>";
+		FengyunHtml += "</table></div>";
+		FengyunHtml += "<div class='t3'><table><tr style='background-color:#f3f3f3'><th>排名</th></tr>";
+		FengyunHtml += "<tr><td><i class='rankNo'>6</i></td></tr>";
+		FengyunHtml += "<tr><td><i class='rankNo'>7</i></td></tr>";
+		FengyunHtml += "<tr><td><i class='rankNo'>8</i></td></tr>";
+		FengyunHtml += "<tr><td><i class='rankNo'>9</i></td></tr>";
+		FengyunHtml += "<tr><td><i class='rankNo'>10</i></td></tr></table></div>";
+		FengyunHtml += "<div class='t4'><table><thead><tr style='background-color:#f3f3f3'><th>达人</th><th>积分</th></tr></thead>";
+		FengyunHtml += "<tbody></tbody>";
+		FengyunHtml += "</table></div>";
+		
+		FengyunHtml += "</div>"
+	$(container).append(FengyunHtml);
+}
+fengyunHtml('#PM_fengYunBang');
+
+function to_right(){
+	$('.t1').css('display','none');
+	$('.t2').css('display','none');
+	$('.t3').css('display','inline-block');
+	$('.t4').css('display','inline-block');
+}
+function to_letf(){
+	$('.t3').css('display','none');
+	$('.t4').css('display','none');
+	$('.t1').css('display','inline-block');
+	$('.t2').css('display','inline-block');
+}
+
+function duihuanHtml(container){
+	var DuihuanHtml = "<div class='PM_duiHuanBang_topic'>兑换实况</div>";
+		DuihuanHtml += "<hr width='90%' color=#f3f3f3 size=1>";
+		DuihuanHtml += "<div class='PM_duiHuanBang_table'>";
+		DuihuanHtml += "<ul></ul></div>";	
+	$(container).append(DuihuanHtml);
+}
+duihuanHtml('#PM_duiHuanBang');
+
+function open_product(mCode){
+	var url = "/product_details?mCode="+mCode;
+	window.open(url);
+}
+
+function pointDetailsHtml(container){
+	var PointDetailsHtml = "<img id='close1' src='/portal/images/icons/close.jpg'>";
+		PointDetailsHtml += "<div class='user-main-right'><div class='my-money'><div class='my-money-li'></div>";
+		PointDetailsHtml += "<div class='my-money-li'><p><i>积分</i></p><p><b id='kyjf'></b></p></div></div>";
+		PointDetailsHtml += "<div class='search' style='margin: 0; background: #fff; padding: 38px 0 17px 0;'>从 <span class='input_panel'><input class='time_input' type='text' id='startTime'></span> <i class='clear_text'></i>到 <span class='input_panel'><input class='time_input' type='text' id='endTime'></span> <i class='clear_text'></i><button id='scoreQueryBtn'>查询</button></div>";
+		PointDetailsHtml += "<div class='finance-table' style='margin-top: 10px;'><table id='scoreDetail'><thead><tr class='h'><th>时间</th><th>类型</th><th>积分</th><th>备注</th></tr></thead><tbody></tbody></table>";
+		PointDetailsHtml += "<div class='page_panel' id='scoreDetailPage'></div></div></div>";
+		$(container).append(PointDetailsHtml);
+}
+pointDetailsHtml('.pointDetails');
+
+function exchangeRecordHtml(container){
+	var ExchangeRecordHtml = "<img id='close2' src='/portal/images/icons/close.jpg'>";
+		ExchangeRecordHtml += "<div class='user-main-right'>";
+		ExchangeRecordHtml += "<div class='finance-table' style='margin-top: 10px;'><table id='exchangeDetail'>";
+		ExchangeRecordHtml += "<thead><tr class='h'><th>时间</th><th>兑换</th><th>积分</th><th>状态</th></tr></thead>";
+		ExchangeRecordHtml += "<tbody></tbody></table><div class='page_panel' id='exchangeDetailPage'></div></div>";
+		ExchangeRecordHtml += "</div>";
+	$(container).append(ExchangeRecordHtml);
+}
+exchangeRecordHtml('.exchangeRecord');
+
+$(function(){
+	$('#queryPoints').click(function(pageNumber, pageSize){
+		$.scoreDetail();
+		$('.background').css('display','block');
+		$('.pointDetails').css('display','block');
+		$("#scoreQueryBtn").on("click", function() {
+			$.scoreDetail();
+		});
+	});
+	$('#close1').click(function(){
+		$('.background').css('display','none');
+		$('.pointDetails').css('display','none');
+	});
+	$('#ex_record').click(function(pageNumber, pageSize){
+		$.exchangeDetail();
+		$('.background').css('display','block');
+		$('.exchangeRecord').css('display','block');
+	});
+	$('#close2').click(function(){
+		$('.background').css('display','none');
+		$('.exchangeRecord').css('display','none');
+	});
+	$('.qiandao_btn').click(function(){
+		// 签到领积分
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("signIn"),
+			success : function(sucData) {
+				$("#sign_points").text(sucData["points"]);
+				$("#sustain_day").text(sucData["sustain_day"]);
+				$('body,html').css('overflow', 'hidden');
+				to_center($('#yinying').show());
+				to_center($('.bid_show2').show());
+				queryPoints();
+				// 弹窗关闭按钮
+				$('.bid_show2 .pop_close').click(function(){
+					$('body,html').css('overflow', 'auto');
+					$('#yinying').hide();
+					$('.bid_show2').hide();
+				});
+				$(".qiandao_btn").val("已签到");
+				$(".qiandao_btn").text("已签到");
+				$(".qiandao_btn").unbind("click");
+				boo = true;
+			},
+			error : function(errData) {
+				$.popTips("popTipErr", errData.return_info || "签到异常");
+				boo = true;
+			}
+		});
+	});
+});
+
+
+
+
+$('.time_input').datepicker({
+	'format' : 'yyyy-mm-dd'
+});
+
+$.scoreDetail = function(pageNumber, pageSize) {
+	var beginDate = $("#startTime").val().replaceAll("-", "");
+	var endDate = $("#endTime").val().replaceAll("-", "");
+	YRHX.ajax({
+				url : CONFIG.getRequestURI("queryFundsTrace4User"),
+				data : {
+					"pageNumber" : pageNumber || 1,
+					"pageSize" : pageSize || 10,
+					"beginDate" : beginDate,
+					"endDate" : endDate,
+					"traceType" : "J,Z"
+				},
+				success : function(sucData) {
+					var html_tab = "<tr><td>#{traceDate}</td>";
+					html_tab += "<td><i class='#{traceTypeCode}'>#{traceType}</i></td>";
+					html_tab += "<td>#{traceAmount}</td>";
+					html_tab += "<td>#{traceRemark}</td></tr>";
+					var tableEle = $("#scoreDetail tbody");
+					tableEle.html("");
+					var returnData = sucData.list;
+					if (returnData.length > 0) {
+						for (var i = 0; i < returnData.length; i++) {
+							var row = returnData[i];
+							row["traceDate"] = row["traceDate"]
+									.dateformat();
+							row["traceAmount"] = row["traceAmount"] / 100;
+							if (row["traceType"] == "J") {
+								row["traceType"] = "收入";
+								row["traceTypeCode"] = "green";
+							} else if (row["traceType"] == "Z") {
+								row["traceType"] = "支出";
+								row["traceTypeCode"] = "red";
+							}
+							var tmpHtml = html_tab.makeHtml(row);
+
+							tableEle.append(tmpHtml);
+						}
+						//分页
+						$("#scoreDetailPage").pag(
+								sucData["pageNumber"],
+								sucData["pageSize"],
+								sucData["totalRow"],
+								function() {
+									var reqIndex = $(this)
+											.attr("index");
+									$.scoreDetail(reqIndex || 1);
+								});
+					} else {
+						//暂无数据
+						$("#scoreDetail").noData();
+					}
+
+				},
+				error : function(errData) {
+					$.popTips("popTipErr", errData.return_info);
+				}
+			});
+};
+
+$.exchangeDetail = function(pageNumber, pageSize) {
+	YRHX.ajax({
+		url : CONFIG.getRequestURI("queryExchange"),
+		data : {
+			"pageNumber" : pageNumber || 1,
+			"pageSize" : pageSize || 10
+		},
+		success : function(sucData) {
+			var html_tab = "<tr><td>#{addDateTime}</td>";
+			html_tab += "<td>#{mName}</td>";
+			html_tab += "<td><i class='red'>#{point}</i></td>";
+			html_tab += "<td>#{issue}</td>";
+			var tableEle = $("#exchangeDetail tbody");
+			var tableFootEle = $("#exchangeDetail tfoot");
+			tableEle.html("");
+			tableFootEle.html("");
+			var returnData = sucData["list"];
+			if (returnData.length > 0) {
+				for (var i = 0; i < returnData.length; i++) {
+					var row = returnData[i];
+					row["addDateTime"] = row["addDateTime"]
+							.dateformat();
+					row["point"] = row["point"] / 100;
+
+					switch (row["issue"]) {
+					case "0":
+						row["issue"] = "处理中";
+						break;
+					case "1":
+						row["issue"] = "已处理";
+						break;
+					case "2":
+						row["issue"] = "兑换失败";
+						break;
+					}
+					var tmpHtml = html_tab.makeHtml(row);
+
+					tableEle.append(tmpHtml);
+				}
+				//分页
+				$("#exchangeDetailPage").pag(sucData["pageNumber"],
+						sucData["pageSize"], sucData["totalRow"],
+						function() {
+							var reqIndex = $(this).attr("index");
+							$.exchangeDetail(reqIndex || 1, 10);
+						});
+			} else {
+				//暂无数据
+				$("#exchangeDetail").noData();
+			}
+
+		},
+		error : function(errData) {
+			$.popTips("popTipErr", errData.return_info);
+		}
+	});
+}
+$.queryPointTop5 = function(pageNumber, pageSize) {	
+	YRHX.ajax({
+		url : CONFIG.getRequestURI("queryPointTop5"),
+		data : {
+			"pageNumber" : pageNumber || 1,
+			"pageSize" : pageSize || 10
+		},
+		success : function(sucData) {
+			var html_tab = "<tr><td>#{userName}</td>";
+			html_tab += "<td>#{points}</td></tr>";
+			var tableEle = $(".t2 tbody");
+			var tableFootEle = $(".t2 tfoot");
+			tableEle.html("");
+			tableFootEle.html("");
+			var returnData = sucData.fund.list;
+			if (returnData.length > 0) {
+				for (var i = 0; i < returnData.length; i++) {
+					var row = returnData[i];
+					var len=row["userName"].length;
+					if( len <2){
+        				row["userName"]=row["userName"] + "***";
+        			}else{
+        				row["userName"]=row["userName"].substr(0,Math.floor(len / 2)) +"***";
+        				row["points"] = parseInt(row["points"]/100);
+        			}					
+					var tmpHtml = html_tab.makeHtml(row);
+					tableEle.append(tmpHtml);
+				}
+			}
+
+		},
+		error : function(errData) {
+			$.popTips("popTipErr", errData.return_info);
+		}
+	});
+}
+$.queryPointTop5();
+
+$.queryPoint6_10 = function(pageNumber, pageSize) {	
+	YRHX.ajax({
+		url : CONFIG.getRequestURI("queryPoint6_10"),
+		data : {
+			"pageNumber" : pageNumber || 1,
+			"pageSize" : pageSize || 10
+		},
+		success : function(sucData) {
+			var html_tab = "<tr><td>#{userName}</td>";
+			html_tab += "<td>#{points}</td></tr>";
+			var tableEle = $(".t4 tbody");
+			var tableFootEle = $(".t4 tfoot");
+			tableEle.html("");
+			tableFootEle.html("");
+			var returnData = sucData.fund.list;
+			
+			if (returnData.length > 0) {
+				for (var i = 0; i < returnData.length; i++) {
+					var row = returnData[i];
+					var len=row["userName"].length;
+					if( len <2){
+        				row["userName"]=row["userName"] + "***";
+        			}else{
+        				row["userName"]=row["userName"].substr(0,Math.floor(len / 2)) +"***";
+        				row["points"] = parseInt(row["points"]/100);
+        			}					
+					var tmpHtml = html_tab.makeHtml(row);
+					tableEle.append(tmpHtml);
+				}
+			}
+
+		},
+		error : function(errData) {
+			$.popTips("popTipErr", errData.return_info);
+		}
+	});
+}
+$.queryPoint6_10();
+
+$.queryExchangeNow = function(pageNumber, pageSize) {	
+	YRHX.ajax({
+		url : CONFIG.getRequestURI("queryExchangeNow"),
+		success : function(sucData) {
+			var html_ul = "<li><div class='s1'>#{userName}</div><div class='s2'>#{mName}</div><div class='s3'>#{updateDateTime}</div></li>";
+			var tableEle = $(".PM_duiHuanBang_table ul");
+			tableEle.html("");
+			var returnData = sucData.list;
+			if (returnData.length > 0) {
+				for (var i = 0; i < returnData.length; i++) {
+					var row = returnData[i];
+					var len=row["userName"].length;
+					if( len <2){
+        				row["userName"]=row["userName"] + "***";
+        			}else{
+        				row["userName"]=row["userName"].substr(0,Math.floor(len / 2)) +"***";
+        			}
+					row["mName"] = row["mName"].substring(0,9);
+					row["updateDateTime"] = row["updateDateTime"].substring(4,row["updateDateTime"].length-8)+"-"+row["updateDateTime"].substring(6,row["updateDateTime"].length-6)+" "+
+											row["updateDateTime"].substring(8,row["updateDateTime"].length-4)+":"+row["updateDateTime"].substring(10,row["updateDateTime"].length-2);
+					var tmpHtml = html_ul.makeHtml(row);
+					tableEle.append(tmpHtml);
+				}
+			}
+		},
+		error : function(errData) {
+			$.popTips("popTipErr", errData.return_info);
+		}
+	});
+}
+
+$.queryExchangeNow();
+
+$(function () {
+    var listPanel = $('.PM_duiHuanBang_table ul');
+    var z = 0;//向上滚动top值
+    function up() {//向上滚动
+        listPanel.animate({//中奖结果
+            'top': (z - 34) + 'px'
+        }, 1500, 'linear', function () {
+            listPanel.css({'top': '0px'})
+            .find("li:first").appendTo(listPanel);
+            up();
+    	});
+	}
+	up();
+});
+
+
+	
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,359 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link type="text/css" href="/portal/css/user.css?v=1.0.1" rel="stylesheet">
+<style type="text/css">
+  .message{
+     display:none;
+     position: absolute;
+     top: 50px;
+     z-index: 999;
+  }
+</style>
+</head>
+<!-- <body onkeydown="zhazha(event)"> -->
+<body>
+		<h3 style="color: green; margin-left: 20px">即信流水查询</h3>
+	
+		<div class="am-u-sm-12 am-u-md-4" style="margin-left: 50px;">
+				<div class="am-u-sm-6" style="padding: 0;">
+					<div class="am-input-group am-datepicker-date" data-am-datepicker="{format: 'yyyy-mm-dd', viewMode: 'days'}">
+						<input type="text" class="am-form-field" id="my-startDate" placeholder="开始日期" readonly style="width: 71%;">
+							<span class="am-input-group-btn am-datepicker-add-on">
+								<button class="am-btn am-btn-default" type="button">
+									<span class="am-icon-calendar"></span>
+								</button>
+							</span> 
+					</div>
+				</div>
+				
+				<div class="am-u-sm-6" style="padding: 0;">
+					<div class="am-input-group am-datepicker-date" data-am-datepicker="{format: 'yyyy-mm-dd', viewMode: 'days'}">
+						<input type="text" class="am-form-field" id="my-endDate" placeholder="结束日期" readonly style="width: 71%;">
+							<span class="am-input-group-btn am-datepicker-add-on">
+								<button class="am-btn am-btn-default" type="button">
+									<span class="am-icon-calendar"></span>
+								</button>
+							</span>
+					</div>
+				</div>
+		</div>
+		<br/>
+		<br/>
+		<table style="width: 80%;margin-left: 20px;">
+		   <tr style="height: 35px;">
+		     <td>
+		       <div  style="margin-left: 50px;display: inline;">
+		         <span>查询的状态：</span>
+		          <select id = "selectState">
+		          <option value ="" >所有</option>
+		          <option value ="00000000" >成功</option>
+		          <option value ="2" >失败</option>
+		          <option value ="3">无响应</option>
+		         </select>
+		       </div>
+		     </td>
+		     <td>
+		        <div style="display: inline;">
+		                              全流水号：<input type="text" class='jxTraceCode' style="width: 200px;">
+		        </div>
+		     </td>
+		     <td>
+		       <div id="selectTxCode" style="width:200px;display: inline;">
+		        <span>选择业务：</span>
+		       </div>
+		     </td>
+		   </tr>
+		   <tr style="height: 35px;">
+		      <td>
+		         <div id="productId" style="display: inline;margin-left: 50px;">
+		          <span>标号：</span>
+		          <input type="text" class="productId" style="width: 300px;"> 
+		         </div>
+		      </td>
+		      <td>
+		        <div style="display: inline;">
+		        <span>账户信息：</span>
+		        <input type="text" style="width: 200px;" class="allkey">
+		        </div>
+		      </td>
+		      <td>
+		        <div style="display: inline;">
+		          <span>订单号：</span>
+		          <input type="text" class="orderId" style="width: 200px;">
+		        </div>
+		      </td>
+		      
+		   </tr>
+		   <tr style="height: 35px;">
+		     <td>
+		        <div style="display: inline;margin-left: 50px;">
+		          <span>原订单号：</span>
+		          <input type="text" class="orgOrderId" style="width: 200px;">
+		        </div>
+		     </td>
+		       <td>
+		         <div  style="display: inline;">
+				      每页条数：<input type="text" class="pageSize" maxlength="2">
+					<button class="querybutton" type="button" value="查询">查询</button>
+			     </div>
+		      </td>
+		     
+		   </tr>
+		</table>
+   
+		<br/>
+
+<div class="am-g" style="font-size: 14px;">
+		<div class="am-u-sm-12">
+			<table class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 0 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+						<li id="not"><input type="text" size="5" id="goValue" onkeypress="return IsNum(event)" value="1"/></li>
+						<li id="go"><input type="button" value="GO" onclick="$('#go').attr('index',$('#goValue').val())"/></li>
+					</ul>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	<div id="yinying" class="yinying" style="background-color: #f3f3f3;"></div>
+	<div class="message" style="position: fixed;top: 50px;z-index: 999;">
+	  <div class="requestMessage" style="display: inline-block;width: 600px;margin-left: 50px;">
+	     <span style="color: black;">请求报文：</span>
+	     <textarea id = "requestMessage" rows="20" cols="80" readonly="readonly"></textarea>
+	  </div>
+	  
+	  <div class="responseMessage" style="display: inline-block;width: 600px;">
+	     <span style="color: black;">响应报文：</span>
+	     <textarea id = "responseMessage" rows="20" cols="80" readonly="readonly"></textarea>
+	  </div>
+	  <div><button id="closeMessage" type="button" style="margin-left: 50%;" value="关闭">关闭</button></div>
+	</div>
+	<div>
+	   
+	</div>
+
+	<!-- prompt start -->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script type="text/javascript" src="/portal/js/jxErr.js"></script>
+	<script type="text/javascript" src="/portal/js/jxTraceState.js"></script>
+	<script>
+	$(function(){
+		var jxHtml = "<div  style='display: inline;'><select class='txCode'>";
+		jxHtml +="<option value=''>选择类型</option>";
+		var jxTxCode = txCode();
+		var length = jxTxCode.length;
+		
+		for(var i= 0;i<length;i++){
+			jxHtml += "<option value = '" + jxTxCode[i] + "' >" +  jxTxCodeValue(jxTxCode[i]) + "</option>";
+			
+		}
+		jxHtml += "</select></div>";
+		$("#selectTxCode").append(jxHtml);
+	})
+		/* function zhazha(e){
+			var keynum = 0;
+			if(window.event){
+				keynum = e.keyCode
+			}
+			else if(e.which){
+				keynum = e.which
+			}
+			if(keynum==13){
+				queryData(1);
+			}
+		} */	
+		
+		var maxQueryNum = 10;
+		var queryUrl = "/queryJxTrace";
+		var size = 0;
+		var pageSize = 0;
+		var requsetMessageValue = "";
+		var responseMessageValue = "";
+		
+		function queryData(pNum,pSize){
+			var accountId = $(".allkey").val();
+			var txCode = $(".txCode").val();
+			var startDate = $("#my-startDate").val().replaceAll("-","");
+			var endDate = $("#my-endDate").val().replaceAll("-","");
+			var state = $("#selectState").val();
+			var jxTraceCode = $(".jxTraceCode").val();
+			var productId = $(".productId").val();
+			var orderId = $(".orderId").val();
+			var orgOrderId = $(".orgOrderId").val();
+			
+			if(isNaN(pNum)){
+				alert("GO栏请输入数字！");
+				return;
+			}
+			if(size<1){
+				size = 1;
+			}
+			if(pNum>size && size !=0){
+				pNum = size;
+				$("#goValue").val(pNum);
+			}
+			
+			YRHX.ajax({
+				url : queryUrl,
+				data : {
+					pageNum : pNum,
+					pageSize : pSize || maxQueryNum,
+					accountId : accountId,
+					txCode : txCode,
+					state : state,
+					startTxDate:startDate,
+					endTxDate:endDate,
+					jxTraceCode:jxTraceCode,
+					productId:productId,
+					orderId:orderId,
+					orgOrderId:orgOrderId
+				},
+				success : function(sucData){
+					
+					size = Math.ceil(sucData["totalItems"]/maxQueryNum);//总页数
+					var temTotalData = {};
+					temTotalData["总记录数"] = sucData["totalItems"];
+					makeTable(sucData.list, {index : sucData["pageNum"],max : sucData["pageSize"],size :sucData["totalItems"]},temTotalData);
+				},
+                   error:function(data){
+					
+                	   YRHX.alert1("警告",data.return_info || "获取信息失败");
+					
+				}
+			})
+		}
+		
+		function makeTable(tableData,pageData,countData){
+			$(".am-g").table({
+				count_info:countData,
+				dataFormat:function(rowObj){
+					
+					var requestMessage = rowObj["requestMessage"];
+					var requestMessageV2 = null;
+					if(requestMessage != null){
+						requestMessageV2 = JSON.parse(requestMessage.replace(/[\r\n]/g,""));//转化为json对象  用来取值
+					}
+
+					/* var requestMessageV2 = JSON.parse(requestMessage);//转化为json对象  用来取值 */
+					var responseMessage = rowObj["responseMessage"];
+					var requestMessage2 = JSON.stringify(requestMessage).replace(/\\n/g,"\\n").replace(/\\r/g,"\\r");
+					var responseMessage1 = JSON.stringify(responseMessage).replace(/\\n/g,"\\n").replace(/\\r/g,"\\r");
+					var accountId = "";
+					var txAmount = "";
+					var name = "";
+					if(requestMessageV2 != null){
+						accountId = requestMessageV2.accountId;
+						txAmount = requestMessageV2.txAmount;
+						name = requestMessageV2.name;
+					}
+					if(name == "" || name==undefined){
+						name =rowObj["name"];
+					}
+					
+					rowObj["accountId"] = accountId;
+					rowObj["txAmount"] = txAmount;
+					rowObj["name"] = name;
+					rowObj["jxTraceCode"] =rowObj["jxTraceCode"]; 
+					rowObj["txDateTime"] =(rowObj["txDate"]+rowObj["txTime"]).dateformat(); 
+					rowObj["seqNo"] =rowObj["seqNo"];
+					var txCode = rowObj["txCode"];
+					rowObj["txCode"] =jxTxCodeValue(txCode);
+					rowObj["requestChannel"] =rowObj["requestChannel"];
+					var retCodeValue = rowObj["retCode"];
+					rowObj["retCode"] =jxErr(retCodeValue);
+					rowObj["requestMessage"] = requestMessage2;
+					rowObj["responseMessage"] = responseMessage1;
+					return rowObj;
+				},
+				max : 99,
+				pag :pageData,
+				header:[
+				        {name:"",text:"全流水",html:"#{jxTraceCode}"},
+				        {name:"",text:"日期时间",html:"#{txDateTime}"},
+				        {name:"",text:"流水",html:"#{seqNo}"},
+				        {name:"",text:"电子账号",html:"#{accountId}"},
+				        {name:"",text:"姓名",html:"#{name}"},
+				        {name:"",text:"交易金额",html:"#{txAmount}"},
+				        {name:"",text:"交易代码",html:"#{txCode}"},
+				        {name:"",text:"请求类型",html:"#{requestChannel}"},
+				        {name:"",text:"响应码",html:"#{retCode}"},
+				        {name : "",text : "操作",html : $.makeButtons([
+                             {"text":"显示报文","url":"javascript:showMessage('#{requestMessage}','#{responseMessage}')","ico":"am-icon-pencil-square-o"}
+                         ])
+				        }
+				],
+				data : tableData
+			});
+		}
+		
+	function showMessage(requestMessage,responseMessage){
+			$(".message").css("display","block");
+			$("#yinying").show();
+			$('body').css('overflow','hidden');
+			$("#requestMessage").text(requestMessage);
+			$("#responseMessage").text(responseMessage);
+		}
+    $(document).on("click","#closeMessage",function(){
+    	$(".message").css("display","none");
+    	$("#yinying").hide();
+    	$('body').css('overflow','auto');
+    })
+
+		
+		$(".querybutton").click(function(){
+			pageSize=$(".pageSize").val();
+			if(pageSize != ''){
+				maxQueryNum=pageSize;
+			}else{
+				maxQueryNum = 10;
+			}
+	
+				queryData(1,maxQueryNum);
+			
+			
+			$("#goValue").val(1);//设置GO栏默认页码为1
+
+		});
+		
+		$("div.pad-div").initPagEvent( queryData );
+
+		
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+	</script>
+</body>
+</html>

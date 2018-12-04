@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>登录</title>
+<link type="text/css" href="/portal/css/login.css" rel="stylesheet">
+<link type="text/css" href="/portal/css/public.css" rel="stylesheet">
+<!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+<body>
+	<header id="header" class="header"></header>
+	<div class="wrapper">
+
+		<div class="main" style="position:relative;">
+			<img src="/portal/images/loginBanner.jpg" class="login-banner">
+			<div class="login-block">
+				<div class="login-wrap">
+					<!--<form method="POST" action="/user/login" id="login_form">-->
+					<h2>用户登录
+					<!-- <i class="mailLoginBtn">邮箱登录</i> -->
+					</h2>
+					<p>
+						<i class="iconUser"></i><input id="login_account" type="text" maxlength="30" placeholder="请输入11位手机号" >
+					</p>
+					<p>
+						<i class="iconPwd"></i><input id="login_password" type="password"
+							placeholder="请输入密码">
+					</p>
+					<div class="remember">
+						<label><input id="login_auto" checked="checked" value="30" name="autologin"
+							type="checkbox"> 记住账号名 </label> <a href="findPwd"
+							class="forget" title="找回密码">忘记密码？</a>
+					</div>
+					<div class="loginBtn" id="login_submit">登录</div>
+					<!--</form>-->
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="mailLogin" class="mailLogin">
+		<div class="mailLoginTop">
+			<h2>绑定邮箱登录</h2>
+			<div class="del"></div>
+		</div>
+		
+		<div class="loginForm">
+			<div class="loginFormItem">
+				<label>用户邮箱</label>
+				<input type="text" name="uMail">
+			</div>
+			
+			<div class="loginFormItem">
+				<div class="subBtn">立即去验证</div>
+				<div id="msgTips" class="msgTips"></div>
+				<span style="margin-left: 90px; color: red;">* (请申请邮箱绑定手机号后用手机号登录！)</span>
+			</div> 
+		</div>
+		
+		
+		
+	</div>
+	
+	<div id="yinying" class="yinying"></div>
+	
+	<footer id="footer" class="footer"></footer>
+	<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+	<script type="text/javascript" src="/portal/js/config.js"></script>
+	<script type="text/javascript" src="/portal/js/public.js"></script>
+	<script type="text/javascript" src="/portal/js/user.js"></script>
+	<script type="text/javascript" src="/app/js/captcha.js"></script>
+	<script type="text/javascript">
+	
+		$(".mailLoginBtn").on("click",function(){
+			to_center( $("#mailLogin").show() );
+			to_center( $("#yinying").show() );
+		});
+		
+		$(".del").on("click",function(){
+			$("#mailLogin").hide();
+			$("#yinying").hide();
+		});
+		
+		$(".subBtn").on("click",function(){
+			
+			var email = $("input[name='uMail']").val();
+			if( email ){
+				if( !checkMail( email ) ){
+					$.popTips("popTipErr","邮箱非法") ;
+					
+				}else{
+					YRHX.ajax({
+						url : CONFIG.getRequestURI("sendEmail4Bind"),
+						data : {
+							email    : email 
+						},
+						success : function(sucData ){
+							$.popTips("popTipSuc","赶紧去邮箱验证吧!") ;
+						},
+						error : function(errData ){
+							$.popTips("popTipErr",errData.return_info || "登录失败") ;
+							
+						}
+					});
+				}
+				
+			}else{
+				$.popTips("popTipErr","验证邮箱为空") ;
+			}
+			
+		});
+		
+		$("#login_account").val(YRHX.Cookie("loginName").get())
+	
+		$.loginFn = function(){
+			var uName = $("#login_account").val();
+			var uPwd = $("#login_password").val();
+
+			if( uName.length == 0 || uName.length != 11 ){
+				$.popTips("popTipErr","用户名应为手机号!") ;
+				return false ;
+			}
+
+			if( uPwd.length == 0 ){
+				$.popTips("popTipErr","密码不能为空!") ;
+				return false;
+			}
+			YRHX.Cookie().clear();
+			YRHX.ajax({
+				url : CONFIG.getRequestURI("login"),
+				data : {
+					loginName    : uName ,
+					loginPwd : uPwd ,
+					fltuid : YRHX.queryString("fltuid") ,
+					source : YRHX.queryString("source")
+				},
+				success : function(sucData ){
+				
+					if($("#login_auto").attr("checked")){
+						YRHX.Cookie("loginName",uName).set();
+					}else{
+						YRHX.Cookie('loginName', '').set();;
+					}
+					YRHX.Cookie("userCode",sucData.userCode).set();
+					YRHX.Cookie("userName",sucData.userName).set();
+					YRHX.Cookie("loginId",sucData.loginId).set();
+					YRHX.Cookie("verifyPwd",sucData.verifyPwd).set();
+					YRHX.Cookie("verifyAuth",sucData.verifyAuth).set();
+					setTimeout(function(){
+						window.location.href = "A00?login=is" ;
+					},300); 
+				},
+				error : function(errData ){
+					/* if( errData.return_info == "05" || errData.return_info == "33"  ){ */
+						if( 0 ){
+						//登录次数过多加验证码
+						window.CAP = new captchaApi({
+							"buid" : 12,
+							"sid" : 12,
+							"success" : function( ticket ){
+								var txtYZM = $("#txtYZM").val();
+								if( txtYZM == ""){
+									$.popTips("popTipErr","请输入验证码",function(){
+										$("#txtYZM").focus();
+										return false;
+									}) ;
+								}
+							},
+							error : function(){
+
+							}
+						});
+						window.CAP.cap();
+
+						
+					}else{
+						$.popTips("popTipErr",errData.return_info || "登录失败") ;
+					}
+				}
+			});
+		};
+		$("#login_submit").click(function(){
+			$.loginFn();
+
+		});
+		
+		$("#login_password").focus(function(){
+			$(window).on("keydown",function(event){
+				if (event.keyCode == 13) {
+					$.loginFn();
+				}
+			});
+		})
+		
+		$("#login_account").blur(function(){
+			if( $("#login_account").val().indexOf("@") > -1 ){
+				$(".mailLoginBtn").click();
+			}
+		});
+		
+		function checkMail(mail) {
+			 var filter  = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+			 if (filter.test(mail)){
+				 return true; 
+			 }else {
+			 	return false;
+			 }
+		}
+	</script>
+</body>
+</html>

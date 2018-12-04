@@ -1,0 +1,199 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+	<div class="am-g">
+		<!-- 标准功能按钮 Start  -->
+		<div class="am-u-sm-12 am-u-md-4">
+			
+			<div class="am-u-sm-6" style="padding: 0;">
+					<div class="am-input-group am-datepicker-date" data-am-datepicker="{format: 'yyyy-mm-dd', viewMode: 'days'}">
+						<input type="text" class="am-form-field" id="my-startDate" placeholder="开始日期" readonly style="width: 71%;">
+							<span class="am-input-group-btn am-datepicker-add-on">
+								<button class="am-btn am-btn-default" type="button">
+									<span class="am-icon-calendar"></span>
+								</button>
+							</span> 
+					</div>
+				</div>
+				
+				<div class="am-u-sm-6" style="padding: 0;">
+					<div class="am-input-group am-datepicker-date" data-am-datepicker="{format: 'yyyy-mm-dd', viewMode: 'days'}">
+						<input type="text" class="am-form-field" id="my-endDate" placeholder="结束日期" readonly style="width: 71%;">
+							<span class="am-input-group-btn am-datepicker-add-on">
+								<button class="am-btn am-btn-default" type="button">
+									<span class="am-icon-calendar"></span>
+								</button>
+							</span>
+					</div>
+				</div>
+				
+		</div>
+		<!-- 标准功能按钮  End -->
+		<div class="am-u-sm-12 am-u-md-4">
+			<span class="am-input-group-btn">
+				<button class="am-btn am-btn-default query-btn" type="button">搜索</button>
+			</span>
+		</div>
+		<!-- 条件区 Start -->
+		<div class="am-u-sm-12 am-u-md-3">
+		</div>
+	</div>
+
+	<!-- 条件区  End -->
+	<!-- Table -->
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 15 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script>
+		var maxQueryNum = 10 ;
+		var queryUrl = "/getPayUserLoanTraceList";
+
+		//查询实现
+		function queryData( pNum , pSize ){
+			YRHX.ajax({
+				url : queryUrl,
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize ||maxQueryNum ,
+					payUserCode : YRHX.queryString("payUserCode")||'',
+					beginDate : $("#my-startDate").val().replaceAll("-",""),
+					endDate : $("#my-endDate").val().replaceAll("-","")
+				},
+				success : function(sucData){
+					var tmpTotalData = {};
+					tmpTotalData["投标金额"] = YRHX.toDecimal2(sucData["count_payAmount"]/ 10.0/10.0, "￥");
+					makeTable(sucData.list , {
+						index : sucData["pageNumber"] , 
+						max : sucData["pageSize"] ,
+						size : sucData["totalRow"]
+					},tmpTotalData);
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+			
+		}
+		$("div.pad-div").initPagEvent( queryData );
+		
+		$(".query-btn").click(function(){
+			queryData(1);
+		});
+
+		var loanStateData = YRHX.sortData(RES["DATA_MAP"]["loanState"]) ;
+		var refundTypeData = YRHX.sortData(RES["DATA_MAP"]["refundType"]) ;
+		function makeTable( tableData ,pageData,countData){
+			$(".am-g").table({
+						count_info : countData,
+						thtdcls : "font-size:13px;padding:8px 1px",
+						dataFormat : function(rowObj) {
+							rowObj["loanType"] = rowObj["loanType"]=="A"?"自动投标":"手动投标";
+							rowObj["loanStateDesc"] = loanStateData[rowObj["loanState"] ];
+							rowObj["payAmount"] = YRHX.toDecimal2(rowObj["payAmount"]/10.0/10.0 , "￥");
+							rowObj["loanDateTime"] = rowObj["loanDateTime"].dateformat();
+							rowObj["refundType"] = refundTypeData[rowObj["refundType"]];
+							rowObj["loanRecyCount"] = rowObj["loanRecyCount"] + "/";
+							rowObj["rateByYear"] = (rowObj["rateByYear"]/10.0/10.0).toFixed(2) ;
+							rowObj["rewardRateByYear"] = (rowObj["rewardRateByYear"]/10.0/10.0).toFixed(2) ;
+							return rowObj;
+						},
+						max : 10,
+						pag : pageData,
+						header : [
+								{
+									name : "",type : "checkbox",key : "loanCode"
+								},
+								{
+									name : "",text : "借款标编号",html : "#{loanNo}"
+								},
+								{
+									name : "",text : "借款标题",html : "#{loanTitle}"
+								},
+								{
+									name : "",text : "投标金额",html : "#{payAmount}"
+								},
+								{
+									name : "",text : "待还期数/总期数",html : "#{loanRecyCount}#{loanTimeLimit}"
+								},
+								{
+									name : "",text : "年利率",html : "#{rateByYear}%(+#{rewardRateByYear})%"
+								},
+								{
+									name : "",text : "还款方式",html : "#{refundType}"
+								},
+								{
+									name : "",text : "标状态",html : "#{loanStateDesc}"
+								},
+								{
+									name : "",text : "投标日期",html : "#{loanDateTime}"
+								},
+								{
+									name : "",text : "借款人姓名",html : "#{loanUserName}"
+								},
+								{
+									name : "",text : "投标人昵称",html : "#{payUserName}"
+								},
+								{
+									name : "",text : "操作",html : $.makeButtons([{"text":"贷款详情","url":"pageLoanForm?opType=view&loanCode=#{loanCode}","ico":"am-icon-pencil-square-o"}])
+								}],
+						data : tableData
+					});
+			}
+		
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		queryData(1);
+	</script>
+</body>
+</html>

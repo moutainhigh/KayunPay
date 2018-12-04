@@ -1,0 +1,499 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="data-spm" content="a2e15">
+	<title>易融恒信-安全可靠透明的投资平台,p2p网贷平台</title>
+	<meta name="keywords" content="易融恒信,网贷平台,p2p网贷平台排名,p2b网贷,p2p投资平台,小投资,武汉贷款,武汉小额投资,武汉网贷公司,武汉易融恒信" />
+	<meta name="description" content="易融恒信,致力于做华中地区最好的p2p网贷平台,为投资者提供最安全,最靠谱,最透明的互联网金融p2p投资平台,咨询电话400-027-0707" />
+    <meta baidu-gxt-verify-token="29bd386392271a808880d0e2e39970ba">
+    <link href="/portal/css/public.css?v=1.0.1" rel="stylesheet" media="screen" type="text/css" charset="utf-8"/>
+    <link href="/portal/css/index.css?v=1.0.7" rel="stylesheet" media="screen" type="text/css" charset="utf-8"/>
+    <!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+
+</head>
+<body class="indexPage" style="position:relative;">
+<!-- 顶部伸展广告 start -->
+<DIV style="margin: 0px auto; width: 960px; display: block;" id="js_ads_banner_top"></DIV>
+<DIV style="margin: 0px auto; width: 100%; display: none;" id="js_ads_banner_top_slide">
+	<A href="/X00?id=1253" target="_blank"><IMG src="/portal/images/topAd03.jpg" width="100%"></A>
+</DIV>
+<!-- 顶部伸展广告 end -->
+<!-- 底部浮动广告 start -->
+<!-- 
+<div id="foot_swt">
+  <div id="foot_ad">
+    <div id="foot_adBox">
+    	<a href="javascript:$('#foot_swt').css('display','none')"><IMG src="/portal/images/bottom_banner01.png" width="100%"  usemap="#foot_map"></a>
+    </div>
+  </div>
+</div>
+-->
+<div class="header_warpMain" style=" position: relative; min-width:1350px;">
+<!-- 底部浮动广告 end -->
+	<div id="banner" class="banner" style="height:595px;">
+		<!-- <a href="javascript:;">
+			<video id="cideoPlay1" preload="auto" poster="/portal/images/video_pic.jpg" x-webkit-airplay="true" webkit-playsinline="true" style="width:100%; height:400px; object-fit: fill">
+				<source src="http://topic.yrhx.com/video/yrhx.mp4" />
+				您的浏览器不支持此标签~
+			</video>
+			<div class="style-control-2vd6a"></div>
+		</a> -->
+		<!-- <a href="http://v.youku.com/v_show/id_XMzM5MDIzMzUwOA==.html?spm=a2h0k.8191407.0.0&from=s1.8-1-1.2"  style="background: url(/portal/images/video_pic.jpg) 50% 50% no-repeat;" target="_blank"></a> -->
+		<!-- <a href="/ShareHeader" style="background: url(/portal/images/banner104.jpg) 50% 50% no-repeat;" target="_blank"></a>
+		<a href="/X00?id=1314" style="background: url(/portal/images/banner103.jpg) 50% 50% no-repeat;" target="_blank"></a>
+		<a href="/grade" style="background: url(/portal/images/banner102.jpg) 50% 50% no-repeat;" target="_blank"></a>
+		<a href="http://topic.yrhx.com/zt/2018/20180309" style="background: url(/portal/images/banner101.jpg) 50% 50% no-repeat;" target="_blank"></a>
+		<a href="/act20180101" style="background: url(/portal/images/banner93.jpg) 50% 50% no-repeat;" target="_blank"></a>
+ -->
+<!--  <a href="#" style="background: url(/portal/images/banner108.jpg) 50% 50% no-repeat;" target="_blank" class="banner_a"></a>
+ <a href="#" style="background: url(/portal/images/banner106.jpg) 50% 50% no-repeat;" target="_blank" class="banner_a"></a>
+ <a href="/grade" style="background: url(/portal/images/banner102.jpg) 50% 50% no-repeat;" target="_blank" class="banner_a"></a> -->
+ 		
+ 		<div class="bd">
+			<ul>
+				<!-- <li>
+	 				<a href="http://topic.yrhx.com/zt/2018/20180713" style="background: url(/portal/images/banner116.jpg) 50% 50% no-repeat;" target="_blank" class="banner_a"></a>
+	 			</li> -->
+	 			<li>
+	 				<a href="http://topic.yrhx.com/zt/2018/20181007" style="background: url(/portal/images/banner122.jpg) 50% 50% no-repeat;" target="_blank" class="banner_a"></a>
+	 			</li> 
+		 		<li>
+		 			<a href="/Message01" style="background: url(/portal/images/banner110.jpg) 50% 50% no-repeat;" target="_blank" class="banner_a"></a>
+		 		</li>
+				<li>
+	 				<a href="http://topic.yrhx.com/zt/2018/20180521/" style="background: url(/portal/images/banner109.jpg) 50% 50% no-repeat;" target="_blank" class="banner_a"></a>
+	 			</li>
+	 			<li>
+	 				<a href="http://topic.yrhx.com/zt/2018/20180522/" style="background: url(/portal/images/banner106.jpg) 50% 50% no-repeat;" target="_blank" class="banner_a"></a>
+	 			</li>
+		 		<li>
+		 			<a href="/grade" style="background: url(/portal/images/banner102.jpg) 50% 50% no-repeat;" target="_blank" class="banner_a"></a>
+		 		</li>
+			</ul>
+		</div>
+		<div class="layout_centerBtn">
+            <div id="bannerLeftRightBtn" class="bannerLeftRight">
+            	<a href="javascript:;" class="bannerLeft prev"></a>
+            	<a href="javascript:;" class="bannerRight next"></a>
+            </div>
+        </div>
+
+    </div>
+   
+	<header id="headerIndex" class="header"></header>
+
+</div>
+<main class="main_grey">
+ 
+ 	<div class="list_table2">
+	 	<ul>
+	 		<li><a href='http://topic.yrhx.com/zt/2018/20180521/' target="_blank"><i class="index_first04"></i><div><span class = "strong">银行存管</span><span style='color:#999'>江西银行，资金存管</span></div></a></li>
+		    <li><a href='http://topic.yrhx.com/zt/2018/20180309/' target="_blank"><i class="index_first05"></i><div><span class = "strong">三级等保</span><span style='color:#999'>技术保障，为用户资金保驾护航</span></div></a></li>
+		    <!-- <li><a href='/portal/images/icp.jpg' target="_blank"><i class="index_first01"></i><div><strong>ICP许可证</strong><span>工信部经营性网站认证</span></div></a></li> -->
+		    <li><a href='http://topic.yrhx.com/zt/2016/20161213/' target="_blank"><i class="index_first02"></i><div><span class = "strong">电子签章</span><span style='color:#999'>电子印章加密，防范法律风险</span></div></a></li>
+            <!-- <li><a href='http://topic.yrhx.com/zt/2015/20150728/' target="_blank"><i class="index_first03"></i><div><strong>常青盟创始成员</strong><span>湖北P2P行业自律联盟</span></div></a></li> -->
+            <li><a href='http://www.shlawyers.cn/' target="_blank"><i class="index_first06"></i><div><span class = "strong">专业律所</span><span style='color:#999'>湖北山河律所，全程法律支持</span></div></a></li>
+			<div class="clear"></div>
+	    </ul>
+	 </div>
+ 	
+ 	
+ 	<div class="list_table1">
+ 		<div class="list_table1_main">
+ 			<span class="notice"></span>
+ 			<div class="marquee">
+	 			<ul id="indexNotice">
+	 				<!-- <li>加息活动<i>|</i><span>11.20</span></li> -->
+	 			</ul>
+ 			</div>
+ 			<a href="/X01" class="more">更多></a>
+ 		</div>
+ 	</div>
+ 	
+ 	<div class="list_center">
+ 		<!--新手福利  -->
+ 	    <div class="index-panel" style="width:1220px; margin:0 auto 20px; overflow:hidden;">
+ 			<a href="javascript:;" target="_blank" class="panel_gift"></a>
+	 		<div class="i_giftMain" id="new_bid">
+		 		<!-- <div class="i_giftTop">
+		 			<div class="i_giftTitle">新手福利标<i></i></div>
+		 			<a href="/Y01" class="i_gift_help">新手帮助></a>
+		 		</div>
+		 		<div class="i_giftList">
+			 		<ul class="index_bid">
+			 			<li><p><span class="index_rate">16</span>%</p>预期年化利率</li>
+			 			<li><p><span class="index_month">3</span>个月</p>期限</li>
+			 			<li class="index_bidLast"><p><span class="index_amount">5.4</span>万</p>最高可投</li>
+			 		</ul>
+			 		<div class="index_bidBtn"><a href="/Z02_1">立即出借</a></div>
+		 		</div> -->
+	 		</div>
+ 		</div>
+ 		
+ 		<!-- 易分期 -->
+ 		<!-- <div class="index_investment">
+ 			<div class="index_in_title">
+ 				<div class="index_in_font1">易分期</div>
+ 				<p>选易分期，高效便捷</p>
+ 			</div>
+ 			<div class="index_in_main">
+ 				<div class="index_in_centent">
+ 					<div class="index_in_term">期限<span class="index_inDay">3</span><span class="index_inDay_font">个月</span></div>
+ 					<div class="index_in_year">预期年化利率<span class="index_inNum">12.0</span><span class="index_inSmall_num">%+2%</span></div>
+ 					<div class="index_term_font">100元起投&nbsp;&nbsp;满标计息</div>
+ 					<div class="index_term_more"><a href="/Z02?navTab=1">立即出借</a></div>
+ 				</div>
+ 			</div>
+ 		</div> -->
+ 		
+ 		<!-- 自动投标 -->
+ 		<div class="index_investment">
+ 			<div class="index_in_title">
+ 				<div class="index_in_font1">自动投标</div>
+ 				<p>优选智投，高效便捷</p>
+ 			</div>
+ 			<div class="index_in_main">
+ 				<div class="index_in_centent">
+ 					<ul class="index_since_conter">
+ 						<li><span>1</span><a href="javascript:;">自选优质标</a></li>
+ 						<li><span>2</span><a href="javascript:;">资金不站岗</a></li>
+ 						<li><span>3</span><a href="javascript:;">省时更省心</a></li>
+ 						<li><span>4</span><a href="javascript:;">投标更灵活</a></li>
+ 					</ul>
+ 					<div class="index_term_more">
+ 						<a href="/A04">马上开启</a>
+ 					</div>
+ 				</div>
+ 			</div>
+ 		</div>
+ 				
+ 		<!-- 精选项目 -->
+ 		<div class="index_panel" style="width:1220px; margin:0 auto 20px; overflow:hidden;">
+ 			<div class="index_selected">
+ 				<div class="index_selectedTop">精选项目<span class="index_seleTitle">小额分散  期限灵活</span></div>
+ 				<a href="/Z02?navTab=1" class=index_seleMore>更多></a>
+ 			</div>
+ 			<div class="index_seleList">
+ 				<ul class="index_sele_ul">
+					
+ 				</ul>
+ 			</div>
+ 		</div>
+ 		
+ 		<div class="index_panel" style="width:1220px; margin:0 auto 40px; overflow:hidden;">
+ 			<!-- 大家抢 -->
+ 			<div class="index_all">
+ 				<div class="index_allTitle">大家在抢<a href="/Z05">投资排行榜></a></div>
+ 				<div class="index_allMain">
+	 				<div class="index_all_list">
+	 					<ul>
+	 						
+	 					</ul>
+	 				</div>
+ 				</div>
+ 			</div>
+ 			<div class="index_allBox">
+ 				<ul>
+ 					<li>
+ 						<a href="/Z06" target="_blank">
+ 							<i class="index_all_ico04"></i>
+ 							<div class="index_all_div">
+ 								<strong>机构接债</strong><span>第三方机构承接债权</span>
+ 							</div>
+ 						</a>
+ 					</li>
+ 					<li>
+ 						<a href="/Z02?navTab=2">
+ 							<i class="index_all_ico01"></i>
+ 							<div class="index_all_div">
+ 								<strong>债权转让</strong><span>急需用钱，马上变现</span>
+ 							</div>
+ 						</a>
+ 					</li>
+ 					<li>
+ 						<a href="/K08">
+ 							<i class="index_all_ico02"></i>
+ 							<div class="index_all_div">
+ 								<strong>积分商城</strong><span>小积分兑出大不同</span>
+ 							</div>
+ 						</a>
+ 					</li>
+ 					<li>
+ 						<a href="/grade">
+ 							<i class="index_all_ico03"></i>
+ 							<div class="index_all_div">
+ 								<strong>会员福利</strong><span>升级会员享更多福利</span>
+ 							</div>
+ 						</a>
+ 					</li>
+ 				</ul>
+ 			</div>
+ 		</div>
+
+ 		<div class="index_panel" style="width:1200px; margin:0 auto 10px; overflow:hidden;">
+ 			<!-- 公司新闻 -->
+ 			<div class="index_new">
+ 				<div class="index_newTitle">公司新闻<a href="/X02">更多></a></div>
+ 				<div class="monthly grid" id="monthly">
+					<div class="monthly_con">
+			    		<ul>
+			    			<li style="left: 0;">
+			    				<a href="X00?id=1293" target="_black">
+			    					<img src="http://yrhx1130-10013338.image.myqcloud.com/3c75694d-f12f-4950-997b-f706eacfa9fd" alt="2018 易融恒信与羿飞资本投资签约仪式隆重举行">
+			    					<div class="monthly_bg"><span>2018 易融恒信与羿飞资本投资签约仪式隆重举行</span></div>
+			    				</a>
+			    			</li>
+			    			<li style="left: 0;">
+			    				<a href="X00?id=1284" target="_black">
+			    					<img src="/portal/yklist/201710.jpg" alt="易融恒信受邀出席2017中国新金融高峰论坛">
+			    					<div class="monthly_bg"><span>易融恒信受邀出席2017中国新金融高峰论坛</span></div>
+			    				</a>
+			    			</li>
+						</ul>
+		    		</div>    
+	    			<div class="month_icon">
+	    				<span class="selected"></span><span></span>
+	    			</div>
+	    		</div>
+	    		<ul class="articleList" id="indexNews"></ul>
+ 			</div>
+ 			<!-- 运营报告 -->
+ 			<div class="index_report">
+ 				<div class="index_newTitle">运营报告<a href="/X09">更多></a></div>
+ 				<div class="index_report_pic">
+ 					<a href="/ShareHeader?m=201809" target="_black"><img src="/portal/yklist/201809.jpg" alt="易融恒信2018年度9月运营报告"></a>
+ 				</div>
+ 			</div>
+ 		</div>
+ 	</div>
+</main>
+<!-- 合作伙伴 -->
+<div class="report_warp">
+	<div class="report grid">
+	   	<div class="subTitle">合作伙伴</div>
+	   	<!-- <a href="/X04" target="_blank" class="subMore">更多></a> -->
+	   	<ul class="report_con">
+	   		<li><a href="http://www.jx-bank.com/nccbank/zh_CN/home/index.html" target="_blank" class="report_ico01"></a></li>
+	   		<li><a href="http://www.ancun.com/" target="_blank" class="report_ico02"></a></li>
+	   		<li><a href="http://www.p2peye.com/" target="_blank" class="report_ico03"></a></li>
+	   		<li><a href="http://www.shlawyers.cn/ " target="_blank" class="report_ico04"></a></li>
+	   		<li><a href="https://cloud.tencent.com/" target="_blank" class="report_ico05"></a></li>
+	   	</ul>
+	</div>
+</div>
+<div class='web_enter' style="display:none"><a href="http://m.yrhx.com/m?goto=wap">手<br />机<br />版</a></div>
+<footer id="footer" class="footer"></footer>
+<!-- <div class="bid_show" style="left:30%">
+	<span class="pop_close2"></span>
+	<img class="happynewyear" src="portal/images/jump1.png">
+</div> -->
+<div class="yinying" id="yinying"></div>
+<!-- <a href="http://webscan.360.cn/index/checkwebsite/url/www.yrhx.com
+
+"><img border="0" src="http://webscan.360.cn/status/pai/hash/88f815840742ffa158c082b864ca3ce3
+
+"/></a> -->
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js?v=1.0.0" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js?v=1.0.0"></script>
+<script type="text/javascript" src="/portal/js/config.js?v=1.0.0" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/public.js?v=1.0.3" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/wylc.js?v=1.0.0" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/circleProgress.js?v=1.0.0" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/index.js?v=1.0.1" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/jquery.SuperSlide.2.1.1.js" charset="utf-8"></script>
+<script>
+
+$(".banner").slide({mainCell:".bd ul",effect:"fold",autoPlay:true,interTime:3000});
+
+
+function allRob(){
+	YRHX.ajax({
+		url:"/queryNewInvestBid",
+		success:function(sucData){
+			var htmlList="<li><div class='index_allTime'>#{loanDateTime}分钟前</div><a href='javascript:;' class='index_allTime_font'><span>#{payUserName}</span>#{type}了#{loanTitle}</a></li>";
+			var htmlBox=$(".index_all_list ul");
+			    htmlBox.html("");
+			for(var i=0 ;i<sucData.length;i++){
+				var row = sucData[i];		
+				var type=row['productType'];
+				switch(type){
+					case 'A':
+						row['loanTitle']='质押宝 ' + row['loanNo'];
+						break;
+					case 'B':
+						row['loanTitle']='车稳盈 ' + row['loanNo'];
+						break;
+					case 'C':
+						row['loanTitle']='房稳赚 ' + row['loanNo'];
+						break;
+					case 'E':
+						row['loanTitle']='易分期 ' + row['loanNo'];
+						break;
+					default:
+						row["loanTitle"] = dealTitle( row["loanTitle"] ); 
+						break;
+				}
+				var len = row["payUserName"].length;
+				if (0 == row["payUserName"].indexOf("*")) {
+					row["payUserName"] = row["payUserName"]
+				} 
+				else {
+					if (len < 3) {
+						row["payUserName"] = row["payUserName"] + "***";
+					} else if (len < 11) {
+						row["payUserName"] = row["payUserName"].substr(0,2)+ "***";
+					} else if (len == 11) {
+						row["payUserName"] = row["payUserName"].substr(0,2)+ "***" + row["payUserName"].substr(7);
+					} else {
+						row["payUserName"] = row["payUserName"].substr(0,2)+ "***";
+					}
+				}
+				if(row["payAmount"]>=1000000){
+				row["payAmount"] = YRHX.toDecimal2(row["payAmount"] / 1000000)+"万";
+				}else{
+				row["payAmount"] = YRHX.toDecimal2(row["payAmount"] / 100)+"元";
+				}
+				if(row["type"]=="B"){
+					row["type"] = "承接";
+				}else{
+					row["type"] = "加入";
+				}
+				var tmpHtml = htmlList.makeHtml(row);
+				htmlBox.append(tmpHtml);	
+			}
+		}
+	});
+}
+
+function scrollNews(obj){  
+    var $self=obj.find('ul:first');  
+    var lineHeight=$self.find('li:first').height();  
+    $self.animate({  
+        'marginTop':-lineHeight+'px'  
+    },600,function(){  
+        $self.css({marginTop:0}).find('li:first').appendTo($self);  
+    });  
+}  
+
+function scrollNews1(obj){  
+    var $self=obj.find('ul:first');  
+    var lineHeight=$self.find('li:lt(3)').height();  
+    $self.animate({  
+        'marginTop':-lineHeight+'px'  
+    },600,function(){  
+        $self.css({marginTop:0}).find('li:lt(3)').appendTo($self);  
+    });  
+}  
+
+//平台数据
+$(function(){	
+	//banner视频播放
+	/* var video2=document.getElementById("cideoPlay1");
+	$(".style-control-2vd6a").click(function(){
+		if(video2.paused){
+	        video2.play();
+	        $(".style-control-2vd6a").hide();
+	        $("#bannerButtons").hide();
+	    }
+	});
+	$(video2).click(function(){
+		if(video2.paused){
+	    }else{
+	        video2.pause();
+	        $(".style-control-2vd6a").show();
+	        $("#bannerButtons").show();
+	    }
+	}); */
+	
+	allRob();
+	
+	$(".panel_gift").click(function(){
+		$(this).attr("href","");
+		var userName = YRHX.Cookie("userName").get();
+		if(userName != null) {
+			$(this).attr("href","/act_novice2018");
+		}
+		else{
+			$(this).attr("href","/register");
+		}	
+	});
+		
+	//加息活动 数据进行滚动  
+    var $this=$('.marquee');
+    var scrollTimer=setInterval(function(){  
+        scrollNews($this);  
+    },3000);  
+    $this.hover(function(){  
+        clearInterval(scrollTimer);  
+    },function(){  
+        scrollTimer=setInterval(function(){  
+            scrollNews($this);  
+        },3000);  
+    });
+    
+    
+    //大家再抢  数据滚动
+    var $this1=$('.index_all_list');
+    var scrollTimer1=setInterval(function(){  
+        scrollNews1($this1);  
+    },3000);  
+    $this1.hover(function(){  
+        clearInterval(scrollTimer1);  
+    },function(){  
+        scrollTimer1=setInterval(function(){  
+            scrollNews1($this1);  
+        },3000);  
+    });
+	
+    
+	YRHX.ajax({
+		url : CONFIG.getRequestURI("queryCountData1"),
+	    success: function (sucData) {
+	    	var today_count=(YRHX.toDecimal2(sucData.today_count / 10.0 / 10.0 / 10.0 / 10.0 / 10.0 / 10.0).replace('.00','')).replaceAll(',','');
+	    	
+	    	var month_count=(YRHX.toDecimal2(sucData.month_count / 10.0 / 10.0).replace('.00','') +'').replaceAll(',','');
+	    	var riskTotal_count=(YRHX.toDecimal2(sucData.riskTotal_count / 10.0 / 10.0).replace('.00','')).replaceAll(',','');
+	    	var allTotal_count=(YRHX.toDecimal2(sucData.all_loanAmount / 10.0 / 10.0).replace('.00','') + '').replaceAll(',',''); 
+	    	
+	    	var all_len=allTotal_count.length,month_len=month_count.length,today_len=today_count.length;
+	    			
+	    	var all_millon = allTotal_count.substring(0,all_len-8),
+	    		all_thousand = allTotal_count.substring(all_len-8,all_len-4),
+	    		all_unit = allTotal_count.substring(all_len-4,all_len),
+	    		month_thousand = month_count.substring(0,month_len-4),
+	    		month_unit = month_count.substring(month_len-4,month_len);
+	    	$('.million').text(all_millon);
+	    	$('.thousand').text(all_thousand);
+	    	$('.unit').text(all_unit);
+	    	$('.thousand1').text(month_thousand);
+	    	$('.unit1').text(month_unit);
+	    	$('.thousand2').text(today_count);
+	    },
+	    error: function (errData) {
+
+	    }
+	});
+})
+//顶部伸展广告
+/*
+if ($("#js_ads_banner_top_slide").length){
+	var $slidebannertop = $("#js_ads_banner_top_slide"),$bannertop = $("#js_ads_banner_top");
+	setTimeout(function(){$bannertop.slideUp(1000);$slidebannertop.slideDown(1000);},2500);
+	setTimeout(function(){$slidebannertop.slideUp(1000,function (){$bannertop.slideDown(1000);});},8500);
+}
+*/
+
+$(".happynewyear").click(function(){
+	window.open("https://aimeike.tv/video/pAVP6");
+	$('body,html').css('overflow', 'auto');
+	$('#yinying').hide();
+	$('.bid_show').hide();
+});
+</script>
+</body>
+</html>

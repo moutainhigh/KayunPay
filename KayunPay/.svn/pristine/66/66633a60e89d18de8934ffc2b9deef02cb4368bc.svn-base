@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title>安全支付</title>
+	<style>
+		html, body {
+			margin: 0;
+			padding: 0;
+		}
+	</style>
+</head>
+<body><div align="center">
+	<div id="paysucc" style='display: none;margin-top: 100px;'><h2>充值成功!</h2></div>
+	<div id="payerro" style='display: none;margin-top: 100px;'><h2>充值失败!</h2>
+	<p class="errorMess" style="color:red"></p>
+	</div>
+	<div id="getsucc" style='display: none;margin-top: 100px;'><h2>提现成功!</h2></div>
+	<div id="geterro" style='display: none;margin-top: 100px;'><h2>提现失败!</h2>
+	<p class="errorMess" style="color:red"></p>
+	</div>
+      <script type="text/javascript" src="/portal/mobile/js/jquery-1.7.1.min.js"></script>
+	<script>	
+	//		提现充值成功与否
+	var paysucc=document.getElementById('paysucc');
+	var payerro=document.getElementById('payerro');
+	var getsucc=document.getElementById('getsucc');
+	var geterro=document.getElementById('geterro');
+	var returnOld=document.getElementById('returnOld');
+	function ispaysucc(){
+	var request = new Object();
+	request=GetRequest();
+	var type=request['type'];
+	if('paysucc'==type){
+		paysucc.style.display='block';
+	}else if('payerro'==type){
+		payerro.style.display='block';
+	}else if('getsucc'==type){
+		getsucc.style.display='block';
+	}else if('geterro'==type){
+		geterro.style.display='block';
+	}
+	if('payerro'==type||'geterro'==type){
+		$.ajax({
+			   url : "/getSesionValue",
+			   success : function(sucdata){  
+				 var resp_value = sucdata.return_data.resp;
+				 alert("resp"+resp_value);
+				 $(".errorMess").text(resp_value);
+			   }
+	 
+		   })
+	}
+}
+	function GetRequest() {
+	var url = location.search; //获取url中"?"符后的字串
+	var theRequest = new Object();
+	if (url.indexOf("?") != -1) {
+	var str = url.substr(1);
+	strs = str.split("&");
+	for(var i = 0; i < strs.length; i ++) {
+	theRequest[strs[i].split("=")[0]]=(strs[i].split("=")[1]);
+	}
+	}
+	return theRequest;}
+	ispaysucc();
+	</script>
+</body>
+</html>

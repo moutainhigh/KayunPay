@@ -1,0 +1,1 @@
+alter table t_repayment_count add repaymentStatus char(1) default 'N' comment '还款进度(A:批次发送中,B:批次发送完成,C:还款完成,N:未还款)' after batchRecord;

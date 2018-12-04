@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<title>易融恒信收银台-生成订单</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="alternate icon" type="image/png" href="/assets/i/favicon.png">
+<link rel="stylesheet" href="/assets/css/amazeui.min.css" />
+<link href="/portal/css/public.css?v=1.0.1" rel="stylesheet" media="screen" type="text/css" charset="utf-8"/>
+
+<script src="/assets/js/jquery.min.js"></script>
+
+
+<script src="/app/js/res.js"></script>
+<script src="/app/js/biz.js"></script>
+</head>
+<style>
+	.rechageWrap{
+	    width: 1180px;
+	    margin: 50px auto;
+	    background-color: #fff;
+	    overflow: hidden;
+	}
+	.rechargeResult{
+		width: 527px;
+	    margin: 50px auto;
+    
+	}
+	.rechargeResult img{
+		border-radius: 8px;
+	    box-shadow: 0px 0px 10px #999;
+        cursor: pointer;
+	}
+	#rechageSuc{
+		display:none;
+	}
+</style>
+<body style="background-color:#eee">
+	<header id="header" class="header"></header>
+	<main class="rechageWrap">
+		<div class="rechargeResult">
+			<img src="http://www.yrhx.com/pay/takeabreak.png" id="rechageWait">
+			<img src="http://www.yrhx.com/pay/rechargeSuc.png" id="rechageSuc" >
+		</div>
+	</main>
+	<footer id="footer" class="footer"></footer>
+	<script type="text/javascript" src="/portal/js/config.js?v=1.0.1" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/public.js?v=1.0.1" charset="utf-8"></script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+	
+		var window_height=$(window).height();
+		var rel_height = window_height - 378;
+		if(rel_height > 470){
+			$("#footer").css({
+				position:'fixed',
+				left:0,
+				right:0,
+				bottom:0
+			})
+		}
+		
+		$("#rechageSuc").click(function(){
+			window.close();
+		})
+		
+		window.onload = function(){
+			$(".topLoginArea").hide()	
+		}
+		
+		document.onkeydown = function (e) {
+            var ev = window.event || e;
+            var code = ev.keyCode || ev.which;
+            if (code == 116) {
+                ev.keyCode ? ev.keyCode = 0 : ev.which = 0;
+                cancelBubble = true;
+                return false;
+            }
+        } //禁止f5刷新
+		
+		function postData( data ){
+			var ExportForm = document.createElement("FORM");
+			document.body.appendChild(ExportForm); 
+			ExportForm.method = "POST";  
+		    ExportForm.action = "https://cashier.lianlianpay.com/payment/authpay.htm"; 
+		    
+		    for( var key in data ){
+		    	var ele = document.createElement("input");  
+		    	ele.setAttribute("type", "hidden");
+		    	ele.setAttribute("name" , key );
+		    	ele.value = data[key];
+		    	ExportForm.appendChild(ele);
+		    }
+		    ExportForm.submit();
+		}
+		
+		function loopQuery( traceCode){
+			
+			YRHX.ajax1({
+				"url" : "/chayixia",
+				"data" : {
+					"traceCode" : traceCode,
+					"from" : "PC"
+				},
+				"success" : function(data){
+					if( data && data.rType == 'LLZF'){
+						console.log(data.rData)
+						postData(data.rData);
+					}else if(  data && data.rType == 'SYX' ){
+						if(data.rData.st == 'A'){
+							//充值中， 轮训结果
+							setTimeout(function(){
+								loopQuery( traceCode )	
+							},1000)
+							
+							
+						}else if(data.rData.st == 'B'){
+							//充值成功
+							$("#rechageSuc").show();
+							$("#rechageWait").hide();
+						}
+					}
+				}
+			});
+		}
+		
+		//YRHX.loading('open','充值中,请耐心等候(请勿关闭当前页面！！)');
+		YRHX.ajax1({
+			"url" : "/lianlian_authPay",
+			"data" : {
+				"payAmount" : YRHX.queryString("chargeMoney") ,
+				"msgMac" 	: YRHX.queryString("capcha"),
+				"from" : "PC"
+				//"hostName" : window.location.origin ,
+				//"bankCode" : "03010000"
+			},
+			"success" : function(data){
+				
+				if( data && data.rType == 'LLZF'){
+					postData(data.rData);
+				}else if(  data && data.rType == 'SYX' ){
+					loopQuery( data.rData )
+				}
+				
+			},
+			error:function(errData){
+				alert(errData.return_info)
+				window.close();
+			}
+		});
+		
+		function to_center(obj) {
+			var width = $(window).width();
+			var height = $(window).height();
+			var top = $(window).scrollTop();
+			var eleWidth = obj.width();
+			var eleHeight = obj.height();
+			obj.css({
+				left : (width - eleWidth) / 2,
+				top : top + (height - eleHeight) * 2 / 5
+			});
+		}
+	</script>
+</body>
+
+</html>

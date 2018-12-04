@@ -1,0 +1,142 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed" href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+	<div class="am-g">
+		<!-- 标准功能按钮 Start  -->
+		<div class="am-u-sm-12 am-u-md-4">
+			<div class="am-btn-toolbar">
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default add-btn">
+						<span class="am-icon-archive "></span> 平台配置
+					</button>
+				<!-- 	<button type="button" class="am-btn am-btn-default mod-btn">
+						<span class="am-icon-archive "></span> 修改角色
+					</button>
+					<button type="button" class="am-btn am-btn-default unUsed-btn">
+						<span class="am-icon-archive "></span> 禁用角色
+					</button> -->
+				</div>
+			</div>
+		</div>
+		<!-- 标准功能按钮  End -->
+		<!-- 条件区 Start -->
+		<form class="am-form-inline ext-form" role="form" data-am-validator>
+			<!-- <div class="am-form-group">
+				<select data-am-selected="{btnSize: 'sm'}" name="userState" id="userStateSel">
+				</select>
+			</div>
+			<button type="button" class="am-btn am-btn-default query-btn">查询</button> -->
+		</form>
+		<!-- <div class="am-u-sm-12 am-u-md-3"></div>
+		
+				<div class="am-u-sm-12 am-u-md-3">
+					<div class="am-input-group am-input-group-sm">
+						<input type="text" class="am-form-field"><span
+							class="am-input-group-btn">
+							<button class="am-btn am-btn-default" type="button">搜索</button>
+						</span>
+					</div>
+				</div> -->
+	</div>
+
+	<!-- 条件区  End -->
+	<!-- Table -->
+	<div class="am-g">
+		<div class="am-u-sm-8">
+			<table class="am-table am-table-bd am-table-striped admin-content-table" id="settingTabel">
+				<thead>
+					<tr>
+						
+						<th>键</th>
+						<th>值</th>
+						<th>描述</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><input class="am-form-field" name="setKey1" placeholder="键"></td>
+						<td><input class="am-form-field" name="setValue1" placeholder="值"></td>
+						<td><input class="am-form-field" name="setDesc1" placeholder="描述"></td>
+						
+					</tr>
+				</tbody>
+			</table>
+			<button class="am-btn am-btn-primary" id="addMore" addNo="1">添加</button>
+			<!-- 分页 -->
+			<!-- <div class="am-cf pad-div">
+				<span>共 0条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+					</ul>
+				</div>
+			</div> -->
+		</div>
+	</div>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script>
+	
+	
+	$("#addMore").on("click",function(){
+		
+		var curAddNo = $(this).attr("addNo");
+		curAddNo++;
+		
+	
+		//addAPI  success:
+		$(this).attr("addNo",curAddNo);
+		$.creatHtml ( curAddNo );
+		
+		//error alert
+		
+		
+	})
+	
+	$.creatHtml = function( addNo ){
+		
+		var addHtml = '<tr>';
+		addHtml += '<td><input class="am-form-field" name="setKey' + addNo + '" placeholder="键"></td>';
+		addHtml += '<td><input class="am-form-field" name="setValue' + addNo + '" placeholder="值"></td>';
+		addHtml += '<td><input class="am-form-field" name="setDesc' + addNo + '" placeholder="描述"></td></tr>';
+		
+		$("#settingTabel tbody").append( addHtml );
+	}
+	
+	
+	
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	
+</body>
+</html>

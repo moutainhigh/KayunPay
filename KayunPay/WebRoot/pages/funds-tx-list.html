@@ -1,0 +1,352 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body onkeydown="zhazha(event)">
+	<div class="am-g">
+		<!-- 标准功能按钮 Start  -->
+		<div class="am-u-sm-12 am-u-md-4">
+			<div class="am-g">
+				<div class="am-u-sm-6" >
+					<div class="am-input-group am-datepicker-date" data-am-datepicker="{format: 'yyyy-mm-dd', viewMode: 'days'}">
+						<input type="text" class="am-form-field" id="my-startDate" placeholder="开始日期" readonly style="width: 71%;">
+							<span class="am-input-group-btn am-datepicker-add-on">
+								<button class="am-btn am-btn-default" type="button">
+									<span class="am-icon-calendar"></span>
+								</button>
+							</span> 
+					</div>
+				</div>
+				
+				<div class="am-u-sm-6" style="padding: 0;">
+					<div class="am-input-group am-datepicker-date" data-am-datepicker="{format: 'yyyy-mm-dd', viewMode: 'days'}">
+						<input type="text" class="am-form-field" id="my-endDate" placeholder="结束日期" readonly style="width: 71%;">
+							<span class="am-input-group-btn am-datepicker-add-on">
+								<button class="am-btn am-btn-default" type="button">
+									<span class="am-icon-calendar"></span>
+								</button>
+							</span>
+					</div>
+				</div>
+			</div>
+			<div class="am-btn-toolbar">
+				<div class="am-btn-group am-btn-group-xs">
+				
+				</div>
+			</div>
+		</div>
+		<div class="am-u-sm-12 am-u-md-1">
+			<form class="am-form-inline ext-form" role="form" data-am-validator>
+				<div class="am-form-group">
+					<select data-am-selected="{btnSize: 'sm',btnWidth:'105%'}" name="sharen" id="sharenSel">
+					</select>
+				</div>
+			</form>
+		</div>
+		<div class="am-u-sm-12 am-u-md-1">
+			<form class="am-form-inline ext-form" role="form" data-am-validator>
+				<div class="am-form-group">
+					<select data-am-selected="{btnSize: 'sm',btnWidth:'105%'}" name="status" id="statusSel">
+					</select>
+				</div>
+			</form>
+		</div>
+		<div class="am-u-sm-12 am-u-md-1">
+			<form class="am-form-inline ext-form" role="form" data-am-validator>
+				<div class="am-form-group">
+					<select data-am-selected="{btnSize: 'sm',btnWidth:'105%'}" name="withdrawType" id="withdrawTypeSel">
+					</select>
+				</div>
+			</form>
+		</div>
+		<div class="am-u-sm-12 am-u-md-3">
+			<div class="am-input-group am-input-group-sm">
+				<input type="text" class="am-form-field allkey"><span
+					class="am-input-group-btn">
+					<button class="am-btn am-btn-default query-btn" type="button">搜索</button>
+				</span>
+			</div>
+		</div>
+	</div>
+	<!-- Table -->
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 15 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+						<li id="not"><input type="text" size="5" id="goValue" onkeypress="return IsNum(event)" value="1"/></li>
+						<li id="go"><input type="button" value="GO" onclick="$('#go').attr('index',$('#goValue').val())"/></li>
+					</ul>
+				</div>
+				<button class="am-btn am-btn-success am-btn-xs" onclick="exportExcel()" style="margin-left:10px" type="button">导出Excel</button>
+			</div>
+		</div>
+	</div>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script>
+	
+	function zhazha(e){
+		var keynum = 0;
+		if(window.event){
+			keynum = e.keyCode
+		}
+		else if(e.which){
+			keynum = e.which
+		}
+		if(keynum==13){
+			queryData(1);
+		}
+	}
+	
+		var exportExcelUrl = "/exportExcel?bb=funds-tx";
+		
+		function exportExcel(){
+			var allkey =  $(".allkey").val();
+			var beginDate = $("#my-startDate").val();
+			var endDate = $("#my-endDate").val();
+			var fuserCode = YRHX.queryString("asuuu")||"";
+			var status = $("#statusSel").val() && $("#statusSel").val()!=""?$("#statusSel").val():"";
+			var sharen = $("#sharenSel").val() && $("#sharenSel").val()!=""?$("#sharenSel").val():"";
+			var withdrawType = $("#withdrawTypeSel").val() && $("#withdrawTypeSel").val()!=""?$("#withdrawTypeSel").val():"";
+			var para_url = "&allkey="+encodeURIComponent(allkey)+"&beginDate="+beginDate.replaceAll("-","")+"&endDate="+endDate.replaceAll("-","");
+			para_url += "&fuserCode="+fuserCode+"&status="+status+"&sharen="+sharen+"&withdrawType="+withdrawType;
+			window.open(exportExcelUrl+para_url,"_blank");
+		};
+	
+		//init 
+		var tixianStatusData = YRHX.sortData(RES["DATA_MAP"]["map_tixianStatus"]) ;
+		$("#statusSel").makeSelect4s(tixianStatusData);
+		$("#sharenSel").makeSelect4s(YRHX.sortData(RES["DATA_MAP"]["map_sharenType"]));
+		$("#withdrawTypeSel").makeSelect4s(YRHX.sortData(RES["DATA_MAP"]["map_txfs"]));
+		$("#sharenSel").val("1");
+		$("#statusSel").val("");
+		$("#withdrawTypeSel").val("");
+	
+		var maxQueryNum = 10 ;
+		var queryUrl = "/getWithdrawalsTraceByPage";
+		var size=0;//总页数
+		
+		$(".query-btn").click(function(){
+			queryData(1);
+			$("#goValue").val(1);//设置GO栏默认页码为1
+		});
+		//查询实现
+		function queryData( pNum , pSize ){
+			//对页码参数验证
+			if(isNaN(pNum)){
+				alert("GO栏请输入数字！");
+				return;
+			}
+			if(size<1){
+				size=1;
+			}
+			if(pNum > size && size != 0){
+				pNum=size;
+				$("#goValue").val(pNum);
+			}
+			YRHX.ajax({
+				url : queryUrl,
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize ||maxQueryNum,
+					allkey : $(".allkey").val(),
+					beginDate : $("#my-startDate").val().replaceAll("-",""),
+					endDate : $("#my-endDate").val().replaceAll("-",""),
+					fuserCode : YRHX.queryString("asuuu")||"",
+					status : $("#statusSel").val() && $("#statusSel").val()!=""?$("#statusSel").val():"",
+					sharen : $("#sharenSel").val() && $("#sharenSel").val()!=""?$("#sharenSel").val():"",
+					withdrawType : $("#withdrawTypeSel").val() && $("#withdrawTypeSel").val()!=""?$("#withdrawTypeSel").val():"",
+				},
+				success : function(sucData){
+					size=Math.ceil(sucData["totalRow"]/maxQueryNum);//总页数
+					var dzje = 0;//到账金额
+					var withdrawAmount = 0;//提现金额
+					var sxf = 0;//搜续费
+					for(var x in sucData.list){
+						withdrawAmount = withdrawAmount + sucData.list[x]["withdrawAmount"];
+						sxf = sxf + sucData.list[x]["sxf"];
+						dzje = dzje + (sucData.list[x]["withdrawAmount"] - sxf);
+					}
+					
+					/* var ct_info = "当前页统计：到账金额共"+YRHX.toDecimal2(dzje/ 10.0/10.0, "￥")+"，";
+					ct_info = ct_info + "提现金额共"+YRHX.toDecimal2(withdrawAmount/ 10.0/10.0, "￥")+"，";
+					ct_info = ct_info + "手续费共"+YRHX.toDecimal2(sxf/ 10.0/10.0, "￥")+"。";
+					ct_info+= "&nbsp;&nbsp;&nbsp;&nbsp;总计：&nbsp;";
+					ct_info = ct_info + "到账金额共"+YRHX.toDecimal2(sucData["count_dzje"]/ 10.0/10.0, "￥")+"，";
+					ct_info = ct_info + "提现金额共"+YRHX.toDecimal2(sucData["count_withdrawAmount"]/ 10.0/10.0, "￥")+"，";
+					ct_info = ct_info + "手续费共"+YRHX.toDecimal2(sucData["count_sxf"]/ 10.0/10.0, "￥")+"。"; */
+					
+					
+					var tmpTotalData = {};
+					tmpTotalData["当前页到账金额"] = YRHX.toDecimal2(dzje/ 10.0/10.0, "￥") ;
+					tmpTotalData["当前页提现金额"] = YRHX.toDecimal2(withdrawAmount/ 10.0/10.0, "￥") ;
+					tmpTotalData["当前页手续费"] = YRHX.toDecimal2(sxf/ 10.0/10.0, "￥") ;
+					tmpTotalData["总共到账金额"] = YRHX.toDecimal2(sucData["count_dzje"]/ 10.0/10.0, "￥") ;
+					tmpTotalData["总共提现金额"] = YRHX.toDecimal2(sucData["count_withdrawAmount"]/ 10.0/10.0, "￥") ;
+					tmpTotalData["总共手续费"] = YRHX.toDecimal2(sucData["count_sxf"]/ 10.0/10.0, "￥") ;
+					
+					makeTable(sucData.list , {
+						index : sucData["pageNumber"] , 
+						max : sucData["pageSize"] ,
+						size : sucData["totalRow"]
+					},tmpTotalData);
+				},
+				error : function(data) {
+					YRHX.alert("提示",data.return_info || "获取信息失败");
+				}
+			});
+		}
+		
+		$(".query-btn").click(function(){
+			queryData(1);
+		});
+
+		$("div.pad-div").initPagEvent( queryData );
+		
+		function makeTable( tableData ,pageData,countData){
+			$(".am-g").table({
+						thtdcls : "font-size:13px;padding:8px 1px",
+						count_info : countData,
+						dataFormat : function(rowObj) {
+							rowObj["dzje"] = rowObj["withdrawAmount"] - rowObj["sxf"];
+							rowObj["dzje"] = YRHX.toDecimal2( rowObj["dzje"]/10.0/10.0, "￥");
+							rowObj["sxf"] = YRHX.toDecimal2( rowObj["sxf"]/10.0/10.0, "￥");
+							rowObj["withdrawAmount"] = YRHX.toDecimal2( rowObj["withdrawAmount"]/10.0/10.0, "￥");
+							rowObj["createDateTime"] = rowObj["createDateTime"].dateformat();
+							rowObj["status"] = tixianStatusData[rowObj["status"]];
+							rowObj["opUserName"] = rowObj["opUserName"] ? rowObj["opUserName"] : " ";
+							rowObj["bankName"] = rowObj["bankName"] ? rowObj["bankName"] : " ";
+							rowObj["bankNo"] = rowObj["bankNo"] ? rowObj["bankNo"] : " ";
+							rowObj["userTrueName"] = rowObj["userTrueName"] ? rowObj["userTrueName"] : " ";
+							rowObj["okDateTime"] = rowObj["okDateTime"] ? rowObj["okDateTime"].dateformat() : " ";
+							rowObj["cardCity"] = rowObj["cardCity"] ? rowObj["cardCity"] : " ";
+							var s = "人工";
+							if(rowObj["withdrawType"]=="SYS"){
+								s = "人工";
+							}else if(rowObj["withdrawType"]=="LL"){
+								s = "连连支付";
+							}else if(rowObj["withdrawType"]=="WYZX"){
+								s = "网银在线";
+							}else if(rowObj["withdrawType"]=="BFZF"){
+								s = "宝付支付";
+							}else if(rowObj["withdrawType"]=="SYX"){
+								s = "商银信支付";
+							}else if(rowObj["withdrawType"]=="Fuiou"){
+								s = "富友支付";
+							}else if(rowObj["withdrawType"]=="Jixin"){
+								s = "即信支付";
+							}
+							rowObj["wType"] = s;
+							return rowObj;
+						},
+						max : 10,
+						pag : pageData,
+						header : [
+								{
+									name : "",type : "checkbox",key : "withdrawCode"
+								},
+								{
+									name : "",text : "提现方式",html : "#{wType}"
+								},
+								{
+									name : "",text : "到账金额",html : "#{dzje}"
+								},
+								{
+									name : "",text : "提现金额",html : "#{withdrawAmount}"
+								},
+								{
+									name : "",text : "手续费",html : "#{sxf}"
+								},
+								{
+									name : "",text:"状态",html:"#{status}"
+								},
+								{
+									name : "",text : "操作员",html : "#{opUserName}"
+								},
+								{
+									name : "",text : "用户昵称",html : "#{userName}"
+								},
+								{
+									name : "",text : "银行名称",html : "#{bankName}"
+								},
+								{
+									name : "",text : "银行卡号",html : "#{bankNo}"
+								},
+								{
+									name : "",text : "姓名",html : "#{userTrueName}"
+								},
+								{
+									name : "",text : "申请时间",html : "#{createDateTime}"
+								},
+								{
+									name : "",text : "成功时间",html : "#{okDateTime}"
+								},
+								{
+									name : "",text : "地区",html : "#{cardCity}"
+								},
+								{
+									name : "",text : "备注",html : "#{withdrawRemark}"
+								}],
+						data : tableData
+					});
+			}
+		
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		queryData(1);
+		setTimeout(function () {
+	        $("#statusSel").change(function () {
+	            queryData(1);
+	        });
+	        $("#sharenSel").change(function () {
+	            queryData(1);
+	        });
+	        $("#withdrawTypeSel").change(function () {
+	            queryData(1);
+	        });
+	    }, 2000);
+	</script>
+</body>
+</html>

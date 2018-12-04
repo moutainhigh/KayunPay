@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>易融恒信-安全可靠透明的投资平台,p2p网贷平台</title>
+<meta name="keywords" content="易融恒信,网贷平台,p2p网贷平台排名,p2p投资,p2b网贷,p2p投资平台,小投资,武汉贷款,武汉小额投资,武汉网贷公司,武汉易融恒信" />
+<meta name="description" content="易融恒信,致力于做华中地区最好的p2p网贷平台,为投资者提供最安全,最靠谱,最透明的互联网金融p2p投资平台,咨询电话400-027-0707" />
+<link href="/portal/css/public.css" rel="stylesheet" media="screen" type="text/css"  charset="utf-8" />
+<link type="text/css" href="/portal/css/user.css" rel="stylesheet">
+<link type="text/css" href="/portal/css/datapicker/datepicker.css" rel="stylesheet">
+<!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+<body>
+<header id="header" class="header"></header>
+<nav class='user_index'></nav>
+<main class="user">
+	 <div class="user-main">
+        <div class="user-main-left">
+             <h2>资金管理</h2>
+            <div class="user-nav"></div>
+        </div>
+		<div class="user-main-right">
+			<div class='user-main-right-c'>
+			<div class='tabNav'>
+				<i></i>
+				<ul	class="menu">
+					<li id="usable" class="active" tState="A">尚未使用现金券</li>
+					<li id="usable2" tState="A" style="display: none">尚未使用加息券</li>
+					<li id="used"  tState="E">已使用</li>
+					<li id="unusable"  tState="B,C,D">已失效</li>
+				</ul>
+				<div class="clear"></div>
+			</div>
+			<div id="tab-content">
+				<!--尚未使用现金券-->
+				<div class="tab-content-list" id="usableList">
+					<div class="ticketBox">						
+					</div>
+					<div class="page-wrap page_panel usablePage">
+								
+					</div>
+					<div style="margin:20px 0 0 20px;padding-top: 27px;border-top: 1px dashed #ddd;margin-top: 50px;">投资券分为现金券，加息券两种，每次投资只能使用单张投资劵。手动投标时，投资券需自助勾选，自动投标时，用户可在设置中勾选相关项，债权转让项目不支持使用投资券。</div>
+					<div class="tip_text t1p">
+						<h4>现金券使用规则</h4>
+						<ul>
+							<li>1、使用方式：PC端、APP端使用需要手动勾选，自动投标可使用现金劵。</li>
+							<li>2、使用规则：每次投资只可使用一张现金券，不可叠加使用，详细使用限制见现金劵文字说明。</li>
+							<li>3、当使用现金券的投资进行债权转让时，券面金额将在转让成功时自动被扣除。</li>
+							<li>4、现金券是先使用余额足额扣除，再使用红包账户发放返还，以抵扣方式使用，如：用户持有50元现金券，出借人需先保障账户余额大于等于现金劵最低投资金额；若小于，该红包不可使用。</li>
+						</ul>　
+					</div>
+				</div>
+				<!--尚未使用加息券-->
+				<div class="tab-content-list" id="usable2List">
+					<div class="ticketBox">						
+					</div>
+					<div class="page-wrap page_panel usable2Page">
+								
+					</div>
+					<div class="t2p" style="display:none;margin:20px 0 0 20px;padding-top: 27px;border-top: 1px dashed #ddd;margin-top: 50px;">投资券分为现金券，加息券两种，每次投资只能使用单张投资劵。手动投标时，投资券需自助勾选，自动投标时，用户可在设置中勾选相关项，债权转让项目不支持使用投资券。</div>
+					<div class="tip_text t2p" style="display:none;">
+						<h4>加息劵使用规则</h4>
+						<ul>
+							<li>1.使用方式：PC端、APP端使用需要手动勾选，自动投标可使用加息劵。</li>
+							<li>2.使用限制：新手标不可使用加息劵，不可与其他加息活动叠加使用。</li>
+							<li>3.使用规则：每次投资只可使用一张加息劵，不可叠加使用，详细使用限制见加息劵文字说明。</li>
+							<li>4.加息劵投资发生债权转让，加息截止至上一还款日，债权承接人不再继续享受加息。</li>
+						</ul>　
+					</div>
+				</div>
+				<!--已使用-->
+				<div class="tab-content-list" id="usedList" style="display: none;">
+					<div class="ticketBox"></div>
+					<div class="page-wrap page_panel usedPage">
+								
+					</div>
+				</div>
+				<!--已失效-->
+				<div class="tab-content-list" id="unusableList" style="display: none;">
+					<div class="ticketBox"></div>
+					<div class="page-wrap page_panel unusablePage" >
+								
+					</div>
+				</div>
+				
+			</div>
+			</div>
+		</div>
+    </div>
+</main>
+
+<footer id="footer" class="footer">
+</footer>
+</footer>
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+<script type="text/javascript" src="/portal/js/config.js"></script>
+<script type="text/javascript" src="/portal/js/public.js"></script>
+<script type="text/javascript">window.userNavActive = 1;topNavSelect= '4'; </script>
+<script type="text/javascript" src="/portal/js/user.js"></script>
+<script type="text/javascript" src="/portal/js/pub/widget-table.js"></script>
+<script>
+setting(2,window.userNavActive);
+NavMenu(2);
+$(".menu li").click(function(){
+	var self = $(this);
+	var curId = self.attr("id");
+	var tState = self.attr("tState");
+	$.queryTicket( 1, tState, curId );
+	
+});
+function switchType( ttype ){
+	//A 现金抵用券 B投资返现券 C 加息券
+	var tTypeName = "";
+	switch( ttype ){
+	case "A":
+		tTypeName = "现金抵用券";
+		break;
+	case "B":
+		tTypeName = "投资返现券";
+		break;
+	case "C":
+		tTypeName = "加息券";
+		break;
+	}
+	return tTypeName;
+	
+}
+
+function switchTstate( tstate ){
+	//A可用 B不可用 C人工停用 D过期 E已使用
+	var tstateClass = "";
+	switch( tstate ){
+	case "A":
+		//tstateName = "useItNow";
+		tstateName = "";
+		break;
+	case "B":
+		tstateName = "unusable";
+		break;
+	case "C":
+		tstateName = "unusable";
+		break;
+	case "D":
+		tstateName = "unusable";
+		break;
+	case "E":
+		tstateName = "used";
+		break;
+	}
+	return tstateName;
+}
+//查询查询类型
+function checktype(selector){
+	var type="";
+	switch(selector){
+	case "usable":
+		type = "A";
+		break;
+	case "usable2":
+		type = "C";
+		break;
+	case "used":
+		type = "A,C";
+		break;
+	case "unusable":
+		type = "A,C";
+		break;
+	}
+	return type;
+}
+
+$.queryTicket = function( indexPage, tState, selector ){
+	var ttype=checktype(selector);
+	YRHX.ajax({
+		url : CONFIG.getRequestURI("queryTickets4User"),
+		type : "POST",
+		data : {
+			"pageNumber" : indexPage || 1,
+			"pageSize" : 9,
+			"tstate" : tState,
+			"ttype" : ttype
+		},
+		success : function( sucData ) {
+			//判断是否有加息券 
+			var haveratetickets=sucData["haveratetickets"];
+               if(haveratetickets){
+               	$("#usable2").show();
+               }else{
+               	$("#usable2").hide();
+               }
+			var temHtml  = '<li class="#{tstateClass}"><div class="ticketLeft">';
+			temHtml	+= '<i><strong>#{ttype}</strong></i>';
+			temHtml	+= '<p>#{amount}</p>';
+			temHtml	+= '<span>#{expDate} 到期</span>';
+			temHtml	+= '<div class="useLimit">投资#{useExAmount}可用</div>';
+			temHtml	+= '<div style="margin-top:-3px" class="useLimit">可投#{loanMonth}月标</div>';
+			temHtml	+= '</div>';
+			temHtml	+= '<div class="ticketRight">';
+			temHtml	+= '<div class="ticketState #{tstate}"></div>';
+			temHtml	+= '</div></li>';
+			
+			var returnData = sucData.list ;
+			if ( returnData && returnData.length > 0) {
+				
+				var tableEle = $("#"+selector+"List").find(".ticketBox");
+				tableEle.html("");
+				//default 4 rows
+				for (var i = 0; i < returnData.length; i++) {
+					var row = returnData[i];
+					row["ttype"] = switchType( row["ttype"] );
+					row["amount"] = row["amount"]  / 100+"元";
+					if(row["ttype"]=="加息券"){
+					row["amount"] ="+"+ row["rate"]  / 100+"%";
+					}
+					if( row["tstate"]  != "A"){
+						row["tstateClass"] = "unusableBox";
+					}else{
+						row["tstateClass"] = "usableBox";
+					}
+					row["tstate"] = switchTstate( row["tstate"] );
+					row["expDate"] = row["expDate"].dateformat();
+					/* row["useEx"] = eval("a = " + row["useEx"]); */
+					if( row["useEx"] ){
+						row["useEx"] = JSON.parse(row["useEx"]);
+					}
+					//判断抵用券   并显示额度
+					row["useExAmount"] =  row["useEx"]["amount"] / 100 || 0 ;
+					if(row["ttype"]=="现金抵用券"){
+             			row["useExAmount"]=row["useExAmount"]+"元以上";
+					}else if(row["ttype"]=="加息券"){
+						if(row["useExAmount"]==0){
+							row["useExAmount"]="任意金额";
+						}else{
+							row["useExAmount"]=row["useExAmount"]+"元以内";
+						}
+					}
+					temHtml.replace("#{useExAmount}", row["useExAmount"]); 
+					//添加可投期限显示  ws 20170727
+					if(row["loanMonth"]==null||row["loanMonth"]==""||row["loanMonth"]=="0"){
+					row["loanMonth"]="任意";
+					}else{
+					row["loanMonth"]=row["loanMonth"].replace(/-/g,",");
+					}
+					//end
+					if(row["tname"].indexOf("YF")>=0){
+						row["ttype"]="羿飞水池投资圈专属";
+					}
+					var tempHtml = temHtml.makeHtml(row);
+					tableEle.append(tempHtml);
+					if(ttype=="C"){
+					$(".t2p").show();
+					}else{
+					$(".tt2p").hide();
+					}
+				}
+				$(".useItNow").click(function(){
+					window.location.href = "/Z02?navTab=1";
+				});
+				//分页
+				$("."+selector+"Page").pag(sucData["pageNumber"], sucData["pageSize"],sucData["totalRow"], function() {
+					var reqIndex = $(this).attr("index");
+					$.queryTicket( reqIndex || 1,tState ,selector );
+				});
+				
+			}else{
+				//无数据
+				$("#"+selector+"List .ticketBox").html("<div class='noData'>暂无数据</div>")
+			}
+			
+			
+			
+		},
+		error : function( errData ){
+			
+		}
+	})
+}
+$.queryTicket( 1, "A", "usable" );
+
+
+
+</script>
+</body>
+</html>

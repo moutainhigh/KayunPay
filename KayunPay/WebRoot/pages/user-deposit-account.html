@@ -1,0 +1,355 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+<style>
+.capImg{
+    width: 10%;
+    position: absolute;
+    margin: 0 10px;
+    border: 1px solid #048fd4;
+    background-color: #f2f9fc;
+    font-style: normal;
+    font-size: 12px;
+    text-align: center;
+    line-height: 38px;
+    cursor: pointer;
+}
+.capInput{
+	width:15% !important;
+	float:left;
+}
+.grayBtn{
+	background-color:#a6a6a6;
+	border: 1px solid #a6a6a6;
+}
+</style>
+</head>
+<body>
+	<!-- iframe body start -->
+	<form id="info-form" action="" data-am-validator>
+		<div class="am-tabs am-margin" data-am-tabs="{noSwipe: 1}">
+			<ul class="am-tabs-nav am-nav am-nav-tabs">
+				<li class="am-active"><a href="#tab1">存管开户</a></li>
+				<li class="am-active"><a href="#tab2">设置交易密码</a></li>
+				<li class="am-active"><a href="#tab3">换绑银行卡</a></li>
+				<li class="am-active"><a href="#tab4">修改交易密码</a></li>
+				<li class="am-active"><a href="#tab5">更换存管手机号</a></li>
+			</ul>
+			<div class="am-tabs-bd">
+				<div class="am-tab-panel am-fade am-in am-active am-form am-form-inline" id="tab1">
+					<div class="am-g am-margin-top field" name="userCode" add="disabled" edit="disabled" type="text" text="用户编号" >
+					</div>
+					<div class="am-g am-margin-top field" name="identity" view="disabled" type="select" map="identity" text="账户类型" >
+					</div>
+					<div class="am-g am-margin-top field" name="userCardName" type="text" text="用户真实姓名" >
+					</div>
+					<div class="am-g am-margin-top field" name="idType" view="disabled" type="select" map="idType" text="证件类型" >
+					</div>
+					<div class="am-g am-margin-top field" name="userCardId" type="text" text="用户证件编号" >
+					</div>
+					<div class="am-g am-margin-top field" name="userMobile" type="text" text="手机号" >
+					</div>
+					<div class="am-margin">
+						<button id="submitBtn" type="button" class="am-btn am-btn-primary am-btn-xs">去绑卡</button>
+						<button id="cancelBtn" type="button" class="am-btn am-btn-primary am-btn-xs">返回</button>
+					</div>
+				</div>
+				<div class="am-tab-panel am-fade am-in am-active am-form am-form-inline" id="tab2">
+					请设置存管交易密码，再进行资金操作。
+					<div class="am-margin">
+						<button id="submitBtn1" type="button" class="am-btn am-btn-primary am-btn-xs">去设置</button>
+						<!-- <button id="cancelBtn" type="button" class="am-btn am-btn-primary am-btn-xs">返回</button> -->
+					</div>
+				</div>
+				
+				<div class="am-tab-panel am-fade am-in am-active am-form am-form-inline" id="tab3">
+						换绑银行卡操作之前，请确认用户的存管账户余额是必须0、且没有未结清的标的。<br/>
+						换卡时有解绑操作（老用户开户绑卡除外）。
+					<div class="am-margin">
+						<button id="submitBtn2" type="button" class="am-btn am-btn-primary am-btn-xs">换/绑银行卡</button>
+					</div>
+				</div>
+				
+				<div class="am-tab-panel am-fade am-in am-active am-form am-form-inline" id="tab4">
+					<div class="am-margin">
+						<button id="modifyPwdBtn" type="button" class="am-btn am-btn-primary am-btn-xs">去修改</button>
+						<!-- <button id="cancelBtn" type="button" class="am-btn am-btn-primary am-btn-xs">返回</button> -->
+					</div>
+				</div>
+				
+				<div class="am-tab-panel am-fade am-in am-active am-form am-form-inline" id="tab5">
+					<div class="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+						<br>
+						<form method="post" class="am-form">
+						<label for="userNewMobile">新手机号:</label> <input type="text" name="userNewMobile" id="userNewMobile" value=""> <br> 
+						<label for="userCap">验证码:</label> 
+						<div>
+							<input type="text" name="tc_vcode_input_modifymobile" id="tc_vcode_input_modifymobile" value="" class="capInput" maxlength="6">
+							 <i id="sendMsgBtn1" class="capImg" />获取验证码</i><br/><br>
+						</div>
+						<div class="am-cf">
+							<input type="button" id="modifyMobileBtn" value="  提  交   " class="am-btn am-btn-primary am-btn-lg am-fl">
+						</div>
+						</form>
+						<hr>
+						<p class="copy-right"></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- <div class="am-margin">
+			<button id="submitBtn" type="button" class="am-btn am-btn-primary am-btn-xs">提交</button>
+			<button id="cancelBtn" type="button" class="am-btn am-btn-primary am-btn-xs">返回</button>
+		</div> -->
+	</form>
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script>
+		//---init
+		//biz code
+		var userCode=$("input[name=userCode]").val();
+		$("#submitBtn").click(function(){
+			var type=$("select[name=identity]").val();
+			var idType=$("select[name=idType]").val();
+			var name=$("input[name=userCardName]").val();
+			var idNum=$("input[name=userCardId]").val();
+			var phone=$("input[name=userMobile]").val();
+			if(name==""){
+				YRHX.alert("警告","姓名不能为空");
+			}
+			var paramData = {
+					"trueName" : name,
+					"cardId"   : idNum,
+					"userCode" : userCode,
+					"mobile"   : phone,
+					"type"     : type,
+					"idType"   : idType
+			};
+			post("/jxOpenAccountByAdmin", paramData);
+			//window.open(encodeURI('/jxOpenAccountByAdmin?trueName='+name+'&cardId='+idNum+'&userCode='+userCode+'&mobile='+phone+'&type='+type+'&idType='+idType));
+		});
+		function post(URL, PARAMS) { 
+     		var temp_form = document.createElement("form");      
+            temp_form .action = URL;      
+            temp_form .target = "_blank";
+            temp_form .method = "post";      
+            temp_form .style.display = "none";
+            for (var x in PARAMS) { 
+            	var opt = document.createElement("textarea");      
+                opt.name = x;      
+                opt.value = PARAMS[x];      
+                temp_form .appendChild(opt);  
+            }      
+            document.body.appendChild(temp_form);     
+            temp_form .submit();     
+      }
+		//设置存管交易密码
+		$("#submitBtn1").click(function(){
+			YRHX.ajax({
+				url : "/setDepositPwdByAdmin",
+				data:{
+					'userCode' : userCode
+				},
+				async: false,
+				success : function(sucData) {
+				window.open('/setDepositPwdByAdmin?verifyOrderId='+sucData+'&userCode='+userCode);
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+		});
+		//修改交易密码
+			$("#modifyPwdBtn").click(function(){
+			YRHX.ajax({
+				url : "/modifyPwdByAdmin",
+				data:{
+					'userCode' : userCode
+				},
+				async: false,
+				success : function(sucData) {
+				window.open('/modifyPwdByAdmin?verifyOrderId='+sucData+'&userCode='+userCode);
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+		});
+		//重置密码前先获取短信验证码
+		/*$("#sendMsgBtn").click(function(){
+			var phone = $("input[name=user_Mobile]").val();
+			YRHX.ajax({
+				url : "/smsCode_admin",
+				dataType:'jsonp',
+				data:{
+					'userCode' : userCode,
+					type:"1",
+					mobile:phone
+				},
+				success : function(sucData) {
+					
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+		});*/
+		//重置存管交易密码
+		/*$("#resetPwdBtn").click(function(){
+			var code = $("input[name=tc_vcode_input_reset_pwd]").val();
+			YRHX.ajax({
+				url : "/resetPwdPlusByAdmin",
+				data:{
+					'userCode' : userCode,
+					'smsCode'  : code
+				},
+				async: false,
+				success : function(sucData) {
+				window.open('/resetPwdPlusByAdmin?verifyOrderId='+sucData+'&userCode='+userCode+'&smsCode='+code);
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+		});
+		*/
+		//修改存管手机号前获取短信验证码
+		$("#sendMsgBtn1").click(function(){
+			var phone = $("input[name=userNewMobile]").val();
+			YRHX.ajax({
+				url : "/smsCode_admin",
+				dataType:'jsonp',
+				data:{
+					'userCode' : userCode,
+					type:"0",
+					mobile:phone
+				},
+				success : function(sucData) {
+					
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+		});
+		
+		//修改存管手机号
+		$("#modifyMobileBtn").click(function(){
+			var code = $("input[name=tc_vcode_input_modifymobile]").val();
+			var phone = $("input[name=userNewMobile]").val();
+			YRHX.ajax({
+				url : "/modifyDepositMobileByAdmin",
+				data:{
+					'userCode' : userCode,
+					'smsCode'  : code,
+					'mobile'   : phone
+				},
+				success : function(sucData) {
+					YRHX.alert("警告",sucData+"  ||  修改成功");
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+		});
+		//换绑银行卡
+		$("#submitBtn2").click(function(){
+			var bindCard = "";
+			YRHX.ajax({
+				url : "/isExistValidCard",
+				data:{
+					'userCode' : userCode
+				},
+				async: false,
+				success : function(sucData) {
+					bindCard = sucData;
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+			if(bindCard == 'y'){//存在有效存管银行卡
+				YRHX.ajax({
+					url : "/unbindCardByAdmin",
+					data:{
+						'userCode' : userCode
+					},
+					success : function(sucData) {
+						window.open('/unbindCardByAdmin?verifyOrderId='+sucData+'&userCode='+userCode);
+					},
+					error : function(data) {
+						YRHX.alert("警告",data.return_info || "获取信息失败");
+					}
+				});
+				return false;
+			}else if(bindCard == 'n'){
+				YRHX.ajax({
+					url : "/depositBindCardByAdmin",
+					data:{
+						'userCode' : userCode
+					},
+					async: false,
+					success : function(sucData1) {
+						window.open('/depositBindCardByAdmin?verifyOrderId='+sucData1+'&userCode='+userCode);
+					},
+					error : function(data2) {
+						YRHX.alert("警告",data2.return_info || "获取信息失败");
+					}
+				});
+				return false;
+			}
+		});
+		$("#cancelBtn").click(function(){
+			history.go(-1);
+		});
+
+		function initFormData( userCode ){
+			YRHX.ajax({
+				url : "/getUserByUserCode" ,
+				data : {
+					paraUserCode : userCode
+				},
+				success : function( sucData ){
+					$("#info-form").formUnSerialize( sucData ); 
+				},
+				error : function(data){
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+		}
+
+		var formType = YRHX.queryString("opType");
+		$("#info-form").formInit({
+			"formType" : formType , 
+			"request" : "http://www.qq.com"
+		});
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		$("#info-form").validatorInit();
+		var userCode = YRHX.queryString("pUserCode");
+		if( userCode ){
+			initFormData( userCode );
+		}		
+		
+	</script>
+</body>
+</html>

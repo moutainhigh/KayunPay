@@ -1,0 +1,44 @@
+@CHARSET "UTF-8";
+* {	margin: 0;padding: 0;}
+body {margin: 0;padding: 0; font-family: "Myriad Set Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif,"微软雅黑";}
+ul, ol, li {list-style: none;}
+:focus {outline: 0;}
+a { color: #000;text-decoration: none;}
+img { border: 0;}
+i {  font-style: normal;}
+
+
+/* 投资双倍额度活动 start */
+.invest_warp{ width:100%; min-width:1400px;}
+.invest_plate1{width:100%; height:935px; background:url(/portal/images/activity/act20171118/in_plate1.jpg) center top no-repeat;}
+.invest_plate2{ width:100%; height:653px; background:url(/portal/images/activity/act20171118/in_plate2.jpg) center top no-repeat; position:relative;}
+.invest_p2_con{ width:928px; height: 227px; margin: 0 auto; background:url(/portal/images/activity/act20171118/in_plate2_numbg.png) center no-repeat; position: absolute; top: 43%; left: 50%; margin-left: -451px;}
+.invest_p2_leftnum{ position:absolute; top: 44%; left: 13%; }
+.invest_p2_rightnum{ position:absolute; top: 44%; left: 57%; }
+.invest_p2_money1{ font-family: "Trebuchet MS", Helvetica, sans-serif; background:url(/portal/images/activity/act20171118/in_plate2_ico.png) 0 3px no-repeat; padding-left: 40px; font-size: 36px; color: #8a0214; float: left;}
+.invest_p2_money2{ font-family: "Trebuchet MS", Helvetica, sans-serif; background:url(/portal/images/activity/act20171118/in_plate2_ico.png) 0 3px no-repeat; padding-left: 40px; font-size: 36px; color: #8a0214; float: left;}
+.invest_p2_leftnum span,.invest_p2_rightnum span{ font-size: 22px; color: #8a0214; margin: 9px 0 0 3px; float: left;}
+.invest_p2_btn{ display: block; width:287px; height: 65px; position:absolute; bottom:50px; left: 50%; margin-left: -143px; background:url(/portal/images/activity/act20171118/in_plate2_btn.png) no-repeat;}
+.invest_plate3{ width: :100%; height:589px; background: url(/portal/images/activity/act20171118/in_plate3.jpg) center top no-repeat;}
+.invest_plate4{ width: :100%; height:421px; background: url(/portal/images/activity/act20171118/in_plate4.jpg) center top no-repeat;}
+.invest_login1,.invest_login2{ width:200px; text-align: center; font-size:16px;}
+.invest_login1 a,.invest_login2 a{ text-decoration: underline; color: #8a0214;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 投资双倍额度活动 end */

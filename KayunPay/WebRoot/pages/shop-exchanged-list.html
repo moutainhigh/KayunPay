@@ -1,0 +1,322 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed" href="../assets/i/app-icon72x72@2x.png">
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+	<div class="am-g">
+		<!-- 标准功能按钮 Start  -->
+		<!-- <div class="am-u-sm-12 am-u-md-4">
+			<div class="am-btn-toolbar">
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default" id="productAdd">
+						<span class="am-icon-archive"></span>添加商品
+					</button>
+				</div>
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default" id="productDel">
+						<span class="am-icon-archive mod-btn"></span>删除商品
+					</button>
+				</div>
+			
+			</div>
+		</div> -->
+		<!-- 标准功能按钮  End -->
+		<!-- 条件区 Start -->
+		<div class="am-u-sm-12 am-u-md-3">
+			<form class="am-form-inline ext-form" role="form" data-am-validator>
+				<div class="am-form-group">
+				</div>
+			</form>
+		</div>
+		<div class="am-u-sm-12 am-u-md-3"></div>
+		<div class="am-u-sm-12 am-u-md-3">
+			<div class="am-input-group am-input-group-sm">
+				<input type="text" class="am-form-field allkey"><span
+					class="am-input-group-btn">
+					<button class="am-btn am-btn-default query-btn" type="button">搜索</button>
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- 条件区  End -->
+	<!-- Table -->
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 15 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+						<li id="not"><input type="text" size="5" id="goValue" onkeypress="return IsNum(event)" value="1"/></li>
+						<li id="go"><input type="button" value="GO" onclick="$('#go').attr('index',$('#goValue').val())"/></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- prompt start -->
+	<div class="am-modal am-modal-prompt" tabindex="-1" id="promptDiv">
+		<div class="am-modal-dialog">
+			<div class="am-modal-hd title">标题</div>
+			<div class="am-modal-bd content">
+				活动说明
+				<input type="text" class="am-modal-prompt-input am-form-field">
+				奖品描述一
+				<input type="text" class="am-modal-prompt-input am-form-field">
+				奖品描述二
+				<input type="text" class="am-modal-prompt-input am-form-field">
+				附属签名
+				<input type="text" class="am-modal-prompt-input">
+			</div>
+			<div class="am-modal-footer">
+				<span class="am-modal-btn" data-am-modal-cancel>取消</span>
+				<span class="am-modal-btn" data-am-modal-confirm>提交</span>
+			</div>
+		</div>
+	</div>
+	<input type="hidden" id = "fuckCode">
+	<!-- prompt end -->
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script>
+		var maxQueryNum = 10 ;
+		var size=0;//总页数
+
+		queryData(1);
+
+		//搜索兑换商品
+		$(".query-btn").click(function(){
+			var ser_val=$('.allkey').val();
+			$("#goValue").val(1);//设置GO栏默认页码为1
+			searchData(1,maxQueryNum,ser_val);
+		});
+
+		//分页
+		$("div.pad-div").initPagEvent( queryData );
+
+		$("#productAdd").click(function(){
+			window.location.href = "/pageShopProductForm";
+
+		});
+
+		$("#productDel").click(function(){
+			var row = window.getCheckedRow() ;
+			if( row.length == 0){
+				YRHX.alert("提示","未选中商品！");
+				return ;
+			}
+			for( var i = 0; i< row.length;i++){
+				var curCode =  $(row[i]).attr("key") ;
+				delNotice( curCode );
+				if( i == row.length-1 ){
+					queryData(1);
+				}
+			}
+
+		});
+
+		//查询文章列表
+		function queryData( pNum , pSize ){
+			//对页码参数验证
+			if(isNaN(pNum)){
+				alert("GO栏请输入数字！");
+				return;
+			}
+			if(size<1){
+				size=1;
+			}
+			if(pNum > size && size != 0){
+				pNum=size;
+				$("#goValue").val(pNum);
+			}
+			YRHX.ajax({
+				url : "/queryExchange",
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize || 10   
+				},
+				success : function(sucData){
+					size=Math.ceil(sucData["totalRow"]/maxQueryNum);//总页数
+					makeTable(sucData.list , {
+						index : sucData["pageNumber"] , 
+						max : sucData["pageSize"] ,
+						size : sucData["totalRow"]
+					});
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+			
+		}
+		
+		//搜索列表
+		function searchData( pNum , pSize , option){
+			YRHX.ajax({
+				url : '/queryExchangeLike',
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize ,
+					option : $(".allkey").val() 
+				},
+				success : function(sucData){
+					makeTable(sucData.marketUser.list , {
+						index : sucData.marketUser["pageNumber"] , 
+						max : sucData.marketUser["pageSize"] ,
+						size : sucData.marketUser["totalRow"]
+					});
+					if(sucData["marketUser"]["totalRow"]==0){
+						$("div.pad-div").initPagEvent( queryData );
+					}else{
+						$("div.pad-div").initPagEvent( searchData );
+					}
+					
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+			
+		}
+		 
+		var issue = YRHX.sortData(RES["DATA_MAP"]["productIssue"]);
+
+		function makeTable( tableData ,pageData){
+			$(".am-g").table({
+						dataFormat : function(rowObj) {
+							rowObj["updateDateTime"] = rowObj["updateDateTime"].dateformat() ;
+							rowObj["addDateTime"] = rowObj["addDateTime"].dateformat() ;
+							if( rowObj["point"] <= 1 ){
+								rowObj["point"] = "0";
+							}else{
+								rowObj["point"] = rowObj["point"] / 100 ;
+							}
+							
+							rowObj["issue"] = issue [rowObj["issue"]];
+							return rowObj;
+						},
+						max : 10,
+						pag : pageData,
+						header : [
+								{
+									name : "",type : "序号",key : "mCode"
+								},
+								{
+									name : "",text : "兑换商品名",html : "#{mName}"
+								},
+								{
+									name : "",text : "兑换时间",html : "#{addDateTime}"
+								},
+								{
+									name : "",text : "消耗积分",html : "#{point}"
+								},
+								{
+									name : "",text : "兑换人",html : "#{userName}"
+								},
+								{
+									name : "",text : "手机号",html : "#{mobile}"
+								},
+								{
+									name : "",text : "收件人手机号",html : "#{userMobile}"
+								},
+								{
+									name : "",text : "收件地址",html : "#{userAddress}"
+								},
+								{
+									name : "",text : "备注",html : "#{remark}"
+								},
+								{
+									name : "",text : "发放状态",html : "#{issue}"
+								},
+								{
+									name : "",text : "操作",html : $.makeButtons([
+                                            	{"text":"发放奖品","url":"javascript:prizeIssue('#{muCode}')","ico":"am-icon-pencil-square-o"}
+	                                            ])
+								}],
+						data : tableData
+					});
+			}
+
+	function prizeIssue( muCode ){
+		$("#fuckCode").val(muCode);
+		showPrompt("发放奖品","请输入奖品明细内容",function(e){
+			//定时发布时间必须当前时间2分钟后
+			YRHX.ajax({
+				url : "/issue",
+				data : {
+					muCode : $("#fuckCode").val(),
+					msgInfo : e.data[0]+"。"+e.data[1]+" "+e.data[2]+"  "+e.data[3]
+				},
+				success : function(sucData){
+					if(sucData!=null && sucData==true){
+						YRHX.alert("提示","发布完成,短信已通知！");
+					}
+				},
+				error : function(data) {
+					if(data.return_code=="-315"){
+						var error_Msg = "";
+						$.each(data.return_data,function(key,value){
+							error_Msg = error_Msg + value+"<br>";
+						});
+						YRHX.alert("警告",error_Msg);
+					}else{
+						YRHX.alert("警告",data.return_info || "获取信息失败");
+					}
+				}
+			});
+		});
+		
+	}
+	
+	function showPrompt(title , content , callback ){
+		$('#promptDiv').find("div.title").text(title);
+		$('#promptDiv').find("div.content").find("span").text(content);
+		$('#promptDiv').modal({
+			relatedTarget: this,
+			onConfirm: callback ,
+			onCancel: function(e) {
+			}
+		});
+	}
+
+	</script>
+</body>
+</html>

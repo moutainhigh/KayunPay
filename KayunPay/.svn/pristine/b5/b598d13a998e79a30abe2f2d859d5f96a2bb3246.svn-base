@@ -1,0 +1,1744 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>我的投资</title>
+	<link type="text/css" href="/portal/css/public.css" rel="stylesheet">
+	<link type="text/css" href="/portal/css/user.css" rel="stylesheet">
+	<link type="text/css" href="/portal/css/datapicker/datepicker.css" rel="stylesheet">
+	<!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+
+<body>
+	<div class="wrapper">
+		<header id="header" class="header">
+			<!--code here-->
+		</header>
+		<nav class='user_index'>
+		</nav>
+		<main class="user">
+			<div class="user-main">
+				<div class="user-main-left">
+					<h2>投资管理</h2>
+					<div class="user-nav">
+					</div>
+				</div>
+				<div class="user-main-right">
+					<div class="user-main-right-c">
+						<div class="tabNav">
+							<i></i>
+							<ul>
+								<li class="active">最近的投资</li>
+								<li id="recyclingLoan">回收中投资</li>
+								<!-- <li id="vestingLoan">投标中投资</li> -->
+								<li id="payLoan">支付跟进</li>
+								<li id="returnLoan">已回收投资</li>
+								<li id="overdueLoan">跟进中</li>
+							</ul>
+						</div>
+						<div id="tab-content">
+							<div class="tab-content-list invest_recycling_box">
+								<div class="invest_repay">
+									<div class="finance-table">
+										<table id="recycling_table">
+											<thead>
+												<tr class="t-head">
+													<th>投资日期</th>
+													<th>借款编号</th>
+													<th>投资金额</th>
+													<th class='fixRow'>投资期数</th>
+													<th>总年利率</th>
+													<th>电子合同</th>
+													<th>保全证书</th>
+													<th>状态</th>
+												</tr>
+											</thead>
+											<tbody>
+											</tbody>
+										</table>
+										<div class="page_panel recyclingLoanPage"></div>
+									</div>
+								</div>
+							</div>
+							<div class="tab-content-list invest_repay_box" style="display:none;">
+								<div class="my-money">
+									<div class="my-money-li">
+										<p>
+											<i>预期待赚利息总额</i>
+										</p>
+										<p>
+											<b id="b_dzlx">0.00</b>元
+										</p>
+									</div>
+									<div class="my-money-li">
+										<p>
+											<i>待收本金总额</i>共(
+											<font id="f_recyCount">0</font>)笔
+										</p>
+										<p>
+											<b id="b_dsbj">0.00</b>元
+										</p>
+									</div>
+								</div>
+								<div class="search" style="margin:20px 0;position:relative;">
+									从 <span class="input_panel"><input class="time_input begin_datetime" type="text" value="" readonly="readonly"></span>									<i class="clear_text"></i> 到 <span class="input_panel"><input class="time_input end_datetime" type="text" value="" readonly="readonly"></span>									<i class="clear_text"></i>
+									<button style="margin-right:10px;" class="query_button" querytype="queryFunds">查询</button>(按照近期回款日查询)
+								</div>
+								<div class="ex_amount">
+									<div class="queryTotalBj">待收本金: <span>0</span></div>
+									<div class="queryTotalLx">预期待收利息: <span>0</span></div>
+								</div>
+								<div class="invest_repay">
+									<div class="finance-table">
+										<table id="list_table">
+											<thead>
+												<tr class="t-head">
+													<th width="11%">近期回款日</th>
+													<th width="11%">借款编号</th>
+													<th width="11%">投资金额</th>
+													<th width="11%">投资期限</th>
+													<!-- <th width="12.5%">年利率</th>
+												<th width="12.5%">奖励年利率</th> -->
+													<th width="11%">已收本金</th>
+													<th width="11%">待收本金</th>
+													<!-- <th width="11%">近期预期待收利息</th> -->
+													<th width="11%">回款详情</th>
+													<th width="12%">债转方案</th>
+												</tr>
+											</thead>
+											<tbody>
+											</tbody>
+										</table>
+										<div class="page_panel returnLoanPage"></div>
+									</div>
+								</div>
+							</div>
+							<div class="tab-content-list invest_loan_tendering_box" style="display: none">
+								<div class="finance-table">
+									<table id="list_table2">
+										<thead>
+											<tr class="t-head">
+												<th>借款编号</th>
+												<th>支付类型</th>
+												<th>支付日期</th>
+												<th>转让价格</th>
+												<th>剩余期数</th>
+												<th>状态</th>
+												<th>回款详情</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+									<div class="page_panel votingLoanPage">
+									</div>
+								</div>
+							</div>
+							<div class="tab-content-list invest_return_box" style="display: none">
+								<div class="finance-table">
+									<table id="list_table3">
+										<thead>
+											<tr class="t-head">
+												<th width="12.5%">借款编号</th>
+												<!-- <th width="12.5%">借款人</th> -->
+												<th width="12.5%">借出日期</th>
+												<th width="12.5%">借出金额</th>
+												<th width="12.5%">年利率</th>
+												<th width="12.5%">回收金额</th>
+												<th width="12.5%">交易说明</th>
+												<th width="12.5%">电子合同</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+									<div class="page-wrap returnedPage page_panel">
+									</div>
+								</div>
+							</div>
+							<div class="tab-content-list invest_loan_tendering_box" style="display: none">
+								<div class="my-money">
+									<div class="my-money-li" style = "width: 150px">
+										<p>
+											<i>总待回本金</i>
+										</p>
+										<p>
+											<b id="b_yqje">0.00</b>元
+										</p>
+									</div>
+									<div class="my-money-li" style = "width: 150px">
+										<p>
+											<i>总笔数</i>
+										</p>
+										<p>
+											<b id="b_yqbs">0</b>笔
+										</p>
+									</div>
+									<div class="my-money-li" style = "width: 150px">
+										<p>
+											<i>期间已回款金额</i>
+										</p>
+										<p>
+											<b id="b_hkje">0</b>元
+										</p>
+									</div>
+									<div class="my-money-li" style = "width: 150px">
+										<p>
+											<i>已回款率</i>
+										</p>
+										<p>
+											<b id="b_yqbl">0</b>%
+										</p>
+									</div>
+								</div>
+								<div style = "color:red">注：此数据自2018年8月15日起更新。</div>
+								<div class="finance-table">
+									<table id="list_table4">
+										<thead>
+											<tr class="t-head">
+												<th>投资日期</th>
+												<th>借款标号</th>
+												<th>投资金额</th>
+												<th>投资期限</th>
+												<th>年利率</th>
+												<th>开始跟进日期</th>
+												<th>已跟进期数</th>
+												<th>回款状态</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+									<div class="page_panel overdueLoanPage">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer id="footer" class="footer"></footer>
+		<div id="yinying" class="yinying"></div>
+		<div id="repayInfo" class="tqhk_dialog repay_info_dialog">
+			<div class="bank_dialog_header" style="padding: 0px 20px;">
+				<h4>回款详情</h4>
+				<div class="del"></div>
+			</div>
+			<div class="payment_details">
+				<table>
+					<tbody>
+						<tr>
+							<td><label>借款标题:</label><span class="lid"></span></td>
+							<td><label>投资金额:</label><span class="bidmoney"></span></td>
+							<td><label>年利率:</label><span class="apr"></span>%</td>
+						</tr>
+						<tr>
+							<td><label>投资日期:</label><span class="bidtime"></span></td>
+							<td><label>投资期限:</label><span class="deadline"></span>个月</td>
+							<!-- <td><label>剩余待收本息:</label><span class="remain_amount"></span></td> -->
+							<td>
+								<label>电子合同:</label>
+								<i class="contract">
+									<div class="contract_nav">
+										<a class="contractUrl" target="_blank" href="/downContractPDF?traceCode= 111">查看</a>
+										<a class="contractUrl_d" target="_blank" href="/downContractPDF?traceCode= 111&type=1">下载</a>
+									</div>
+								</i>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<h4>回款明细（<span id="refundtype"></span>）(跟进中标的应还利息以实际回款为准)</h4>
+			<div class="table_panel">
+				<table id="popRepay">
+					<thead>
+						<tr class="h">
+							<td width="20%">还款时间</td>
+							<td width="20%">应还本息</td>
+							<td width="20%">应还本金</td>
+							<td width="20%">应还利息</td>
+							<!-- <td width="16%">逾期天数</td>-->
+							<td width="20%">状态</td>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div id="repayInfo" class="tqhk_dialog payLoan_info_dialog">
+			<div class="bank_dialog_header" style="padding: 0px 20px;">
+				<h4>待支付详情</h4>
+				<div class="del"></div>
+			</div>
+			<div class="payment_details">
+				<table>
+					<tbody>
+						<tr>
+							<td><label>借款标题:</label><span class="lid"></span></td>
+							<td><label>总金额:</label><span class="bidmoney"></span></td>
+						</tr>
+						<tr>
+							<td><label>开始日期:</label><span class="bidtime"></span></td>
+							<td><label>期限:</label><span class="deadline"></span>个月</td>
+							<!-- <td><label>剩余待收本息:</label><span class="remain_amount"></span></td> -->
+							<td>
+								<label>电子合同:</label>
+								<i class="contract">
+									<div class="contract_nav">
+										<a class="contractUrl4t" target="_blank" href="/downContractPDF?traceCode= 111">查看</a>
+										<a class="contractUrl_d4t" target="_blank" href="/downContractPDF?traceCode= 111&type=1">下载</a>
+									</div>
+								</i>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<h4>支付明细（<span id="refundtype"></span>）</h4>
+			<div class="table_panel">
+				<table id="popPayLoan">
+					<thead>
+						<tr class="h">
+							<td width="20%">支付时间</td>
+							<td width="20%">支付金额</td>
+							<td width="20%">状态</td>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div id="zrInfo" class="tqhk_dialog zr_info" style="height:500px;padding-bottom: 50px;overflow-y: auto;">
+			<div class="bank_dialog_header" style = 'border: 0px none;'><h4>发布债权转让</h4><div class="del"></div></div>
+			<div class="payment_details" style = 'margin: 0px 20px;background: #f0f0f0;'>
+				<table>
+					<tbody>
+						<tr>
+							<td width="60%"><label>借款标题:</label><span id="popLoanTitle"></span></td>
+							<td><label>剩余期数:</label><span id="popLeftMonth"></span></td>
+						</tr>
+						<tr>
+							<td><label>剩余本金:</label><span id="popSybj"></span></td>
+							<td><label>损失收益:</label><span id="popSssy" class="red"></span></td>
+						</tr>
+						<tr>
+							<td><label>跟进中本金:</label><span id="popYqbj"></span></td>
+							<td><label>债权转让费:</label><span id="popSxf"></span></td>
+						</tr>
+						<tr>
+							<td width="400">*让利金额区间(<i id="cjjeqj"></i>)</td>
+							<td><label>让利金额:</label><span id="popRlje">0</span></td>
+						</tr>
+						<tr>
+							<td><label>年利率:</label><span id="popRateByYear"></span></td>
+							<td><label>让利金额折算利率:</label><span id="popRljeByYear" class="red">0%</span></td>
+						</tr>
+						<tr>
+							<td><span id="popisdel"></span></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="text">让利金额：<input type="text" placeholder="请输入让利金额" id="lossAmont" style="display: block;border: 1px #e3e3e3 solid;width: 212px;border-radius: 3px;height: 35px;margin-top: 10px;  text-align: center;" /></div>
+			<input style="display:none">
+			<div class="inputs">
+				<button id="subTransBtn">确认转让</button>
+			</div>
+		</div>
+		
+		
+		<div class="pop" style = 'left:12%'>
+			<div class="pop-top">
+			    <ul>
+			        <li style="margin-left: 20px;"><span class="span2">借款编号：</span><span class="span1 popLoanNo">****</span></li>
+			        <li><span class="span2">剩余本金：</span><span class="span1 popAmount">****元</span></li>
+			        <li><span class="span2">剩余期数：</span><span class="span1 popLeftMonth">****</span></li>
+			    </ul>
+	    		<span class="pop-close">Ｘ</span>
+			</div>
+			<div class="pop-content">
+			    <div class="pop-content-right">
+			    	<br>
+					<div id="tab">
+						<ul class="tab_menu">
+					    	<li class="selected month" style="margin-left: -40px;">按月支付</li>
+					        <li class="qtr">按季支付</li>
+					        <li class="half">一次性支付</li>
+					    </ul><br><br>
+					     <p style="border-bottom: 1px solid #F23F2E;margin-top: -20px;width:470px"></p>
+					    <div class="tab_box">
+					    	<div class = 'montha'>
+					    		所有待收债权，资产端合作机构以待收债权本金80%的价格收购债权，每月支付一次，分36期支付。第一年每月支付2%，第二年每月支付3%，第三年每月支付3.33%（第36期支付3.37%），根据债转日生成 新还款计划 。
+					    		<div class="tab_box1"><br><br><input type="checkbox" class = "yue">&nbsp;&nbsp;<span class="span1">我已同意并阅读</span>&nbsp;<a href="/xy1"  target="_blank" style="color:#0095FF">《债权转让协议》</a>
+					    		<br><span class="span1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;实际回收本金：</span><span style="color:red" class = "yueAmount">*****元</span></div>
+					    		<br>
+					    		<span style = 'font-size:6px;color:red'>*不进行选择操作，每月根据标的实际回款支付本金，后续产生的逾期、坏账等风险由个人自行承担，并承担催收成本（包含法催等）。</span>
+					    		<div class="pop-foot">
+			    					<input type="button" value="确定" class="pop-cancel pop-duifu" poptype="yue">
+								</div>
+					    	</div>
+					        <div class="hide qtra">
+					        	所有待收债权，资产端合作机构以待收债权本金80%的价格收购债权，每季度支付一次，分11期支付。第1-4期每季支付8%，第5-8期每季支付9%，第9-10期每季支付10%，第11期支付12%，根据债转日生成 新还款计划 。
+								注：如遇周末或节假日则顺延至节后第一个工作日进行支付。
+								<div class="tab_box1"><br><br><input type="checkbox" class = "ji">&nbsp;&nbsp;<span class="span1">我已同意并阅读</span>&nbsp;<a href="/xy2"  target="_blank" style="text-decoration:none;color:#0095FF;">《债权转让协议》</a>
+								<br><span class="span1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;实际回收本金：</span><span style="color:red" class = "jiAmount">*****元</span></div>
+								<br>
+								<span style = 'font-size:6px;color:red'>*不进行选择操作，每月根据标的实际回款支付本金，后续产生的逾期、坏账等风险由个人自行承担，并承担催收成本（包含法催等）。</span>
+								<div class="pop-foot">
+			    					<input type="button" value="确定" class="pop-cancel pop-duifu" poptype="ji">
+								</div>
+					        </div>
+					        <div class="hide halfa">
+					        	<p class="hide_p">1.  第三方机构：出借人可将持有的待收本金（含已逾期的）作为债权以让利  50%的方式债转给第三方机构；
+								</p>
+								<p class="hide_p">注：第三方机构根据自己的需求和实际情况自主决定收购转让债权，收购顺序按转让时间的先后而定，并收取2%的手续费（三方机构收）。</p>
+								<div class="tab_box1"><br><br><input type="checkbox" class = "half">&nbsp;&nbsp;<span class="span1">我已同意并阅读</span>&nbsp;<a href="/xy3"  target="_blank" style="text-decoration:none;color:#0095FF;">《债权转让协议》</a>
+								<br><span class="span1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;实际回收本金：</span><span style="color:red" class = "halfAmount">*****元</span><span>（未含手续费，现金券等）</span></div>
+								<br>
+								<span style = 'font-size:6px;color:red'>*发布完成后请在债权转让-转让的债权中查看状态。</span>
+								<div class="pop-foot">
+			    					<a href=""><button class="pop-cancel pop-duifu" poptype="half">确定</button></a>
+								</div>
+							</div>
+					    </div>
+					</div>
+			    </div>
+			</div>
+		</div>
+		
+	</div>
+	<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+	<script type="text/javascript" src="/portal/js/config.js"></script>
+	<script type="text/javascript" src="/portal/js/public.js"></script>
+	<script type="text/javascript">
+		window.userNavActive = 0;
+		topNavSelect = '4';
+	</script>
+	<script type="text/javascript" src="/portal/js/user.js"></script>
+	<script type="text/javascript" src="/portal/js/pub/widget-table.js"></script>
+	<script type="text/javascript" src="/portal/js/pub/app.js"></script>
+	<script type="text/javascript" src="/portal/css/datapicker/bootstrap-datepicker.js"></script>
+	<script type="text/javascript">
+		setting(1, window.userNavActive)
+		NavMenu(1);
+		var navTab = YRHX.queryString("navTab");
+		if (navTab && navTab >= 0) {
+			$('.tabNav li').eq(navTab).click();
+		}
+		$('.time_input').datepicker({
+			'format': 'yyyy-mm-dd'
+		});
+
+		function queryTransState(stateCode) {
+			switch (stateCode) {
+				case "A":
+					return "进行中";
+					break;
+				case "B":
+					return "已结束";
+					break;
+				case "C":
+					return "跟进中";
+					break;
+				case "D":
+					return "满标待审";
+					break;
+				case "N":
+					return "还款中";
+					break;
+				case "E":
+					return "结算异常";
+					break;
+				case "F":
+					return "已承接债权";
+					break;
+				case "G":
+					return "债权转让中";
+					break;
+				case "H":
+					return "已流标";
+					break;
+				case "I":
+					return "已撤回";
+					break;
+
+			}
+		}
+
+		//最近的投资
+		$.queryAllInvest4My = function (indexPage) {
+			YRHX.ajax({
+				url: CONFIG.getRequestURI("queryAllInvest4My"),
+				data: {
+					"pageNumber": indexPage || 1,
+					"pageSize": 10,
+					"traceState": "" // 空为全部  "N" : 回收中的贷款     "A" :  投标中的贷款   "B" : 已回收的贷款
+				},
+				success: function (sucData) {
+					var rowHtml = "<tr><td>#{loanDateTime}</td>";
+					rowHtml += "<td><a class='#{overdue}' href='Z02_1?loanCode=#{loanCode}' title='#{loanTitle}'>#{loanNo}<span class='zai #{isDebt}'>债</span></td>";
+					rowHtml += "<td>#{payAmount}</td>";
+					rowHtml +=
+						"<td class='fixRow'>#{duetime}<img src='/portal/images/#{refundTypeIcon}' class='_g' title='#{refundTypeName}'></td>";
+					rowHtml += "<td>#{rateByYear}</td>";
+					rowHtml += "<td><i class='contract #{isShow}' style='width:25px;'>";
+					rowHtml += "<div class='contract_nav1'>";
+					rowHtml += "<a target='_blank' href='/downContractPDF?traceCode=#{traceCode}'>查看</a>";
+					rowHtml += "<a target='_blank' href='/downContractPDF?traceCode=#{traceCode}&type=1'>下载</a>";
+					rowHtml += "</div>";
+					rowHtml += "</i>";
+					rowHtml += "</td>";
+					rowHtml += "<td><i class='safeIn #{isSafeShow}' tracecode=#{traceCode} paying=#{paying}></i></td>";
+					rowHtml += "<td class='#{backing}'>#{stateTrans}</td></tr>";
+
+					var returnData = sucData.list;
+
+					if (returnData && returnData.length > 0) {
+						//table
+						var tableEle = $("#recycling_table").find("tbody");
+						var tfootEle = $("#recycling_table").find("tfoot");
+						tableEle.html("");
+						tfootEle.remove();
+						//default 4 rows
+						for (var i = 0; i < returnData.length; i++) {
+							var row = returnData[i];
+							
+							if (row["disposeStatus"] == "n" && row["disposeStatus"] != null) {
+								row["overdue"] = "red";
+							} else {
+								row["overdue"] = "blue";
+							}
+							// 判断是否逾期
+							if (row["disposeStatus"] == "n" && row["disposeStatus"] != null) {
+								row["isOverdue"] = "yes";
+							} else {
+								row["isOverdue"] = "";
+							}
+							//判断是否为债权
+							if (row["isTransfer"] != "C") {
+								row["isDebt"] = "yes";
+							} else {
+								row["isDebt"] = "";
+							}
+							//判断还款方式
+							if (row["refundType"] == "A") {
+								//按月等额本息
+								row["refundTypeName"] = "按月等额本息";
+								row["refundTypeIcon"] = "list_table_icon2.png";
+
+							} else if (row["refundType"] == "B") {
+								//按月付息，到期还本
+								row["refundTypeName"] = "按月付息，到期还本";
+								row["refundTypeIcon"] = "list_table_icon3.png";
+
+							}
+							//投资期数
+							if (row["loanRecyCount"] == 0) {
+								row["duetime"] = row["loanTimeLimit"];
+							} else {
+								row["duetime"] = (row["loanTimeLimit"] - row["loanRecyCount"] + 1) + "/" + row["loanTimeLimit"];
+							}
+
+							row["rateByYear"] = (row["rateByYear"] + row["rewardRateByYear"]) / 100 + "%";
+
+
+							if (row["traceState"] == "A" || row["traceState"] == "H" || row["traceState"] == "I") {
+								row["isShow"] = "hideIt";
+							} else {
+								row["isShow"] = "";
+							}
+							row["stateTrans"] = queryTransState(row["traceState"]);
+							if (row["stateTrans"] == "还款中") {
+								row["backing"] = "blue";
+								row["paying"] = 'yes'
+							} else {
+								row["backing"] = "";
+							}
+
+							// 逾期显示
+							if (row["disposeStatus"] == "n" && row["disposeStatus"] != null) {
+								row["stateTrans"] = queryTransState("C");
+								row["backing"] = "red";
+							}
+							
+							row["needPay"] = row["loanRecyCount"];
+							row["payAmount"] = YRHX.toDecimal2(row["payAmount"] / 100) + '元';
+							
+							if(row["loanDateTime"]){
+								row["isSafeIn"] = row["loanDateTime"]
+								if(row["isSafeIn"] > 20170227180000){
+									row["isSafeShow"] = 'isSafeIn'
+								}
+							}
+							row["loanDateTime"] = formatDateTime(row["loanDateTime"]).substr(0, 10);
+
+							//签章
+
+							var tempHtml = rowHtml.makeHtml(row);
+							tableEle.append(tempHtml);
+						}
+						down_show('.contract');
+						//分页
+						$(".recyclingLoanPage").pag(sucData["pageNumber"], sucData["pageSize"], sucData["totalRow"], function () {
+							var reqIndex = $(this).attr("index");
+							$.queryAllInvest4My(reqIndex || 1);
+						});
+					} else {
+						//暂无数据
+						$("#recycling_table").noData();
+					}
+				},
+				error: function (data) {
+					$.popTips("popTipErr", data.return_info || "获取信息失败");
+				}
+			})
+		};
+		var month5,qtr5,half5,offline5,normal5,way;
+		// 回收中的贷款
+		$.queryInvest4MyN = function (indexPage) {
+			var beginDate = $(".begin_datetime").val().replaceAll("-", "");
+			var endDate = $(".end_datetime").val().replaceAll("-", "");
+			YRHX.ajax({
+				url: CONFIG.getRequestURI("queryInvest4My"),
+				data: {
+					"pageNumber": indexPage || 1,
+					"pageSize": 10,
+					"traceState": "N", // "N" : 回收中的贷款     "A" :  投标中的贷款   "B" : 已回收的贷款
+					"beginDateTime": beginDate,
+					"endDateTime": endDate
+				},
+				success: function (sucData) {
+					$(".queryTotalBj span").text(YRHX.toDecimal2(sucData.totalNextAmount / 100 || "0" + '元'));
+					$(".queryTotalLx span").text(YRHX.toDecimal2(sucData.totalNextInterest / 100 || "0" + '元'));
+
+					var rowHtml = "<tr><td>#{loanRecyDate}</td>";
+					rowHtml += "<td><a class='#{overdue}' href='Z02_1?loanCode=#{loanCode}' title='#{loanTitle}'>#{loanNo}<span class='zai #{isDebt}'>债</span></td>";
+					rowHtml += "<td>#{payAmount}</td>";
+					rowHtml +=
+						"<td>#{duetime}<img src='/portal/images/#{refundTypeIcon}' class='_g' title='#{refundTypeName}'></td>";
+					rowHtml += "<td>#{ysbj}</td>";
+					rowHtml += "<td>#{jqdsbj}</td>";
+					/* rowHtml += "<td>#{jqdslx}</td>"; */
+					rowHtml +=
+						"<td class='ischeck' loanOverdues='#{loanOverdues}' releaseDate='#{releaseDate}' reallyRateByYear='#{rateByYear}' loantitle='#{loanTitle}' isTransfer='#{isTransfer}' ttype='#{ttype}'  payAmount=#{payAmountTem} rateByYear=#{rateByYearPlus} needPay=#{needPay} effectDate=#{effectDate} loanDateTime=#{loanDateTime} loanTimeLimit=#{loanTimeLimit}  refundType=#{refundType} traceCode=#{traceCode} isOverdue=#{isOverdue} repayIndex=#{repayIndex}>查看</td>";
+					rowHtml += "<td><i style = 'color:#{color};background-color:#{bcolor}'  class= 'operate isTransfer' sybj=#{leftAmount} yqbj=#{overdueAmount} leftMonth='#{loanRecyCount}' loanCode='#{loanCode}' traceCode = '#{traceCode}' loanno='#{loanNo}' authCode = '#{authCode}' loanTitle='#{loanTitle}' isTransfer='#{isTransfer}'>#{transfer}</i></td></tr>";
+					var returnData = sucData.list;
+					var transferWay = sucData.transferWay;
+					if(transferWay){
+						month5 = transferWay["month"];
+						qtr5 = transferWay["qtr"];
+						half5 = transferWay["half"];
+						offline5 = transferWay["offline"];
+						normal5 = transferWay["normal"];
+					}else{
+						way="1";
+					}
+					$('#f_recyCount').text(sucData["totalRow"]);
+
+					if (returnData && returnData.length > 0) {
+						//table
+						var tableEle = $("#list_table").find("tbody");
+						var tfootEle = $("#list_table").find("tfoot");
+						tableEle.html("");
+						tfootEle.remove();
+						//default 4 rows
+						for (var i = 0; i < returnData.length; i++) {
+							var row = returnData[i];
+							if (row["isOverdue"] == "yes") {
+								row["overdue"] = "red";
+							} else {
+								row["overdue"] = "blue";
+							}
+							
+							if (row["isTransfer"] != "C") {
+								row["isDebt"] = "yes";
+							} else {
+								row["isDebt"] = "";
+							}
+							row["rateByYearPlus"] = row["rateByYear"] + row["rewardRateByYear"];
+
+							row["jqdsbj"] = YRHX.toDecimal2(row["nextAmount"] / 100) + '元';
+							row["jqdslx"] = YRHX.toDecimal2(row["nextInterest"] / 100) + '元';
+
+							row["ysbj"] = YRHX.toDecimal2((row["payAmount"] - row["leftAmount"] - row["overdueAmount"]) / 100) + '元';
+
+							if (row["refundType"] == "A") {
+								//按月等额本息
+								row["refundTypeName"] = "按月等额本息";
+								row["refundTypeIcon"] = "list_table_icon2.png";
+							} else if (row["refundType"] == "B") {
+								//按月付息，到期还本
+								row["refundTypeName"] = "按月付息，到期还本";
+								row["refundTypeIcon"] = "list_table_icon3.png";
+
+							} else {
+								//到期还本息
+							}
+							var ticket=JSON.parse(row["loanTicket"]);
+							if(ticket!=null){
+							row["ttype"]=ticket[0].type;
+							}else{
+							row["ttype"]="";
+							}
+							row["needPay"] = row["loanRecyCount"];
+							var traceState = row["traceState"];
+							row["duetime"] = (row["loanTimeLimit"] - row["loanRecyCount"] + 1) + "/" + row["loanTimeLimit"];
+							if(traceState =="B"){
+								row["duetime"] = (row["loanTimeLimit"] - row["loanRecyCount"] ) + "/" + row["loanTimeLimit"];
+							}
+							row["loanRecyDate"] = row["loanRecyDate"].dateformat();
+							row["payAmountTem"] = row["payAmount"];
+							row["payAmount"] = YRHX.toDecimal2(row["payAmount"] / 100) + '元';
+							row["effectDate"] = formatDateTime(row["effectDate"]).substr(0, 10);
+							row["loanDateTime"] = formatDateTime(row["loanDateTime"]).substr(0, 10);
+							row["sydsbx"] = YRHX.toDecimal2(row["jqdsbj"] + row["jqdslx"] / 100) + '元';
+							var loanOverlist = JSON.stringify(row["loanOverdues"]);
+							row["loanOverdues"] = loanOverlist;
+							if(row["isTransfer"]=="A"){
+								row["transfer"] = "已发布";
+								row["color"] = "#666";
+								row["bcolor"] = "#f0f0f0";
+							}else{
+								row["transfer"] = "选择";
+								row["color"] = "#fff";
+								row["bcolor"] = "#f03d2d";
+							}
+							var tempHtml = rowHtml.makeHtml(row);
+							tableEle.append(tempHtml);
+
+						}
+						down_show('.contract');
+						//分页
+						$(".returnLoanPage").pag(sucData["pageNumber"], sucData["pageSize"], sucData["totalRow"], function () {
+							var reqIndex = $(this).attr("index");
+							$.queryInvest4MyN(reqIndex || 1);
+						});
+					} else {
+						//暂无数据
+						$("#list_table").noData();
+					}
+				},
+				error: function (data) {
+					$.popTips("popTipErr", data.return_info || "获取信息失败");
+				}
+			})
+		};
+
+		$(".query_button").click(function () {
+			$.queryInvest4MyN()
+		});
+
+		$("#recyclingLoan").click(function () {
+
+			//获取用户待回收资金
+			YRHX.ajax({
+				url: CONFIG.getRequestURI("queryFunds4User"),
+				success: function (moneyData) {
+
+					$('#b_dzlx').text(YRHX.toDecimal2(moneyData.beRecyInterest / 100));
+					$('#b_dsbj').text(YRHX.toDecimal2(moneyData.beRecyPrincipal / 100));
+
+				},
+				error: function (data) {
+					if (data.return_code == "01") {
+
+					} else {
+						$.popTips("popTipErr", data.return_info || "获取信息失败");
+					}
+				}
+			});
+
+			$.queryInvest4MyN();
+
+		});
+
+		//投标中的贷款
+		$.queryInvest4MyA = function (indexPage) {
+			YRHX.ajax({
+				url: CONFIG.getRequestURI("queryInvest4My"),
+				data: {
+					"pageNumber": indexPage || 1,
+					"pageSize": 10,
+					"traceState": "A" //N 回收中的贷款     "A" :  投标中的贷款   "B" : 已回收的贷款
+				},
+				success: function (sucData) {
+					var rowHtml2 =
+						"<tr><td><a class='blue' href='Z02_1?loanCode=#{loanCode}' title='#{loanTitle}'>#{loanNo}<span class='zai #{isDebt}'>债</span></td>";
+					//var rowHtml2 = "<tr><td>#{loanTitle}</td>"; 
+					rowHtml2 += "<td>#{rateByYear}</td>";
+					rowHtml2 += "<td>#{payAmount}</td>";
+					rowHtml2 += "<td>#{loanRecyCount}</td>";
+					rowHtml2 += "<td>#{loanDateTime}</td><tr>";
+
+					//table
+					var tableEle = $("#list_table2").find("tbody");
+					var tfootEle = $("#list_table2").find("tfoot");
+					tableEle.html("");
+					tfootEle.remove();
+
+					var returnData = sucData.list;
+
+					//default 4 rows
+					if (returnData && returnData.length > 0) {
+						for (var i = 0; i < returnData.length; i++) {
+							var row = returnData[i];
+
+							if (row["isTransfer"] != "C") {
+								row["isDebt"] = "yes";
+							} else {
+								row["isDebt"] = "";
+							}
+							row["rateByYearPlus"] = row["rateByYear"] + row["rewardRateByYear"];
+							row["rateByYear"] = YRHX.toDecimal2((row["rateByYear"] + row["rewardRateByYear"]) / 100) + "%";
+							row["loanRecyCount"] = row["loanTimeLimit"] + "个月";
+							row["loanDateTime"] = row["loanDateTime"].dateformat();
+							row["payAmount"] = YRHX.toDecimal2(row["payAmount"] / 100) + '元';
+							var tempHtml2 = rowHtml2.makeHtml(row);
+							tableEle.append(tempHtml2);
+						}
+						//分页
+						$(".votingLoanPage").pag(sucData["pageNumber"], sucData["pageSize"], sucData["totalRow"], function () {
+							var reqIndex = $(this).attr("index");
+							$.queryInvest4MyA(reqIndex || 1);
+						});
+					} else {
+						//暂无数据
+						$("#list_table2").noData();
+					}
+
+				},
+				error: function (data) {
+					$.popTips("popTipErr", data.return_info || "获取信息失败");
+				}
+			})
+		};
+
+		$("#vestingLoan").click(function () {
+
+			$.queryInvest4MyA();
+
+		});
+		
+		//投标中的贷款
+		$.queryInvest4MyP = function (indexPage) {
+			YRHX.ajax({
+				url: "/queryPayTransfer4My",
+				data: {
+					"pageNumber": indexPage || 1,
+					"pageSize": 10
+				},
+				success: function (sucData) {
+					var rowHtml2 =
+						"<tr><td><a class='blue' href='Z02_1?loanCode=#{loanCode}' title='#{loanTitle}'>#{loanNo}<span class='zai #{isDebt}'>债</span></td>";
+					//var rowHtml2 = "<tr><td>#{loanTitle}</td>"; 
+					rowHtml2 += "<td>#{refundType}</td>";
+					rowHtml2 += "<td>#{gotDate}</td>";
+					rowHtml2 += "<td>#{transAmount}</td>";
+					rowHtml2 += "<td>#{loanRecyCount}</td>";
+					rowHtml2 += "<td>#{state}</td>";
+					rowHtml2 += "<td class='isPayLoan' style='cursor:pointer;color:#238fd7' transCode = '#{transCode}' title = '#{loanTitle}' transAmount = '#{amount}' gotDate = '#{gotDate}' type = '#{type}'>回款详情</td><tr>";
+
+					//table
+					var tableEle = $("#list_table2").find("tbody");
+					var tfootEle = $("#list_table2").find("tfoot");
+					tableEle.html("");
+					tfootEle.remove();
+
+					var returnData = sucData.list;
+
+					//default 4 rows
+					if (returnData && returnData.length > 0) {
+						for (var i = 0; i < returnData.length; i++) {
+							var row = returnData[i];
+
+							if (row["isTransfer"] != "C") {
+								row["isDebt"] = "yes";
+							} else {
+								row["isDebt"] = "";
+							}
+							row["type"] = row["refundType"];
+							row["loanRecyCount"] = row["loanRecyCount"] + "个月";
+							if(row["gotDate"] == null||row["gotDate"] == ""){
+								row["gotDate"] = "";
+							}else{
+								row["gotDate"] = row["gotDate"].dateformat();
+							}
+							if(row["refundType"] == "E"){
+								row["refundType"] = "按月支付";
+							}else if(row["refundType"] == "F"){
+								row["refundType"] = "按季支付";
+							}else{
+								row["refundType"] = "未知";
+							}
+							if(row["transState"] == "A"){
+								row["state"] = "待接收";
+							}else if(row["transState"] == "B"){
+								row["state"] = "已接收";
+							}else{
+								row["state"] = "未知";
+							}
+							row["amount"] = Math.floor((row["transAmount"]*1+row["transFee"]*1)*80/100);
+							row["transAmount"] = YRHX.toDecimal2((row["transAmount"]*1+row["transFee"]*1)*80 / 10000) + '元';
+							var tempHtml2 = rowHtml2.makeHtml(row);
+							tableEle.append(tempHtml2);
+						}
+						//分页
+						$(".votingLoanPage").pag(sucData["pageNumber"], sucData["pageSize"], sucData["totalRow"], function () {
+							var reqIndex = $(this).attr("index");
+							$.queryInvest4MyA(reqIndex || 1);
+						});
+					} else {
+						//暂无数据
+						$("#list_table2").noData();
+					}
+
+				},
+				error: function (data) {
+					$.popTips("popTipErr", data.return_info || "获取信息失败");
+				}
+			})
+		};
+		
+		$("#payLoan").click(function () {
+
+			$.queryInvest4MyP();
+
+		});
+		
+		//已回收的贷款
+		$.queryInvest4MyC = function (indexPage) {
+			YRHX.ajax({
+				url: CONFIG.getRequestURI("queryInvest4My"),
+				data: {
+					"pageNumber": indexPage || 1,
+					"pageSize": 10,
+					"traceState": "B" // "N" 回收中的贷款     "A" :  投标中的贷款   "B" : 已回收的贷款
+				},
+				success: function (sucData) {
+					//table
+					var tableEle = $("#list_table3").find("tbody");
+					var tfootEle = $("#list_table3").find("tfoot");
+					tableEle.html("");
+					tfootEle.remove();
+
+					//var rowHtml3 = "<tr><td><a class='blue' href='Z02_1?loanCode=#{loanCode}' title=#{loanTitle}>#{loanNo}</a></td>";
+					var rowHtml3 =
+						"<tr><td><a class='blue' href='Z02_1?loanCode=#{loanCode}' title='#{loanTitle}'>#{loanNo}<span class='zai #{isDebt}'>债</span></td>";
+					/* rowHtml3 += "<td>#{loanUserName}</td>"; */ // 借款人
+					rowHtml3 += "<td>#{loanDateTime}</td>";
+					rowHtml3 += "<td>#{payAmount}</td>";
+					rowHtml3 += "<td>#{rateByYear}</td>";
+					rowHtml3 += "<td>#{benXi}</td>";
+					rowHtml3 += "<td>#{duetime}</td>";
+					rowHtml3 += "<td><i class='contract'>";
+					rowHtml3 += "<div class='contract_nav1'>";
+					rowHtml3 += "<a target='_blank' href='/downContractPDF?traceCode=#{traceCode}'>查看</a>";
+					rowHtml3 += "<a target='_blank' href='/downContractPDF?traceCode=#{traceCode}&type=1'>下载</a>";
+					rowHtml3 += "</div>";
+					rowHtml3 += "</i>";
+					rowHtml3 += "</td>";
+					rowHtml3 += "</tr>";
+					//default 4 rows
+
+					var returnData = sucData.list;
+					if (returnData && returnData.length > 0) {
+
+						for (var i = 0; i < returnData.length; i++) {
+							var row = returnData[i];
+
+							if (row["rewardRateByYear"]) {
+								var licai = new YRHX.licai(row["payAmount"], row["rateByYear"] + row["rewardRateByYear"], row[
+									"loanTimeLimit"]); //loanrecycount 为剩余还款期
+							} else {
+								var licai = new YRHX.licai(row["payAmount"], row["rateByYear"], row["loanTimeLimit"]); //loanrecycount 为剩余还款期
+							}
+
+							//计算得出 TODO  分还款方式
+							if (row["refundType"] == "A") {
+								//"按月等额本息";
+
+								var denge4year = licai.denge4year();
+								var lixi = 0;
+								for (var j = 0; j < row["loanTimeLimit"]; j++) {
+									lixi += denge4year[j].xi;
+								}
+
+							} else if (row["refundType"] == "B") {
+								//"按月付息,到期还本";
+								var lixi = licai.dengxi() * row["loanTimeLimit"];
+
+							} else if (row["refundType"] == "C") {
+								//"到期还本息";
+
+
+							}
+
+							if (row["isTransfer"] != "C") {
+								row["isDebt"] = "yes";
+							} else {
+								row["isDebt"] = "";
+							}
+							
+							//判断是否提前还款
+							if(row["loanState"]=='P'){
+								var yearChange=row["loanRecyDate"].substr(0,4)-row["loanDateTime"].substr(0,4);
+								var monthChange=row["loanRecyDate"].substr(4,2)-row["loanDateTime"].substr(4,2);
+								row["duetime"]="第"+(parseInt(yearChange)*12+parseInt(monthChange))+"/"+row["loanTimeLimit"]+"期提前还款";
+							}else{
+								row["duetime"]='正常还款';
+							}
+
+							
+							//row["hsje"] = YRHX.toDecimal2((row["payAmount"] + lixi - row["leftInterest"]) / 10.0 / 10.0) + '元';
+							row["loanDateTime"] = formatDateTime(row["loanDateTime"]).substr(0, 10);
+							row["payAmount"] = YRHX.toDecimal2(row["payAmount"] / 10.0 / 10.0) + '元';
+							row["rateByYear"] = YRHX.toDecimal2((row["rateByYear"] + row["rewardRateByYear"]) / 100) + "%";
+
+							var tempHtml3 = rowHtml3.makeHtml(row);
+							tableEle.append(tempHtml3);
+
+						}
+						down_show('.contract');
+						//分页
+						$(".returnedPage").pag(sucData["pageNumber"], sucData["pageSize"], sucData["totalRow"], function () {
+							var reqIndex = $(this).attr("index");
+							$.queryInvest4MyC(reqIndex || 1);
+						});
+					} else {
+						//暂无数据
+						$("#list_table3").noData();
+					}
+
+				},
+				error: function (data) {
+					$.popTips("popTipErr", data.return_info || "获取信息失败");
+				}
+			})
+		};
+
+
+		//最近的投资默认
+		$.queryAllInvest4My();
+
+		$("#returnLoan").click(function () {
+			$.queryInvest4MyC();
+		});
+		
+		$.queryInvest4MyR = function (indexPage) {
+			YRHX.ajax({
+				url:"/queryOverdueList",
+				data:{"pageNumber": indexPage || 1,
+						"pageSize": 10,},
+				success:function(sucData){
+					var tableEle = $("#list_table4").find("tbody");
+					var tfootEle = $("#list_table4").find("tfoot");
+					tableEle.html("");
+					tfootEle.remove();
+					var rowHtml = "<tr><td>#{loanDateTime}</td>";
+					rowHtml +="<td>#{loanNo}</td>";
+					rowHtml += "<td>#{payAmount}</td>";
+					rowHtml +="<td>#{loanTimeLimit}</td>";
+					rowHtml += "<td>#{rateByYear}</td>";
+					rowHtml += "<td>#{overdueDate}</td>";
+					rowHtml += "<td>#{reciedOverdueTime}</td>";
+					rowHtml +="<td class='ischeck' loanOverdues='#{loanOverdues}' releaseDate='#{releaseDate}' reallyRateByYear='#{rateByYearPlus}' loantitle='#{loanTitle}' isTransfer='#{isTransfer}' ttype='#{ttype}'  payAmount=#{payAmountTem} rateByYear=#{rateByYearPlus} needPay=#{needPay} effectDate=#{effectDate} loanDateTime=#{loanDateTime} loanTimeLimit=#{loanTimeLimit}  refundType=#{refundType} traceCode=#{traceCode} isOverdue=#{isOverdue} repayIndex=#{repayIndex}>查看</td></tr>";
+					var loanTracePage = sucData["loanTracePage"];
+					var returnData = loanTracePage.list;
+					if (returnData && returnData.length > 0) {
+						for (var i = 0; i < returnData.length; i++) {
+							var row = returnData[i];
+							row["rateByYearPlus"] = row["rateByYear"] + row["rewardRateByYear"];
+							row["rateByYear"] = (row["rateByYear"] + row["rewardRateByYear"]) / 100 + "%";
+							row["loanDateTime"] = formatDateTime(row["loanDateTime"]).substr(0, 10);
+							row["overdueDate"] = formatDateTime(row["overdueDate"]).substr(0, 10);
+							row["payAmountTem"] = row["payAmount"];
+							row["payAmount"] = YRHX.toDecimal2(row["payAmount"] / 100) + '元';
+							row["needPay"] = row["loanRecyCount"];
+							row["effectDate"] = formatDateTime(row["effectDate"]).substr(0, 10);
+							var ticket=JSON.parse(row["loanTicket"]);
+							if(ticket!=null){
+								row["ttype"]=ticket[0].type;
+							}else{
+								row["ttype"]="";
+							}
+							row["loanOverdues"] = JSON.stringify(row["loanOverdues"]);
+
+							var tempHtml4 = rowHtml.makeHtml(row);
+							tableEle.append(tempHtml4);
+						}
+						down_show('.contract');
+						//分页
+						$(".overdueLoanPage").pag(loanTracePage["pageNumber"], loanTracePage["pageSize"], loanTracePage["totalRow"], function () {
+							var reqIndex = $(this).attr("index");
+							$.queryInvest4MyR(reqIndex || 1);
+						});
+					} else {
+						//暂无数据
+						$("#list_table4").noData();
+					}
+					$("#b_yqje").text(YRHX.toDecimal2(sucData.allOverdueAmount/10.0/10.0));
+					$("#b_yqbs").text(sucData.num);
+					$("#b_hkje").text(YRHX.toDecimal2(sucData.allBackAmount/10.0/10.0));
+					if(sucData.allBackAmount>0){
+						$("#b_yqbl").text(YRHX.toDecimal2(sucData.allBackAmount/(sucData.allBackAmount+sucData.allOverdueAmount)*100));
+					}
+				},
+				error:function(errDate){}
+			});
+		}
+		$("#overdueLoan").click(function () {
+			$.queryInvest4MyR();
+		});
+		//获取两时间相差月份
+		function getMonthNumber(date1, date2) {
+
+			//默认格式为"20030303",根据自己需要改格式和方法
+			var year1 = date1.substr(0, 4);
+			var year2 = date2.substr(0, 4);
+			var month1 = date1.substr(5, 2);
+			var month2 = date2.substr(5, 2);
+			var len = (year2 - year1) * 12 + (month2 - month1);
+
+			var day = date2.substr(8, 2) - date1.substr(8, 2);
+			if (day > 0) {
+				len += 1;
+			} else if (day < 0) {
+				len -= 1;
+			}
+			return len;
+		}
+
+		var navTab = YRHX.queryString("navTab");
+		if (navTab) {
+			$(".tabNav li").eq(navTab).click();
+		}
+
+		$(".bank_dialog_header .del").click(function () {
+			$("#yinying").hide();
+			$(".repay_info_dialog").hide();
+			$(".payLoan_info_dialog").hide();
+			$('body,html').css('overflow', 'auto');
+		});
+
+		$("body").delegate(".safeIn", "click", function () {
+			var curState = $(this).attr("paying")
+			
+			YRHX.ajax({
+				url: CONFIG.getRequestURI("queryCFCA"),
+				data: {
+					bCode: $(this).attr("tracecode") //'256f21b46ffc4364b3f1bdb0064c17bb'
+				},
+				success: function (sucData) {
+					// CONFIG.SAFEINURL
+					
+					if (sucData) {
+						window.open(CONFIG.SAFEINURL + sucData.recordNo);
+					} else {
+						
+						if(curState == 'yes' ){
+							var errTipsHere = "保全证书生成中！"
+						}else{
+							var errTipsHere = "该投资流水未认证保全证书！"
+						}
+						$.popTips("popTipErr", errTipsHere);
+					}
+				},
+				error: function (errData) {
+					$.popTips("popTipErr", errData.return_info || "获取信息失败");
+				}
+			})
+		})
+
+		//回收中贷款 - 查看       ==================
+		$("body").delegate(".ischeck", "click", function () {
+			var that = $(this);
+			$('body,html').css('overflow', 'hidden');
+			to_center($("#yinying").show());
+			to_center($(".repay_info_dialog").show());
+
+			$(".lid").text(that.attr("loanTitle"));
+			$(".bidmoney").text(YRHX.toDecimal2(that.attr("payAmount") / 100) + '元');
+			$(".apr").text(that.attr("rateByYear") / 100);
+			$(".bidtime").text(that.attr("loanDateTime"));
+			$(".deadline").text(that.attr("loanTimeLimit"));
+			$(".contractUrl").attr("href", "/downContractPDF?traceCode=" + that.attr("traceCode"));
+			$(".contractUrl_d").attr("href", "/downContractPDF?traceCode=" + that.attr("traceCode") + "&type=1");
+
+
+			switch (that.attr("refundType")) {
+				case "A": //按月等额本息
+					window.repayType = "按月等额本息";
+					break;
+				case "B": //按月付息，到期还款
+					window.repayType = "按月付息，到期还款";
+					break;
+				case "C": //到期还本息
+					window.repayType = "到期还本息";
+					break;
+
+			}
+			$("#refundtype").text(window.repayType);
+
+			var repayDetailNum = that.attr("needPay"); //剩余期数
+
+			var rePayBody = $("#popRepay").find("tbody");
+			var rePayFoot = $("#popRepay").find("tfoot");
+			rePayBody.html("");
+			rePayFoot.remove();
+			var loanoverdue = that.attr("loanOverdues");
+			var loanover = "";
+			if(loanoverdue != "" && loanoverdue != null){
+				loanover = JSON.parse(loanoverdue);
+			}
+			
+
+			if (repayDetailNum >= 0) {
+				var limit=that.attr("loanTimeLimit");
+				var limit2 = that.attr("loanTimeLimit");
+				var startTime = that.attr("effectDate");
+				var releaseDate=that.attr("releaseDate");
+				var reallyRateByYear=that.attr("reallyRateByYear");
+				window.repayDetail = [];
+				switch (that.attr("refundtype")) {
+					case "B": //按月付息，到期还款
+						var xiMonth = that.attr("rateByYear") / 120000 * (that.attr("payAmount")); /* / (that.attr("loantimelimit") */
+						var repayLen = that.attr("loanTimeLimit");
+
+						for (var j = 0; j < repayLen; j++) {
+
+							if (j == (that.attr("loanTimeLimit") - 1)) {
+								var temObeject = {
+									ben: that.attr("payAmount"),
+									benxi: that.attr("payAmount") * 1 + xiMonth,
+									xi: xiMonth
+								}
+							} else {
+								var temObeject = {
+									ben: 0,
+									benxi: xiMonth,
+									xi: xiMonth
+								}
+							}
+							window.repayDetail.push(temObeject);
+
+						}
+						//首月加息活动 显示利息 ws
+						if(releaseDate>=20171111&&releaseDate<=20171117){//首月加息活动
+							var xiMonth2 = (reallyRateByYear*1+400) / 120000 * (that.attr("payAmount"));
+							repayDetail[0].benxi=repayDetail[0].ben*1 + xiMonth2;
+							repayDetail[0].xi=xiMonth2;
+						}
+						break;
+					case "A":
+						window.repayDetail = new YRHX.licai(that.attr("payAmount"), that.attr("rateByYear"), that.attr("loanTimeLimit"))
+							.denge4year();
+						//首月加息活动 显示利息 ws
+						if(releaseDate>=20171111&&releaseDate<=20171117){//首月加息活动
+							var xiMonth2 = new YRHX.licai(that.attr("payAmount"),reallyRateByYear*1+400, 1)
+							.denge4year();
+							repayDetail[0].benxi=repayDetail[0].ben*1 + xiMonth2[0].xi;
+							repayDetail[0].xi=xiMonth2[0].xi;
+						}
+						break; //按月等额本息
+					case "C": //到期还本息
+						//TODO
+						break;
+
+				}
+
+				if(that.attr("refundtype")=="A"){
+						var istransfer=that.attr("istransfer");
+						var ttype=that.attr("ttype");
+						if(istransfer!="C"&&ttype=="C"){
+							var tracecode=that.attr("tracecode");
+							YRHX.ajax({
+							url:"/queryLoanTransferByTraceCode",
+							async: false,
+							data:{"tracecode":tracecode},
+							success:function(sucData){
+							if(sucData.length>0){
+								var transfer=sucData[0];
+								var leftAmount=transfer.leftAmount;
+								var loanRecyCount=transfer.loanRecyCount;
+								window.repayDetail = new YRHX.licai(leftAmount, that.attr("rateByYear"),loanRecyCount).denge4year();
+								var startTimeArr = startTime.split("-");
+									startTimeArr[1]=parseInt(startTimeArr[1])+(limit-loanRecyCount);
+									if (startTimeArr[1] < 10) {
+										startTimeArr[1] = "0" + startTimeArr[1];
+									}
+									if (startTimeArr[1] > 12) {
+										startTimeArr[0]++;
+										startTimeArr[1] = startTimeArr[1]-12;
+									}
+										startTime = startTimeArr.join("-");
+										limit=loanRecyCount;
+									}
+							},
+							});
+						}
+					}
+				for (var i = 0; i < limit; i++) {
+					var startTimeArr = startTime.split("-");
+					startTimeArr[1]++;
+					if (startTimeArr[1] < 10) {
+						startTimeArr[1] = "0" + startTimeArr[1];
+					}
+					if (startTimeArr[1] > 12) {
+						startTimeArr[0]++;
+						startTimeArr[1] = "01";
+					}
+					startTime = startTimeArr.join("-");
+					
+					if(that.attr("refundtype")=="A" && that.attr("istransfer")!="C" && that.attr("ttype")=="C"){
+							if (i > (limit - that.attr("needpay") - 1)) {
+								var stateCode = "blue";
+								var stateName = "还款中";
+								/* if(that.attr("isOverdue")=="yes"){
+									stateName="逾期中";
+								} */
+							} else {
+								var stateCode = "green";
+								var stateName = "还款成功";
+								var repayIndex = that.attr("repayIndex");
+								if(Number(that.attr("repayIndex"))-1 <= i+Number(that.attr("loanTimeLimit"))-limit){
+									stateCode="red";
+									stateName="跟进中";
+								}
+								
+							}	
+						}else{
+							if (i > (limit - that.attr("needpay") - 1)) {
+								var stateCode = "blue";
+								var stateName = "还款中";
+								/* if(that.attr("isOverdue")=="yes"){
+									stateName="逾期中";
+								} */
+							} else {
+								var stateCode = "green";
+								var stateName = "还款成功";
+								var repayIndex = that.attr("repayIndex");
+								if(that.attr("repayIndex")-1<=i){
+									stateCode="red";
+									stateName="跟进中";
+								}
+								
+							}	
+						}
+						
+
+					var rowPopHtml = "<tr><td>" + startTime + "</td>";
+					rowPopHtml += "<td>" + YRHX.toDecimal2(repayDetail[i].benxi / 100) + "元</td>";
+					rowPopHtml += "<td>" + YRHX.toDecimal2(repayDetail[i].ben / 100) + "元</td>";
+					rowPopHtml += "<td>" + YRHX.toDecimal2(repayDetail[i].xi / 100) + "元";
+					if(stateName=="跟进中"){
+						var length = i+1;
+						if(that.attr("refundtype")=="A" && that.attr("istransfer")!="C" && that.attr("ttype")=="C"){
+							 length = length + Number(limit2 -limit);
+						}
+						for(var k = 0;k<loanover.length;k++){
+							var loandue = loanover[k];
+							if(length==loandue.repayIndex){
+								switch (loandue.overdueType) {
+								case "A":
+									rowPopHtml+=" <span style='color: #999999'>(已还)</span>";
+									break;
+								case "P":
+									rowPopHtml+=" <span style='color: #999999'></span>";
+									break;
+								case "I":
+									rowPopHtml+=" <span style='color: #999999'>(已还)</span>";
+									break;
+								case "N":
+									rowPopHtml+=" <span style='color: #999999'></span>";
+									break;
+
+								default:
+									
+									break;
+								}
+								break;
+							}
+						}
+						rowPopHtml+="</td>";
+					}else{
+						rowPopHtml+="</td>";
+					}
+					rowPopHtml += "<td class=" + stateCode + ">" + stateName + "</td><tr>";
+
+					rePayBody.append(rowPopHtml);
+
+				}
+
+			}
+		});
+		$("body").delegate(".isPayLoan", "click", function () {
+			var that = $(this);
+			if(that.attr("gotDate") != ""){
+				$('body,html').css('overflow', 'hidden');
+				to_center($("#yinying").show());
+				to_center($(".payLoan_info_dialog").show());
+				$(".contractUrl4t").attr("href", "/downContractPDF?transCode=" + that.attr("transCode"));
+				$(".contractUrl_d4t").attr("href", "/downContractPDF?transCode=" + that.attr("transCode") + "&type=1");
+				var rePayBody = $("#popPayLoan").find("tbody");
+				var rePayFoot = $("#popPayLoan").find("tfoot");
+				rePayBody.html("");
+				rePayFoot.remove();
+				var loanLimitTime = 0;
+				if(that.attr("type")=="E"){
+					loanLimitTime=36;
+				}else{
+					loanLimitTime=11;
+				}
+				$(".lid").text(that.attr("title"));
+				$(".deadline").text(loanLimitTime);
+				$(".bidmoney").text(YRHX.toDecimal2(that.attr("transAmount") / 100) + '元');
+				var startTime = that.attr("gotDate");
+				$(".bidtime").text(startTime);
+				for (var i = 0; i < loanLimitTime; i++) {
+					var startTimeArr = startTime.split("-");
+					if(that.attr("type")=="E"){
+						startTimeArr[1]++;
+					}else{
+						startTimeArr[1] = startTimeArr[1]*1+3;
+					}
+					if (startTimeArr[1] > 12) {
+						startTimeArr[0]++;
+						startTimeArr[1] = startTimeArr[1]*1-12;
+					}
+					if (startTimeArr[1] < 10) {
+						startTimeArr[1] = "0" + startTimeArr[1];
+					}
+					startTime = startTimeArr.join("-");
+					var amount = 0;
+					if(that.attr("type")=="E"){
+							if(i<12){
+								amount = Math.floor(that.attr("transAmount")*2/100)/100;
+							}else if(i>=12&&i<24){
+								amount = Math.floor(that.attr("transAmount")*3/100)/100;
+							}else if(i>=24&&i<35){
+								amount = Math.floor(that.attr("transAmount")*3.33/100)/100;
+							}else if(i=35){
+								amount = Math.floor(that.attr("transAmount")*3.37/100)/100;
+							}
+						}else{
+							if(i<4){
+								amount = Math.floor(that.attr("transAmount")*8/100)/100;
+							}else if(i>=4&&i<8){
+								amount = Math.floor(that.attr("transAmount")*9/100)/100;
+							}else if(i>=8&&i<10){
+								amount = Math.floor(that.attr("transAmount")*10/100)/100;
+							}else if(i=10){
+								amount = Math.floor(that.attr("transAmount")*12/100)/100;
+							}
+						}
+					var rowPopHtml = "<tr><td>" + startTime + "</td>";
+					rowPopHtml += "<td>" + amount + "元</td>";
+					var stateName = "待支付";
+					rowPopHtml += "<td >" + stateName + "</td><tr>";
+
+					rePayBody.append(rowPopHtml);
+					
+				}
+			}else{
+				alert("等待接收");
+			}
+		});
+		function down_show(target) {
+			$(target).hover(function () {
+				$(this).children().show();
+			}, function () {
+				$(this).children().hide();
+			});
+		};
+		
+		$("body").delegate(".isTransfer", "click", function () {
+			/* var that = $(this);
+			if(that.attr("isTransfer")=="No"){
+			$('body,html').css('overflow', 'hidden');
+			$("#popLoanTitle").text( $(this).attr("loanTitle"));
+			$("#popLeftMonth").text( $(this).attr("leftMonth"));
+			
+			$("#popSybj").text( YRHX.toDecimal2( $(this).attr("sybj")/100) + '元');
+			$("#popSybj").attr("sybj", $(this).attr("sybj"));
+			$("#popYqbj").text( YRHX.toDecimal2( $(this).attr("yqbj")/100) + '元');
+			$("#popYqbj").attr("yqbj", $(this).attr("yqbj"));
+			var allbj = (Math.floor($("#popSybj").attr("sybj"))+Math.floor($("#popYqbj").attr("yqbj")))/100;
+			var rljeOne =  Math.ceil(allbj*40)/100 ; //40%让利金额
+//			var rljeOne =  0;
+			$("#popRlje").text( YRHX.toDecimal2( rljeOne ) );
+			
+			$("#popSssy").text((Math.floor(allbj*5)/100 + rljeOne ).toFixed(2) + '元');
+			$("#popSssy").attr("sssy",(Math.floor(allbj*5)/100 + rljeOne ).toFixed(2));
+			
+			var popSybj = $("#popSybj").attr("sybj");
+			var popLeftMonth = $("#popLeftMonth").text();
+			var popRljeByYear = (rljeOne*100/allbj/popLeftMonth)*12;
+			$("#popRljeByYear").text(YRHX.toDecimal2(popRljeByYear)+"%");
+			
+			$("#popSxf").text(Math.floor(allbj*5)/100 + '元');
+			$("#popSxf").attr("sxf",Math.floor(allbj*5)/100);
+			
+			
+			$("#subTransBtn").attr("traceCode",$(this).attr("traceCode"));
+			to_center($("#zrInfo").show());
+			to_center($("#yinying").show());
+			var lossAmontNum = $("#popSssy").attr("sssy");
+			var isSetMoney = false;
+			///转让人自定义让利费用，但让利区间在40%-70%间。
+			var maxSybj =  Math.floor(allbj* 70)/100; //最大区间让利金额
+			var minSybj =  Math.ceil(allbj* 40)/100;//最小区间让利金额
+			var midSybj = Math.round(maxSybj / 2);
+			
+			$("#cjjeqj").text(  YRHX.toDecimal2( minSybj ) +"元~"+  YRHX.toDecimal2(  maxSybj ) + '元' );
+			$('#lossAmont').val( minSybj );
+			//年利率
+			$("#popRateByYear").text( $(this).attr("rateByYear"));
+			
+			// 债转扣除现金抵用券
+			$("#popisdel").text("");
+            var traceCode = $(this).attr("traceCode");
+			YRHX.ajax({
+				url : ("/queryDeductionMoney"),
+				data : {
+					traceCode : traceCode
+				},
+				success : function(sucData) {
+					if(sucData !="" && sucData != null){
+						 var type=sucData.type;
+						 var isdel=sucData.isDel;
+						 if(isdel=="Y"&&type=="A"){
+							 var amount=sucData.amount;
+							 $("#popisdel").text("扣除现金抵用券: " + YRHX.toDecimal2(amount / 10.0 / 10.0) );
+						 }	
+					}	
+				},
+				error : function( errData ){
+					 $.popTips("popTipErr", errData.return_info || "请求服务失败" );
+				}
+			});
+			} */
+			if($(this).attr("isTransfer")=="A"){
+				return;
+			}
+			if($(this).attr("authCode")=='null'||$(this).attr("authCode")==''||$(this).attr("authCode")==null){
+				var r = confirm('此标暂时无法转让，详情请点击确认查看');
+				if(r){
+					window.open('X00?id=1353');
+				}
+					return;
+				
+			}
+			$('body,html').css('overflow', 'hidden');
+			if(way=="1"){
+				alert("未选择方案无法发布");
+				return false;
+			}
+			if(offline5=="1"||normal5=="1"){
+				alert("已选择方案4或方案5，无法发布");
+				return false;
+			}
+			if(month5!="1"){
+				$(".month").removeClass('selected');
+				$(".month").hide();
+				$(".montha").hide();
+				$(".qtr").addClass('selected');
+				$(".qtra").show();
+			}
+			if(qtr5!="1"){
+				$(".qtr").removeClass('selected');
+				$(".qtr").hide();
+				$(".qtra").hide();
+				if(month5!="1"){
+					$(".half").addClass('selected');
+					$(".halfa").show();
+				}
+			}
+			if(half5!="1"){
+				$(".half").removeClass('selected');
+				$(".half").hide();
+				$(".halfa").hide();
+			}
+			$(".pop").show();
+			to_center($("#yinying").show());
+			$(".pop-cancel").attr("loanCode",$(this).attr("loanCode"));
+			$(".pop-cancel").attr("traceCode",$(this).attr("traceCode"));
+			$(".pop-cancel").attr("loanno",$(this).attr("loanno"));
+			$(".pop-cancel").attr("authCode",$(this).attr("authCode"));
+			$(".pop-cancel").attr("loanTitle",$(this).attr("loanTitle"));
+			$(".pop-cancel").attr("leftMonth",$(this).attr("leftMonth"));
+			$(".pop-cancel").attr("ratebyyear",$(this).attr("ratebyyear"));
+			$(".pop-cancel").attr("sybj1",$(this).attr("sybj1"));
+			$(".pop-cancel").attr("sxf",$(this).attr("sxf"));
+			$(".pop-cancel").attr("refundType",$(this).attr("refundType"));
+			$(".popLoanNo").text($(this).attr("loanno"));
+			var allbj = Math.floor($(this).attr("sybj"))+Math.floor($(this).attr("yqbj"));
+			$(".popAmount").text(allbj/100+"元");
+			$(".popLeftMonth").text($(this).attr("leftMonth"));
+			$(".yueAmount").text(Math.floor(allbj*80/100)/100+"元");
+			$(".jiAmount").text(Math.floor(allbj*80/100)/100+"元");
+			$(".halfAmount").text(Math.floor(allbj*50/100)/100+"元");
+		});
+		//调整让利 监控事件
+		$("#lossAmont").blur(function(){
+			var rlje = $("#lossAmont").val(); //让利金额
+			var allbj = (Math.floor($("#popSybj").attr("sybj"))+Math.floor($("#popYqbj").attr("yqbj")))/100;
+			if( isNaN(rlje) == true ){
+				$("#lossAmont").val(Math.ceil(allbj*40)/100);
+				return ;
+			}
+			var isdelAmount=$("#popisdel").attr("amount");
+			var isSetMoney = false;
+			///转让人自定义让利费用，但让利区间在0%-1%间。
+			var maxSybj = Math.floor(allbj* 70)/100 ; //最大区间让利金额
+			var minSybj = Math.ceil(allbj* 40)/100 ;;//最小区间让利金额
+			var tmpRlje = 0; 
+			if( rlje*1 > maxSybj*1 ){
+				tmpRlje =  maxSybj;
+			}else if( rlje*1 > 0 && rlje*1 <= minSybj*1 ){
+				tmpRlje = minSybj;
+			}else if(rlje*1 > minSybj*1 && rlje*1 <= maxSybj*1 ){
+				tmpRlje = rlje;
+			}
+			var popSybj = $("#popSybj").attr("sybj");
+			var popLeftMonth = $("#popLeftMonth").text();
+			var popRljeByYear = YRHX.toDecimal2((tmpRlje*100/allbj/popLeftMonth)*12);
+			$("#popSssy").attr("sssy",Math.floor(allbj*5)/100 );
+			$("#popSxf").text(Math.floor(allbj*5)/100+'元');
+			
+			var lossAmontNum = $("#popSssy").attr("sssy");
+			$("#popSssy").text(YRHX.toDecimal2((lossAmontNum*1 + tmpRlje*1)) + '元');
+			$("#popRlje").text( YRHX.toDecimal2(tmpRlje) );
+			$("#lossAmont").val( tmpRlje) ;
+			$("#popRljeByYear").text(popRljeByYear+"%");
+
+		});
+		//关闭转让窗口
+		$("#zrInfo .del").click(function(){
+			$('#yinying').hide();
+			$('body,html').css('overflow', 'auto');
+			$('#zrInfo').hide();
+			$("#lossAmont").val("");
+			$("#payPwd").val("");
+		});
+		
+		//确定转让债权事件
+		$("#subTransBtn").click(function(){
+			
+			if($("#lossAmont").val() == ''){
+				 $.popTips("popTipErr","请输入让利金额",function(){
+					 $("#lossAmont").focus();
+				 });
+				return false;
+			}
+			var yesToGo = confirm("您确定要对此债权进行转让?");
+			
+			if( yesToGo ){
+				YRHX.ajax({
+					url : "/debentureOverdueTransfer",
+					data : {
+						traceCode : $("#subTransBtn").attr("traceCode"),
+						transFee : $("#lossAmont").val() * 100
+					},
+					success : function(sucData) {
+						$.popTips("popTipSuc","转让成功",function(){
+							window.location.reload();	
+						});
+					},
+						error : function( errData ){
+						if(errData.return_code=='29'){
+							var r = confirm(errData.return_info);
+							if(r){
+								window.open('X00?id=1352');
+							}
+								return;
+						}
+						 $.popTips("popTipErr",errData.return_info || "请求服务失败");
+					}
+				});
+			}
+			
+			
+		});
+		
+		 $('.pop-close').click(function () {
+	        $('.bgPop,.pop').hide();
+	        $('#yinying').hide();
+	        $('body,html').css('overflow', 'auto');
+	    });
+	    $(".pop-duifu").click(function () {
+	    	var that = $(this);
+	    	var poptype = that.attr("poptype");
+			var	urlTransfer = '/duiFuTransfer';
+			var payType = "E";
+	    	if(poptype=="yue"){
+		    	if($('.yue').is(':checked')){
+					payType = "E";
+				}else{
+					alert("请认真阅读协议并勾选");
+					return false;
+				}
+	    	}else if(poptype=="ji"){
+	    		if($('.ji').is(':checked')){
+					payType = "F";
+				}else{
+					alert("请认真阅读协议并勾选");
+					return false;
+				}
+	    	}else if(poptype == "half"){
+	    		if($('.half').is(':checked')){
+					payType = "H";
+				}else{
+					alert("请认真阅读协议并勾选");
+					return false;
+				}
+	    	}
+	    	
+			/* if($("#payPwd").val() == ''){
+				 $.popTips("popTipErr","请输入支付密码",function(){
+					 $("#payPwd").focus();
+				 });
+				return false;
+			} */
+			var yesToGo = confirm("您确定要对此债权进行转让?");
+			
+			if( yesToGo ){
+				YRHX.ajax({
+					url : urlTransfer,
+					data : {
+						traceCode : that.attr("traceCode"),
+						payType : payType
+					},
+					success : function(sucData) {
+						$.popTips("popTipSuc","转让成功",function(){
+							window.location.reload();	
+						});
+					},
+						error : function( errData ){
+						if(errData.return_code=='29'){
+							var r = confirm(errData.return_info);
+							if(r){
+								window.open('X00?id=1352');
+							}
+								return;
+						}
+						 $.popTips("popTipErr",errData.return_info || "请求服务失败");
+					}
+				});
+			}
+			
+	    });
+	   	$('#tab ul li').click(function(){
+			$(this).addClass('selected').siblings().removeClass('selected');
+			var index = $('#tab ul li').index(this);
+			$('div.tab_box > div').eq(index).show().siblings().hide();
+		});
+	</script>
+</body>
+
+</html>

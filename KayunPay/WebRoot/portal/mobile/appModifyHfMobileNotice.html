@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title>修改手机号</title>
+	<style>
+		html, body {
+			margin: 0;
+			padding: 0;
+		}
+	</style>
+</head>
+<body>
+
+	
+<div align="center" style='width:margin-top:200px;'>
+<h2 id="mContent"></h2>
+</div>
+</body>
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+<script type="text/javascript" src="/portal/js/config.js"></script>
+<script type="text/javascript" src="/portal/js/public.js"></script>
+<script src="../app/js/biz.js"></script>
+<script type="text/javascript" src="/portal/js/fuiouErr.js"></script>
+</html>
+<script>
+
+ var code=YRHX.queryString("code");
+ 	var mContent = document.getElementById("mContent");  
+ if(code=='0000'){
+	mContent.innerHTML= "存管手机号修改成功"; 
+  }
+ else{
+mContent.innerHTML= "存管手机号修改失败,"+fuiouErr(code);
+ }
+</script>

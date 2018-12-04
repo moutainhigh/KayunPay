@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>易融恒信-安全可靠透明的投资理财平台,p2p网贷平台</title>
+<meta name="keywords"
+	content="易融恒信,网贷平台,p2p网贷平台排名,p2p理财,p2b网贷,p2p投资理财平台,小投资理财,武汉贷款,武汉小额投资,武汉网贷公司,武汉易融恒信" />
+<meta name="description"
+	content="易融恒信,致力于做华中地区最好的p2p网贷平台,为投资者提供最安全,最靠谱,最透明的互联网金融p2p投资理财平台,咨询电话400-027-0707" />
+<link href="/portal/css/public.css" rel="stylesheet" media="screen"
+	type="text/css" charset="utf-8" />
+<link href="/portal/css/wylc.css" rel="stylesheet" media="screen"
+	type="text/css" charset="utf-8" />
+	<!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+<body>
+	<header id="header" class="header"></header>
+	<main class="main_grey">
+	<div class="layout_center">
+		<div class="project_info">
+			<img id="avatarUrl" class="project_img"
+				src="/portal/images/cjzq.jpg" title="承接债券" alt="">
+			<h1 id="h">
+				<span id="title"></span>
+				<i class="icon0" title="本息保障"></i><i class="icon1" title="实地认证"></i><i id="refundTypeIcon"></i>
+			</h1>
+			<div class="project_data">
+				<div class="annual_interest_rate">
+					<span class="text">年利率</span><span id="apr" class="num"></span>
+				</div>
+				<div class="time_limit">
+					<span class="text">剩余期限</span><span id="num" class="num"></span>
+				</div>
+				<div class="money">
+					<span class="text">剩余本金</span><span id="money" class="num"><span>￥</span></span>
+				</div>
+				<div class="repayment_method" style="margin-left: 100px;">
+					<span class="text">还款方式</span><span id="repayMethodName"
+						class="num">按月等额本息</span>
+				</div>
+			</div>
+			<div class="project_text">
+				<span>转让人：</span><span
+					id="realname" class="num"></span>
+				<!--<span>下一回款日：</span><span id="nextDay" class="num"></span>-->
+			</div>
+			<div class="project_other"
+				style="background: #fff9f9; border-right: 1px #fbe1e0 solid;">
+				<div class="balance" style="width: 180px;">
+					<div>承接价格</div>
+					<div id="transAmount" class="num"></div>
+				</div>
+				<!-- <div class="balance"
+					style="margin-top: 30px; padding-top: 5px; padding-bottom: 5px; width: 130px; border-right: 1px #fbe1e0 solid;">
+					<div>承接收益</div>
+					<div id="earnInterest" class="num"></div>
+				</div> -->
+				<div class="balance" style="margin-top: 30px;padding-top: 5px;padding-bottom: 5px;border-right: 1px #fbe1e0 solid;">
+					<div>可用余额</div>
+					<div class="num" id="avBalance">
+						<span id="avBalanceNum">0</span><span>元</span><a href="B02" class="red">充值</a>
+					</div>
+				</div>
+				<div class="balance" id="takeIt" style="width: 280px;margin-left: 50px;">
+					<div id="takeItBtn"  class="takeItBtn">承接</div>
+					<div style="width: 150px;">支付密码</div>
+					<input id="txtZF" type="password">
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="project_main layout_center menu">
+		<ul>
+			<li class="active">债权转让规则</li>
+		</ul>
+		<div class="uf_tips">
+			<p>债权转让说明：</p>
+			<p>1、债权人可以将投标或承接成功15天后的债权进行转让（2013年9月27日起支持无限次转让）。</p>
+			<p>2、若72小时内无人承接，则该转让失败，1小时后可再次发起转让；若转让成功，承接人回款时无需支付首期利息管理费。</p>
+			<p>
+				3、承接人需要支付的承接价格及转让人所获得的转让收入如下：<br> &nbsp;&nbsp;&nbsp;&nbsp; 1)
+				若转让日期在投标或承接成功后15天-30天之间，则：<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>约定：期间利息
+					= 15至30天期间可得利息(未扣利息管理费) </span><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				承接价格=剩余本金+当期待结算利息-期间利息的10%<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				转让收入=剩余本金+当期待结算利息-期间利息的40%<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>(转让人获得：当期待结算利息-40%期间利息，承接人获得10%期间利息，30%期间利息进垫付金)</span><br>
+				&nbsp;&nbsp;&nbsp;&nbsp; 2) 若转让日期在投标或承接成功后30天之外，则：<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>约定：前期利息
+					= 前30天内可得利息(未扣利息管理费) </span><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				承接价格=剩余本金+当期待结算利息-前期利息的10%<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				转让收入=剩余本金+当期待结算利息-前期利息的40%<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>(转让人获得：当期待结算利息-20%前期利息，承接人获得5%前期利息，15%前期利息进垫付金)</span><br>
+			</p>
+			<p>4、关于投标积分：按天计算，转让日之后的积分归承接人所有。若债权人积分不足，则不能转让。</p>
+		</div>
+
+	</div>
+
+	<!--<div class="confirm_pay">
+		<div class="pay_del">
+			<div class="del"></div>
+		</div>
+		<div class="pay_row">
+			<label>验证码：</label><input id="txtYZM" type="text"><img src="" title="验证码" onclick="TSOCapObj.refresh();" id="captchaImg">
+		</div>
+		<div class="pay_row"><button>确认承接</button></div>
+	</div>
+	<div id="yinying" class="yinying"></div>-->
+
+	</main>
+	<input type="hidden" id="loanCode" value="">
+	<footer id="footer" class="footer"> </footer>
+	<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+	<script type="text/javascript" src="/portal/js/config.js"></script>
+	<script>topNavSelect = 1;</script>
+	<script type="text/javascript" src="/portal/js/public.js"></script>
+	<script type="text/javascript" src="/portal/js/user.js"></script>
+	<script type="text/javascript" src="/portal/js/wylc.js"></script>
+	<script type="text/javascript" src="/app/js/captcha.js"></script>
+	<script type="text/javascript">
+		window.transferCode = YRHX.queryString("transferCode");
+
+
+
+		YRHX.ajax({
+			url : CONFIG.getRequestURI( "queryLoanTransfer4Code" ),
+			data : {
+				transferCode : window.transferCode
+			},
+			success : function(sucData) {
+				
+				$("#title").text( sucData["loanTitle"] );
+				if( sucData["rewardRateByYear"] > 0 ){
+					$("#apr").text( sucData["rateByYear"] / 100 +"%"  +'+'+ sucData["rewardRateByYear"] / 100 +"%" );
+				}else{
+					$("#apr").text( sucData["rateByYear"] / 100 +"%" );
+				}
+				
+				$("#num").text( sucData["loanRecyCount"] + "个月");
+				$("#money").text( YRHX.toDecimal2(sucData["leftAmount"] /100, "¥"));
+				$("#realname").text( sucData["payUserName"] );
+				$("#transAmount").text(  YRHX.toDecimal2(sucData["transAmount"] /100, "¥") );
+				$("#earnInterest").text( YRHX.toDecimal2( (sucData["transFee"] || 0) / 100,"¥") );
+			
+					
+				//还款方式
+				if (sucData["refundType"] == "A") {
+					$("#repayMethodName").text("按月等额本息");
+					$("#refundTypeIcon").addClass("icon2").attr("title","按月等额本息");
+				} else if (sucData["refundType"] == "B") {
+					$("#repayMethodName").text("按月付息,到期还款");
+					$("#refundTypeIcon").addClass("icon3").attr("title","按月付息,到期还款");
+				} else if (sucData["refundType"] == "C") {
+					$("#repayMethodName").text("到期还本息");
+					$("#refundTypeIcon").addClass("icon3").attr("title","到期还本息");
+				}
+
+			
+				//未登录状态
+				if (!YRHX.Cookie("userCode").get()) {
+					$("#earnInterest").hide();
+					$("#avBalance span").eq(0).text("登录后可见");
+					$("#avBalance span").eq(1).text("");
+					$("#avBalance a").text("登录").attr("href","login");
+					$("#takeIt").hide();
+				}else{
+					//我的余额
+					YRHX.ajax({
+						url : CONFIG.getRequestURI( "queryAvbalance" ),
+						success:function( sucData ){
+						
+							$("#avBalanceNum").text( YRHX.toDecimal2(sucData /100 ,"¥"));
+						},
+						error : function(data) {
+							//alert(data.return_info || "获取信息失败");
+						}
+					});
+
+					//承接债权
+					$("#takeItBtn").click(function(){
+						var payPwd = $("#txtZF").val();
+						if( payPwd == ""){
+							$.popTips("popTipErr","请输入支付密码",function(){
+								$("#txtZF").focus();
+								return false;
+							}) ;
+						}else{
+							//验证码
+							window.CAP = new captchaApi({
+								"buid" : 12,
+								"sid" : 12,
+								"success" : function( ticket ){
+									var txtYZM = $("#txtYZM").val();
+									if( txtYZM == ""){
+										$.popTips("popTipErr","请输入验证码",function(){
+											$("#txtYZM").focus();
+											return false;
+										}) ;
+									}
+
+									YRHX.ajax({
+										url : CONFIG.getRequestURI( "carryOnTransfer" ),
+										data : {
+											transferCode : window.transferCode,
+											payPwd : $("#txtZF").val(),
+											ticket : ticket,
+											buid : 12,
+											sid : 12
+										},
+										success : function( sucData ){
+											window.CAP.closeCaptch();
+											$.popTips("popTipSuc","承接成功",function(){
+												window.location.reload();
+											}) ;
+										},
+										error : function( errData ) {
+											window.CAP.closeCaptch();
+											$.popTips("popTipErr",errData.return_info) ;
+										}
+									});
+								},
+								error : function(){
+
+								}
+							});
+							window.CAP.cap();
+
+						}
+						
+
+					});
+						
+				}
+		
+			},
+			error : function(data) {
+				//alert(data.return_info || "获取信息失败");
+			}
+		});
+
+		/*$.closeCaptch = function(){
+			$('.confirm_pay').hide();
+			$('.yinying').hide();
+			$('body').css('overflow','auto');
+
+		};
+		
+		$(".pay_del .del").on("click",function(){
+			$.closeCaptch();
+		});*/
+
+
+		$(".pay_row button").on("click",function(){
+
+			
+		});
+
+
+
+
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body onkeydown="zhazha(event)">
+
+	<div class="am-g">
+	<div class="am-u-sm-12 am-u-md-3">
+			<form class="am-form-inline ext-form" role="form" data-am-validator>
+				<div class="am-form-group">
+				</div>
+				<div class="am-form-group">
+					<select data-am-selected="{btnSize: 'sm'}" name="applyState" id="loanApplyState">
+					</select>
+				</div>
+			</form>
+		</div>
+		<!-- 标准功能按钮 Start  -->
+		<div class="am-u-sm-12 am-u-md-4">
+			<div class="am-btn-toolbar">
+				<div class="am-btn-group am-btn-group-xs">
+				</div>
+			</div>
+		</div>
+		<!-- 标准功能按钮  End -->
+		<div class="am-u-sm-12 am-u-md-3">
+			<div class="am-input-group am-input-group-sm">
+				<input type="text" class="am-form-field allkey"><span
+					class="am-input-group-btn">
+					<button class="am-btn am-btn-default query-btn" type="button">搜索</button>
+				</span>
+			</div>
+		</div>
+	</div>
+	<!-- Table -->
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 15 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+						<li id="not"><input type="text" size="5" id="goValue" onkeypress="return IsNum(event)" value="1"/></li>
+						<li id="go"><input type="button" value="GO" onclick="$('#go').attr('index',$('#goValue').val())"/></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+	function zhazha(e){
+		var keynum = 0;
+		if(window.event){
+			keynum = e.keyCode
+		}
+		else if(e.which){
+			keynum = e.which
+		}
+		if(keynum==13){
+			queryData(1);
+		}
+	}
+		var maxQueryNum = 10 ;
+		var queryUrl = "/getLoanApplyList";
+		var size=0;//总页数
+		
+		$(".query-btn").click(function(){
+			queryData(1);
+			$("#goValue").val(1);//设置GO栏默认页码为1
+		});
+		//查询实现
+		function queryData( pNum , pSize ){
+			//对页码参数验证
+			if(isNaN(pNum)){
+				alert("GO栏请输入数字！");
+				return;
+			}
+			if(size<1){
+				size=1;
+			}
+			if(pNum > size && size != 0){
+				pNum=size;
+				$("#goValue").val(pNum);
+			}
+			YRHX.ajax({
+				url : queryUrl,
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize ||maxQueryNum,
+					applyState : $("#loanApplyState").val() || "",
+					allkey : $(".allkey").val()
+				},
+				success : function(sucData){
+					size=Math.ceil(sucData["totalRow"]/maxQueryNum);//总页数
+					makeTable(sucData.list , {
+						index : sucData["pageNumber"] , 
+						max : sucData["pageSize"] ,
+						size : sucData["totalRow"]
+					});
+				},
+				error : function(data) {
+					alert(data.return_info || "获取信息失败");
+				}
+			});
+			
+		}
+
+		$("div.pad-div").initPagEvent( queryData );
+		
+		//init 
+		var loanApplyStateData = YRHX.sortData(RES["DATA_MAP"]["map_applyState"]) ;
+		$("#loanApplyState").makeSelect4s(loanApplyStateData);
+		function makeTable( tableData ,pageData){
+			var detailDesc = "信审建议";
+			$(".am-g").table({
+						thtdcls : "font-size:14px;padding:8px 1px",
+						dataFormat : function(rowObj) {
+							rowObj["loanAmount"] = YRHX.toDecimal2(rowObj["loanAmount"]/100 , "￥");
+							rowObj["applyDateTime"] = rowObj["applyDateTime"].dateformat();
+							rowObj["applyState"] = loanApplyStateData[rowObj["applyState"] ];
+							detailDesc = rowObj["auditDesc"];
+							if(!rowObj["auditDesc"]){
+								rowObj["auditDesc"] = "无信审建议";
+								rowObj["auditDescClass"] = "am-icon-comments-o";
+							}
+							else{
+								rowObj["auditDescClass"] = "am-icon-comments";
+								rowObj["auditDesc"] = rowObj["auditDesc"].replaceAll("\n","");
+							}
+							rowObj["branchArea"] = rowObj["branchArea"] || " ";
+							if(rowObj["loanTitle"].length>20){
+								rowObj["loanTitle"] = rowObj["loanTitle"].substring(0,20)+"...";
+							}
+							return rowObj;
+						},
+						max : 10,
+						pag : pageData,
+						header : [
+								{
+									name : "",type : "checkbox",key : "loanNo"
+								},
+								{
+									name : "",text : "借款序号",html : "#{loanNo}"
+								},
+								{
+									name : "",text : "借款人昵称",html : "#{loanUserName}"
+								},
+								{
+									name : "",text : "借款人姓名",html : "#{loanTrueName}"
+								},
+								{
+									name : "",text : "身份证",html : "#{loanCardId}"
+								},
+								{
+									name : "",text : "电话",html : "#{loanMobile}"
+								},
+								{
+									name : "",text : "借款标标题",html : "#{loanTitle}"
+								},
+								{
+									name : "",text : "借款金额",html : "#{loanAmount}"
+								},
+								{
+									name : "",text : "申请人来源",html : "#{branchArea}"
+								},
+								{
+									name : "",text : "状态",html : "#{applyState} <span class='#{auditDescClass}' data-am-popover=\"{content:'#{auditDesc}'}\"></span>"
+								},
+								{
+									name : "",text : "申请时间",html : "#{applyDateTime}"
+								},
+								{
+									name : "",text : "操作",html : $.makeButtons([{"text":"放款","url":"javascript:loanFk('#{loanNo}')","ico":"am-icon-pencil-square-o"}
+                                    ])
+								}],
+						data : tableData
+					});		
+					$(".am-icon-comments").popover({
+						content : $(this).attr("content"),
+						trigger :"hover"
+					});
+			}
+	</script>
+	<script>
+		queryData(1);
+		function loanFk(loanNo) {
+			if (confirm("确定要放款吗？")) {
+				YRHX.ajax({
+					url : "/fkToAccount" ,
+					data : {
+						"loanNo" : loanNo
+					},
+					success : function(sucData){
+						YRHX.alert("警告", sucData);
+					},
+					error : function(errData){ 
+						YRHX.alert("警告", errData.return_info);
+					}
+				});
+			}
+		}
+		setTimeout(function(){
+			$("#loanApplyState").change(function(){
+				queryData(1);
+			});
+			
+		} , 2000 );		
+	</script>
+</body>
+</html>

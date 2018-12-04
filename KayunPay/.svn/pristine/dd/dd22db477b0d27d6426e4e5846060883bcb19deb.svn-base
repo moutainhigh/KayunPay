@@ -1,0 +1,370 @@
+(function(){
+	var RES = window.RES = {} ;
+	RES["title"] = "易融恒信管理后台 V1.0" ;
+	RES["copyright"] = "© 2015-2017 易融恒信" ;
+	//RES["ROOT"] = "http://192.168.3.190";
+//	RES["ROOT"] = window.location.protocol + "//"
+//					+ window.location.host 
+//					+ (window.location.port==""?"":":"+window.location.port);
+	RES["ROOT"] = "";
+	RES["menu"] =  [];
+
+	window.DATA_MAP = {} ;
+	
+	RES["DATA_MAP"] = {} ;
+	RES["DATA_MAP"]["loanType"] = [] ;
+	RES["DATA_MAP"]["loanType"].push({text:"信用标",value:"A"});
+	RES["DATA_MAP"]["loanType"].push({text:"抵押标",value:"B"});
+	RES["DATA_MAP"]["loanType"].push({text:"担保标",value:"C"});
+	RES["DATA_MAP"]["loanType"].push({text:"流转标",value:"D"});
+	RES["DATA_MAP"]["loanType"].push({text:"质押标",value:"E"});
+	/*RES["DATA_MAP"]["loanType"].push({text:"抵押担保标",value:"F"});
+	RES["DATA_MAP"]["loanType"].push({text:"抵押流转标",value:"G"});
+	RES["DATA_MAP"]["loanType"].push({text:"担保流转标",value:"H"});
+	RES["DATA_MAP"]["loanType"].push({text:"质押流转标",value:"I"});*/
+	RES["DATA_MAP"]["loanType"].push({text:"机构标",value:"J"});
+
+	RES["DATA_MAP"]["loanState"] = [] ;
+	//RES["DATA_MAP"]["loanState"].push({text:"所有贷款",value:"A"});
+	//RES["DATA_MAP"]["loanState"].push({text:"成功贷款",value:"B"});
+	//RES["DATA_MAP"]["loanState"].push({text:"失败贷款",value:"C"});
+	//RES["DATA_MAP"]["loanState"].push({text:"草稿",value:"D"});
+	RES["DATA_MAP"]["loanState"].push({text:"无效",value:"E"});
+	RES["DATA_MAP"]["loanState"].push({text:"审核失败",value:"F"});
+	//RES["DATA_MAP"]["loanState"].push({text:"待审核",value:"G"});
+	RES["DATA_MAP"]["loanState"].push({text:"待发布",value:"H"});
+	//RES["DATA_MAP"]["loanState"].push({text:"等待材料",value:"I"});
+	RES["DATA_MAP"]["loanState"].push({text:"招标中",value:"J"});
+	//RES["DATA_MAP"]["loanState"].push({text:"流标中",value:"K"});
+	RES["DATA_MAP"]["loanState"].push({text:"已流标 ",value:"L"});
+	RES["DATA_MAP"]["loanState"].push({text:"满标待审",value:"M"});
+	RES["DATA_MAP"]["loanState"].push({text:"还款中",value:"N"});
+	RES["DATA_MAP"]["loanState"].push({text:"还款成功",value:"O"});
+	RES["DATA_MAP"]["loanState"].push({text:"提前还款",value:"P"});
+	RES["DATA_MAP"]["loanState"].push({text:"系统已代还",value:"Q"});
+	RES["DATA_MAP"]["loanState"].push({text:"代还已回收",value:"R"});
+	RES["DATA_MAP"]["loanState"].push({text:"异常",value:"T"});
+	
+	RES["DATA_MAP"]["productType"] = [] ;
+	RES["DATA_MAP"]["productType"].push({text:"质押宝",value:"A"});
+	RES["DATA_MAP"]["productType"].push({text:"车稳盈",value:"B"});
+	RES["DATA_MAP"]["productType"].push({text:"房稳赚",value:"C"});
+	RES["DATA_MAP"]["productType"].push({text:"稳定投",value:"G"});
+	RES["DATA_MAP"]["productType"].push({text:"其它",value:"D"});
+	
+	RES["DATA_MAP"]["map_hk_loanstate"] = [] ;
+	RES["DATA_MAP"]["map_hk_loanstate"].push({text:"还款中",value:"N"});
+	RES["DATA_MAP"]["map_hk_loanstate"].push({text:"还款成功",value:"O"});
+	RES["DATA_MAP"]["map_hk_loanstate"].push({text:"提前还款",value:"P"});
+	RES["DATA_MAP"]["map_hk_loanstate"].push({text:"系统已代还",value:"Q"});
+	
+	RES["DATA_MAP"]["hasInvedByTrips"] = [] ;
+	RES["DATA_MAP"]["hasInvedByTrips"].push({text:"已实地考察",value:"1"});
+	RES["DATA_MAP"]["hasInvedByTrips"].push({text:"未实地考察",value:"0"});
+
+	RES["DATA_MAP"]["isInterest"] = [] ;
+	RES["DATA_MAP"]["isInterest"].push({text:"保障",value:"1"});
+	RES["DATA_MAP"]["isInterest"].push({text:"不保障",value:"0"});
+
+	RES["DATA_MAP"]["isAutoLoan"] = [] ;
+	RES["DATA_MAP"]["isAutoLoan"].push({text:"人工",value:"1"});
+	RES["DATA_MAP"]["isAutoLoan"].push({text:"自动",value:"0"});
+	
+	RES["DATA_MAP"]["hasCaptcha"] = [] ;
+	RES["DATA_MAP"]["hasCaptcha"].push({text:"需要",value:"1"});
+	RES["DATA_MAP"]["hasCaptcha"].push({text:"不需要",value:"0"});
+	
+	RES["DATA_MAP"]["refundType"] = [] ;
+	RES["DATA_MAP"]["refundType"].push({text:"按月等额本息",value:"A"});
+	RES["DATA_MAP"]["refundType"].push({text:"按月付息，到期还款 ",value:"B"});
+	//RES["DATA_MAP"]["refundType"].push({text:"到期还本息",value:"C"});
+
+	RES["DATA_MAP"]["loanUsedType"] = [] ;
+	RES["DATA_MAP"]["loanUsedType"].push({text:"短期周转",value:"A"});
+	RES["DATA_MAP"]["loanUsedType"].push({text:"个人消费",value:"B"});
+	RES["DATA_MAP"]["loanUsedType"].push({text:"投资创业",value:"C"});
+	RES["DATA_MAP"]["loanUsedType"].push({text:"购车借款",value:"D"});
+	RES["DATA_MAP"]["loanUsedType"].push({text:"装修借款",value:"E"});
+	RES["DATA_MAP"]["loanUsedType"].push({text:"婚礼筹备",value:"F"});
+	RES["DATA_MAP"]["loanUsedType"].push({text:"教育培训",value:"G"});
+	RES["DATA_MAP"]["loanUsedType"].push({text:"医疗支出",value:"H"});
+	RES["DATA_MAP"]["loanUsedType"].push({text:"其他借款",value:"I"});
+	RES["DATA_MAP"]["loanUsedType"].push({text:"购房借款",value:"J"});
+
+	RES["DATA_MAP"]["userState"] = [] ;
+	RES["DATA_MAP"]["userState"].push({text:"正常",value:"N"});
+	RES["DATA_MAP"]["userState"].push({text:"人工冻结",value:"P"});
+	RES["DATA_MAP"]["userState"].push({text:"系统冻结",value:"S"});
+	
+	RES["DATA_MAP"]["artType"] = [] ;
+	RES["DATA_MAP"]["artType"].push({text:"最新公告",value:"0"});
+	RES["DATA_MAP"]["artType"].push({text:"公司新闻",value:"1"});
+	RES["DATA_MAP"]["artType"].push({text:"行业动态",value:"2"});
+	RES["DATA_MAP"]["artType"].push({text:"媒体报道",value:"3"});
+	RES["DATA_MAP"]["artType"].push({text:"易融月刊",value:"4"});
+	RES["DATA_MAP"]["artType"].push({text:"往期专题",value:"5"});
+	RES["DATA_MAP"]["artType"].push({text:"更新日志",value:"6"});
+	RES["DATA_MAP"]["artType"].push({text:"APP新闻",value:"7"});
+	RES["DATA_MAP"]["artType"].push({text:"APP活动",value:"8"});
+
+	RES["DATA_MAP"]["vipLevel"] = [] ;
+	RES["DATA_MAP"]["vipLevel"].push({text:"少尉",value:"1"});
+	RES["DATA_MAP"]["vipLevel"].push({text:"中尉",value:"2"});
+	RES["DATA_MAP"]["vipLevel"].push({text:"上尉",value:"3"});
+	RES["DATA_MAP"]["vipLevel"].push({text:"少校",value:"4"});
+	RES["DATA_MAP"]["vipLevel"].push({text:"中校",value:"5"});
+	RES["DATA_MAP"]["vipLevel"].push({text:"上校",value:"6"});
+	RES["DATA_MAP"]["vipLevel"].push({text:"将军",value:"7"});
+
+	RES["DATA_MAP"]["proVipLevel"] = [] ;
+	RES["DATA_MAP"]["proVipLevel"].push({text:"少尉",value:"少尉"});
+	RES["DATA_MAP"]["proVipLevel"].push({text:"中尉",value:"中尉"});
+	RES["DATA_MAP"]["proVipLevel"].push({text:"上尉",value:"上尉"});
+	RES["DATA_MAP"]["proVipLevel"].push({text:"少校",value:"少校"});
+	RES["DATA_MAP"]["proVipLevel"].push({text:"中校",value:"中校"});
+	RES["DATA_MAP"]["proVipLevel"].push({text:"上校",value:"上校"});
+	RES["DATA_MAP"]["proVipLevel"].push({text:"将军",value:"将军"});
+
+	RES["DATA_MAP"]["isAuthed"] = [] ;
+	RES["DATA_MAP"]["isAuthed"].push({text:"未进行认证",value:"0"});
+	RES["DATA_MAP"]["isAuthed"].push({text:"认证进行中",value:"1"});
+	RES["DATA_MAP"]["isAuthed"].push({text:"认证通过",value:"2"});
+	RES["DATA_MAP"]["isAuthed"].push({text:"认证失败",value:"3"});
+
+	RES["DATA_MAP"]["traceType"] = [] ;
+	
+	RES["DATA_MAP"]["traceType"].push({text:"投标体验金",value:"V"});
+	RES["DATA_MAP"]["traceType"].push({text:"好友投资返现",value:"Q"});
+	RES["DATA_MAP"]["traceType"].push({text:"好友投资返佣",value:"O"});
+	RES["DATA_MAP"]["traceType"].push({text:"推荐奖励",value:"W"});
+	RES["DATA_MAP"]["traceType"].push({text:"充值",value:"C"});
+	RES["DATA_MAP"]["traceType"].push({text:"人工充值",value:"D"});
+	RES["DATA_MAP"]["traceType"].push({text:"提现",value:"G"});
+	RES["DATA_MAP"]["traceType"].push({text:"提现失败",value:"K"});
+	RES["DATA_MAP"]["traceType"].push({text:"人工提现",value:"E"});
+	RES["DATA_MAP"]["traceType"].push({text:"投标成功",value:"P"});
+	RES["DATA_MAP"]["traceType"].push({text:"债权转让支出",value:"A"});
+	RES["DATA_MAP"]["traceType"].push({text:"债权转让收入",value:"B"});
+	RES["DATA_MAP"]["traceType"].push({text:"回收本金",value:"R"});
+	RES["DATA_MAP"]["traceType"].push({text:"回收利息",value:"L"});
+	RES["DATA_MAP"]["traceType"].push({text:"管理费支出",value:"M"});
+	RES["DATA_MAP"]["traceType"].push({text:"预投标",value:"X"});
+	RES["DATA_MAP"]["traceType"].push({text:"冻结余额转入可用余额",value:"Y"});
+	RES["DATA_MAP"]["traceType"].push({text:"可用余额转入冻结余额",value:"F"});
+	RES["DATA_MAP"]["traceType"].push({text:"招标成功",value:"S"});
+	RES["DATA_MAP"]["traceType"].push({text:"还款利息",value:"I"});
+	RES["DATA_MAP"]["traceType"].push({text:"还款本金",value:"U"});
+	RES["DATA_MAP"]["traceType"].push({text:"老平台",value:"H"});
+	RES["DATA_MAP"]["traceType"].push({text:"现金抵用券(投标支出)",value:"N"});
+	RES["DATA_MAP"]["traceType"].push({text:"分享奖励",value:"T"});
+	
+	RES["DATA_MAP"]["traceScoreType"] = [] ;
+	RES["DATA_MAP"]["traceScoreType"].push({text:"积分支出",value:"Z"});
+	RES["DATA_MAP"]["traceScoreType"].push({text:"积分收入",value:"J"});
+	
+	
+	RES["DATA_MAP"]["fundsType"] = [] ;
+	RES["DATA_MAP"]["fundsType"].push({text:"收入",value:"J"});
+	RES["DATA_MAP"]["fundsType"].push({text:"支出",value:"D"});
+	
+	RES["DATA_MAP"]["traceSynState"] = [] ;
+	RES["DATA_MAP"]["traceSynState"].push({text:"未对账",value:"N"});
+	RES["DATA_MAP"]["traceSynState"].push({text:"不平",value:"P"});
+	RES["DATA_MAP"]["traceSynState"].push({text:"对账完成",value:"O"});
+	
+	RES["DATA_MAP"]["fileType"] = [] ;
+	RES["DATA_MAP"]["fileType"].push({text:"投标图片",value:"A"});
+	RES["DATA_MAP"]["fileType"].push({text:"身份认证图片",value:"B"});
+	RES["DATA_MAP"]["fileType"].push({text:"网站内容",value:"C"});
+	RES["DATA_MAP"]["fileType"].push({text:"视频文件",value:"D"});
+	RES["DATA_MAP"]["fileType"].push({text:"其他文件",value:"O"});
+	
+	RES["DATA_MAP"]["opUserState"] = [] ;
+	RES["DATA_MAP"]["opUserState"].push({text:"可用",value:"A"});
+	RES["DATA_MAP"]["opUserState"].push({text:"禁用",value:"B"});
+	RES["DATA_MAP"]["opUserState"].push({text:"登录异常",value:"C"});
+	RES["DATA_MAP"]["opUserState"].push({text:"其他",value:"D"});
+
+	RES["DATA_MAP"]["menuType"] = [] ;
+	RES["DATA_MAP"]["menuType"].push({text:"系统菜单",value:"A"});
+	RES["DATA_MAP"]["menuType"].push({text:"请求地址",value:"B"});
+	RES["DATA_MAP"]["menuStatus"] = [] ;
+	RES["DATA_MAP"]["menuStatus"].push({text:"正常",value:"A"});
+	RES["DATA_MAP"]["menuStatus"].push({text:"停用",value:"B"});
+	RES["DATA_MAP"]["roleStatus"] = [] ;
+	RES["DATA_MAP"]["roleStatus"].push({text:"正常",value:"A"});
+	RES["DATA_MAP"]["roleStatus"].push({text:"停用",value:"B"});
+	
+	RES["DATA_MAP"]["roleGroup"] = [] ;
+	RES["DATA_MAP"]["roleGroup"].push({text:"技术部",value:"A"});
+	RES["DATA_MAP"]["roleGroup"].push({text:"财务部",value:"B"});
+	RES["DATA_MAP"]["roleGroup"].push({text:"运营部",value:"C"});
+	RES["DATA_MAP"]["roleGroup"].push({text:"企划部",value:"D"});
+	RES["DATA_MAP"]["roleGroup"].push({text:"客服部",value:"E"});
+	RES["DATA_MAP"]["roleGroup"].push({text:"行政部",value:"F"});
+	RES["DATA_MAP"]["roleGroup"].push({text:"贷后管理",value:"G"});
+	RES["DATA_MAP"]["roleGroup"].push({text:"分公司",value:"H"});
+
+	RES["DATA_MAP"]["roleName"] = [];
+
+	RES["DATA_MAP"]["loanNoticeState"] = [];
+	RES["DATA_MAP"]["loanNoticeState"].push({text:"审核成功",value:"0"});
+	RES["DATA_MAP"]["loanNoticeState"].push({text:"待审核",value:"1"});
+	RES["DATA_MAP"]["loanNoticeState"].push({text:"审核失败",value:"2"});
+	RES["DATA_MAP"]["loanNoticeState"].push({text:"撤销",value:"3"});
+	
+	RES["DATA_MAP"]["map_hasMarital"] = [];
+	RES["DATA_MAP"]["map_hasMarital"].push({text:"已婚",value:"1"});
+	RES["DATA_MAP"]["map_hasMarital"].push({text:"未婚",value:"0"});
+	
+	RES["DATA_MAP"]["map_isBranch"] = [];
+	RES["DATA_MAP"]["map_isBranch"].push({text:"是",value:"y"});
+	RES["DATA_MAP"]["map_isBranch"].push({text:"否",value:"n"});
+	
+	RES["DATA_MAP"]["map_hasHouse"] = [];
+	RES["DATA_MAP"]["map_hasHouse"].push({text:"有",value:"1"});
+	RES["DATA_MAP"]["map_hasHouse"].push({text:"无",value:"0"});
+	RES["DATA_MAP"]["map_hasCar"] = [];
+	RES["DATA_MAP"]["map_hasCar"].push({text:"有",value:"1"});
+	RES["DATA_MAP"]["map_hasCar"].push({text:"无",value:"0"});
+	RES["DATA_MAP"]["map_hasMortgage"] = [];
+	RES["DATA_MAP"]["map_hasMortgage"].push({text:"有",value:"1"});
+	RES["DATA_MAP"]["map_hasMortgage"].push({text:"无",value:"0"});
+	RES["DATA_MAP"]["map_hasCarLoan"] = [];
+	RES["DATA_MAP"]["map_hasCarLoan"].push({text:"有",value:"1"});
+	RES["DATA_MAP"]["map_hasCarLoan"].push({text:"无",value:"0"});
+	
+	RES["DATA_MAP"]["map_chongzhiStatus"] = [] ;
+	RES["DATA_MAP"]["map_chongzhiStatus"].push({text:"充值提交",value:"A"});
+	RES["DATA_MAP"]["map_chongzhiStatus"].push({text:"充值成功",value:"B"});
+	RES["DATA_MAP"]["map_chongzhiStatus"].push({text:"充值失败",value:"C"});
+	
+	RES["DATA_MAP"]["map_tixianStatus"] = [];
+	RES["DATA_MAP"]["map_tixianStatus"].push({text:"未审核",value:"0"});
+	RES["DATA_MAP"]["map_tixianStatus"].push({text:"已审核",value:"1"});
+	RES["DATA_MAP"]["map_tixianStatus"].push({text:"申请提现",value:"2"});
+	RES["DATA_MAP"]["map_tixianStatus"].push({text:"提现成功",value:"3"});
+	RES["DATA_MAP"]["map_tixianStatus"].push({text:"提现失败",value:"4"});
+//	RES["DATA_MAP"]["map_tixianStatus"].push({text:"审核不通过",value:"5"});
+	RES["DATA_MAP"]["map_tixianStatus"].push({text:"取消",value:"6"});
+	
+	RES["DATA_MAP"]["map_applyState"] = [];
+	RES["DATA_MAP"]["map_applyState"].push({text:"待审核",value:"A"});
+	RES["DATA_MAP"]["map_applyState"].push({text:"临时保存",value:"B"});
+	RES["DATA_MAP"]["map_applyState"].push({text:"失败",value:"C"});
+	RES["DATA_MAP"]["map_applyState"].push({text:"信审通过",value:"D"});
+	RES["DATA_MAP"]["map_applyState"].push({text:"已制作新标",value:"E"});
+	
+	RES["DATA_MAP"]["map_bizLevel"] = [];
+	RES["DATA_MAP"]["map_bizLevel"].push({text:"提示",value:"I"});
+	RES["DATA_MAP"]["map_bizLevel"].push({text:"警告",value:"W"});
+	RES["DATA_MAP"]["map_bizLevel"].push({text:"错误",value:"E"});
+	RES["DATA_MAP"]["map_bizLevel"].push({text:"调试",value:"D"});
+	
+	RES["DATA_MAP"]["productIssue"] = [] ;
+	RES["DATA_MAP"]["productIssue"].push({text:"发布",value:"1"});
+	RES["DATA_MAP"]["productIssue"].push({text:"待发布",value:"0"});
+	
+	RES["DATA_MAP"]["map_sharenType"] = [] ;
+	RES["DATA_MAP"]["map_sharenType"].push({text:"理财人",value:"1"});
+	RES["DATA_MAP"]["map_sharenType"].push({text:"借款人",value:"0"});
+	
+	RES["DATA_MAP"]["map_zffs"] = [] ;
+	RES["DATA_MAP"]["map_zffs"].push({text:"人工",value:"SYS"});
+	RES["DATA_MAP"]["map_zffs"].push({text:"连连支付",value:"LL"});
+	RES["DATA_MAP"]["map_zffs"].push({text:"网银在线",value:"WYZX"});
+	RES["DATA_MAP"]["map_zffs"].push({text:"宝付",value:"BFZF"});
+	RES["DATA_MAP"]["map_zffs"].push({text:"商银信",value:"SYX"});
+	
+	RES["DATA_MAP"]["productIssue"] = [] ;
+	RES["DATA_MAP"]["productIssue"].push({text:"发放",value:"1"});
+	RES["DATA_MAP"]["productIssue"].push({text:"未发放",value:"0"});
+	
+	RES["DATA_MAP"]["settingsType"] = [] ;
+	RES["DATA_MAP"]["settingsType"].push({text:"1元现金抵用券(100元起投)",value:"V"});
+	RES["DATA_MAP"]["settingsType"].push({text:"5元现金抵用券(500元起投)",value:"W"});
+	RES["DATA_MAP"]["settingsType"].push({text:"10元现金抵用券(1000元起投)",value:"A"});
+	RES["DATA_MAP"]["settingsType"].push({text:"20元现金抵用券(1000元起投)",value:"K"});
+	RES["DATA_MAP"]["settingsType"].push({text:"20元现金抵用券(3000元起投)",value:"B"});
+	RES["DATA_MAP"]["settingsType"].push({text:"30元现金抵用券(30元起投)",value:"Q"});
+	RES["DATA_MAP"]["settingsType"].push({text:"30元现金抵用券(1000元起投)",value:"L"});
+	RES["DATA_MAP"]["settingsType"].push({text:"30元现金抵用券(5000元起投)",value:"C"});
+	RES["DATA_MAP"]["settingsType"].push({text:"30元现金抵用券(10000元起投)",value:"F"});
+	RES["DATA_MAP"]["settingsType"].push({text:"50元现金抵用券(50元起投)",value:"R"});
+	RES["DATA_MAP"]["settingsType"].push({text:"50元现金抵用券(1000元起投)",value:"M"});
+	RES["DATA_MAP"]["settingsType"].push({text:"50元现金抵用券(10000元起投)",value:"D"});
+	RES["DATA_MAP"]["settingsType"].push({text:"100元现金抵用券(100元起投)",value:"S"});
+	RES["DATA_MAP"]["settingsType"].push({text:"100元现金抵用券(10000元起投)",value:"N"});
+	RES["DATA_MAP"]["settingsType"].push({text:"100元现金抵用券(20000元起投)",value:"E"});
+	RES["DATA_MAP"]["settingsType"].push({text:"200元现金抵用券(200元起投)",value:"T"});
+	RES["DATA_MAP"]["settingsType"].push({text:"500元现金抵用券(500元起投)",value:"U"});
+	
+	//ws 抵用券债转是否扣除 20170726
+	RES["DATA_MAP"]["isDel"] = [] ;
+	RES["DATA_MAP"]["isDel"].push({text:"是 : 债转时会扣除券的钱，一般抵用券",value:"Y"});
+	RES["DATA_MAP"]["isDel"].push({text:"否 ：债转时不会扣券的钱，如积分商城兑换券",value:"N"});
+	//end
+	
+	RES["DATA_MAP"]["ttype"] = [] ;
+	RES["DATA_MAP"]["ttype"].push({text:"现金抵用券",value:"A"});
+	RES["DATA_MAP"]["ttype"].push({text:"投资返现券",value:"B"});
+	RES["DATA_MAP"]["ttype"].push({text:"加息券",value:"C"});
+	
+	RES["DATA_MAP"]["tstate"] = [] ;
+	RES["DATA_MAP"]["tstate"].push({text:"可用",value:"A"});
+	RES["DATA_MAP"]["tstate"].push({text:"不可用",value:"B"});
+	RES["DATA_MAP"]["tstate"].push({text:"人工停用",value:"C"});
+	RES["DATA_MAP"]["tstate"].push({text:"过期",value:"D"});
+	RES["DATA_MAP"]["tstate"].push({text:"已使用",value:"E"});
+	
+	RES["DATA_MAP"]["makeSource"] = [] ;
+	RES["DATA_MAP"]["makeSource"].push({text:"系统",value:"A"});
+	RES["DATA_MAP"]["makeSource"].push({text:"活动",value:"B"});
+	RES["DATA_MAP"]["makeSource"].push({text:"返现",value:"C"});
+	RES["DATA_MAP"]["makeSource"].push({text:"人工赠送",value:"D"});
+	
+	RES["DATA_MAP"]["appPush"] = [] ;
+	RES["DATA_MAP"]["appPush"].push({text:"全部",value:"0"});
+	RES["DATA_MAP"]["appPush"].push({text:"IOS",value:"2"});
+	RES["DATA_MAP"]["appPush"].push({text:"Android",value:"1"});
+	
+	RES["DATA_MAP"]["smsSendType"] = [] ;
+	RES["DATA_MAP"]["smsSendType"].push({text:"全部",value:"1"});
+	RES["DATA_MAP"]["smsSendType"].push({text:"指定手机号",value:"0"});
+	
+	RES["DATA_MAP"]["estatus"] = [] ;
+	RES["DATA_MAP"]["estatus"].push({text:"预备",value:"A"});
+	RES["DATA_MAP"]["estatus"].push({text:"结算中",value:"B"});
+	RES["DATA_MAP"]["estatus"].push({text:"已还",value:"C"});
+	RES["DATA_MAP"]["estatus"].push({text:"取消",value:"D"});
+	
+	RES["DATA_MAP"]["SYXCardType"] = [] ;
+	RES["DATA_MAP"]["SYXCardType"].push({text:"中国工商银行",value:"ICBC"});
+	RES["DATA_MAP"]["SYXCardType"].push({text:"中国农业银行",value:"ABC"});
+	RES["DATA_MAP"]["SYXCardType"].push({text:"中国银行",value:"BOC"});
+	RES["DATA_MAP"]["SYXCardType"].push({text:"中国建设银行",value:"CCB"});
+	RES["DATA_MAP"]["SYXCardType"].push({text:"交通银行",value:"COMM"});
+	RES["DATA_MAP"]["SYXCardType"].push({text:"招商银行",value:"CMB"});
+	RES["DATA_MAP"]["SYXCardType"].push({text:"兴业银行",value:"CIB"});
+	RES["DATA_MAP"]["SYXCardType"].push({text:"中国光大银行",value:"CEB"});
+	RES["DATA_MAP"]["SYXCardType"].push({text:"中国民生银行",value:"CMBC"});
+	RES["DATA_MAP"]["SYXCardType"].push({text:"中信银行",value:"CITIC"});
+	RES["DATA_MAP"]["SYXCardType"].push({text:"平安银行",value:"SPABANK"});
+	RES["DATA_MAP"]["SYXCardType"].push({text:"浦发银行",value:"SPDB"});
+	RES["DATA_MAP"]["SYXCardType"].push({text:"中国邮政储蓄银行",value:"PSBC"});
+	RES["DATA_MAP"]["SYXCardType"].push({text:"广发银行",value:"GDB"});
+	RES["DATA_MAP"]["SYXCardType"].push({text:"华夏银行",value:"HXBANK"});
+	
+	RES["DATA_MAP"]["mType"] = [] ;
+	RES["DATA_MAP"]["mType"].push({text:"实体商品",value:"A"});
+	RES["DATA_MAP"]["mType"].push({text:"电子卡",value:"B"});
+	RES["DATA_MAP"]["mType"].push({text:"奖券",value:"C"});
+	
+	RES["DATA_MAP"]["isStatus"] = [] ;
+	RES["DATA_MAP"]["isStatus"].push({text:"未处理",value:"0"});
+	RES["DATA_MAP"]["isStatus"].push({text:"已处理",value:"1"});
+	RES["DATA_MAP"]["isStatus"].push({text:"已处理",value:"2"});//补抽
+	
+})();
+
+

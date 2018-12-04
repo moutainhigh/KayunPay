@@ -1,0 +1,699 @@
+package com.dutiantech.service;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.dutiantech.controller.JXQueryController;
+import com.dutiantech.model.JXTrace;
+import com.dutiantech.model.LoanInfo;
+import com.dutiantech.model.LoanOverdue;
+import com.dutiantech.model.LoanTrace;
+import com.dutiantech.model.RepaymentCount;
+import com.dutiantech.model.SettlementEarly;
+import com.dutiantech.util.DateUtil;
+import com.dutiantech.util.StringUtil;
+import com.dutiantech.util.RepaymentCountEnum.batchStatus;
+import com.dutiantech.util.RepaymentCountEnum.batchType;
+import com.dutiantech.util.RepaymentCountEnum.repaymentCountStatus;
+import com.dutiantech.util.SysEnum.loanOverdueType;
+import com.jfinal.plugin.activerecord.Db;
+import com.jx.service.JXService;
+import com.jx.util.RetCodeUtil;
+
+public class RepaymentCountService extends BaseService {
+	
+	/**
+	 * 新增回款统计记录 WJW
+	 * @param repaymentCountMap
+	 * @return
+	 */
+	public boolean save(Map<String, Object> repaymentCountMap) {
+		RepaymentCount findByRepaymentDate = findByRepaymentDate(String.valueOf(repaymentCountMap.get("repaymentDate")));
+		if(findByRepaymentDate != null){
+			return false;
+		}
+		
+		RepaymentCount repaymentCount = new RepaymentCount();
+		for(Map.Entry<String, Object> entry:repaymentCountMap.entrySet()){
+			repaymentCount.put(entry.getKey(),entry.getValue());
+		}
+		
+		repaymentCount.put("whzchkbds", repaymentCountMap.get("yhzchkbds"));// 未还正常还款标的数
+		repaymentCount.put("whtqhkbds", repaymentCountMap.get("yhtqhkbds"));// 未还提前还款标的数
+		repaymentCount.put("whsjzchkbds", repaymentCountMap.get("sjzchkbds"));// 未还实际正常还款标的数
+		repaymentCount.put("whsjtqhkbds", repaymentCountMap.get("sjtqhkbds"));// 未还实际提前还款标的数
+		repaymentCount.put("whyqbjbds", repaymentCountMap.get("yqhbjbds"));// 未还逾期本金标的数
+		repaymentCount.put("whyqdflxbds", repaymentCountMap.get("yqdflxbds"));// 未还逾期垫付利息标的数
+		repaymentCount.put("whyqbdflxbds",repaymentCountMap.get("yqbdflxbds"));// 未还逾期不垫付利息标的数
+
+		repaymentCount.put("batchRecord", "");// 批次记录json
+
+		repaymentCount.put("addDate", DateUtil.getNowDate());// 添加日期
+		repaymentCount.put("addTime", DateUtil.getNowTime());// 添加时间
+		repaymentCount.put("updateDate", "00000000");// 更新日期
+		repaymentCount.put("updateTime", "000000");// 更新时间
+		try {
+			return repaymentCount.save();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	/**
+	 * 更新回款统计表信息 WJW
+	 * @param repaymentCountMap
+	 * @return
+	 */
+	public boolean updateRepaymentCount(Map<String, Object> repaymentCountMap){
+		RepaymentCount repaymentCount = findByRepaymentDate(String.valueOf(repaymentCountMap.get("repaymentDate")));
+		if(repaymentCount == null){
+			return false;
+		}
+		
+		for(Map.Entry<String, Object> entry:repaymentCountMap.entrySet()){
+			repaymentCount.set(entry.getKey(), entry.getValue());
+		}
+		
+		repaymentCount.set("updateDate", DateUtil.getNowDate());// 更新日期
+		repaymentCount.set("updateTime", DateUtil.getNowTime());// 更新时间
+		try {
+			return repaymentCount.update();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * 根据还款日期查询回款统计记录 WJW
+	 * @param repaymentDate	还款日期
+	 * @return
+	 */
+	public RepaymentCount findByRepaymentDate(String repaymentDate) {
+		String sql = "select * from t_repayment_count where repaymentDate=?";
+		return RepaymentCount.repaymentCountDao.findFirst(sql, repaymentDate);
+	}
+	
+	/**
+	 * 根据还款日期查询回款统计记录 WJW
+	 * @param repaymentYesDate	实际还款日期
+	 * @return
+	 */
+	public RepaymentCount findByRepaymentYesDate(String repaymentYesDate) {
+		String sql = "select * from t_repayment_count where repaymentYesDate=?";
+		return RepaymentCount.repaymentCountDao.findFirst(sql, repaymentYesDate);
+	}
+	
+	/**
+	 * 当日标的回款信息已发送,更新回款统计表 WJW
+	 * @param repaymentDate		原定回款日期
+	 * @param repaymentYesDate	实际回款日期
+	 */
+	public boolean updateRepaymentCount(String repaymentDate,String repaymentYesDate){
+		int whzchkbds = 0;// 未还正常还款标的数
+		int whtqhkbds = 0;// 未还提前还款标的数
+		int whsjzchkbds = 0;// 未还实际正常还款标的数
+		int whsjtqhkbds = 0;// 未还实际提前还款标的数
+		int whyqbjbds = 0;// 未还逾期本金标的数
+		int whyqdflxbds = 0;// 未还逾期垫付利息标的数
+		int whyqbdflxbds= 0;// 未还逾期不垫付利息标的数
+		int fjsrhkbds = 0;// 非结算日还款标的数
+		
+		long wkhhkze = 0; // 未开户还款总额(本金+利息+佣金)
+		
+		//标信息统计
+		//扫描当日逾期结算列表
+		List<String> overdueLoanCodes = new ArrayList<String>();//当日逾期需结算loanCode
+		List<String> loanOverdueLoanCodes = Db.query("select DISTINCT loanCode from t_loan_overdue where disposeStatus='n' and DATE_FORMAT(disposeDateTime,'%Y%m%d')<=?",repaymentYesDate);
+		for (String loanCode : loanOverdueLoanCodes) {
+			if(overdueLoanCodes.indexOf(loanCode) == -1){
+				overdueLoanCodes.add(loanCode);
+			}
+		}
+		whyqbjbds = overdueLoanCodes.size();
+				
+		//扫描逾期不结算列表
+		Map<String, loanOverdueType> loanOverdueNotMap = new HashMap<String,loanOverdueType>();//key:loanCode,value:overdueType
+		List<LoanOverdue> loanOverdueNots = LoanOverdue.overdueTraceDao.find("select * from (select * from t_loan_overdue where disposeStatus='n' and disposeDateTime='' order by repayIndex desc) t1 group by loanCode");
+		for (LoanOverdue loanOverdue : loanOverdueNots) {
+			String loanCode = loanOverdue.getStr("loanCode");
+			String overdueType = loanOverdue.getStr("overdueType");
+			loanOverdueNotMap.put(loanCode, loanOverdueType.valueOf(overdueType));
+		}
+		
+		//提前还款
+		List<String> earlyLoanCodes = new ArrayList<String>();//提前还款标编号
+		List<SettlementEarly> settlementEarlies = SettlementEarly.settletmentEaryltDao.find("select * from t_settlement_early where earlyDate = ? and estatus = 'A'",repaymentDate);
+		for (SettlementEarly settlementEarly : settlementEarlies) {
+			String loanCode = settlementEarly.getStr("loanCode");
+			earlyLoanCodes.add(loanCode);
+			
+			if(loanOverdueType.I == loanOverdueNotMap.get(loanCode)){//逾期垫付利息
+				whyqdflxbds++;
+			}else if(loanOverdueType.N == loanOverdueNotMap.get(loanCode)){//逾期不垫付利息
+				whyqbdflxbds++;
+			}else {//不逾期
+				whsjtqhkbds++;
+			}
+		}
+		whtqhkbds = earlyLoanCodes.size();
+		
+		//正常还款
+		List<String> loanCodes = new ArrayList<String>();//正常还款标编号
+		List<LoanInfo> loanInfos = LoanInfo.loanInfoDao.find("select * from t_loan_info where backDate = ? and loanState='N' and clearDate!=?",repaymentDate,DateUtil.getStrFromDate(new Date(), "MMdd"));
+		for (LoanInfo loanInfo : loanInfos) {
+			String loanCode = loanInfo.getStr("loanCode");
+			if(earlyLoanCodes.indexOf(loanCode) != -1){//该标在今日提前还款
+				continue;
+			}
+			
+			if(loanOverdueType.I == loanOverdueNotMap.get(loanCode)){//逾期垫付利息
+				whyqdflxbds++;
+			}else if(loanOverdueType.N == loanOverdueNotMap.get(loanCode)){//逾期不垫付利息
+				whyqbdflxbds++;
+			}else {//不逾期
+				whsjzchkbds++;
+			}
+			loanCodes.add(loanCode);
+		}
+		whzchkbds = loanCodes.size();
+		
+		//实际结算标
+		List<LoanInfo> queryRepaymentYesLoan = LoanInfo.loanInfoDao.find("select * from t_loan_info  where effectDate <> ? and ((loanState='N' and  if(substring(backDate,5,2)=01,CONCAT(LEFT(backDate,4)-1,'12',RIGHT(clearDate,2)),CONCAT(LEFT(backDate,4),clearDate)) =?) or (loanState in ('O','P') and backDate=?))",repaymentYesDate,repaymentYesDate,repaymentYesDate);
+		for (LoanInfo loanInfo : queryRepaymentYesLoan) {
+			String loanCode = loanInfo.getStr("loanCode");
+			int clearDay = loanInfo.getInt("clearDay");
+			int[] clearDays = getClearDay(repaymentDate);
+			if(earlyLoanCodes.indexOf(loanCode) == -1 && loanCodes.indexOf(loanCode) == -1 && (clearDay < clearDays[0] || clearDay > clearDays[1])){
+				fjsrhkbds++;
+			}
+		}
+		
+		//标已结清仍逾期,还款日补发逾期利息
+		int[] clearDays = getClearDay(repaymentDate);
+		List<LoanInfo> queryEndOverdueLoan = LoanInfo.loanInfoDao.find("select DISTINCT t1.loanCode,t1.effectDate,t1.loanArea from t_loan_info t1 left join (select t.loanCode,t.disposeStatus,t.overdueType from (select * from t_loan_overdue where disposeStatus='n' and disposeDateTime='' order by repayIndex desc) t group by loanCode) t2 on t1.loanCode=t2.loanCode where t1.loanState in ('O','P') and t1.clearDay between ? and ? and t1.clearDate<>? and t2.disposeStatus='n' and t2.overdueType='I'",clearDays[0],clearDays[1],DateUtil.getStrFromDate( new Date(), "MMdd"));
+		whyqdflxbds += queryEndOverdueLoan.size();
+		
+		//未开户信息
+		wkhhkze = Db.queryBigDecimal("select COALESCE(sum(amount),0) from t_returned_amount where DATE_FORMAT(createDateTime,'%Y%m%d')=?",repaymentYesDate).longValue();
+		
+		//更新红包信息
+//		updateRepaymentCountVoucher(repaymentDate,repaymentYesDate);
+		
+		//更新批次信息
+//		updateRepaymentCountBatch(repaymentDate, repaymentYesDate);
+		
+		//更新标的信息
+		Map<String, Object> repaymentCountMap = new HashMap<String,Object>();
+		repaymentCountMap.put("repaymentDate", repaymentDate);
+		repaymentCountMap.put("whzchkbds", whzchkbds);
+		repaymentCountMap.put("whtqhkbds", whtqhkbds);
+		repaymentCountMap.put("whsjzchkbds", whsjzchkbds);
+		repaymentCountMap.put("whsjtqhkbds", whsjtqhkbds);
+		repaymentCountMap.put("whyqbjbds", whyqbjbds);
+		repaymentCountMap.put("whyqdflxbds", whyqdflxbds);
+		repaymentCountMap.put("whyqbdflxbds", whyqbdflxbds);
+		repaymentCountMap.put("fjsrhkbds", fjsrhkbds);
+		repaymentCountMap.put("wkhhkze", wkhhkze);
+		
+//		repaymentCountMap.put("repaymentStatus", repaymentCountStatus.B.val());
+		
+		return updateRepaymentCount(repaymentCountMap);
+	}
+	
+	/**
+	 * 更新回款统计表批次信息 WJW
+	 * @param repaymentDate		原定回款日期
+	 * @param repaymentYesDate	实际回款日期
+	 * @return
+	 */
+	public boolean updateRepaymentCountBatch(String repaymentDate,String repaymentYesDate){
+		long pcdcshzbj = 0;//批次代偿实还总本金
+		long pcdcshzlx = 0;//批次代偿实还总利息
+		long pcdcshzsxf	= 0;//批次代偿实收总手续费
+		int pczjwjdsl = 0; // 批次资金未解冻数量
+		int pczjyjdsl = 0;//批次资金已解冻数量
+		int sbpcsl = 0;//失败批次数量
+		
+		int sfzchkpcs = 0;//实发正常还款批次数
+		int sfyqbjpcs = 0;//实发逾期本金批次数
+		int sfyqdflxpcs = 0;//实发逾期垫付利息批次数
+		int yclsbpcsl = 0;//已处理失败批次数量
+		
+		RepaymentCount repaymentCount = findByRepaymentDate(repaymentDate);
+		if(repaymentCount == null){
+			return false;
+		}
+		String batchRecord = repaymentCount.getStr("batchRecord");
+		Map<String, ?> parseObject = JSONObject.parseObject(batchRecord);
+		Map<String, JSONObject> batchRecordMap = (Map<String, JSONObject>) parseObject;
+		batchRecordMap = batchRecordMap == null ? new LinkedHashMap<String,JSONObject>():batchRecordMap;
+		boolean isBatchRecordMapNull = batchRecordMap.size() == 0 ? true:false;//batchRecordMap是否为空
+		List<JXTrace> jxTraces = JXTrace.jxTraceDao.find("select jxTraceCode,requestMessage,retCode,responseMessage,remark from t_jx_trace where txCode='batchSubstRepay' and txDate=?",repaymentYesDate);
+		for (JXTrace jxTrace : jxTraces) {
+			String retCode = jxTrace.getStr("retCode");
+			String remark = jxTrace.getStr("remark");
+			String responseMessage = jxTrace.getStr("responseMessage");
+			JSONArray parseArray = getSubPacksJSONArray(jxTrace);
+			JSONObject jsonObjectJxTrace = parseArray.getJSONObject(0);
+			String loanCode = jsonObjectJxTrace.getString("productId");
+			String batchNo = getBatchNo(jxTrace);
+			JSONObject jsonObject = batchRecordMap.get(batchNo);
+			
+			//batchRecord中不存在该批次
+			if(!batchRecordMap.containsKey(batchNo)){
+				pczjwjdsl++;
+				
+				batchStatus status = batchStatus.A;//未解冻
+				if("JX900664".equals(retCode) || StringUtil.isBlank(responseMessage)){
+					sbpcsl++;
+					status = batchStatus.C;//全部失败
+				}
+				
+				JSONObject jsonObjectNew = new JSONObject();
+				if(!isBatchRecordMapNull && isBatchReissue(repaymentYesDate, loanCode)){//此批次为补发
+					jsonObjectNew.put("type", batchType.D.val());
+					jsonObjectNew.put("status", status.val());
+					batchRecordMap.put(batchNo, jsonObjectNew);
+					continue;
+				}
+				
+				batchType type = batchType.A;//0;//批次类型 1:正常还款,2:逾期本金还款,3:逾期垫付利息还款,4:补发
+				if("overdue".equals(remark)){//逾期本金还款
+					sfyqbjpcs++;
+					type = batchType.B;
+				}else if("overdueInterest".equals(remark)){//逾期垫付利息还款
+					sfyqdflxpcs++;
+					type = batchType.C;
+				}else {
+					List<LoanOverdue> findByLoanCode = LoanOverdue.overdueTraceDao.find("select * from t_loan_overdue where loanCode = ? and disposeStatus = 'n'",loanCode);
+					if(findByLoanCode != null && findByLoanCode.size() > 0){//存在未处理逾期
+						sfyqdflxpcs++;
+						type = batchType.C;
+					}else {
+						sfzchkpcs++;
+						type = batchType.A;
+					}
+				}
+				jsonObjectNew.put("type", type.val());
+				jsonObjectNew.put("status", status.val());
+				batchRecordMap.put(batchNo, jsonObjectNew);
+				continue;
+			}
+			
+			if(!"y".equals(remark)){//未处理跳过
+				continue;
+			}
+			
+			//type(批次类型 1:正常还款,2:逾期本金还款,3:逾期垫付利息还款,4:补发)
+			//status(批次状态 0:未解冻,1:已解冻,2:全部失败,3:部分失败,4:失败已处理)
+			int status = jsonObject.getInteger("status");
+			if(("JX900664".equals(retCode) || StringUtil.isBlank(responseMessage)) && status == 2 && "y".equals(remark)){//判断全失败是否已处理(目前仅处理通道异常)
+				yclsbpcsl++;
+				pczjwjdsl -= 1;
+				jsonObject.put("status", batchStatus.E.val());
+				batchRecordMap.put(batchNo, jsonObject);
+				continue;
+			}
+			if(status == 3){
+				//部分失败为数据错误,较少见,手动处理
+			}
+			if(status == 1 || status == 4){//已统计跳过
+				continue;
+			}
+			
+			int jxTraceState = jxTraceState(jxTrace);
+			if(jxTraceState == 7){//本地响应报文已更新,全部失败
+				jsonObject.put("status", batchStatus.C.val());
+				batchRecordMap.put(batchNo, jsonObject);
+				sbpcsl++;
+				continue;
+			}
+			if(jxTraceState == 6){//本地响应报文已更新,全部成功
+				for (int i = 0; i < parseArray.size(); i++) {
+					JSONObject subPacksJson = parseArray.getJSONObject(i);
+					long txAmount = StringUtil.getMoneyCent(subPacksJson.getString("txAmount"));
+					long intAmount = StringUtil.getMoneyCent(subPacksJson.getString("intAmount"));
+					long txFeeIn = StringUtil.isBlank(subPacksJson.getString("txFeeIn"))?0:StringUtil.getMoneyCent(subPacksJson.getString("txFeeIn"));
+					pcdcshzbj += txAmount;
+					pcdcshzlx += intAmount;
+					pcdcshzsxf += txFeeIn;
+				}
+				jsonObject.put("status", batchStatus.B.val());
+				batchRecordMap.put(batchNo, jsonObject);
+				pczjyjdsl++;
+				continue;
+			}
+			
+			//批次部分成功,或状态不明,主动查询存管
+			//查询批次处理状态
+			Map<String, String> batchQuery = null;
+			try {
+				batchQuery = JXQueryController.batchQuery(repaymentYesDate, batchNo);
+				String batchState = batchQuery.get("batchState");//批次状态S:成功,F:失败
+				if(!RetCodeUtil.isSuccRetCode(batchQuery.get("retCode")) || (!"S".equals(batchState) && !"F".equals(batchState))){//批次未处理完
+					continue;
+				}
+			} catch (Exception e) {
+				continue;
+			}
+			//查询批次明细
+			Map<String, Object> batchDetailsQueryAll = null;
+			try {
+				batchDetailsQueryAll = JXQueryController.batchDetailsQueryAll(repaymentYesDate, batchNo, "0");
+			} catch (Exception e) {
+				continue;//破即信啊....
+			}
+			if(batchDetailsQueryAll == null){
+				continue;
+			}
+			
+			String queryRetCode = String.valueOf(batchDetailsQueryAll.get("retCode"));//响应代码
+			if(!RetCodeUtil.isSuccRetCode(queryRetCode)){
+				jsonObject.put("status", batchStatus.C.val());
+				batchRecordMap.put(batchNo, jsonObject);
+				sbpcsl++;
+				continue;
+			}
+			List<Map<String, String>> subPacklst = (List<Map<String, String>>) batchDetailsQueryAll.get("subPacks");
+			if(subPacklst == null || subPacklst.size() < 1){
+				continue;
+			}
+			Map<String, Boolean> isAuthCodeMap = new HashMap<String,Boolean>();//key:authCode,value:boolean
+			int succNum = 0;//成功数量
+			for (Map<String, String> subPacksMap : subPacklst) {
+				String txState = subPacksMap.get("txState");
+				String authCode = subPacksMap.get("authCode");
+				if("S".equals(txState)){//成功
+					isAuthCodeMap.put(authCode, true);
+					succNum++;
+				}else {
+					isAuthCodeMap.put(authCode, false);
+				}
+			}
+			if(succNum == subPacklst.size()){//全部成功
+				jsonObject.put("status", batchStatus.B.val());
+				pczjyjdsl++;
+			}else if(succNum == 0){//全部失败
+				jsonObject.put("status", batchStatus.C.val());
+				sbpcsl++;
+			}else {//部分成功
+				jsonObject.put("status", batchStatus.D.val());
+				sbpcsl++;
+			}
+			
+			batchRecordMap.put(batchNo, jsonObject);
+			
+			for (int i = 0; i < parseArray.size(); i++) {
+				JSONObject subPackJson = parseArray.getJSONObject(i);
+				String authCode = subPackJson.getString("authCode");
+				if(isAuthCodeMap.get(authCode)){
+					long txAmount = StringUtil.getMoneyCent(subPackJson.getString("txAmount"));
+					long intAmount = StringUtil.getMoneyCent(subPackJson.getString("intAmount"));
+					long txFeeIn = StringUtil.isBlank(subPackJson.getString("txFeeIn"))?0:StringUtil.getMoneyCent(subPackJson.getString("txFeeIn"));
+					pcdcshzbj += txAmount;
+					pcdcshzlx += intAmount;
+					pcdcshzsxf += txFeeIn;
+				}
+			}
+		}
+		HashMap<String, Object> repaymentCountMap = new HashMap<String,Object>();
+		repaymentCountMap.put("repaymentDate", repaymentDate);
+		repaymentCountMap.put("pcdcshzbj", repaymentCount.getLong("pcdcshzbj") + pcdcshzbj);
+		repaymentCountMap.put("pcdcshzlx", repaymentCount.getLong("pcdcshzlx") + pcdcshzlx);
+		repaymentCountMap.put("pcdcshzsxf", repaymentCount.getLong("pcdcshzsxf") + pcdcshzsxf);
+		repaymentCountMap.put("pczjyjdsl", repaymentCount.getInt("pczjyjdsl") + pczjyjdsl);
+		repaymentCountMap.put("pczjwjdsl", repaymentCount.getInt("pczjwjdsl") - pczjyjdsl + pczjwjdsl);
+		repaymentCountMap.put("sbpcsl", repaymentCount.getInt("sbpcsl") + sbpcsl);
+		
+		repaymentCountMap.put("sfzchkpcs", repaymentCount.getInt("sfzchkpcs") +sfzchkpcs);
+		repaymentCountMap.put("sfyqbjpcs", repaymentCount.getInt("sfyqbjpcs") +sfyqbjpcs);
+		repaymentCountMap.put("sfyqdflxpcs", repaymentCount.getInt("sfyqdflxpcs") +sfyqdflxpcs);
+		repaymentCountMap.put("yclsbpcsl", repaymentCount.getInt("yclsbpcsl") +yclsbpcsl);
+		
+		if(batchRecordMap != null){
+			repaymentCountMap.put("batchRecord", JSON.toJSONString(batchRecordMap));
+		}
+		
+		if(updateRepaymentCount(repaymentCountMap)){
+			if(repaymentCountStatus.B.val().equals(repaymentCount.getStr("repaymentStatus")) && repaymentStatus(repaymentDate)){
+				repaymentCountMap.clear();
+				repaymentCountMap.put("repaymentDate", repaymentDate);
+				repaymentCountMap.put("repaymentStatus", repaymentCountStatus.C.val());
+				return updateRepaymentCount(repaymentCountMap);
+			}
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	/**
+	 * 更新回款统计表红包信息 WJW
+	 * @param repaymentDate		原定回款日期
+	 * @param repaymentYesDate	实际回款日期
+	 * @return
+	 */
+	public boolean updateRepaymentCountVoucher(String repaymentDate,String repaymentYesDate){
+		long hbshzbj = 0; // 红包实还总本金
+		long hbshzlx = 0; // 红包实还总利息(利息-手续费)
+		long hbfysfze = 0; // 红包返佣实发总额
+		int sfhbsl = 0;// 实发红包数量
+		int sbhbsl = 0;// 失败红包数量
+		int yclsbhbsl = 0;//已处理失败红包数量
+		
+		//红包信息
+		List<JXTrace> repaymentVoucherPays = JXTrace.jxTraceDao.find("select * from t_jx_trace where txCode='voucherPay' and txDate=? and (requestMessage like '%还款%' or requestMessage like '%返佣%')",repaymentYesDate);
+		for (JXTrace jxTrace : repaymentVoucherPays) {
+			sfhbsl++;
+			String retCode = jxTrace.getStr("retCode");
+			String orgTxDate = jxTrace.getStr("txDate");
+			String orgTxTime = jxTrace.getStr("txTime");
+			String orgSeqNo = jxTrace.getStr("seqNo");
+			String remark = jxTrace.getStr("remark");
+			if(StringUtil.isBlank(retCode)){//响应码为空,没回调,查询存管确定状态
+				Map<String, String> fundTransQuery = null;
+				try {
+					fundTransQuery = JXQueryController.fundTransQuery(JXService.RED_ENVELOPES, orgTxDate, orgTxTime, orgSeqNo);
+				} catch (Exception e) {
+					continue;//查询通道异常,略过
+				}
+				if(RetCodeUtil.isSuccRetCode(fundTransQuery.get("retCode")) && "0".equals(fundTransQuery.get("orFlag"))  && "00".equals(fundTransQuery.get("result"))){
+					continue;//红包发送成功,略过
+				}
+				sbhbsl++;
+				yclsbhbsl = "y".equals(remark)?(yclsbhbsl+1):yclsbhbsl;
+				continue;
+			}
+			if(!RetCodeUtil.isSuccRetCode(retCode)){
+				sbhbsl++;
+				yclsbhbsl = "y".equals(remark)?(yclsbhbsl+1):yclsbhbsl;
+				continue;
+			}
+			String requestMessage = jxTrace.getStr("requestMessage");
+			JSONObject parseObject = JSONObject.parseObject(requestMessage);
+			long txAmount = StringUtil.getMoneyCent(parseObject.getString("txAmount"));
+			String desLine = parseObject.getString("desLine");
+			if(desLine.indexOf("垫") != -1){
+				//借款人直接还款,红包垫付本金利息(仅个别手动处理,还款类型未定,暂不记录)
+			}else if(desLine.indexOf("本") != -1){
+				hbshzbj += txAmount;
+			}else if(desLine.indexOf("利") != -1){
+				hbshzlx += txAmount;
+			}else if(desLine.indexOf("佣") != -1){
+				hbfysfze += txAmount;
+			}
+		}
+		
+		Map<String, Object> repaymentCountMap = new HashMap<String,Object>();
+		repaymentCountMap.put("repaymentDate", repaymentDate);
+		repaymentCountMap.put("hbshzbj", hbshzbj);
+		repaymentCountMap.put("hbshzlx", hbshzlx);
+		repaymentCountMap.put("hbfysfze", hbfysfze);
+		repaymentCountMap.put("sfhbsl", sfhbsl);
+		repaymentCountMap.put("sbhbsl", sbhbsl);
+		repaymentCountMap.put("yclsbhbsl", yclsbhbsl);
+		
+		return updateRepaymentCount(repaymentCountMap);
+	}
+	
+	/**
+	 * 更新回款统计表批次状态 WJW
+	 * @param txDate	实际回款时间
+	 * @param batchNo	批次号
+	 * @return
+	 */
+	public boolean updateBatchStatus(String txDate,String batchNo,batchStatus status){
+		try {
+			RepaymentCount repaymentCount = findByRepaymentYesDate(txDate);
+			String batchRecord = repaymentCount.getStr("batchRecord");
+			Map<String, ?> parseObject = JSONObject.parseObject(batchRecord);
+			Map<String, JSONObject> batchRecordMap = (Map<String, JSONObject>) parseObject;
+			batchRecordMap = batchRecordMap == null ? new LinkedHashMap<String,JSONObject>():batchRecordMap;
+			JSONObject jsonObject = batchRecordMap.get(batchNo);
+			jsonObject.put("status", status.val());
+			batchRecordMap.put(batchNo, jsonObject);
+			repaymentCount.set("batchRecord", JSON.toJSONString(batchRecordMap));
+			repaymentCount.set("pczjwjdsl", repaymentCount.getInt("pczjwjdsl")-1);
+			repaymentCount.set("yclsbpcsl", repaymentCount.getInt("yclsbpcsl")+1);
+			return repaymentCount.update();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	/**
+	 * 根据结算日期返回当天标结算日(起始/结束) WJW
+	 * @param date
+	 * @return
+	 */
+	public int[] getClearDay(String date){
+		int startClearDay = Integer.valueOf(date.substring(6));//结算日起始日
+		Date[] dates = null;
+		try {
+			dates = DateUtil.getMonthBetween(DateUtil.getDateFromString(date, "yyyyMMdd"));
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
+		String monthLastDate = DateUtil.getStrFromDate(dates[1], "yyyyMMdd");//结算日月份最后一天日期
+		int endClearDay = monthLastDate.equals(date)?31:startClearDay;//结算日结束日(若结算日期为本月最后一日,则取最大值31)
+		return new int[]{startClearDay,endClearDay};
+	}
+	
+	/**
+	 * 获取批次请求报文交易明细JSONArray WJW
+	 * @param jxTrace
+	 */
+	public JSONArray getSubPacksJSONArray(JXTrace jxTrace){
+		String requestMessage = jxTrace.getStr("requestMessage");
+		JSONObject requestMessageJson = JSONObject.parseObject(requestMessage);
+		String subPacks = requestMessageJson.getString("subPacks");
+		return JSONArray.parseArray(subPacks);
+	}
+	
+	/**
+	 * 获取批次号 WJW
+	 * @param jxTrace
+	 * @return
+	 */
+	public String getBatchNo(JXTrace jxTrace){
+		String requestMessage = jxTrace.getStr("requestMessage");
+		JSONObject requestMessageJson = JSONObject.parseObject(requestMessage);
+		return requestMessageJson.getString("batchNo");
+	}
+	
+	/**
+	 * 判断标在查询日期是否存在补发代偿批次 WJW
+	 * @param txDate
+	 * @param loanCode
+	 * @return
+	 */
+	public boolean isBatchReissue(String txDate,String loanCode){
+		int num = LoanTrace.loanTraceDao.find("select * from t_loan_trace where loanCode=? and authCode is not null",loanCode).size();
+		int batchNum = num%150 == 0?num/150:num/150+1;//应发批次数
+		int batchYesNum = JXTrace.jxTraceDao.find("select jxTraceCode,requestMessage,txDate from t_jx_trace where txCode='batchSubstRepay' and txDate = '"+txDate+"' and requestMessage like '%"+loanCode+"%'").size();//实发批次数
+		return batchYesNum > batchNum;//此批次为补发
+	}
+	
+	/**
+	 * 判断批次交易状态 WJW
+	 * @param jxTrace
+	 * @return	1:请求未发送(或江西未实时响应) 2:未收到任何异步通知 3:通过数据合法校验 4:未通过数据合法校验 5:部分成功 6:全部成功 7:全部失败 8:响应报文存的什么鬼
+	 */
+	public int jxTraceState(JXTrace jxTrace){
+		//读取t_jx_trace流水号对应交易响应报文,进行本地流水处理
+		if(jxTrace == null){//批量迁移
+			return 6;
+		}
+		
+		String responseMessage = jxTrace.getStr("responseMessage");//响应报文
+		
+		if("admin".equals(responseMessage)){//已人工处理
+			return 6;
+		}
+		
+		JSONObject parseObject = null;
+		try {
+			parseObject = JSONObject.parseObject(responseMessage);
+		} catch (Exception e) {
+			return 8;
+		}
+		
+		if(StringUtil.isBlank(responseMessage)){
+			return 1;
+		}
+		
+		String received = parseObject.getString("received");//success接收成功
+		if(!StringUtil.isBlank(received)){
+			return 2;
+		}
+		
+		String txCounts = parseObject.getString("txCounts");//交易笔数(业务处理结果的异步通知)
+		String retCode = parseObject.getString("retCode");//响应代码(业务处理结果的异步通知)
+		if(!StringUtil.isBlank(txCounts) && !StringUtil.isBlank(retCode)){
+			if("00000000".equals(retCode)){//通过数据合法校验
+				return 3;
+			}else {//未通过数据合法校验
+				return 4;
+			}
+		}
+		
+		int sucCounts = 0;//成功交易笔数
+		double failAmount = 0;//失败交易金额
+		int failCounts =0;//失败交易笔数
+		if(!StringUtil.isBlank(parseObject.getString("sucCounts"))){
+			sucCounts = Integer.valueOf(parseObject.getString("sucCounts"));
+		}
+		if(!StringUtil.isBlank(parseObject.getString("failAmount"))){
+			failAmount = Double.valueOf(parseObject.getString("failAmount"));
+		}
+		if(!StringUtil.isBlank(parseObject.getString("failCounts"))){
+			failCounts = Integer.valueOf(parseObject.getString("failCounts"));
+		}
+		
+		if(sucCounts>0 && (failAmount>0 || failCounts>0)){
+			return 5;//部分成功
+		}
+		if(sucCounts>0 && (failAmount==0 || failCounts==0)){
+			return 6;//全部成功
+		}
+		if(sucCounts==0 && (failAmount>0 || failCounts>0)){
+			return 7;//全部失败
+		}
+		if(sucCounts==0 && (failAmount==0 || failCounts==0)){
+			return 8;//响应报文存的什么鬼
+		}
+		return 0;
+	}
+	
+	/**
+	 * 判断当日还款是否完成	WJW
+	 * @param repaymentDate
+	 * @return
+	 */
+	public boolean repaymentStatus(String repaymentDate){
+		RepaymentCount repaymentCount = findByRepaymentDate(repaymentDate);
+		//whzchkbds:未还正常还款标的数,whtqhkbds:未还提前还款标的数,whsjzchkbds:未还实际正常还款标的数,whsjtqhkbds:未还实际提前还款标的数
+		//whyqbjbds:未还逾期本金标的数,whyqdflxbds:未还逾期垫付利息标的数,pczjwjdsl:批次资金未解冻数量
+		String[] repaymentCountStrs = new String[]{"whzchkbds","whtqhkbds","whsjzchkbds","whsjtqhkbds","whyqbjbds","whyqdflxbds","pczjwjdsl"};
+		for (String repaymentCountStr : repaymentCountStrs) {
+			if(repaymentCount.getInt(repaymentCountStr) != 0){
+				return false;
+			}
+		}
+		
+		int sbhbsl = repaymentCount.getInt("sbhbsl");//失败红包数量
+		int yclsbhbsl = repaymentCount.getInt("yclsbhbsl");//已处理失败红包数量
+		int sbpcsl = repaymentCount.getInt("sbpcsl");//失败批次数量
+		int yclsbpcsl = repaymentCount.getInt("yclsbpcsl");//已处理失败批次数量
+		return sbhbsl == yclsbhbsl && sbpcsl == yclsbpcsl;
+	}
+	
+}

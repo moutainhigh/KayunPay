@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>易融恒信提示 - 易融恒信，做中国最大的网贷!</title>
+    <meta name="Keywords" content="互联网金融,小额投资,投资,个人投资,家庭投资,投资产品,投资网, 网贷,P2P网贷,人人贷,易融恒信网贷,易融恒信"/>
+    <meta name="Description"
+          content="易融恒信(www.yrhx.com)是目前湖北互联网金融行业最安全、透明的网络借贷平台，易融恒信为投资用户和贷款用户提供公平、透明、安全、高效的互联网金融服务。易融恒信的客户可以在我们的网站上发布借款请求以满足个人的资金需求，也可以把自己的闲余资金通过易融恒信出借给信用良好有资金需求的个人，在获得良好的资金回报率的同时帮助了他人。"/>
+    <link rel="stylesheet" type="text/css" href="/portal/css/style.css?"/>
+</head>
+<body>
+<style type="text/css">
+    html, body, ul, li, p, a, h1, h2, h3, h4, h5 {
+        margin: 0;
+        padding: 0;
+    }
+
+    html {
+        height: 100%;
+    }
+
+    body {
+        height: 100%;
+        font-size: 12px;
+        font: 12px/1.7 Helvetica,Arial,Tahoma,sans-serif,"\5B8B\4F53";
+	    outline: 0;
+	    background-color: #fff;
+    }
+
+    .clear {
+        clear: both;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    p {
+        line-height: 22px;
+        font-family: "微软雅黑";
+    }
+
+    embed {
+        display: none;
+    }
+
+    #table {
+        width: 100%;
+        height: 400px;
+        background: url(/portal/images/icons/errorBg.gif) left top repeat;
+    }
+
+    #header {
+        height: 99px;
+    }
+
+    #header .inner {
+        position: relative;
+    }
+
+    .g-wp, .row, .wrap {
+        width: 1000px;
+        margin: 0 auto;
+    }
+    #wrap {
+  border: 1px solid #fff;
+  border-left: none;
+  border-right: none;
+  padding-top:80px;
+}
+
+    #wrap .inner {
+        height: 240px;
+        width: 960px;
+        margin: 0 auto;
+    }
+
+    .inf {
+        width: 660px;
+        float: right;
+        text-align: left;
+    }
+
+    .ico {
+        width: 300px;
+        float: left;
+        text-align: center;
+        background: none;
+    }
+
+    .til h3 {
+        color: #666;
+        font-size: 26px;
+        font-family: "微软雅黑";
+    }
+
+    .tips {
+        padding: 45px 0 20px 0;
+    }
+
+    .script {
+        font-size: 14px;
+        font-family: "微软雅黑";
+        margin-top: 50px;
+        color: #666;
+    }
+    .error {
+  color: red;
+  font-size: 22px;
+  font-family: "微软雅黑";
+}
+#footer {
+  height: 116px;
+  background-color: #f9f9f9;
+  border-top: 1px solid #E0E0E2;
+  padding-top: 12px;
+}
+
+
+</style>
+<div id="header" class="wrap"><a href="/" class="logo"><img src="/portal/images/logo.png"></a>
+
+    <h2 class="header_mulu"></h2>
+
+    <div class="mini_header_top">
+        <a href="/user/reg" class="mini_register">新用户注册</a>
+        <a href="/" class="mini_home">返回首页</a>
+    </div>
+</div>
+<table id="table" cellspacing=0 cellpadding=0>
+    <tr>
+        <td id="wrap">
+            <div class="inner">
+                <div class="ico"><img src="/portal/images/icons/messagebox_warning.png"></div>
+                <div class="inf">
+                    <div class="til"><h3>易融恒信提示：</h3><!--<h3>易融恒信提示：</h3>--></div>
+                    <div class="tips"><strong class="error">你访问页面不存在</strong><!--<strong class="error">访问的页面不存在</strong>-->
+                    </div>
+                    <div class="script"><p>
+                        系统将在 <i class="red" id="wait">10</i> 秒后自动跳转，你可以点击 <a id="jump" href="/" class="red">立即</a> 跳转 或者
+                        <a id="stop" href="javascript:stopJump();" class="red">停止</a> 跳转！
+                    </p></div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </td>
+    </tr>
+</table>
+<script>            var jumpRun = null;
+
+function stopJump() {
+    if (jumpRun)
+        clearInterval(jumpRun);
+}
+
+function startJump() {
+    waitSec--;
+    waitObj.innerHTML = waitSec;
+    if (waitSec <= 0) {
+        clearInterval(jumpRun);
+        jumpObj.click();
+    }
+}
+
+var waitObj = document.getElementById("wait");
+var jumpObj = document.getElementById("jump");
+var waitSec = parseInt(waitObj.innerHTML);
+
+if (waitSec > 0) {
+ jumpRun = setInterval(startJump, 1000);
+}
+
+</script>
+<div id="footer">
+    <div class="copyright wrap" style="padding-bottom: 50px;"><p> 武汉易融恒信金融信息服务有限公司 © 2013 yironghengxin, Inc. All rights
+        reserved.
+    </p></div>
+</div>
+<div class="back-top"></div>
+</body>
+</html>

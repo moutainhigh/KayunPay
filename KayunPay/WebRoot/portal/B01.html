@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>易融恒信-安全可靠透明的投资平台,p2p网贷平台</title>
+<meta name="description"
+	content="易融恒信,致力于做华中地区最好的p2p网贷平台,为投资者提供最安全,最靠谱,最透明的互联网金融p2p投资平台,咨询电话400-027-0707" />
+
+<link href="/portal/css/public.css" rel="stylesheet" media="screen"
+	type="text/css" charset="utf-8" />
+<link type="text/css" href="/portal/css/user.css" rel="stylesheet">
+<link type="text/css" href="/portal/css/datapicker/datepicker.css"
+	rel="stylesheet">
+<!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+<body>
+	<header id="header" class="header"></header>
+	<nav class='user_index'></nav>
+	<main class="user">
+	<div class="user-main">
+		<div class="user-main-left">
+			<h2>资金管理</h2>
+			<div class="user-nav"></div>
+		</div>
+		<div class="user-main-right">
+			<div  class='user-main-right-c'>
+			<div class='tabNav'>
+			<i></i>
+			<ul class="menu">
+				<li class="selected">资金统计</li>
+				<li id='census'>资金明细</li>
+			</ul>
+			<div class="clear"></div>
+			</div>
+			<div id='tab-content'>
+				<!--资金统计  -->
+				<div class='tab-content-list'>
+					<div class="fundCountbox">
+						<h4	style="margin-bottom: 20px; font-size: 14px; font-weight: bold; color: #000000;">已累计为您赚取收益:
+							<b id="accumulatedEarnings">加载ing</b>元</h4>
+						<div class="finance-table">
+							<table>
+								<tbody>
+									<tr>
+										<th colspan="4">回报统计</th>
+									</tr>
+									<tr>
+										<td width="25%">已赚利息</td>
+										<td width="25%"><i class="red" id="reciedInterest">加载ing</i></td>
+										<td width="25%">预期待赚利息</td>
+										<td width="25%"><i class="red" id="beRecyInterest">加载ing</i></td>
+									</tr>
+									<tr>
+										<td>已收本金</td>
+										<td><i class="red" id="reciedPrincipal">加载ing</i></td>
+										<td>待收本金</td>
+										<td><i class="red" id="beRecyPrincipal">加载ing</i></td>
+									</tr>
+									<tr>
+										<td></td>
+										<td><i class="red"></i></td>
+										<td>30天内待收本金</td>
+										<td><i class="red" id="nextAmount">加载ing</i></td>
+									</tr>
+									<tr>
+										<td></td>
+										<td><i class="red"></i></td>
+										<td>30天内预期待收利息</td>
+										<td><i class="red" id="nextInterest">加载ing</i></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+						<div class="finance-table">
+							<table>
+								<tbody>
+									<tr><th colspan="4">资金统计</th></tr>
+									<tr>
+										<td width="25%">总借出金额</td>
+										<td width="25%"><i class="red" id="outFundsCount">加载ing</i></td>
+										<td width="25%">待回收本息</td>
+										<td width="25%"><i class="red" id="forRecovery">加载ing</i></td>
+									</tr>
+									<tr>
+										<td>已回收本息</td>
+										<td><i class="red" id="haveRecovery">加载ing</i></td>
+										<td>待回收笔数</td>
+										<td><i class="red" id="beRecyCount">加载ing</i></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						
+						<div class="finance-table">
+							<table>
+								<tbody>
+									<tr>
+										<th colspan="4"><h4>赏金统计</h4></th>
+									</tr>
+									<tr>
+										<td width="25%">累计邀请金额:</td>
+										<td width="25%"><i class="red" id="sumPayAmount">加载ing</i></td>
+										<td width="25%">预期赏金收益:</td>
+										<td width="25%"><i class="red" id="sumRewardAmount">加载ing</i></td>
+									</tr>
+									<tr>
+										<td>已回收赏金:</td>
+										<td><i class="red" id="sumRewardAcquire">加载ing</i></td>
+										<td>待回收赏金:</td>
+										<td><i class="red" id="sumRewardRemain">加载ing</i></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<!--资金明细  -->
+				<div class='tab-content-list'  style='display:none;'>
+					<div class="list_money">
+						<div class="left">
+							<div class="text0" style="float: none;">资产总额</div> <span class="text1 balance">0</span>
+						</div>
+						<div class="right">
+							<div>
+								<span class="text0">可用余额</span> <span class="text2">冻结金额</span>
+							</div>
+							<div>
+								<span class="text1 avBalance"><i></i>元</span> <span
+									class="text3 frozeBalance"><i></i>元</span>
+							</div>
+							<div>
+								<span class="text4">待回收本金</span> <span class="text6 ">预期待回收利息</span>
+		
+							</div>
+							<div>
+								<span class="text5 beRecyprIncipal"><i></i>元</span> <span
+									class="text7 beRecyInterest"><i></i>元</span>
+							</div>
+						</div>
+					</div>
+					<h3 class="m_title">资金记录</h3>
+					<div class="search search2">
+						从 <span class="input_panel"><input
+							class="time_input begin_datetime" id="my-startDate" type="text" value=""
+							readonly="readonly" /></span> <i class="clear_text"></i> 到 <span
+							class="input_panel"><input class="time_input end_datetime" id="my-endDate"
+							type="text" value="" readonly="readonly" /></span> <i class="clear_text"></i>
+						<button class="query_button" querytype="queryFunds">查询</button>
+						<!-- <button onclick="exportExcel()" style="margin-left:10px;background-color:#5EB95E" type="button">导出Excel</button> -->
+						<ul class="m_menu">
+							<!-- <li class="frist">类型</li> -->
+							<li v="A,B,C,D,V,W,H,G,P,R,L,M,X,F,Y,I,U,W,Q,O,K,INCOME" class="selected">全部</li>
+							<li v="C">充值</li>
+							<li v="G,E">提现</li>
+							<li v="P">投标支出</li>
+							<li v="R">回收本金</li>
+							<li v="L">回收利息</li>
+						</ul>
+		
+					</div>
+					<div class="list_table otherDataTable" style="min-height:536px;">
+						<table id="list_table">
+							<thead>
+								<tr class="h">
+									<th width="85">时间</th>
+									<th width="100">类型</th>
+									<th width="100">收入</th>
+									<th width="100">支出</th>
+									<th width="100">手续费</th>
+									<th width="100">可用余额</th>
+									<th width="100">冻结金额</th>
+									<th>备注</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+						<div style="margin-top: 20px;">总计交易金额：<b id="typeA"></b></div>
+						<div class="page_panel" id="otherPage">
+		
+						</div>
+					</div>
+					<div class="list_table reChargeTable" style="display:none;min-height:536px;">
+						<table  id="rechargeHistoryTable">
+							<thead>
+								<tr class="h">
+									<th width="140">时间</th>
+									<th width="100">金额</th>
+									<th width="100">充值方式</th>
+									<!-- 
+									<th width="70">交易号</th>
+									 -->
+									<th width="50">状态</th>
+									<th width="120">说明</th>
+								</tr>
+							</thead>
+							<tbody>
+
+							</tbody>
+
+						</table>
+						<div style="margin-top: 20px;">总计交易金额：<b id="typeB"></b></div>
+						<div class="page_panel" id="rechagePage"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+	</div>
+	</main>
+	<footer id="footer" class="footer"> </footer>
+	<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+	<script type="text/javascript" src="/portal/js/config.js"></script>
+	<script type="text/javascript" src="/portal/js/public.js"></script>
+	<script type="text/javascript">window.userNavActive = 0;topNavSelect= '4';</script>
+	<script type="text/javascript" src="/portal/js/user.js"></script>
+	<script type="text/javascript" src="/portal/js/pub/widget-table.js"></script>
+	<script type="text/javascript" src="/portal/js/pub/app.js"></script>
+	<script type="text/javascript" src="/portal/css/datapicker/bootstrap-datepicker.js"></script>
+	<script>
+	setting(2,window.userNavActive);
+	NavMenu(2);
+		function loginSuccessCallback(){
+		}
+		$('.time_input').datepicker({
+			'format' : 'yyyy-mm-dd'
+		});
+
+		$(".m_menu li").click(function() {
+			var that = $(this);
+			if (that.hasClass("selected") == false) {
+				that.siblings().removeClass("selected");
+				that.addClass("selected");
+				
+				if( that.index() == 1 ){
+					$(".query_button").attr("queryType","queryRecharge");
+					// 充值特殊处理
+					$(".otherDataTable").hide();
+					$(".reChargeTable").show();
+					$.queryRechargeTrace4User(1);
+				}else{
+					$(".query_button").attr("queryType","queryFunds");
+					$(".otherDataTable").show();
+					$(".reChargeTable").hide();
+					$.queryFunds(1);	
+				}
+			}
+		});
+		/*资金统计  */
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("queryFundsCount4user"),
+			success : function( sucData ){
+				$("#accumulatedEarnings").text( YRHX.toDecimal2((sucData.reciedInterest - sucData.recyMFee4loan) / 10.0/10.0) );
+				$("#blanceEarnings").text( sucData.blanceEarnings );
+				
+				$("#reciedInterest").text( YRHX.toDecimal2(  sucData.reciedInterest / 10.0/10.0) + '元' );
+				$("#beRecyInterest").text(  YRHX.toDecimal2(sucData.beRecyInterest / 10.0/10.0) + '元' );
+				$("#reciedPrincipal").text(  YRHX.toDecimal2(sucData.reciedPrincipal / 10.0/10.0) + '元' );
+				$("#beRecyPrincipal").text(  YRHX.toDecimal2(sucData.beRecyPrincipal / 10.0/10.0) + '元');
+				$("#outFundsCount").text(  YRHX.toDecimal2(sucData.outFundsCount / 10.0/10.0) + '元');
+				$("#haveRecovery").text(  YRHX.toDecimal2(sucData.haveRecovery / 10.0/10.0) + '元');
+				$("#forRecovery").text(  YRHX.toDecimal2(sucData.forRecovery / 10.0/10.0) + '元');
+				
+
+				$("#nextAmount").text(  YRHX.toDecimal2((sucData.nextAmount||0)/ 10.0/10.0) + '元' );
+				$("#nextInterest").text(  YRHX.toDecimal2((sucData.nextInterest||0) / 10.0/10.0) + '元');
+				
+				$("#beRecyCount").text( sucData.beRecyCount );
+				$("#fee").text( YRHX.toDecimal2(sucData.recyMFee4loan / 10.0/10.0) + '元' );
+				
+				$("#yzyj").text( YRHX.toDecimal2(sucData.yzyj / 10.0/10.0) + '元');
+				$("#yyxjq").text( YRHX.toDecimal2(sucData.yyxjq / 10.0/10.0) + '元');
+				$("#dsyj").text( YRHX.toDecimal2(sucData.dsyj / 10.0/10.0) + '元');
+			},
+			error : function( errData ){
+				 $.popTips("popTipErr", errData.return_info || "链接服务失败" );
+			}
+		});
+		//充值查询
+		$.queryRechargeTrace4User = function( pageNumber ){
+			var beginDate = $(".begin_datetime").val().replaceAll("-", "");
+			var endDate = $(".end_datetime").val().replaceAll("-", "");
+			YRHX.ajax({
+				url : CONFIG.getRequestURI("queryRechargeTrace4User"),
+				data : {
+					"pageNumber" : pageNumber || 1,
+					"pageSize" : 10,
+					"beginDate" : beginDate,
+					"endDate" : endDate
+				},
+				success : function( sucData ) {
+					
+					var returnData = sucData.list ;
+					if (returnData && returnData.length > 0) {
+						
+						var rowHtml = "<tr>";
+						rowHtml += "<td>#{dateTime}</td>";
+						rowHtml += "<td>#{traceAmount}</td>";
+						rowHtml += "<td>#{traceTypeName}</td>";
+						rowHtml += "<td><span class='#{statusCode}'>#{statusName}</span></td>";
+						rowHtml += "<td>#{bankRemark}</td></tr>";
+						
+						//table
+						var tableEle = $("#rechargeHistoryTable").find("tbody");
+						var tfootEle = $("#rechargeHistoryTable").find("tfoot");
+						tableEle.html("");
+						tfootEle.remove();
+					
+						for (var i = 0; i < returnData.length; i++) {
+							var row = returnData[i];
+							
+							if (row) {
+								row["dateTime"] = row["traceDateTime"].dateformat();
+								row["traceAmount"] = YRHX.toDecimal2( row["traceAmount"] / 10.0/10.0) + '元';
+								switch ( row["traceState"] ){
+									case "A":
+										row["statusName"] = "已生成订单";
+										row["statusCode"] = "";
+										break;
+									case "B":
+										row["statusName"] = "充值成功";
+										row["statusCode"] = "success";
+										break;
+									case "C":
+										row["statusName"] = "充值失败";
+										row["statusCode"] = "red";
+										break;
+									case "D":
+										row["statusName"] = "充值回退";
+										row["statusCode"] = "red";
+										break;
+									case "E":
+										row["statusName"] = "其他";
+										row["statusCode"] = "";
+										break;
+								}
+								
+								switch ( row["rechargeType"] ){
+								case "SYS":
+									row["traceTypeName"] = "系统充值";
+									break;
+								case "LL":
+									row["traceTypeName"] = "连连支付充值";
+									break;
+								case "SYX":
+									row["traceTypeName"] = "商银信支付充值";
+									break;
+								case "FAST":
+									row["traceTypeName"] = "快捷充值";
+									break;
+								case "WY":
+									row["traceTypeName"] = "网银充值";
+									break;
+								case "PHONE":
+									row["traceTypeName"] = "手机充值";
+									break;
+								default:
+									row["traceTypeName"] = "未知";
+									break;
+								}
+							}
+
+							var tempHtml = rowHtml.makeHtml(row);
+							tableEle.append(tempHtml); 
+						} 
+						
+						//分页
+						$("#rechagePage").pag(sucData["pageNumber"], sucData["pageSize"],sucData["totalRow"], function() {
+						
+							var reqIndex = $(this).attr("index");
+							$.queryRechargeTrace4User( reqIndex || 1);
+						}); 
+					}else{
+						//暂无数据
+						$("#rechargeHistoryTable").noData();
+						
+					}
+					$("#typeB").text("").text( YRHX.toDecimal2( sucData["sumTraceAmount"] / 10.0/10.0) + '元'); 
+					
+				},
+				error : function( errorData ){
+					$.popTips("popTipErr",errorData.return_info || "获取信息失败");
+				}
+			});
+		}
+		
+		var rowHtml = "<tr><td>#{dateTime}</td>";
+		rowHtml += "<td>#{traceTypeName}</td>";
+		rowHtml += "<td><span class='#{inComeCode}'>#{traceAmount1}</span></td>";
+		rowHtml += "<td><span class='#{outCutCode}'>#{traceAmount2}</span></td>";
+		rowHtml += "<td><span class='#{feeCode}'>#{traceFee}</span></td>";
+		rowHtml += "<td>#{traceBalance}</td>";
+		rowHtml += "<td>#{traceFrozeBalance}</td>";
+		rowHtml += "<td>#{traceRemark}</td></tr>";
+
+		$.queryFunds = function( pageNumber ){
+			var beginDate = $(".begin_datetime").val().replaceAll("-", "");
+			var endDate = $(".end_datetime").val().replaceAll("-", "");
+			var traceType = $(".m_menu li.selected").attr("v") || "";
+
+			YRHX.ajax({
+				url : CONFIG.getRequestURI("queryFundsTrace4User"),
+				data : {
+					"pageNumber" : pageNumber || 1,
+					"pageSize" : 10,
+					"beginDate" : beginDate ,
+					"endDate" : endDate,
+					"traceType" : traceType
+				},
+				success : function( sucData ) {
+					//table
+					var tableEle = $("#list_table").find("tbody");
+					var tfootEle = $("#list_table").find("tfoot");
+					tableEle.html("");
+					tfootEle.remove();
+					
+					var returnData = sucData.list ;
+					if (returnData && returnData.length > 0) {
+						for (var i = 0; i < returnData.length; i++) {
+							var row = returnData[i];
+							if (!row) {
+								row = {};
+								row["dateTime"] = "";
+								row["traceTypeName"] = "";
+								row["traceAmount1"] = "";
+								row["traceAmount2"] = "";
+								row["traceBalance"] = "";
+								row["traceFrozeBalance"] = "";
+								row["traceRemark"] = "";
+								row["fundsTypeName"] = "";
+							} else {
+								row["dateTime"] = (row["traceDate"] + row["traceTime"]).dateformat();
+								
+								row["traceFrozeBalance"] = YRHX.toDecimal2( row["traceFrozeBalance"] / 10.0/10.0) + '元';
+								row["traceBalance"] = YRHX.toDecimal2( row["traceBalance"] / 10.0/10.0) + '元';
+								if( row["traceFee"] == 0){
+									row["feeCode"] = ""	;
+								}else{
+									row["feeCode"] = "red";
+								}
+								row["traceFee"] = YRHX.toDecimal2( row["traceFee"] / 10.0/10.0) + '元';
+								if (row["fundsType"] == "J") {
+									row["traceAmount1"] = row["traceAmount"];
+									row["traceAmount2"] = "";
+								} else {
+									row["traceAmount1"] = "";
+									row["traceAmount2"] = row["traceAmount"];
+								}
+								
+								if( row["traceAmount1"] == 0 ){
+									row["inComeCode"] = "";
+								}else{
+									row["inComeCode"] = "green";
+								}
+								
+								if( row["traceAmount2"] == 0 ){
+									row["outCutCode"] = "";
+								}else{
+									row["outCutCode"] = "red";
+								} 
+								if( row["traceAmount1"] ){
+									row["traceAmount1"] = YRHX.toDecimal2( row["traceAmount1"] / 10.0/10.0) + '元';
+								}
+								if( row["traceAmount2"] ){
+									row["traceAmount2"] = YRHX.toDecimal2( row["traceAmount2"] / 10.0/10.0 )+ '元';
+								}
+								
+								
+							}
+
+							var tempHtml = rowHtml.makeHtml(row);
+							tableEle.append(tempHtml);
+						}
+						$("#otherPage").pag(sucData["pageNumber"], sucData["pageSize"],sucData["totalRow"], function() {
+									var reqIndex = $(this).attr("index");
+									$.queryFunds(reqIndex || 1);
+						});
+					}else{
+						//暂无数据
+						$("#otherPage").html("");
+						$("#list_table").noData();
+					}
+					$("#typeA").text("").text( YRHX.toDecimal2( sucData["sumTraceAmount"] / 10.0/10.0) + '元' ); 
+					
+				},
+				error : function(errData) {
+					$.popTips("popTipErr",errData);
+				}
+			});
+		}
+		
+		//赏金计划查询
+		YRHX.ajax({
+			url:CONFIG.getRequestURI("queryRewardDetails"),
+			data : {
+				beginDate : "20180101",
+			},
+			success:function(sucData){
+				$("#sumPayAmount").text(sucData["sumPayAmount"]+"元");//累计邀请金额
+				$("#sumRewardAmount").text(sucData["sumRewardAmount"]+"元");//预期赏金收益
+				$("#sumRewardAcquire").text(sucData["sumRewardAcquire"]+"元");//已回收赏金
+				$("#sumRewardRemain").text(sucData["sumRewardRemain"]+"元");//待回收赏金
+			},
+			error:function(data){
+				$.popTips("popTipErr",data.return_info || "获取信息失败");
+			}
+		})
+		
+
+		$(".query_button").click(function() {
+			var curQueryType = $(this).attr("queryType");
+			if( curQueryType == "queryFunds" ){
+				$.queryFunds();
+			}else if( curQueryType == "queryRecharge" ){
+				$.queryRechargeTrace4User();
+			}
+			
+		});
+
+		//初始化
+		$.queryFunds(); 
+
+			
+
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("queryFunds4User"),
+			type : "POST",
+			success : function(sucData) {
+				var avbalance = parseInt(sucData["avBalance"]);
+				var frozebalance = parseInt(sucData["frozeBalance"]);
+				var berecyprincipal = sucData["beRecyPrincipal"]; //待收本金
+				var berecyinterest = sucData["beRecyInterest"]; //待收利息
+				var balance = avbalance + frozebalance + berecyprincipal + berecyinterest; //总余额
+
+				$(".balance").text(YRHX.toDecimal2(balance / 10.0/10.0) + '元');
+				$(".avBalance i").text(YRHX.toDecimal2(avbalance / 10.0/10.0));
+				$(".frozeBalance i").text(
+						YRHX.toDecimal2(frozebalance / 10.0/10.0) );
+				$(".beRecyprIncipal i").text(
+						YRHX.toDecimal2(berecyprincipal / 10.0/10.0));
+				$(".beRecyInterest i").text(
+						YRHX.toDecimal2(berecyinterest / 10.0/10.0));
+			},
+			error : function(data) {
+				 $.popTips("popTipErr",data.return_info || "获取信息失败");
+			}
+		});
+		
+		//导出Excel
+		function exportExcel(){
+			var beginDate = $(".begin_datetime").val().replaceAll("-", "");
+			var endDate = $(".end_datetime").val().replaceAll("-", "");
+			var traceType = $(".m_menu li.selected").attr("v") || "";
+			YRHX.ajax({
+				url : CONFIG.getRequestURI("exportExcel4User"),
+				type : "POST",
+				data : {
+					"beginDate" : beginDate ,
+					"endDate" : endDate,
+					"traceType" : traceType,
+					"bb" : "funds-detail"
+				},
+				success : function(sucData) {
+					var para_url = "?bb=funds-detail&beginDate=" + beginDate.replaceAll("-","") + "&endDate=" + endDate.replaceAll("-","") + "&traceType=" + traceType + "&type=download";
+					window.open(CONFIG.getRequestURI("exportExcel4User") + para_url,"_blank");
+				},
+				error : function(data) {
+					$.popTips("popTipErr",data.return_info || "获取信息失败");
+				}
+			});
+		};
+	</script>
+</body>
+</html>

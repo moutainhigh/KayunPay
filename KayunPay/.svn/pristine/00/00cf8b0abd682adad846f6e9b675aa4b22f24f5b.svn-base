@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>易融恒信-安全可靠透明的投资平台,p2p网贷平台</title>
+    <meta name="keywords" content="易融恒信,网贷平台,p2p网贷平台排名,p2p投资,p2b网贷,p2p投资平台,小投资,武汉贷款,武汉小额投资,武汉网贷公司,武汉易融恒信"/>
+    <meta name="description" content="易融恒信,致力于做华中地区最好的p2p网贷平台,为投资者提供最安全,最靠谱,最透明的互联网金融p2p投资平台,咨询电话400-027-0707"/>
+    <link href="/portal/css/public.css?v=1.0.2" rel="stylesheet" media="screen" type="text/css" charset="utf-8"/>
+    <link type="text/css" href="/portal/css/user.css?v=1.0.1" rel="stylesheet">
+    <!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+<body>
+<header id="header" class="header"></header>
+<div class="loan_pro">
+	<div class="loan_pro_main"></div>
+</div>
+<main class="main_grey">
+	<!-- <div class='loan_tabmenu'>
+		<div class='loan_tab_main'>
+			<ul class="menu">
+		         <li id="newExclusTab">新手专享</li>
+		         <li id="investProTab" class="active">投资项目</li>
+		         <li id="debtTransTab">债权转让<i id="debtTransCount"></i></li>
+		         <i></i>
+		     </ul>
+		     <div class="announce">
+	         </div>
+	     </div>
+	     
+     </div> -->
+    <div class="list_table0 info layout_center bgColor">
+    <div class="productDox">
+    	<div class="productDes"></div>
+    </div>
+        <div id="tabContent">
+        	<div class="dataBox">
+            <!--新手专享-->
+            <!-- <div class="table_panel tab-content-list" style="display:none;" id="newBid">
+                <div class="selectTime">
+                    <div class="point_word">
+
+                        <i class='icon'>1</i>此标为新手体验标，仅限首次注册未投资用户，每个ID限额一万<br />
+                        <i class='icon'>2</i>新手标晚上8:00以后对所有会员开放,新手标仅限手动
+					</div>
+                   <a href="http://topic.yrhx.com/zt/2017/20170308/" class='new_award'></a>
+                  	<div class="clear"></div>
+                </div>
+                <table class="money_list">
+                 <thead><th width='150'></th><th width='180'></th><th width='180'></th><th width='180'></th><th width='150'></th><th></th></thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                分页
+                <div class="pages bidPage">
+                </div>
+            </div> -->
+            <!--投资项目-->
+           <!--  <div class="table_panel tab-content-list" id="inverstPro">
+                <div class="selectTime">
+                    <div class="point_word" id="productType" style="float: none;">
+                        <span>产品类型：</span>
+                        <a class="select_cur" producttype="">全部</a><a producttype="A">质押宝</a><a producttype="B">车稳盈</a><a producttype="C">房稳赚</a><a producttype="G">稳定投</a><a producttype="E">易分期</a><a producttype="D">其它</a>
+                    </div>
+                    <div class="point_word" id="loanLimit">
+                        <span>投资期限：</span>
+                        <a class="select_cur">全部</a><a minLimit=1 maxLimit=3>1-3月</a><a minLimit=4 maxLimit=6>4-6月</a><a minLimit=7 maxLimit=9>7-9月</a><a minLimit=10 maxLimit=12>10-12月</a><a minLimit=13 maxLimit="">12月以上</a>
+                    </div>
+                     <a href="http://topic.yrhx.com/zt/2017/20170308/" class='auto_bid'></a>
+                    <div class="clear"></div>
+                </div>
+               
+                <table class="money_list">
+                	<thead><th width='150'></th><th width='180'></th><th width='180'></th><th width='180'></th><th width='150'></th><th></th></thead>
+                    <tbody>
+                    	
+                    </tbody>
+                </table>
+                分页
+                <div class="pages bidPage">
+                </div>
+            </div> -->
+            <!--债权转让-->
+            <div class="table_panel tab-content-list" style="display: none" id="debetTrans">
+                <div class="selectTime three">
+             	    <!-- <a class="transfer_word" href="http://topic.yrhx.com/zt/2017/20170308/"></a> -->
+                    <div id="transState" class="point_word" style="float:none;">
+                        <span>债权状态：</span>
+                        <a transState="A" class="select_cur">转让中</a><a transState="B" >已转让</a>
+                    </div>
+                    <!-- <div id="debetLimit" class="point_word"  style="float:none;">
+                        <span>债权期限：</span>
+                        <a minLimit="" maxLimit="" class="select_cur">全部</a><a minLimit=1 maxLimit=3>1-3月</a><a minLimit=4 maxLimit=6>4-6月</a><a minLimit=7 maxLimit=9>7-9月</a><a minLimit=10 maxLimit=12>10-12月</a><a minLimit=13 maxLimit="">12月以上</a>
+                    </div>
+                    <div  id="orderParam" class="point_word" style="float:none;">
+                        <span>债权排序：</span>
+                        <a orderParam="" orderType="DESC" class="select_cur other all">全部</a><a orderParam="rate" orderType="DESC" class='other'>利率 <i></i></a><a orderParam="leftAmount" orderType="DESC" class='other'>剩余本金 <i></i></a><a orderParam="loanRecyCount" orderType="DESC" class='other'>剩余期限 <i></i></a><a orderParam="transFee"  orderType="DESC" class='other'>承接收益 <i></i></a><a orderParam="allRate"  orderType="DESC" class='other'>年化率 <i></i></a>
+                    </div> -->
+                  
+                    <div class="clear"></div>
+                </div>
+                <table class="debtTrans">
+                    <thead><th width='210'></th><th width='130'></th><th width='200'></th><th width='170'></th><th width='150'></th><th width='150'></th><th></th></thead>
+                    <tbody>
+                    </tbody>
+                </table>
+
+                <!--分页-->
+                <div class="pages debtPage">
+                </div>
+
+            </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+<!-- <div class="dialogLayOut"  id="transferDialog" style="width: 452px;">
+	<div class="dialogHeader"><div class="dialogTitle" id="dialogTitle" style="font-size: 18px;"></div><div class="dialogClose"></div></div>
+	
+	<div class="transfer_con">
+		<p>剩余本金：<span id="dialogSubj"></span></p>
+		<p>承接价格：<span id="dialogCjjg"></span></p>
+		<p>承接收益：<span id="dialogCjsy"></span></p>
+		<p>下一回款日：<span id="dialogXyhkr"></span></p>
+		<p>转让人：<span id="dialogZrr"></span></p>
+	</div>
+	
+	<div class="payPwd">
+		<input placeholder="请输入支付密码" id="payPwd" type="password" maxlength="18">
+	</div>
+	<div class="mesCode">
+		<div class="mes_input"><input placeholder="请输入验证码" maxlength="6" id="mesCode" type="text"></div>
+		<div class="mes_send"><a class="sendMsgBtn" href="javascript:" sendtoggle="0">获取验证码</a><b class="msgCounter"></b></div>
+		<img src="/captcha4sys" title="验证码" id="captchaImg" style="width:102px;height:40px;margin-left:10px;border-radius: 3px;cursor: pointer;">
+	</div>
+	<div class="msgTips"><span></span></div>
+	<div class="submit_btn">确认承接</div>
+</div> -->
+
+<!-- <div class="couponDialog" id="couponDialog" style="display:none;" >
+	<h3>确认信息<div class="del"></div></h3>
+	<div class="coupon_bid">
+		<dl>
+			<dt>本次投资金额</dt>
+			<dd><font class="this_amount"></font>元</dd>
+		</dl>
+		<dl>
+			<dt>预计赚取收益</dt>
+			<dd><font class="this_income"></font>元</dd>
+		</dl>
+	</div>
+	<div class="coupon_mes">
+		<div class="user-quan" >
+		<ul	class="mn">
+			<li id="usable" class="act" ttype="A">现金券</li>
+			<li id="usable2" ttype="C">加息券</li>
+			<li id="usable3" ttype="D">加息额度</li>
+		</ul>
+		</div>
+		<div class="coupon_none" style="display:none;"></div>
+		<div class="coupon_none2" style="display:none;"></div>
+		<div class="coupon_detail">
+			<i class="coupon_iconl"></i>
+			<i class="coupon_iconr"></i>
+			<div class="icon_list"></div>
+			<div class="coupon_list">
+				<ul></ul>
+			</div>
+			<div class="coupon_selected">投资成功</div>
+			<div class="remind" style="font-size:14px;color:red;display:none">温馨提示：投资金额需在加息额度范围内，方可加息1%。</div>
+		</div>
+		<div class="vip_coupon_selected" style="display: none;">投资成功</div>
+	</div>
+	<div class="coupon_foot">实际支出<font></font>元<button class="coupon_confirm">立即投资</button><button class="coupon_cancle">取消</button></div>
+	<div class="suc_next">
+		<h3>投标状态<div class="del"></div></h3>
+		<div class="suc_icon">
+			恭喜你，投标成功！
+		</div>
+
+
+		<div class="coupon_foot"><a href="/Z02?navTab=1">继续投资</button><a class='next_close'>关闭</a></div>
+	</div>
+</div> -->
+	
+	<!-- 开通存管弹窗 -->
+<!-- 	<div class="cg">
+		<div class="cg-bg">
+			<a href="javascript:void(0)" id="closeBtn"></a>
+			<a href="/depositoryUser?step=1" class="enter"></a>
+		</div>
+		<div class="shade"></div>
+	</div> -->
+<footer id="footer" class="footer"></footer>
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js?v=1.0.0"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js?v=1.0.0"></script>
+<script type="text/javascript" src="/portal/js/pub/app.js?v=1.0.0"></script>
+<script type="text/javascript" src="/portal/js/config.js?v=1.0.0"></script>
+<script>topNavSelect = 1;</script>
+<script type="text/javascript" src="/portal/js/circleProgress.js?v=1.0.0" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/public.js?v=1.0.1"></script>
+<script type="text/javascript" src="/app/js/captcha.js?v=1.0.0"></script>
+<script type="text/javascript">
+	var flag = false;
+	var ratevip=0;//会员自动加息利率
+	function GetQueryString(name) {
+		 var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		 var r = window.location.search.substr(1).match(reg);
+		 if(r!=null)return  unescape(r[2]); return null;
+	}
+	
+	$(function(){
+		
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("bind4Platform"),
+			data: {"source": GetQueryString("source")}
+		})
+	});
+
+	function loginSuccessCallback(){
+		var liHtml="<li style='padding:0 20px'>您好,<a href='/A00' id='curUserName'>"+YRHX.Cookie("userName").get()+"</a></li>";
+			liHtml += "<li class='last' style='cursor:pointer'>退出</li>";
+			$('.topLoginArea').html('').append(liHtml);
+	}
+	
+	$.fn.tabChange = function( selector,title ){
+	    var that = $(this);
+		
+	    that.click(function(){
+	        $(this).addClass('active').siblings().removeClass('active');
+	        var index = $(this).index();
+	        $('.loan_pro').css('background','url(/portal/images/index/loan_list_bg'+index+'.jpg) repeat-x');
+	        $('.loan_pro_main').css('background','url(/portal/images/index/loan_head'+index+'.png) no-repeat bottom center');
+	        $(this).parent().find('i').animate({'left':(index*150 +15) +'px'},500)
+	        $('.'+ selector+'-list').hide();
+	        $('.'+ selector+'-list:eq('+index+')').show();
+
+	    })
+	};
+//	$(".menu li").tabChange( "tab-content");
+	
+    function getMaxPage(total, size) {
+        var pn = Math.floor(total / size);
+        if (total % size > 0) {
+            pn += 1
+        }
+        return pn
+    }
+    $.fn.pagination = function (index, size, total, callback) {
+        this.html("");
+        var html = "<a index='#{index}' class='#{className}'>#{desc}</a> ";
+        var maxPageNum = getMaxPage(total, size);
+        var outHtml = html.makeHtml({index: 1, className: "", desc: "首页"});
+        outHtml += html.makeHtml({
+            index: (index <= maxPageNum) && index > 1 ? index - 1 : index,
+            className: "",
+            desc: "上一页"
+        });
+        outHtml += html.makeHtml({
+            index: (index + 1) <= maxPageNum ? index + 1 : maxPageNum,
+            className: "",
+            desc: "下一页"
+        });
+        outHtml += html.makeHtml({index: maxPageNum, className: "", desc: "尾页"});
+        outHtml += "";
+        var htmljump = "<input type='text' size='4' value='#{index}'  class='#{className}' style='height:15px;vertical-align:initial;'/>";
+        htmljump+="<a index='' class='' >GO</a> ";
+        outHtml += htmljump.makeHtml({index: index, className: "goValue"});
+        outHtml += "";
+        outHtml += "<span>第" + index + "页  共" + maxPageNum + "页</span>";
+        this.append(outHtml);
+        
+        var goThat=this.find("a:last");//GO栏点击按钮对象
+		var goValue=this.find(".goValue");//GO栏输入框对象
+		
+		goValue.blur(function(){
+			var indexGo=goValue.val();
+			if(indexGo==null||isNaN(indexGo)||indexGo<1){
+				indexGo=1;
+			}
+			var indexGo=parseInt(indexGo);//取整
+			if(indexGo>maxPageNum){
+				indexGo=maxPageNum;
+			}
+			goThat.attr("index",indexGo);
+		});
+		
+        this.find("a[index!=" + index + "]").click(callback);
+        return this
+    };
+
+    function getLoanType( option ) {
+    	//A质押宝 B车稳盈 C房稳赚 D其它
+    	var typePic = ["typePledge","typeCar", "typeHouse", "typeOther","typeNew", "typeRich"];
+    	var typeClass = "";
+    	switch(option){
+    		case "A" : 
+    			typeClass = typePic[0];
+    			break;
+    		case "B" : 
+    			typeClass = typePic[1];
+    			break;
+    		case "C" : 
+    			typeClass = typePic[2];
+    			break;
+    		case "D" : 
+    			typeClass = typePic[3];
+    			break;
+    			
+    	}
+       
+        return typeClass;
+    }
+
+    //发标预告
+    $.queryNotice = function(){
+        YRHX.ajax({
+            url: CONFIG.getRequestURI("queryNotice"),
+            success: function (sucData) {
+                var dataPath = sucData["list"];
+                if (dataPath.length > 0) {
+                    var allHtml = "<p title='"+ dataPath[0]["content"] +"'>发标预告： "+ dataPath[0]["content"];
+                    allHtml += "<ul>";
+                    var htmlForTemp = "";
+                    for (var i = 0; i < dataPath.length; i++) {
+                         htmlForTemp += "<li> " + dataPath[i]["content"] + "</li>"
+                    }
+                    allHtml +=  htmlForTemp + "</ul>";
+                    $(".announce").show().html(allHtml);
+                }else{
+                	$(".announce").show().html("<p title=''>发标预告：</p>");
+                }
+            }, error: function (data) {
+
+            }
+        });
+    }
+
+  //监听倒计时
+    function initInterval() {
+    	setInterval(function () {
+    	   $(".s_time[istime=1]").each(function () {
+    		   var that = $(this);
+               var isTime = that.attr("istime");
+               var startTime = parseInt(that.attr("starttime"));
+               var endTime = parseInt(that.attr("endtime"));
+               
+               var showText = "";
+               var mv = (endTime - startTime) / 1000;
+	           	
+               if (mv <= 0) {
+                 
+					that.attr('istime',0);
+	           		that.text("");
+	           		$('#voteBtn').addClass('have');
+	           		that.prev().find("input").show()
+	           		that.prev().find("button").show().removeClass("blueBtn").addClass("redBtn goVote").text("投标")
+	           		
+	           	}else{
+	           		if (mv % 60 > 0) {
+		           		showText += (mv % 60) + "秒";
+		           	}
+		           	var tmpv = mv / 3600;
+		           	if (Math.floor(mv / 60) > 0) {
+		           		showText = Math.floor(mv / 60 % 60) + "分" + showText;
+		           	}
+		           	if (tmpv >= 1) {
+		           		showText = Math.floor(tmpv) + "小时" + showText;
+		           	}
+
+		          	that.text("剩余时间：" + showText);
+					that.attr("starttime", startTime + 1000)
+	           	}
+           })
+        }, 1000)
+    }
+    initInterval();
+
+    //新手专享 and 投资项目
+    $.buildPageData = function(pageNumber, pageSize, selector,type,minLimit,maxLimit,productType) {
+        YRHX.ajax({
+            url: CONFIG.getRequestURI("queryFinancialBid"),
+            data: {
+                "pageNumber": pageNumber || 1,
+                "pageSize": pageSize,
+                "type":type,
+                "minLimit":minLimit || "",
+                "maxLimit":maxLimit || "",
+                "productType":productType||""
+            },
+            beforeSend:function(){
+            	$(".dataBox").ajaxLoading();
+            },
+            complete :function(){
+            	$(".dataBox").ajaxDone();
+            },
+            success: function (sucData) {
+                var html_tab = "<tr class='tr1'><td colspan='6'><a class='p1' href='Z02_1?loanCode=#{loanCode}' title='#{loanTitle}'>#{loanTitle}</a></td></tr>";
+                html_tab +="<tr class='tr2'>";
+                html_tab +="<td class='first_left'><p class='p2'><span class='lv'>#{rateByYearPlus}<rate style='font-size:14px;'>%</rate></span><span class='add_lv' style='display:#{show_state}'>+#{otherRate}<plus style='font-size:14px;letter-spacing: 0;'>%</plus></span><span  style='display:#{firstMonthMini}'><img src='/portal/images/firstMonthMini.png' style='margin-bottom:-2px;margin-left:2px'></span></p>年化率</td>";
+                html_tab +="<td><p class='p2'><span class='qx'>#{loanTimeLimit}</span>月</p>期限</td>";
+                html_tab +="<td><p class='p2'><span class='money'>#{loanAmountStr}</span>#{unit}</p>金额</td>";
+                html_tab +="<td><p class='p2'><span class='fs'>#{refundType}</span></p>还款方式</td>";
+                /* html_tab +="<td><div class='s_time' id='showTime_#{loanCode}' isTime='#{isTime}' startTime='#{startTime}' endTime='#{endTime}' releasetime=#{releaseTimeStamp}><span>#{zfsj}</span><br> #{timeDesc}</div></td>"; */
+                html_tab +="<td>";
+                html_tab +="<div class='perCircleBox'><div class='circle-progress' data-progress=#{progress} data-size='55' ><div></div>";
+                html_tab +="</td>";
+                html_tab +="<td>";
+                html_tab +="<div class='t_button'>";
+                html_tab +="<input id='a_#{loanCode}' toggle='0' type='text' placeholder='投标金额' maxLength='9' class='bidMoney'  />";
+                html_tab +="<button projecTtype='#{projecTtype}' productType='#{productType}' loanMonth='#{loanTimeLimit}' id='b_#{loanCode}' refundType_row='#{refundType_row}' rateyear='#{rateyear}' loanAmount='#{loanAmount}' time='#{loanTimeLimit}' lid='#{loanCode}' loanType='#{loanState}' >#{loanName}</button>";
+                html_tab +="</div>";
+                html_tab +="<div class='s_time' id='showTime_#{loanCode}' isTime='#{isTime}' startTime='#{startTime}' endTime='#{endTime}'>#{timeDesc} #{zfsj}</div>";
+                html_tab +="</td></tr>";
+               	var returnData = sucData["loanInfos"]["list"];
+                $( selector ).find("tbody").html("");
+                if( sucData["transferCount"] > 0 &&  sucData["transferCount"] <= 9 ){
+                	$("#debtTransCount").show().text( sucData["transferCount"] );
+                }else if(sucData["transferCount"] > 9){
+                	$("#debtTransCount").show().css("line-height", "10px").text( "..." );
+                }
+                var arrBid=[],arrInter=[],arrFull=[],arrBack=[];
+                var arrList=new Array();                
+                if (returnData && returnData.length > 0) {
+                	 for (var i=0;i<returnData.length;i++) {
+                		
+                		 var row = returnData[i];
+                		 if (row["loanState"] == "J" && row["loanBalance"] == 0) {
+                             row["loanState"] = "M"
+                         }
+                         if (row["loanState"] == "J") {
+                             row["loanName"] = "投标";
+                             if (sucData["serverTime"] < row["releaseDate"] + row["releaseTime"]) {
+                                 //定时标
+                                 row["loanName"] = "即将开始";
+                                 row["timeDesc"] = "等待发布";
+                                 row["isTime"] = 1;
+                                 row["startTime"] = strDate2Date(sucData["serverTime"]);
+                                 row["endTime"] = strDate2Date(row["releaseDate"] + row["releaseTime"]);
+                                
+                                 row["zfsj"] = "!";
+                                 arrInter.push(row);
+                             } else {
+                                 //3天倒计时
+                                 row["timeDesc"] = "";
+                                 var releaseTimeStamp = row["releaseDate"] + row["releaseTime"];
+                                 row["zfsj"] = "";
+                                 arrBid.push(row);
+                                 //row["zfsj"] = countLeftTime( strDate2Date(releaseTimeStamp) ,3);
+							}
+
+                         } else if (row["loanState"] == "R") {
+                             row["loanName"] = "待还已回收";
+                             row["timeDesc"] = "";
+                             row["zfsj"] = ""
+                         } else if (row["loanState"] == "M") {
+                             row["loanName"] = "满标待审";
+                             row["timeDesc"] = "";
+                             row["zfsj"] = "";
+                             arrFull.push(row);
+                         } else if (row["loanState"] == "N") {
+                             $("#a_" + row["loanCode"]).hide();
+                             row["loanName"] = "出借完成";
+                             row["timeDesc"] = "满标时间";
+                             if (typeof(row["effectTime"]) == "undefined") {
+                                 row["zfsj"] = "更新中"
+                             } else {
+                                 /* row["effectTime"] = row["effectDate"] + row["effectTime"]; */
+                                 row["zfsj"] = formatDateTime(row["lastPayLoanDateTime"])
+                             }
+                             arrBack.push(row);
+                         } else if (row["loanState"] == "O" || row["loanState"] == "P" || row["loanState"] == "Q") {
+                             $("#a_" + row["loanCode"]).hide();
+                             row["loanName"] = "已完成";
+                             row["timeDesc"] = "满标时间";
+                             if (typeof(row["effectTime"]) == "undefined") {
+                                 row["zfsj"] = "更新中"
+                             } else {
+                                 /* row["effectTime"] = row["effectDate"] + row["effectTime"]; */
+                                 row["zfsj"] = formatDateTime(row["lastPayLoanDateTime"])
+                             }
+                             arrBack.push(row);
+                         } else {
+                             row["loanName"] = "其他状态";
+                             row["timeDesc"] = "满标时间";
+                             arrBack.push(row);
+                         }
+                	 }
+                }
+              
+				concatArr(arrBid);concatArr(arrInter);concatArr(arrFull);concatArr(arrBack);
+				function concatArr(arr){
+					for(var i=0 ;i <arr.length; i++){
+						arrList.push(arr[i]);
+					}
+				}
+				
+				if (arrList && arrList.length > 0) {
+					for (var i=0;i<arrList.length;i++) {
+						var row = arrList[i];
+						var progress = 0;
+						row["isTime"] = 0;
+						
+						if( selector == "#newBid"){
+							row["projecTtype"] = "newBid";
+						}else{
+							row["projecTtype"] = "";
+						}
+
+						if (row["loanState"] == "J" && row["loanBalance"] == 0) {
+							row["loanState"] = "M"
+						}
+						if (row["loanState"] == "J") {
+							row["loanName"] = "投标";
+							if (sucData["serverTime"] < row["releaseDate"] + row["releaseTime"]) {
+								//定时标
+								row["loanName"] = "即将开始";
+								row["timeDesc"] = "等待发布";
+								row["isTime"] = 1;
+								row["startTime"] = strDate2Date(sucData["serverTime"]);
+								row["endTime"] = strDate2Date(row["releaseDate"] + row["releaseTime"]);
+								row["zfsj"] = "!"
+							} else {
+								//3天倒计时
+								row["timeDesc"] = "";
+								var releaseTimeStamp = row["releaseDate"] + row["releaseTime"];
+								row["zfsj"] = "";
+							//	row["zfsj"] = countLeftTime( strDate2Date(releaseTimeStamp) ,3);
+
+							}
+
+						} else if (row["loanState"] == "R") {
+							row["loanName"] = "待还已回收";
+							row["timeDesc"] = "";
+							row["zfsj"] = ""
+						} else if (row["loanState"] == "M") {
+							row["loanName"] = "满标待审";
+							row["timeDesc"] = "满标时间";
+							row["zfsj"] =  formatDateTime(row["lastPayLoanDateTime"])
+						} else if (row["loanState"] == "N") {
+							$("#a_" + row["loanCode"]).hide();
+							row["loanName"] = "出借完成";
+							row["timeDesc"] = "满标时间";
+							if (typeof(row["effectTime"]) == "undefined") {
+								row["zfsj"] = "更新中"
+							} else {
+								/* row["effectTime"] = row["effectDate"] + row["effectTime"]; */
+								row["zfsj"] = formatDateTime(row["lastPayLoanDateTime"])
+							}
+						} else if (row["loanState"] == "O" || row["loanState"] == "P" || row["loanState"] == "Q") {
+							$("#a_" + row["loanCode"]).hide();
+							row["loanName"] = "已完成";
+							row["timeDesc"] = "满标时间";
+							if (typeof(row["effectTime"]) == "undefined") {
+								row["zfsj"] = "更新中"
+							} else {
+								/* row["effectTime"] = row["effectDate"] + row["effectTime"]; */
+								row["zfsj"] = formatDateTime(row["lastPayLoanDateTime"])
+							}
+						} else {
+							row["loanName"] = "其他状态";
+							row["timeDesc"] = "满标时间"
+						}
+						
+						//标题
+						if(row["benefits4new"] > 0){
+							row["loanTitle"] = (row['minLoanAmount'] /100) + '元起投 限额' + (row['maxLoanAmount'] /100) +'元';
+						}else{
+							var typeP=row['productType'];
+							switch(typeP){
+								case 'A':
+									row['loanTitle']='质押宝 ' + row['loanNo'];
+									break;
+								case 'B':
+									row['loanTitle']='车稳盈 ' + row['loanNo'];
+									break;
+								case 'C':
+									row['loanTitle']='房稳赚 ' + row['loanNo'];
+									break;
+								case 'E':
+									row['loanTitle']='易分期 ' + row['loanNo'];
+									break;
+								default:
+									row["loanTitle"] = dealTitle( row["loanTitle"] ); 
+									break;
+							}
+						}
+						
+						
+						//还款方式
+						if (row["refundType"] == "A") {
+							row["refundType"] = "等额本息";
+							row["refundTypeIcon"] = "icon2";
+							row["refundType_row"] = "A";
+						} else if (row["refundType"] == "B") {
+							row["refundType"] = "先息后本";
+							row["refundType_row"] = "B";
+							row["refundTypeIcon"] = "icon3";
+						   
+						}/*else if (row["refundType"] == "C") {
+						 row["refundType"] = "到期还本息";
+						 row["refundTypeIcon"] = "icon4"
+						 }*/
+						
+						
+						
+						
+						
+						/* //兼容奖励年利率
+						if (row["rewardRateByYear"] > 0) {
+							row["rateyear"] = row["rateByYear"] +row["benefits4new"]+row["rewardRateByYear"];//计算利息
+							row["rewardRateByYear"] = parseFloat(row["rewardRateByYear"] / 100);
+							row["rateByYearPlus"] = YRHX.toDecimal2(row["rateByYear"]/10.0/10.0); 
+							//row["rateByYearPlus"] = parseFloat(YRHX.toDecimal2(row["rateByYear"] / 100)) + parseFloat(YRHX.toDecimal2( (row["benefits4new"] + row["rewardRateByYear"]) /100)); 
+							
+						}else if(  row["benefits4new"] > 0){//兼容新手奖励年利率
+							row["rateByYearPlus"] = YRHX.toDecimal2((row["rateByYear"] )  / 100) ;
+							row["rateyear"] = row["rateByYear"] +row["benefits4new"]+row["rewardRateByYear"];//计算利息
+						}else{
+							row["rateByYearPlus"] = YRHX.toDecimal2(row["rateByYear"] / 100);
+							row["rateyear"]=row["rateByYear"]
+						} */
+						
+						row["rateyear"] = row["rateByYear"] +row["benefits4new"]+row["rewardRateByYear"];//计算利息
+						row["rewardRateByYear"] = parseFloat(row["rewardRateByYear"] / 100);
+						row["rateByYearPlus"] = YRHX.toDecimal3(row["rateByYear"]/10.0/10.0); 
+						
+						/* if(parseFloat(row['benefits4new']) !=0 || parseFloat(row['rewardRateByYear'])==0){
+							row["show_state"]='none'
+						} */
+						//项目名称ICON
+						if( row["benefits4new"] > 0 ){
+							row["otherRate"] = row["benefits4new"] / 100
+							row["loanTypeIcon"] = "typeNew";
+						}else if(row["rewardRateByYear"] > 0){
+							row["otherRate"] = row["rewardRateByYear"] 
+							row["loanTypeIcon"] = getLoanType( row["productType"] );
+						}else{
+							row["show_state"]='none'
+							row["loanTypeIcon"] = getLoanType( row["productType"] );
+						}
+						if ("yes" == row["ifShow"]) {
+    						row["firstMonthMini"]="";
+    					} else {
+    						row["firstMonthMini"]="none";
+    					}
+						//完成百分比
+						var tmpAmount = parseFloat(row["loanAmount"]);
+						var tmpBalance = parseFloat(row["loanBalance"]);
+						if (tmpBalance == 0) {
+							row["progress"] = 100
+						} else {
+							if (tmpBalance == tmpAmount) {
+								row["progress"] = "0"
+							} else {
+								row["progress"] = tmpBalance == 0 ? 0 : (tmpBalance / tmpAmount) * 100;
+								row["progress"] = Math.floor(100 - row["progress"])
+							}
+						}
+						if (row["progress"] == "0") {
+							row["Zper"] = "Zper";
+						}
+						row["progress_p"] = (row["progress"] - 1) * 62.93;
+						if(row["loanAmount"]>=1000000){
+							row["loanAmountStr"] = row["loanAmount"] / 1000000;
+							row["unit"]="万";
+						}else{
+							row["loanAmountStr"] = row["loanAmount"] / 100;
+							row["unit"]="元";
+						}
+						row["loanAmount"] = row["loanAmount"] / 1000000;
+						var tmpHtml = html_tab.makeHtml(row);
+						$(selector+" table").find("tbody").append(tmpHtml);
+						 circleProgress.refresh();
+						//绑定状态
+						if (row["loanState"] == "J") {
+
+							if (sucData["serverTime"] < row["releaseDate"] + row["releaseTime"]) {
+								$("#a_" + row["loanCode"]).hide();
+								$("#b_" + row["loanCode"]).addClass("blueBtn").attr("bidtoggle", "0");
+							} else {
+								$("#b_" + row["loanCode"]).addClass("redBtn goVote").attr("bidtoggle", "0");
+							}
+							$("#a_" + row["loanCode"]).attr("loanCode", row["loanCode"]);
+							$("#a_" + row["loanCode"]).attr("restcanvote", parseInt(row["loanBalance"] / 100));
+							$("#b_" + row["loanCode"]).attr("restcanvote", parseInt(row["loanBalance"] / 100));
+							$("#a_" + row["loanCode"]).attr("maxloanamount", row["maxLoanAmount"] / 100);
+							if (YRHX.Cookie("userCode").get()) {
+								$("#b_" + row["loanCode"]).parent().prepend('<div class="tip"><div class="text" style="line-height: 30px;"><p style="margin: 0px 0px 0px 10px;">剩余可投金额：' + YRHX.toDecimal2(row["loanBalance"] / 100, "¥") + '</p><p style="margin: 0px 0px 0px 10px;" class="restMoney">可用余额：' + '</p></div><div class="jt"></div></div>')
+							} else {
+								$("#b_" + row["loanCode"]).parent().prepend('<div class="tip"><div class="text" style="line-height: 30px;"><p style="margin: 0px 0px 0px 10px;">剩余可投金额：' + YRHX.toDecimal2(row["loanBalance"] / 100, "¥") + '</p><p style="margin: 0px 0px 0px 10px;">请<a href="javascript:show_login_dialog()" style="float:none">登录</a>后再进行投标</p></div><div class="jt"></div></div>')
+							}
+						} else if (row["loanState"] == "N") {
+							$("#a_" + row["loanCode"]).hide();
+							$("#b_" + row["loanCode"]).addClass("grayBtn");
+						} else if (row["loanState"] == "M") {
+							$("#a_" + row["loanCode"]).hide();
+							row["timeDesc"] = "满标时间";
+							$("#b_" + row["loanCode"]).addClass("grayBtn");
+
+						} else if (row["loanState"] == "R") {
+							$("#a_" + row["loanCode"]).hide();
+							$("#b_" + row["loanCode"]).addClass("grayBtn");
+						} else if (row["loanState"] == "O" || row["loanState"] == "P" || row["loanState"] == "Q") {
+							$("#a_" + row["loanCode"]).hide();
+							$("#b_" + row["loanCode"]).addClass("grayBtn");
+						} else {
+
+						}
+						
+				   
+					}//END for loop
+				}else {
+					//无数据
+				}
+			   
+                
+					
+                //分页
+                $(selector +" .bidPage").attr({"type":type,"selector":selector}).pagination(sucData["loanInfos"]["pageNumber"], sucData["loanInfos"]["pageSize"], sucData["loanInfos"]["totalRow"], function () {
+                    var reqIndex = $(this).attr("index");
+                    var selector = $(this).parent().attr("selector");
+                    var type = $(this).parent().attr("type");
+                    var minlimit = $(this).parent().attr("minlimit");
+                    var maxlimit = $(this).parent().attr("maxlimit");
+                    var productTypeCode = $(this).parent().attr("producttype");
+                    $.buildPageData(reqIndex || 1, 10, selector, type,minlimit ,maxlimit,productTypeCode);
+                });
+                
+                
+            } ,
+            error: function (data) {
+            }
+        })
+    }
+
+    //债权转让   无需Type字段
+    $.queryLoanTransfer = function ( pageNumber, pageSize ,minLimit ,maxLimit  ,transState ,orderParam ,orderType  ) {
+        	var index = 2;
+	        $('.loan_pro').css('background','url(/portal/images/index/loan_list_bg'+index+'.jpg) repeat-x');
+	        $('.loan_pro_main').css('background','url(/portal/images/index/loan_head'+index+'.png) no-repeat bottom center');
+	        $('.tab-content-list').show();
+        YRHX.ajax({
+            url:"/queryTransferList4JG",
+            data: {
+                "pageNumber": pageNumber || 1,
+                "pageSize": pageSize || 10,
+                "transState":transState
+                
+            },
+            beforeSend:function(){
+            	$(".dataBox").ajaxLoading();
+            },
+            complete :function(){
+            	$(".dataBox").ajaxDone();
+            },
+            success: function (sucData) {
+            	 var debtTransHtml = "<tr class='tr1'><td colspan='6'><a class='p1' href='Z02_1?loanCode=#{loanCode}' title='#{loanTitle}'>#{loanTitle}</a></td></tr>";
+				 debtTransHtml +="<tr class='tr2'>";
+				 /* debtTransHtml +="<td class='first_left'><p class='p2'><span class='lv'>#{transRate}</span>%</p>年化率</td>"; */
+				 debtTransHtml +="<td class='first_left'><p class='p2'><span class='lv'>#{rateByYearStr}%</span></p>年化率</td>"; 
+				 debtTransHtml +="<td><p class='p2'><span class='qx'>#{loanRecyCount}</span>月</p>剩余期限</td>";
+				 debtTransHtml +="<td><p class='p2'><span class='money'>#{leftAmount}</span>元</p>剩余本金</td>";
+				 debtTransHtml +="<td><p class='p2'><span class='money'>#{transAmount}</span>元</p>承接价格</td>";
+				 debtTransHtml +="<td><p class='p2'><span class='money'>#{transFee}</span>元</p>让利金额</td>";
+				 debtTransHtml +="<td><p class='p2'><span class=''>#{nextRecyDay}</span></p>下一回款日</td>";
+/* 				 debtTransHtml += "<td style='padding-right:10px;'>";
+				 debtTransHtml += "<div class='meryItem' style='width: 156px; text-align: right;position: relative;'>";
+				 debtTransHtml +="<div class='suc_tip'>转让人：#{payUserName}<br />承接人：#{gotUserName}<br />承接日期：#{gotDateTime} <div class='trangel_icon'></div></div>"
+				 debtTransHtml +="<button class='#{transStateClass}' area='#{loanArea}' loanCode='#{loanCode}' remind_amount='#{leftAmount}' transfer_fee='#{transFee}' recy_day='#{nextRecyDay}' transfer_name='#{payUserName}' transfer_money='#{transAmount}' transfer_title='#{loanTitle}'  transferCode=#{transCode}>#{transState}</button>";
+				 debtTransHtml +="<div class='clear'></div>"
+				 debtTransHtml +="</div>"
+				 debtTransHtml += "</td>"; */
+	  			 debtTransHtml +="</tr>";
+
+                var dataPath = sucData["list"];
+                $("#debetTrans .debtTrans").find("tbody").html("");
+                if (dataPath && dataPath.length > 0) {
+                    for (var rowsIndex in dataPath) {
+                        var row = dataPath[rowsIndex];
+                        var row = dataPath[rowsIndex];
+                        
+                        if (row["transState"] == "A") {
+                            row["transState"] = "我要承接";
+                            row["timeDes"] = "剩余时间";
+                            row["gotUserNameDes"] = "承接收益";
+                           
+                            row["transStateClass"] = "";
+                            row["gotDateTime"] = countLeftTime( strDate2Date(row["transDate"] + row["transTime"]) ,3);
+                        } else if (row["transState"] == "B") {
+                            row["transState"] = "转让成功";
+                            row["transStateClass"] = "d";
+                            row["timeDes"] = "承接日期";
+                            row["gotUserNameDes"] = "承接人";
+                            row["gotUserName"] = row["gotUserName"];
+                            row["gotDateTime"] = formatDateTime(row["gotDate"], row["gotTime"])
+
+                        }
+                        if( row["transFee"] < 0 ){
+                            row["transFee"] = 0;
+                        }
+                        row["leftAmount"] = YRHX.toDecimal2((row["transAmount"]*1+row["transFee"]*1) / 10.0 / 10.0);
+                        row["transFee"] = YRHX.toDecimal2(row["transFee"] / 10.0 / 10.0);
+                        //标题
+                        
+						var type=row['productType'];
+						switch(type){
+							case 'A':
+								row['loanTitle']='质押宝 ' + row['loanNo'];
+								break;
+							case 'B':
+								row['loanTitle']='车稳盈 ' + row['loanNo'];
+								break;
+							case 'C':
+								row['loanTitle']='房稳赚 ' + row['loanNo'];
+								break;
+							default:
+								row["loanTitle"] = dealTitle( row["loanTitle"] ); 
+								break;
+						}
+                        //还款方式
+                        if (row["refundType"] == "A") {
+                            row["refundType"] = "等额本息";
+                        }else if (row["refundType"] == "B") {
+                            row["refundType"] = "先息后本";
+
+                        }
+                        //row["transRate"] = 2;
+                        row["rateByYear"] = ( row["rateByYear"] + row["rewardRateByYear"] ) / 100;
+                        row["rateByYearStr"] =  row["rateByYear"];
+                        row["transRate"] = row["transRate"] / 100;
+//                      if( row["transRate"] > 0 ){
+//                       	row["rateByYearStr"] =  row["rateByYear"] + "+";
+//                        	row["rateColor"] = "color: #e95144;font-size: 14px;";
+//                        }else{
+                        	row["rateByYearStr"] =  row["rateByYear"];
+                        	row["transRate"] = "";
+                        	row["rateColor"] = "";
+//                        }
+                        if(isNaN(row["amount"])==true){
+                        	row["amount"]=row["amount"];
+                        }else{
+                        	row["amount"] = YRHX.toDecimal2(row["amount"] / 10.0 / 10.0);
+                        }
+                        
+
+                      
+                        row["transAmount"] = YRHX.toDecimal2(row["transAmount"] / 10.0 / 10.0);
+                        row["nextRecyDay"] = row["nextRecyDay"].substr(0, 4) + "-" + row["nextRecyDay"].substr(4, 2) + "-" + row["nextRecyDay"].substr(6, 2);
+
+                        var tmpHtml = debtTransHtml.makeHtml(row);
+                        $("#debetTrans .debtTrans").find("tbody").append(tmpHtml);
+
+                    }//END for loop
+                }else {
+                    //无数据
+                }
+                //分页
+                $("#debetTrans .debtPage").pagination(sucData["pageNumber"], sucData["pageSize"], sucData["totalRow"], function () {
+                    var reqIndex = $(this).attr("index");
+                    var minlimit = $(this).parent().attr("minlimit");
+                    var maxlimit = $(this).parent().attr("maxlimit");
+                    var transState = $(this).parent().attr("transState");
+                    var orderParam = $(this).parent().attr("orderParam");
+                    var orderType = $(this).parent().attr("orderType");
+                    window.requestIndex = reqIndex;
+                    $.queryLoanTransfer(reqIndex || 1, 10, minlimit ,maxlimit,transState,orderParam,orderType);
+                });
+                
+	            },
+	            error: function (errData) {
+
+                }
+            })
+    };
+  	//按投资产品类型查询
+    $("#inverstPro #productType a").on("click",function(){
+        $(this).siblings().removeClass("select_cur");
+        $(this).addClass("select_cur");
+        var minlimit = $("#loanLimit .select_cur").attr("minlimit");
+        var maxlimit = $("#loanLimit .select_cur").attr("maxlimit");
+		var productType = $(this).attr("producttype");
+
+        $.buildPageData(1, 10,"#inverstPro",2,minlimit,maxlimit,productType);
+        $("#inverstPro .bidPage").attr({
+            "minlimit":	minlimit||"",
+            "maxlimit":	maxlimit||"",
+            "productType":productType||""
+        })
+
+    });
+    //按投资项目期限查询
+    $("#inverstPro #loanLimit a").on("click",function(){
+        $(this).siblings().removeClass("select_cur");
+        $(this).addClass("select_cur");
+        var minlimit = $(this).attr("minlimit");
+        var maxlimit = $(this).attr("maxlimit");
+        var productType = $("#productType .select_cur").attr("producttype");
+
+        $.buildPageData(1, 10,"#inverstPro",2,minlimit,maxlimit,productType);
+        $("#inverstPro .bidPage").attr({
+            "minlimit":	minlimit||"",
+            "maxlimit":	maxlimit||""
+        })
+
+    });
+    //债权装让 按投资项目期限查询
+    $("#debetTrans .point_word a").on("click",function(){
+    	var that=$(this);
+        if(that.hasClass('other')){
+        	if(that.hasClass('select_cur')){
+           		if(that.attr("orderType") == "DESC"){
+         			$("#orderParam .select_cur").attr("orderType","ASC");
+					that.find('i').removeClass('selected');
+                }else if( that.attr("orderType") == "ASC" ){
+                	$("#orderParam .select_cur").attr("orderType","DESC");
+                	that.find('i').addClass('selected');
+                }
+        	}else{
+        		that.addClass('select_cur').siblings().removeClass('select_cur');
+     			$('#orderParam').find('i').removeClass('selected');
+        		that.find('i').addClass('selected');
+        	}
+        }else{
+        	 $(this).siblings().removeClass("select_cur");
+             $(this).addClass("select_cur"); 
+        }
+        var minlimit = $("#debetLimit .select_cur").attr("minlimit") || "";
+        var maxlimit = $("#debetLimit .select_cur").attr("maxlimit") || "";
+        var transState  = $("#transState .select_cur").attr("transState") || "";
+        var orderParam   = $("#orderParam .select_cur").attr("orderParam") || "";
+        var orderType = $("#orderParam .select_cur").attr("orderType") || "";
+        
+        $.queryLoanTransfer(1, 10,minlimit,maxlimit,transState ,orderParam  ,orderType);
+        $("#debetTrans .debtPage").attr({
+            "minlimit":	minlimit,
+            "maxlimit":	maxlimit,
+            "transState" : transState,
+            "orderParam" : orderParam,  
+            "orderType":orderType
+        })
+
+    });
+
+
+    //投资项目（默认）
+//    $.buildPageData(1, 10,"#inverstPro",2); 
+	$.queryLoanTransfer(1,10,"","","A","DESC","transDateTime");
+    //新手专享
+    $('#newExclusTab').click(function(){
+        $.buildPageData(1, 10,"#newBid",1);
+    });
+    //债权转让
+    $("#debtTransTab").click(function () {
+    	 var minlimit = $(".debtPage").attr("minlimit");
+         var maxlimit = $(".debtPage").attr("maxlimit");
+        /*  var transState = $(".debtPage").attr("transState"); */
+         var transState ='A';
+         var orderParam = $(".debtPage").attr("orderParam");
+         var orderType = $(".debtPage").attr("orderType");
+         window.requestIndex = window.requestIndex ||1 ;
+       
+         $.queryLoanTransfer(window.requestIndex || 1, 10, minlimit ,maxlimit,transState,orderParam,orderType);
+    });
+
+    //发标预告
+    $.queryNotice();
+
+    //发标预告
+    $(".announce").hover(function(){
+        $(".announce ul").slideDown();
+        $(this).css('border','1px solid #ececec');
+        $('.announce p').html('发标预告：');
+    },function(){
+        $(".announce ul").hide();
+        $(this).css('border','1px solid #fff');
+        var title=$('.announce p').attr('title');
+        $('.announce p').html('发标预告：' + title);
+    })
+
+    var navTab = YRHX.queryString("navTab");
+    if ( navTab && navTab >= 0 ) {
+        $('.loan_tab_main .menu li').eq( navTab ).click();      
+    }
+    
+    
+    var this_amount=$('.this_amount'),
+	    this_income=$('.this_income'),
+	 	cash=0,
+	 	final_amount=$('.coupon_foot font'),
+		item=$('.coupon_list'),
+		cash_ele=$('.coupon_selected');
+        vip_cash_ele=$('.vip_coupon_selected');
+	 var loan_amount=0;
+	 var t_code='';
+  //投标btn
+  var thisloanmonth;
+  var thisbidAmount;
+  var thisincome;
+  var thisrate;
+  var thisrefundType;
+  var projecttype;
+  var thisProductType;
+    $("body").delegate(".goVote","click",function () {
+    	var that = $(this);
+    	projecttype=that.attr('projecttype');
+    	thisProductType=that.attr('productType');
+    	var bidAmount = $(that).prev().val();
+    	if(parseInt(bidAmount)>parseInt(that.attr("restcanvote"))){
+    	 $(that).popUp("err","投标金额必须小于标的剩余可投金额");
+	     return false;
+    	}
+    	if(parseInt(bidAmount)%100>0&&thisProductType=="E"){
+    	 $(that).popUp("err","投标金额必须为100的整数倍");
+	     return false;
+    	}
+    	/* YRHX.ajax({
+		url:'/isLogin',
+		success:function(sucdata){
+			if (that.attr("bidtoggle") == "0") {
+	            if (YRHX.Cookie("userCode").get()) {
+	                
+	                var loanState = that.attr("loanType");
+	                if (loanState == "J") {
+	                    var loanCode = that.attr("lid");
+	                    var bidAmount = $(that).prev().val();
+	                    if (bidAmount == "" || bidAmount <= 0 ) {
+	                        $(that.prev()).popUp("err","投标金额必须为大于等于50的整数");
+	                        return false
+	                    }
+	                    if (bidAmount.indexOf(".") >= 0) {
+	                        $(that).popUp("err","投标金额必须为大于等于50的整数");
+	                        return false
+	                    }
+	                    if (isNaN(bidAmount) == true) {
+	                        $("#a_" + loanCode).val("0" );
+	                        $(that).popUp("popTipErr", "投标金额必须为大于等于50的整数");
+	                        return false;
+	                    }
+	                    if( that.attr("restcanvote") / 100 >= 50 ){
+	                    	 if (bidAmount < 50) {
+	                    		 $(that).popUp("popTipErr", "投标金额必须为大于等于50的整数");
+	                             return false;
+	                         }
+	                    }
+	                    
+	                   init_yinying();
+		   			   $('body,html').css('overflow', 'hidden');
+		   			   to_center($('#yinying').show());
+		   			   to_center($('.couponDialog').show());
+		   			   this_amount.html(bidAmount);
+		   			   $('.coupon_confirm').attr('lid',loanCode);
+		   			   $('.coupon_confirm').attr('projecttype',$(this).attr('projecttype')); 
+		   			  //计算收益
+		   			   var rateYear=that.attr('rateyear');
+		   			   thisrate=parseFloat(rateYear);
+		   			   var time=that.attr('time');
+		   			   var loanamount=that.attr('loanamount');
+		   			   
+		   			   var xiMonth =  rateYear / 1200 * (loanamount / 100 ); 
+		   			   var benxi = loanamount*1+xiMonth;
+		   			   
+			   			if( isNaN( bidAmount )  == true ){
+			   				that.val( 0 );
+			   				return false;
+			   			}
+			   			thisrefundType=that.attr("refundType_row");
+			   			
+			   			var incomePer =getincomePer(rateYear,bidAmount,time,thisrefundType);
+			   			this_income.text( incomePer  );
+			   			thisincome=incomePer;
+			   			
+		   			   //现金券的默认显示
+		   			   thisloanmonth=that.attr("loanMonth");
+		   			   thisbidAmount=bidAmount;
+		   			   ticket(bidAmount,that.attr("loanMonth"),"A");
+		   			 	//按钮锁
+	                    that.attr("bidToggle", "1");
+	                    
+	                }
+	            } else {
+	                show_login_dialog();
+	            }
+	        }
+		},
+		error:function(sucdata){
+			if(confirm("请先完善资料后进行投标！是否前往完善？")){
+				window.location.href="/C01";
+			}
+		}
+	}) */
+	
+		if (that.attr("bidtoggle") == "0") {
+            if (YRHX.Cookie("userCode").get()) {
+             if(YRHX.Cookie("loginId").get()){ 
+                var loanState = that.attr("loanType");
+                if (loanState == "J") {
+                    var loanCode = that.attr("lid");
+                    var bidAmount = $(that).prev().val();
+                    if (bidAmount == "" || bidAmount <= 0 ) {
+                        $(that.prev()).popUp("err","投标金额必须为大于等于50的整数");
+                        return false
+                    }
+                    if (bidAmount.indexOf(".") >= 0) {
+                        $(that).popUp("err","投标金额必须为大于等于50的整数");
+                        return false
+                    }
+                    if (isNaN(bidAmount) == true) {
+                        $("#a_" + loanCode).val("0" );
+                        $(that).popUp("popTipErr", "投标金额必须为大于等于50的整数");
+                        return false;
+                    }
+                    if( that.attr("restcanvote") / 100 >= 50 ){
+                    	 if (bidAmount < 50) {
+                    		 $(that).popUp("popTipErr", "投标金额必须为大于等于50的整数");
+                             return false;
+                         }
+                    }
+                    
+                   init_yinying();
+	   			   $('body,html').css('overflow', 'hidden');
+	   			   to_center($('#yinying').show());
+	   			   to_center($('.couponDialog').show());
+	   			   this_amount.html(bidAmount);
+	   			   $('.coupon_confirm').attr('lid',loanCode);
+	   			   $('.coupon_confirm').attr('projecttype',$(this).attr('projecttype')); 
+	   			  //计算收益
+	   			   var rateYear=that.attr('rateyear');
+	   			   thisrate=parseFloat(rateYear);
+	   			   var time=that.attr('time');
+	   			   var loanamount=that.attr('loanamount');
+	   			   
+	   			   var xiMonth =  rateYear / 1200 * (loanamount / 100 ); 
+	   			   var benxi = loanamount*1+xiMonth;
+	   			   
+		   			if( isNaN( bidAmount )  == true ){
+		   				that.val( 0 );
+		   				return false;
+		   			}
+		   			thisrefundType=that.attr("refundType_row");
+		   			
+		   			var incomePer =getincomePer(rateYear,bidAmount,time,thisrefundType);
+		   			this_income.text( incomePer  );
+		   			thisincome=incomePer;
+		   			
+	   			   //现金券的默认显示
+	   			   thisloanmonth=that.attr("loanMonth");
+	   			   thisbidAmount=bidAmount;
+	   			   ticket(bidAmount,that.attr("loanMonth"),"A");
+	   			 	//按钮锁
+                    that.attr("bidToggle", "1");
+                }
+                $(".cg").hide();
+              }else{
+         		 /* if(confirm("请先完善资料后进行投标！是否前往完善？")){
+         			window.location.href="/C01";
+         		 } */
+            	  $(".cg").show();
+         	   }
+                
+            } else {
+                show_login_dialog();
+            }
+        }
+	
+   		
+    });
+    
+    $("#closeBtn").click(function(){
+		$(".cg").hide();
+	});
+  	
+	function getincomePer(rateYear,bidAmount,time,refundType_row){
+		var incomePer ;
+		if( refundType_row == "A"){
+		   	incomePer =  Math.floor ( YRHX.licai( bidAmount * 100 ,rateYear , time).denge4year()[0]["benxi"]*  time - bidAmount * 100) / 100 ;
+		}else if(refundType_row == "B"){
+		   	//此标投一元钱总收益            按月付息，到期还本
+		   	incomePer = Math.floor(  parseFloat(rateYear/12/10.0/10.0/10.0/10.0) * time * bidAmount * 100 ) / 100;
+		} 
+		return incomePer;
+	}
+    $(".tip").mouseleave(function(){
+        if($('.bidMoney:focus').length == 0){
+            $(this).hide();
+        }
+    });
+    
+
+    //投资金额输入框事件
+    $("body").delegate(".bidMoney","focus",function () {
+        var that = $(this);
+        $(that).prev().show();
+        $(that).blur(function(){
+            if($('.tip:hover').length > 0){
+                return;
+            }else{
+                $(that).prev().hide();
+            }
+        });
+        if (YRHX.Cookie("userCode").get()) {
+            if (that.attr("toggle") == 0) {
+                YRHX.ajax({
+                    url: CONFIG.getRequestURI("queryBidding4User"),
+                    data: {
+                        "loanCode": that.attr("loanCode")
+                    },
+                    success: function (sucData) {
+                        that.attr("toggle", "1");
+                        that.attr("avBalance", parseInt(sucData.avBalance / 100));
+                        var myMaxloanAmountEle = parseInt(sucData["totalAmount"] / 100); //投资人此标最大投标金额
+                        var maxLoanAmountEle = that.attr("maxloanamount");//最大限制投标金额
+                        var loanBalanceEle = that.attr("restcanvote");	//标书剩余金额
+                        var myAvBalanceEle = that.attr("avbalance");	//投资人可用余额
+                        var leftLoanAmountEle = Math.abs(maxLoanAmountEle - myMaxloanAmountEle);//投资人剩余投资金额
+                        var uCanVote = 0;
+	                    if (leftLoanAmountEle - loanBalanceEle >= 0) {
+                            if (loanBalanceEle - myAvBalanceEle > 0) {
+                                uCanVote = myAvBalanceEle;
+                            } else {
+                                uCanVote = loanBalanceEle;
+                            }
+                        } else {
+                            if (leftLoanAmountEle - myAvBalanceEle > 0) {
+                                uCanVote = myAvBalanceEle;
+                            } else {
+                                uCanVote = leftLoanAmountEle;
+                            }
+                        }
+
+                        that.val(uCanVote);
+                        $(".restMoney").each(function () {
+                            $(this).text("帐户可用余额：" + YRHX.toDecimal2(sucData.avBalance / 100, "¥"))
+                        })
+                    }, error: function (data) {
+                    }
+                })
+            }
+        }
+    });
+  //查询转让债权
+    $("body").delegate(".meryItem button","mouseenter",function () {
+	  if($(this).hasClass('d')){
+		  $(this).prev().show();
+	  }
+	});
+   $("body").delegate(".meryItem button","mouseleave",function () {
+	   if($(this).hasClass('d')){
+		   $('.suc_tip').hide();
+		}
+	   
+   });
+
+
+  
+  	//承接债权
+     $("body").delegate(".meryItem button","click",function () {
+     	/* if(!$(this).hasClass('d')){
+     		if (YRHX.Cookie("userCode").get()) {
+     			window.location.href = CONFIG.getRequestURI( "carryOnTransfer" )+"?transferCode="+$(this).attr('transfercode');
+     		}else{
+     			show_login_dialog();
+     		}
+     	} */
+    	 
+		if(!$(this).hasClass('d')){
+			if (YRHX.Cookie("userCode").get()) {
+				$("#dialogTitle").text( $(this).attr('transfer_title') );//标题
+				$("#dialogSubj").text( $(this).attr('remind_amount') );//剩余本金
+				$("#dialogCjjg").text( $(this).attr('transfer_money') );//承接价格
+				$("#dialogCjsy").text( $(this).attr('transfer_fee') );//承接收益
+				$("#dialogXyhkr").text( $(this).attr('recy_day') );//下一回款日
+				$("#dialogZrr").text( $(this).attr('transfer_name') );//转让人
+
+				$(".submit_btn").attr("transcode",$(this).attr('transfercode'));
+				
+				init_yinying();
+			    $('body,html').css('overflow', 'hidden');
+			    to_center($('#yinying').show());
+			    to_center($('#transferDialog').show());
+			    
+			    //$("#captchaImg").attr("src","/captcha4sys?v=" + Math.random());
+		
+		    }else{
+		   		show_login_dialog();
+			}
+		}
+	}); 
+  
+  	function closeDialog(){
+  		$("#transferDialog").hide();
+     	$("#yinying").hide();
+     	$("html").css({"overflow":"auto"});
+  	}
+	//承接债权关闭模态框
+   	$("body").delegate(".dialogClose","click",function(){
+     	//window.location.href = "/Z02?navTab=2";
+     	closeDialog();
+     }); 
+	
+ 	//承接债权
+    /* $("body").delegate(".submit_btn","click",function(){
+    	 if(!($(".submit_btn").hasClass("grayBtn") )){
+    		
+	    	var payPwd = $("#payPwd").val();
+	        var msgCode =  $("#mesCode").val();
+	        if( payPwd == ""){
+	            $.popTips("popTipErr","请输入支付密码",function(){
+	                $("#payPwd").focus();
+	            }) ;
+	            return false;
+	        }
+	        if( msgCode == "" ){
+	        	 $.popTips("popTipErr","请输入验证码",function(){
+	                 $("#msgCode").focus();
+	             }) ;
+	        	 return false;
+	        }
+	        var startTime='';
+	        $(".submit_btn").addClass("grayBtn");
+	        YRHX.ajax({
+	            url : CONFIG.getRequestURI( "carryOnTransfer" ),
+	            data : {
+	                transferCode : $(".submit_btn").attr("transcode"),
+	                payPwd : payPwd,
+	                cv : msgCode
+	            },
+	            success : function( sucData ){
+	            	$(".submit_btn").removeClass("grayBtn");
+	                $.popTips("popTipSuc","承接成功",function(){
+	                	//window.location.href = "/Z02?navTab=2"
+                		 closeDialog();
+	                     var minlimit = $(".debtPage").attr("minlimit");
+	                     var maxlimit = $(".debtPage").attr("maxlimit");
+	                     var transState = $(".debtPage").attr("transState");
+	                     var orderParam = $(".debtPage").attr("orderParam");
+	                     var orderType = $(".debtPage").attr("orderType");
+	                     window.requestIndex = window.requestIndex ||1 ;
+	                     $.queryLoanTransfer(window.requestIndex || 1, 10, minlimit ,maxlimit,transState,orderParam,orderType);
+	                }) ;
+	            },
+	            error : function( errData ) {
+	            	$(".submit_btn").removeClass("grayBtn");
+	               	$.popTips("popTipErr",errData.return_info,function(){
+	               		//window.location.href = "/Z02?navTab=2"
+	               	 	$("#captchaImg").attr("src","/captcha4sys?v=" + Math.random());
+	                   }) ;
+	            }
+	        }); 
+        
+    	}
+		
+		 
+        
+    }); */
+  	$("body").delegate(".submit_btn","click",function(){
+  		if (YRHX.Cookie("userCode").get()) {
+     			window.location.href = CONFIG.getRequestURI( "carryOnTransfer" )+"?transferCode="+$(this).attr('transcode');
+     		}else{
+     			show_login_dialog();
+     		}
+  	});
+  
+	//发送验证码
+	$("#captchaImg").click(function(){
+		$(this).attr("src","/captcha4sys?v=" + Math.random());
+	})
+	
+	$('.sendMsgBtn').click(function(){
+		
+		$(".sendMsgBtn").sendMsg({
+			"msgCounter" : ".msgCounter",
+			"msgTips"    : ".msgTips",
+			"type"       : "3",
+			"urPhone"    : $(".uPhone").val(),
+			"url"		 : "sendMsgMac"
+		});
+		
+	});
+	
+	//确认投标
+	$('.coupon_confirm').click(function(){
+		var that=$(this);
+		var loanCode=$(this).attr('lid');
+		var bidAmount=parseFloat(this_amount.html());
+		$(".coupon_bid").hide();
+		$(".coupon_mes").hide();
+		$(".coupon_foot").hide();
+		var html="<div style='text-align:center;color:red;margin-top:110px; font-size:26px;'><img src='/portal/images/prompt_yes.png' style='display:table; margin:0 auto -22px;' /><br>订单提交中...</div>"
+		$(".couponDialog").append(html);
+		if (!flag) {
+		flag = true;
+		YRHX.ajax({
+	            url: CONFIG.getRequestURI("bidding"),
+	            data: {loanCode: loanCode, payAmount: bidAmount * 100,ticket:t_code},
+	            success: function (sucData) {
+	            	window.location.href="/bidding?loanCode="+loanCode+"&payAmount="+bidAmount * 100+"&ticket="+t_code+"&orderId="+sucData, "_blank";
+	            },
+	            error: function (data) {
+	            $(".couponDialog").hide();
+	            $(".yinying").hide();
+	            $.popTips("popTipErr", data.return_info );
+	            if(data.return_code=="F1"){
+	            setTimeout("window.location.href ='/assessment'",2000);
+	            }else{
+	           	setTimeout("window.location.href ='/Z02?navTab=1'",2000);
+	            }
+	          
+	            }
+	        });
+			
+		}
+	
+		
+	});
+	//取消投标
+
+	$('.coupon_cancle,.couponDialog .del,.couponDialog .next_close').click(function(){
+
+		if( $('.coupon_confirm').attr('projecttype') == "newBid"){
+            window.location.href = "/Z02?navTab=0"
+        }else{
+            window.location.href = "/Z02?navTab=1";
+        }
+	});
+	//代金券
+	var coupon_num;
+	//用户现金券的状态
+	function ticket(bidAmount,loanMonth,type){
+		  YRHX.ajax({
+             url: CONFIG.getRequestURI("queryTickets4User"),
+             data:{pageNumber:1,pageSize:30,tstate:'A',ttype:type,loanMonth:loanMonth},
+             success: function (sucData) {
+             $(".user-quan").show();
+			 $(".coupon_list ul").html("");
+             $('.icon_list').html("");
+             ratevip = sucData["rewardInterest"];//会员自动加息利率
+             var first_ticket=sucData["list"];
+             var sum=first_ticket.length;
+             var arrNo=[];
+             if(thisProductType=='E'&&type=="A"){
+             	first_ticket={};
+             	sum=0;
+             }
+             //判断是否有加息券 
+             if((first_ticket && sum >0)||type=="D"){
+             	if(type=="D"){
+             		var ticketHtml="<li class='#{disable}' type='#{ttype}'>";
+             		ticketHtml+="<div class='coupon_serve' code='#{tcode}'>";
+             		ticketHtml+="<div>剩余额度</div>";
+             		ticketHtml+="<p><span>#{examount}</span></p>";
+             		ticketHtml+="<div class='date'>#{expDate}到期</div>";
+             		ticketHtml+="</div>";
+             		ticketHtml+="</li>";
+             		$('.coupon_none').hide();
+               		$('.coupon_none2').hide();
+               		$('.coupon_detail').show();
+               		$('.vip_coupon_selected').hide();
+             		coupon_num=0;
+             		$('.coupon_iconl,.coupon_iconr').hide();
+             		$('.coupon_list ul').css('width',"0px");
+             		var row=first_ticket[0];
+             		if(bidAmount*100>row["examount"]){
+             		row["disable"]="disable";
+             		}
+             		row["examount"]=row["examount"]/100;
+             		var noHtml=ticketHtml.makeHtml(row);
+             		arrNo.push(noHtml);
+             }else{
+//             	var haveratetickets=sucData["haveratetickets"];
+            	var ticketHtml="<li class='#{disable}' type='#{ttype}'>";
+             	ticketHtml+="<div class='coupon_serve' code='#{tCode}'>";
+             	ticketHtml+="<p><span>#{amount}</span></p>";
+             	ticketHtml+="<font>投资<s>#{depict}</s>可使用</font>";
+             	ticketHtml+="<div>可投<s>#{loanMonth}</s>月标</div>";
+             	ticketHtml+="<div class='date'>#{expDate}到期</div>";
+             	ticketHtml+="</div>";
+             	ticketHtml+="</li>";
+             		$('.coupon_none').hide();
+             		$('.coupon_none2').hide();
+             		$('.coupon_detail').show();
+             		$('.vip_coupon_selected').hide();
+             		coupon_num=Math.ceil(sum / 3);
+             		if(coupon_num < 2){
+             			$('.coupon_iconl,.coupon_iconr').hide();
+             		}else{
+           				$('.coupon_iconl,.coupon_iconr').show();
+           			}
+             		var coupon_width=coupon_num * 484 + "px"
+             		$('.coupon_list ul').css('width',coupon_width);
+             		
+             		for(var i = 0; i < first_ticket.length; i++){
+             			var row=first_ticket[i];
+             			var limit=row["useEx"];
+             			var limitData=JSON.parse(limit);
+             			row["amount"]="￥"+row["amount"] /100;
+             			if(row["ttype"]=="C"){
+             			row["amount"]="+"+row["rate"] /100+"%";
+             			}
+						if(row["ttype"]=="A"){
+             			row["depict"]=limitData.amount / 100+"以上";
+						}else if(row["ttype"]=="C"){
+						if(limitData.amount==0){
+						row["depict"]="任意金额";
+						}else{
+						row["depict"]=limitData.amount / 100+"以内";
+						}
+						}
+						ticketHtml.replace("#{depict}", row["depict"]);
+             			row["expDate"] = row["expDate"].dateformat();
+             			if(row["loanMonth"]==null||row["loanMonth"]==""||row["loanMonth"]=="0"){
+        					row["loanMonth"]="任意";
+        				}else{
+        					row["loanMonth"]=row["loanMonth"].replace(/-/g,",");
+        				}
+        				if(row["ttype"]=="A"){
+        				if(bidAmount > limitData.amount / 100 - 1){
+               				var tmpHtml=ticketHtml.makeHtml(row);
+               				$(".coupon_list ul").append(tmpHtml)
+               			}else{
+             				row["disable"]="disable";
+             				var noHtml=ticketHtml.makeHtml(row);
+             				arrNo.push(noHtml);
+             			}
+        				}else if(row["ttype"]=="C"){
+        					var rewardrateexamount=limitData.amount / 100;
+        				if(rewardrateexamount==0){
+        					var tmpHtml=ticketHtml.makeHtml(row);
+               				$(".coupon_list ul").append(tmpHtml)
+        				}else if(rewardrateexamount>0){
+        					if(bidAmount<rewardrateexamount+1){
+        					var tmpHtml=ticketHtml.makeHtml(row);
+               				$(".coupon_list ul").append(tmpHtml)
+        					}else{
+        					row["disable"]="disable";
+             				var noHtml=ticketHtml.makeHtml(row);
+             				arrNo.push(noHtml);
+        					}
+        				}
+        				}
+             		} 
+             	}
+             		for(var i=0;i<arrNo.length;i++){
+             			$(".coupon_list ul").append(arrNo[i]);
+             		} 
+             		
+             		//图标
+             		if(coupon_num >= 1){
+             			for(var i = 0; i < coupon_num; i++){
+             				var iconHtml="<b></b>";
+             				$('.icon_list').append(iconHtml);
+             			}
+             			var icon_width=$('.icon_list').width();
+                 		var icon_left=(484 - icon_width) / 2 +"px";
+                 		$('.icon_list').css('left',icon_left); 
+             		}
+             		if(coupon_num > 1){
+             			$('.coupon_iconr').addClass('more');
+             		}
+             		$('.icon_list').find('b').eq(0).addClass('cur');
+             		//现金券的默认选择
+             		 $('.coupon_list li').each(function(){
+               			var that=$(this);
+             			if(!that.hasClass('disable')){
+             				cash_ele.html("投资成功可享受会员 加息<font>"+ratevip+"</font>%");
+							var rate=thisrate+ratevip*100;
+       		    			var incomePer=getincomePer(rate,thisbidAmount,thisloanmonth,thisrefundType);
+       		    			this_income.text(incomePer);
+             				/* that.addClass('cur');
+             				
+       		    			cash=that.find('p span').html();
+       		    			var finalA=parseFloat(bidAmount);
+       		    			if(that.attr("type")=="A"){
+       		    			cash=cash.substring(1,cash.length);
+       		    			cash_ele.html("投资成功可抵扣现金<font>"+cash+"</font>元");
+	               	     	finalA-=parseFloat(cash);
+	               	     	this_income.text(thisincome);
+	               	     	}else if(that.attr("type")=="C"){
+       		    			cash=cash.substring(1,cash.length-1);
+       		    			cash_ele.html("投资成功可加息<font>"+cash+"</font>%");
+       		    			var rate=thisrate+cash*100;
+       		    			var incomePer=getincomePer(rate,thisbidAmount,thisloanmonth,thisrefundType);
+       		    			this_income.text(incomePer);
+       		    			}else if(that.attr("type")=="D"){
+       		    			cash_ele.html("投资成功可加息<font>"+1+"</font>%");
+       		    			var rate=thisrate+1*100;
+       		    			var incomePer=getincomePer(rate,thisbidAmount,thisloanmonth,thisrefundType);
+       		    			this_income.text(incomePer);
+       		    			};*/
+       		    			var finalA=parseFloat(bidAmount);
+	                   		final_amount.text(finalA);
+               	       		/* t_code=that.find('.coupon_serve').attr('code'); */
+	                   		return false;
+             			}else{
+             				if(that.attr("type")=="A"){
+								/* cash_ele.html("投资成功可抵扣现金<font>0</font>元"); */
+								cash_ele.html("投资成功可享受会员 加息<font>"+ratevip+"</font>%");
+								var rate=thisrate+ratevip*100;
+	       		    			var incomePer=getincomePer(rate,thisbidAmount,thisloanmonth,thisrefundType);
+	       		    			this_income.text(incomePer);
+								}else if(that.attr("type")=="C"||that.attr("type")=="D"){
+								/* cash_ele.html("投资成功可加息<font>0</font>%"); */
+									cash_ele.html("投资成功可享受会员 加息<font>"+ratevip+"</font>%");
+									var rate=thisrate+ratevip*100;
+		       		    			var incomePer=getincomePer(rate,thisbidAmount,thisloanmonth,thisrefundType);
+		       		    			this_income.text(incomePer);
+								}
+       		    				final_amount.text(bidAmount);
+             			}
+             		}); 
+        		}else{
+        			if(type=="A"){
+        			$('.coupon_none').show();
+        			$('.coupon_none2').hide();
+        			
+        			vip_cash_ele.html("投资成功可享受会员 加息<font>"+ratevip+"</font>%");
+        			var rate=thisrate+ratevip*100;
+		    		var incomePer=getincomePer(rate,thisbidAmount,thisloanmonth,thisrefundType);
+		    		this_income.text(incomePer);
+        			}else if(type=="C"){
+        			$('.coupon_none').hide();
+        			$('.coupon_none2').show();
+        			
+        			vip_cash_ele.html("投资成功可享受会员 加息<font>"+ratevip+"</font>%");
+        			var rate=thisrate+ratevip*100;
+		    		var incomePer=getincomePer(rate,thisbidAmount,thisloanmonth,thisrefundType);
+		    		this_income.text(incomePer);
+        			}
+             		$('.coupon_detail').hide();
+             		$('.vip_coupon_selected').show();
+             		$('.coupon_list ul').html('');
+             		this_amount.html(bidAmount);
+             		final_amount.html(bidAmount);
+             	}
+             	if(projecttype=="newBid"){
+            		$(".user-quan").hide();
+            	}else{
+            		$(".user-quan").show();
+           		 }
+			}
+         });
+	}
+	$('#usable').click(function (){
+		var bidAmount=thisbidAmount;
+		var loanMonth=thisloanmonth;
+		var that=$(this);
+		t_code="";
+		$('#usable2').removeClass("act");
+		$('#usable3').removeClass("act");
+		that.addClass("act");
+		$('.remind').hide();
+		ticket(bidAmount,loanMonth,"A");
+	});
+	$('#usable2').click(function (){
+		var bidAmount=thisbidAmount;
+		var loanMonth=thisloanmonth;
+		var that=$(this);
+		t_code="";
+		$('#usable').removeClass("act");
+		$('#usable3').removeClass("act");
+		that.addClass("act");
+		$('.remind').hide();
+		ticket(bidAmount,loanMonth,"C");
+	});
+	$('#usable3').click(function (){
+		var bidAmount=thisbidAmount;
+		var loanMonth=thisloanmonth;
+		var that=$(this);
+		t_code="";
+		$('#usable').removeClass("act");
+		$('#usable2').removeClass("act");
+		that.addClass("act");
+		$('.remind').show();
+		ticket(bidAmount,loanMonth,"D");
+	});
+	//选择现金券
+	$('body').delegate(".coupon_list ul li","click",function(){
+		var that=$(this);	
+		if(that.hasClass('disable')){
+			return false;
+		}else{
+			var use_cash=$(this).find('p span').html();
+			if($(this).hasClass('cur')){
+				$(this).removeClass('cur');
+				final_amount.text(this_amount.html());
+				this_income.text(thisincome);
+				if(that.attr("type")=="A"){
+				/* cash_ele.html("投资成功可抵扣现金<font>0</font>元"); */
+				cash_ele.html("投资成功可享受会员 加息<font>"+ratevip+"</font>%");
+				var rate=thisrate+ratevip*100;
+	    		var incomePer=getincomePer(rate,thisbidAmount,thisloanmonth,thisrefundType);
+	    		this_income.text(incomePer);
+				}else if(that.attr("type")=="C"||that.attr("type")=="D"){
+				/* cash_ele.html("投资成功可加息<font>0</font>%"); */
+				cash_ele.html("投资成功可享受会员 加息<font>"+ratevip+"</font>%");
+				var rate=thisrate+ratevip*100;
+	    		var incomePer=getincomePer(rate,thisbidAmount,thisloanmonth,thisrefundType);
+	    		this_income.text(incomePer);
+				}
+				t_code="";
+			}else{
+				$(this).addClass('cur').siblings().removeClass('cur');
+				t_code=$(this).find('.coupon_serve').attr('code');
+				cash=$(this).find('p span').html();
+				if(that.attr("type")=="A"){
+       		    	cash=cash.substring(1,cash.length);
+       		    	cash_ele.html("投资成功可抵扣现金<font>"+cash+"</font>元");
+					var confirm_amount=parseFloat($('.this_amount').html())-parseFloat(cash);
+					final_amount.text(confirm_amount);
+					this_income.text(thisincome);
+       		    }else if(that.attr("type")=="C"){
+       		    	cash=cash.substring(1,cash.length-1);
+       		    	cash_ele.html("投资成功可加息<font>"+cash+"</font>%");
+       		    	var rate=thisrate+cash*100;
+       		    	var incomePer=getincomePer(rate,thisbidAmount,thisloanmonth,thisrefundType);
+       		    	this_income.text(incomePer);
+       		    }else if(that.attr("type")=="D"){
+       		    	cash_ele.html("投资成功可加息<font>"+1+"</font>%");
+       		    	var rate=thisrate+1*100;
+       		    	var incomePer=getincomePer(rate,thisbidAmount,thisloanmonth,thisrefundType);
+       		    	this_income.text(incomePer);
+       		    };
+			}
+			
+		}
+	});
+	//代金券切换
+	$('.coupon_iconl').click(function(){
+		move(0,'.coupon_list',484,500);	
+	});
+	$('.coupon_iconr').click(function(){
+		move(1,'.coupon_list',484,500);	
+	});
+	var icon_index=0;
+	function move(index,hall,width,speed){//index(左移还是右移)，hall(scrolleft),inner(容器),img(单个的个数),width(外层的宽度),
+		var hall=$(hall);
+		var icon=$(icon);
+		var left = hall.scrollLeft();
+		var max = width * (coupon_num-1);
+		if(index == 0){
+			if(!hall.is(':animated')){
+				if(left == 0){
+					return false;
+				}else{
+					icon_index--;
+					$('.coupon_iconr').removeClass('more').addClass('more');
+					if(icon_index ==0){
+						$('.coupon_iconl').removeClass('more');
+					}else{
+						$('.coupon_iconl').removeClass('more').addClass('more');
+					}
+					hall.animate({scrollLeft:(left - width) + "px"},speed);
+					$('.icon_list b').eq(icon_index).addClass('cur').siblings().removeClass('cur');
+				}
+			}
+		}else{
+			if(!hall.is(':animated')){
+				if(left == max){
+					return false;
+				}else{
+					if($('.icon_list b').length==1){
+						return false;
+					}else{
+						icon_index++;
+						$('.coupon_iconl').removeClass('more').addClass('more');
+						if(icon_index ==coupon_num -1){
+							$('.coupon_iconr').removeClass('more');
+						}else{
+							$('.coupon_iconr').removeClass('more').addClass('more');
+						}
+						hall.animate({scrollLeft:(left + width) + "px"});
+						$('.icon_list b').eq(icon_index).addClass('cur').siblings().removeClass('cur');
+					}
+					
+				}
+			}
+		}
+	}
+	$(".iconQ").hover(function(){
+		$(".questionTips").show();
+	},function(){
+		$(".questionTips").hide();
+	})
+</script>
+
+</body>
+</html>     

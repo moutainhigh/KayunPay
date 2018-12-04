@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>易融恒信-赏金计划,享好友投资收益5%</title>
+		<link href="/portal/css/activity/act20180101.css" rel="stylesheet" type="text/css" />
+		<link href="/portal/css/public.css" rel="stylesheet" type="text/css" />
+		<link href="/portal/css/user.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+		<script type="text/javascript" src="/portal/js/qrcode.js"></script>
+		<script type="text/javascript" src="/portal/js/clipboard.min.js"></script>
+		<script type="text/javascript" src="/portal/js/config.js?v=1.0.0" charset="utf-8"></script>
+	</head>
+	<body>
+		<div class="money">
+			<div class="money_header"></div>
+			<div class="money_suggest"></div>
+			<div class="money_warp">
+				<div class="money_box">
+					<div class="money_title"></div>
+					<table>
+						<thead>
+							<tr class="money_th">
+								<th width="195px">排名</th>
+								<th width="250px">用户名</th>
+								<th width="250px">累计邀请人数</th>
+								<th width="250px">预期赏金收益</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+					<div class="m_details"></div>
+				</div>
+			</div>
+			<div class="money_content">
+				<!-- 邀请方式 -->
+				<div class="m_invitations">
+					<div class="in_white">
+						<i class="in_rightico"></i>
+						<i class="in_leftico"></i>
+						<div class="in_title"></div>
+						<div class="in_list">
+							<div class="in_ico">
+								<div id="copy1"></div>
+								<button class="act_ico1" type="button" data-clipboard-action="copy" data-clipboard-target="#copy1"></button>				
+								<P>点击复制链接</P>
+							</div>
+							<div class="in_ico">
+								<div id="code2"></div>
+								<i class="act_ico2"></i>
+								<P>微信扫码分享</P>
+							</div>
+							<div class="in_ico">
+								<div id="code3"></div>
+								<i class="act_ico3"></i>
+								<P>QQ扫码分享</P>
+							</div>
+							<div class="in_ico">
+								<a href="http://www.yrhx.com/C03" class="act_ico4" target="_blank"></a>
+								<P>我的邀请码</P>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- 活动规则 -->
+				<div class="money_rule">
+					<div class="rule_white">
+						<i class="rule_rightico"></i>
+						<i class="rule_leftico"></i>
+						<div class="rule_title"></div>
+						<div class="rule_list">
+							<ul>
+								<li><span>1</span>活动对象：易融恒信平台注册用户；活动开始时间：2018年1月1日——结束日期以平台公告为准。</li>
+								<li><span>2</span>赏金收益不包含被邀请人投资时使用的现金抵用券收益。</li>
+								<li><span>3</span>赏金收益于被邀请人投资每期回款收益时发放至账户中。</li>
+								<li><span>4</span>若被邀请人投资后债权转让，则邀请人不再继续享有每期赏金收益的5%。</li>
+								<li><span>5</span>被邀请人承接债权，则邀请人不享有好友投资收益的5%。</li>
+								<li><span>6</span>若被邀请人投资使用加息劵，则邀请人不享有投资收益的5%。</li>
+								<li><span>7</span>若被邀请人投资默认会员专属加息，则邀请人享受标的利率收益的5%，不享受专属加息部分收益的5%。</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="money_footer"></div>
+		</div>
+		
+		<!-- 邀请详情 弹窗 -->
+		<div class="blackBg"></div>
+		<div class="m_popup">
+			<div class="m_popupClose">邀请详情<span>×</span></div>
+			<div class="m_popupMain">
+				<div class="m_popup_title">
+					<div class="m_popup_title1"></div>
+				</div>
+				<div class="m_popupList">
+					<table>
+						<thead>
+							<tr>
+								<th width="90px">排名</th>
+								<th width="130px">用户名</th>
+								<th width="170px">累计邀请金额</th>
+								<th width="170px">预期赏金收益</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>	
+			</div>
+		</div>
+	</body>
+	<script>
+
+	function close_login_dialog() {
+		if (window.closeLoginDialog) {
+			window.closeLoginDialog();
+		}else {
+			$("#loginDialog").hide();
+			$("#yinying").hide();
+			$('body,html').css('overflow', 'auto');
+		}
+	}
+
+	// 登录模态框
+	function show_login_dialog() {
+		if ($("div").hasClass("login_dialog")) {
+			// 重复登录
+			$("#loginDialog").show();
+			$("#yinying").show();
+		} 
+		else {
+			var dislogElement = $('<div>').addClass('login_dialog').attr('id','loginDialog');
+			var closeElement = $('<div>').addClass('del').appendTo(dislogElement);
+			var h2Element = $('<h2>').html('用户登录');
+			var formElement = $('<div>').attr('id', 'login_form');
+			var accountElement = null;
+			accountElement = $('<input>')
+					.attr('name', 'account')
+					.attr('type', 'text')
+					.attr('maxlength', '30')
+					.attr('placeholder', '输入11位手机号码')
+					.blur(
+							function() {
+								if ($(this).val() == '') {
+									$('#login_account_err').show();
+									$('#login_account_err').find('span').remove();
+									$('#login_account_err').append($('<span>').html('请输入用户名'));
+								} else if (!/^1\d{10}$/.test($.trim($(this).val()))) {
+									$('#login_account_err').show();
+									$('#login_account_err').find('span').remove();
+									$('#login_account_err').append($('<span>').html('用户名不合法'));
+								} else {
+									$('#login_account_err').hide();
+								}
+							});
+			if (typeof (autologin) != 'undefined') {
+				accountElement.val(autologin);
+			}
+
+			$('<div>').addClass('item').append(
+					$('<i>').addClass('iconUser').css('marginTop', '17px')).append(
+					accountElement).append(
+					$('<p>').attr('id', 'login_account_ok').addClass('tips-right')
+							.addClass('u-tips')).append(
+					$('<p>').attr('id', 'login_account_err').addClass('tips-error')
+							.addClass('u-tips')).appendTo(formElement);
+
+			$('<div>').addClass('item').append(
+					$('<i>').addClass('iconPwd').css('marginTop', '17px')).append(
+					$('<input>').attr('type', 'password').attr('name', 'password')
+							.addClass('inp').attr('maxlength', '30').val('').attr(
+									'placeholder', '输入密码'))
+					.append(
+							$('<p>').attr('id', 'login_password_ok').addClass('tips-right').addClass('u-tips').html(
+									$('<i>').addClass('iconfont'))).append(
+							$('<p>').attr('id', 'login_password_err').addClass(
+									'tips-error').addClass('u-tips').html(
+									$('<i>').addClass('iconfont'))).appendTo(formElement);
+
+			$('<div>').addClass('button_panel').append(
+					$('<div>').addClass('loginBtn').attr('id', 'login_btn').html('登录').click(function() {
+						loginFnPop();
+					})).appendTo(formElement);
+
+			$('<div>').addClass('other')
+					.append('赶快加入易融恒信吧&nbsp;&nbsp;&nbsp;&nbsp;').append(
+							$('<a>').attr('href', '/register').html('立即注册'))
+					.append('！').appendTo(formElement);
+
+			closeElement.appendTo(dislogElement);
+			closeElement.click(close_login_dialog);
+			h2Element.appendTo(dislogElement);
+			formElement.appendTo(dislogElement);
+			init_yinying();
+
+			$('body,html').css('overflow', 'hidden');
+			to_center($('#yinying').show());
+			to_center(dislogElement.appendTo('body').show());
+
+			$("input[name='password']").focus(function() {
+				$(window).on("keydown", function(event) {
+					if (event.keyCode == 13) {
+						loginFnPop();
+					}
+				});
+			})
+		}
+	}
+	function init_yinying() {
+		if ($('#yinying').length == 0) {
+			$('<div>').attr('id', 'yinying').addClass('yinying').appendTo('body');
+		}
+	}
+
+	// 居中
+	function to_center(obj) {
+		var width = $(window).width();
+		var height = $(window).height();
+		var top = $(window).scrollTop();
+		var eleWidth = obj.width();
+		var eleHeight = obj.height();
+		obj.css({
+			left : (width - eleWidth) / 2,
+			top : top + (height - eleHeight) * 2 / 5
+		});
+	}
+	function loginFnPop() {
+		var loginName = $('#login_form').find('input[name=account]').val();
+		var loginPwd = $('#login_form').find('input[name=password]').val();
+		YRHX.Cookie().clear();
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("login"),
+			data : {
+				loginName : loginName,
+				loginPwd : loginPwd
+			},
+			success : function(sucData) {
+				setTimeout(function() {
+					YRHX.Cookie("loginName", loginName).set();
+					YRHX.Cookie("userCode", sucData.userCode).set();
+					YRHX.Cookie("userName", sucData.userName).set();
+					close_login_dialog();
+					if (window.loginSuccessCallback) {
+						window.loginSuccessCallback();
+					} else {
+						window.location.href=window.location.href;
+					}
+					
+				}, 300);
+			},
+			error : function(errData) {
+				alert('用户名或密码错误');
+			}
+		});
+	}
+	
+	
+	function MoneyPlan(){
+		YRHX.ajax({
+			url:CONFIG.getRequestURI("queryRewardRanking"),
+			data:{
+				beginDate : "20180101",
+			},
+			dataType:"jsonp",
+			success:function(data){
+				var tableHtml = $(".money_box table tbody");
+				tableHtml.html("");
+				for (var i = 0; i < data.length; i++) {
+					var row = data[i];
+					var len = row[0].length;
+					if (0 == row[0].indexOf("*")) {
+						row[0] = row[0]
+					} 
+					else {
+						if (len < 3) {
+							data[0] = data[0] + "***";
+						} else if (len < 11) {
+							row[0] = row[0].substr(0,3)+ "***";
+						} else if (len == 11) {
+							row[0] = row[0].substr(0,3)+ "***" + row[0].substr(7);
+						} else {
+							row[0] = row[0].substr(0,3)+ "***";
+						}
+					}
+					var html="<tr><td width='195px'><i class='m_num'></i></td><td  width='250px' class='m_font'>"+row[0]+"</td><td width='250px' class='m_font'>"+row[1]+"</td><td width='250px' class='m_font'>"+row[2]+"</td></tr>";
+						tableHtml.append(html);
+				}
+				ranking();
+			},
+		});
+	}
+	
+	function ranking(num) {
+		//前三名图标显示 
+		var numico=$(".money_box table tbody tr");
+		numico.each(function(){
+			var ranknum=$(this).index();
+			if(ranknum==0){
+				$(this).find("i").addClass('money_first');
+			}
+			else if(ranknum==1){
+				$(this).find("i").addClass('money_two');
+			}
+			else if(ranknum==2){
+				$(this).find("i").addClass('money_three');
+			}
+			else{
+				$(this).find("i").addClass('m_ico');
+			}
+		});
+		$(".money_box table tbody tr:odd").addClass("money_even");//隔行换色（奇数）
+		$(".money_box table tbody tr").eq(0).addClass("money_tr1");
+		$(".money_box table tbody tr").eq(2).addClass("money_tr3");
+		$(".money_box table tbody tr").eq(4).addClass("money_tr5");
+		$(".money_box table tbody tr").eq(6).addClass("money_tr7");
+		$(".money_box table tbody tr").eq(8).addClass("money_tr9");
+	}
+	
+	//邀请详情
+	function InvitingDetails(){
+		var userName = YRHX.Cookie("userName").get();
+		if(userName != null) {
+			YRHX.ajax({
+				url:CONFIG.getRequestURI("queryRewardByUserCode"),
+				data : {
+					beginDate : "20180101",
+				},
+				dataType:"jsonp",
+				success:function(data){
+					var tableHtml = $(".m_popupList table tbody");
+					tableHtml.html("");
+					for (var i = 0; i < data.length; i++) {
+						var row = data[i];
+						var len = row[0].length;
+						if (0 == row[0].indexOf("*")) {
+							row[0] = row[0]
+						} 
+						else {
+							if (len < 3) {
+								data[0] = data[0] + "***";
+							} else if (len < 11) {
+								row[0] = row[0].substr(0,3)+ "***";
+							} else if (len == 11) {
+								row[0] = row[0].substr(0,3)+ "***" + row[0].substr(7);
+							} else {
+								row[0] = row[0].substr(0,3)+ "***";
+							}
+						}
+						var html="<tr><td><i class='popup_num'></i></td><td>"+row[0]+"</td><td>"+row[1]+"</td><td>"+row[2]+"</td></tr>";
+							tableHtml.append(html);
+					}
+					DetailsRanking();
+				},
+			});
+		}
+		else{
+			$(".blackBg").hide();
+			$(".m_popup").hide();
+			show_login_dialog();
+		}
+	}
+	
+	function DetailsRanking(num) {
+		//前三名图标显示 
+		var numico=$(".m_popupList table tbody tr");
+		numico.each(function(){
+			var ranknum=$(this).index();
+			if(ranknum==0){
+				$(this).find("i").addClass('popup_first');
+			}
+			else if(ranknum==1){
+				$(this).find("i").addClass('popup_two');
+			}
+			else if(ranknum==2){
+				$(this).find("i").addClass('popup_three');
+			}
+			else{
+				$(this).find("i").addClass('popup_iconum');
+			}
+		});
+	}
+	
+
+	$(function(){
+		MoneyPlan();
+		var userCode = YRHX.Cookie('userCode').get();
+		//邀请码
+		var inviteCode = null;
+		if(userCode){
+			YRHX.ajax({
+				url:"/queryInviteCode",
+				dataType:'jsonp',
+				success:function(curdata){
+					inviteCode=curdata;
+				}
+			});
+		}
+				
+		//复制
+		var clipboard = new Clipboard('.act_ico1');
+		clipboard.on('success', function (e) {
+			if(YRHX.Cookie("userName").get()){
+			    alert("复制成功");
+			    console.log(e);
+			}else{
+				show_login_dialog();
+			}
+		});
+		clipboard.on('error', function (e) {
+		    console.log(e);
+		});
+		
+
+		//显示复制链接
+		$(".act_ico1").mouseover(function(){
+			//var userCode = YRHX.Cookie('userCode').get();
+			var linktxt="http://www.yrhx.com/share?u="+inviteCode;
+			$(this).prev("#copy1").html(linktxt);
+			$(this).prev("#copy1").show();
+		});
+		$(".act_ico1").mouseout(function(){
+			$(this).prev(" #copy1").hide();
+		});
+			
+		//设置二维码尺寸
+		var qrcode =new QRCode(document.getElementById("code2"),{
+			width:100,
+			height:100
+		});
+		var qrcode1 =new QRCode(document.getElementById("code3"),{
+			width:100,
+			height:100
+		});
+			
+		//显示微信扫码
+		$(".act_ico2").mouseover(function(){
+			//var userCode = YRHX.Cookie('userCode').get();
+			var linktxt="http://www.yrhx.com/appRegister?u="+inviteCode;
+			qrcode.makeCode(linktxt);
+			$(this).prev("#code2").show();
+		});
+		$(".act_ico2").mouseout(function(){
+			$(this).prev(" #code2").hide();
+		});
+		
+		//显示QQ扫码
+		$(".act_ico3").mouseover(function(){
+			//var userCode = YRHX.Cookie('userCode').get();
+			var linktxt="http://www.yrhx.com/appRegister?u="+inviteCode;
+			qrcode1.makeCode(linktxt);
+			$(this).prev("#code3").show();
+		});
+		$(".act_ico3").mouseout(function(){
+			$(this).prev(" #code3").hide();
+		});
+			
+		//详情 弹窗
+		$(".m_details").click(function(){
+			$("body").css("overflow-y", "hidden");
+			$("body").css("overflow-x", "hidden");
+			var top = ($(window).height() - 540) / 2;
+			var left = ($(window).width() - 610) / 2;
+			$(".blackBg").css({position : 'fixed','top' : 0,left : 0}).show();
+			$(".m_popup").css({position : 'fixed','top' : top,left : left}).show();
+			InvitingDetails();
+		});
+			
+		//详情  关闭弹窗
+		$(".m_popupClose").click(function() {
+			$("body").css("overflow-y", "auto");
+			$("body").css("overflow-x", "auto");
+			$(".blackBg").hide();
+			$(".m_popup").hide();
+		});		
+			
+	});
+	</script>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>易融恒信-赏金计划,享好友投资收益5%</title>
+		<link href="app/css/activity/act20180101.css" rel="stylesheet" type="text/css" />
+		<script src="app/js/jquery-1.8.3.min.js" type="text/javascript"></script>
+		<script src="app/js/core.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div class="money_plan">
+			<div class="money_header1"></div>
+			<div class="money_header2"></div>
+			<div class="money_warp">
+				<div class="money_box">
+					<div class="money_title"></div>
+					<table>
+						<thead>
+							<tr class="money_th">
+								<th width="150px">排名</th>
+								<th width="250px">用户名</th>
+								<th width="300px">预期赏金收益</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+					<a href="javascript:;" class="m_details"></a>
+				</div>
+			</div>
+			<!-- 活动规则 -->
+			<div class="money_content">
+				<div class="money_rule">
+					<div class="rule_white">
+						<i class="rule_rightico"></i>
+						<i class="rule_leftico"></i>
+						<div class="rule_title"></div>
+						<div class="rule_list">
+							<ul>
+								<li>
+									<span>1</span><div class="rule_font">活动对象：易融恒信平台注册用户；活动开始时间：2018年1月1日——结束日期以平台公告为准。</div>
+								</li>
+								<li>
+									<span>2</span><div class="rule_font">赏金收益不包含被邀请人投资时使用的现金抵用券收益。</div>
+								</li>
+								<li>
+									<span>3</span><div class="rule_font">赏金收益于被邀请人投资每期回款收益时发放至账户中。</div>
+								</li>
+								<li>
+									<span>4</span><div class="rule_font">若被邀请人投资后债权转让，则邀请人不再继续享有每期赏金收益的5%。</div>
+								</li>
+								<li>
+									<span>5</span><div class="rule_font">被邀请人承接债权，则邀请人不享有好友投资收益的5%。</div>
+								</li>
+								<li>
+									<span>6</span><div class="rule_font">若被邀请人投资使用加息劵，则邀请人不享有投资收益的5%。</div>
+								</li>
+								<li>
+									<span>7</span><div class="rule_font">若被邀请人投资默认会员专属加息，则邀请人享受标的利率收益的5%，不享受专属加息部分收益的5%。</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="money_footer"></div>
+		</div>
+	</body>
+	<script>
+	function MoneyPlan(){
+		YRHX.ajax({
+			url:"http://www.yrhx.com/queryRewardRanking",
+			data:{
+				beginDate : "20180101",
+			},
+			dataType:"jsonp",
+			success:function(data){
+				var tableHtml = $(".money_box table tbody");
+				tableHtml.html("");
+				for (var i = 0; i < data.length; i++) {
+					var row = data[i];
+					var len = row[0].length;
+					if (0 == row[0].indexOf("*")) {
+						row[0] = row[0]
+					} 
+					else {
+						if (len < 3) {
+							data[0] = data[0] + "***";
+						} else if (len < 11) {
+							row[0] = row[0].substr(0,3)+ "***";
+						} else if (len == 11) {
+							row[0] = row[0].substr(0,3)+ "***" + row[0].substr(7);
+						} else {
+							row[0] = row[0].substr(0,3)+ "***";
+						}
+					}
+					var html="<tr><td width='150px'><i class='m_num'></i></td><td  width='250px' class='m_font'>"+row[0]+"</td><td width='300px' class='m_font'>"+row[2]+"</td></tr>";
+						tableHtml.append(html);
+				}
+				ranking();
+			},
+		});
+	}
+	
+	function ranking(num) {
+		//前三名图标显示 
+		var numico=$(".money_box table tbody tr");
+		numico.each(function(){
+			var ranknum=$(this).index();
+			if(ranknum<3){
+				$(this).find("i").addClass('money_ranking');
+			}
+			else{
+				$(this).find("i").addClass('m_ico');
+			}
+		});
+		$(".money_box table tbody tr:odd").addClass("money_even");//隔行换色（奇数）
+		$(".money_box table tbody tr").eq(0).addClass("money_tr1");
+		$(".money_box table tbody tr").eq(2).addClass("money_tr3");
+		$(".money_box table tbody tr").eq(4).addClass("money_tr5");
+		$(".money_box table tbody tr").eq(6).addClass("money_tr7");
+		$(".money_box table tbody tr").eq(8).addClass("money_tr9");
+	}
+	
+	
+	$(function(){
+		MoneyPlan();
+		
+		$(".m_details").click(function(){
+			var userName = YRHX.Cookie("userCode").get();
+			if(userName != null) {
+				$(this).attr("href","/app_actDetails20180101");
+			}
+			else{
+				$(this).attr("href","javascript:login();");
+			}
+		});
+		
+	});
+	
+	
+	
+	//登录链接
+	function login() {
+	 //调用java中的方法   login
+	   window.WebViewJavascriptBridge.callHandler(
+	      'login'
+	      , ''
+	      , function(responseData) {
+	          	if(responseData==null){
+	          		alert("请登录");
+	          	}
+	      }
+	  );
+	}
+	
+	
+	//注册事件监听
+	function connectWebViewJavascriptBridge(callback) {
+	  if (window.WebViewJavascriptBridge) {
+	      callback(WebViewJavascriptBridge)
+	  } else {
+	      document.addEventListener(
+	          'WebViewJavascriptBridgeReady'
+	          , function() {
+	              callback(WebViewJavascriptBridge)
+	          },
+	          false
+	      );
+	  }
+	}
+	
+	//注册回调函数，第一次连接时调用 初始化函数
+	connectWebViewJavascriptBridge(function(bridge) {
+	    //初始化
+	  	bridge.init(function(message, responseCallback) {
+	      var data = {
+	          'Javascript Responds': 'Wee!'
+	      };
+	      responseCallback(data);
+	  	});
+		//接收安卓发来的消息   并返回给安卓通知
+	  	bridge.registerHandler("functionInJs", function(data, responseCallback) {
+	      var responseData = "我接受到了安卓的调用";
+	      responseCallback(responseData); 
+		    });
+		})
+			
+		//进入页面第一次强制刷新
+		window.onload = function(){
+		   if(location.search.indexOf("?")==-1){
+		      location.href += "?myurl";
+		   }
+		   else{
+		      if(location.search.indexOf("myurl")==-1) location.href += "&myurl";
+		   }
+		}
+	
+	
+	</script>
+</html>

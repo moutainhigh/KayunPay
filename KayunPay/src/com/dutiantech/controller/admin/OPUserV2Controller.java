@@ -1,0 +1,199 @@
+package com.dutiantech.controller.admin;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.dutiantech.CACHED;
+import com.dutiantech.Message;
+import com.dutiantech.anno.AuthNum;
+import com.dutiantech.controller.BaseController;
+import com.dutiantech.controller.admin.validator.OPUserCreateOPUserValidator;
+import com.dutiantech.controller.admin.validator.OPUserModifyValidator;
+import com.dutiantech.controller.admin.validator.OPUserResetOPUserPasswordValidator;
+import com.dutiantech.interceptor.AuthInterceptor;
+import com.dutiantech.interceptor.PkMsgInterceptor;
+import com.dutiantech.model.OPUserV2;
+import com.dutiantech.service.OPUserV2Service;
+import com.dutiantech.util.CommonUtil;
+import com.dutiantech.util.StringUtil;
+import com.jfinal.aop.Before;
+import com.jfinal.core.ActionKey;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.tx.Tx;
+
+@Before(AuthInterceptor.class)
+public class OPUserV2Controller extends BaseController {
+
+	private OPUserV2Service opUserService = getService(OPUserV2Service.class);
+
+	@ActionKey("/getOPUserV2ById")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getOPUserV2ById() {
+		String userCode = getPara("opUserCode", "");
+
+		OPUserV2 opUser = opUserService.findById(userCode);
+		
+		try {
+			opUser.set("op_mobile", CommonUtil.decryptUserMobile(opUser.getStr("op_mobile"))) ;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return succ("查询单个后台用户完成", opUser);
+	}
+
+	@ActionKey("/getOPUserV2ByPage")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message getOPUserV2ByPage() {
+
+		Integer pageNumber = getParaToInt("pageNumber", 1);
+		pageNumber = pageNumber > 0 ? pageNumber : 1;
+		Integer pageSize = getParaToInt("pageSize", 10);
+
+		String beginDateTime = getPara("beginDate", "");
+
+		beginDateTime = StringUtil.isBlank(beginDateTime) ? "" : beginDateTime + "000000";
+
+		String endDateTime = getPara("endDate", "");
+
+		endDateTime = StringUtil.isBlank(endDateTime) ? "" : endDateTime + "000000";
+		
+		String allKey = getPara("allkey", "").trim();
+
+		Page<OPUserV2> pageOPUserV2s = opUserService.findByPage(pageNumber, pageSize, beginDateTime, endDateTime,allKey);
+		if (pageNumber > pageOPUserV2s.getTotalPage() && pageOPUserV2s.getTotalPage() > 0) {
+			pageNumber = pageOPUserV2s.getTotalPage();
+			pageOPUserV2s = opUserService.findByPage(pageNumber, pageSize, beginDateTime, endDateTime,allKey);
+		}
+		return succ("分页查询后台用户完成", pageOPUserV2s);
+	}
+
+	@ActionKey("/createOPUserV2")
+	@AuthNum(value=999)
+	@Before({ OPUserCreateOPUserValidator.class,AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message createOPUserV2() {
+		Map<String, Object> para = new HashMap<String, Object>();
+
+		String userMobile = getPara("op_mobile");
+		String userName = getPara("op_name");
+		String userPwd = getPara("op_pwd", "");
+		String isBranch = getPara("isBranch","n");
+		String branchArea = getPara("branchArea","");
+		String creditorName = getPara("creditorName","");
+		String creditorCardId = getPara("creditorCardId","");
+		try {
+			userMobile = CommonUtil.encryptUserMobile(userMobile);
+			userPwd = CommonUtil.encryptPasswd(userPwd);
+		} catch (Exception e) {
+			return error("02", "创建后台用户时，信息加密过程发生错误:" + e.getMessage(), false);
+		}
+		if(opUserService.countByMobile(userMobile)>1){
+			return error("03","手机号已存在",false);
+		}
+		String roleMap = getPara("roleMap");
+		String userGroup = getPara("op_group");
+//		String roleName = getPara("roleName");
+//		String menuMap = getPara("menuMap");
+		String updateUserCode = getUserCode();
+		String updateUserName = getUserInfo().getStr("op_name");
+		// String userState = getPara("userState");
+		para.put("isBranch", isBranch);
+		para.put("branchArea", branchArea);
+		para.put("op_mobile", userMobile);
+		para.put("op_name", userName);
+		para.put("op_pwd", userPwd);
+		para.put("op_map", roleMap);
+		para.put("op_group", userGroup);
+		para.put("update_op_code", updateUserCode);
+		para.put("update_op_name", updateUserName);
+		para.put("create_op_code", updateUserCode);
+		para.put("create_op_name", updateUserName);
+		para.put("op_status", "A");
+		para.put("creditorCardId", creditorCardId);
+		para.put("creditorName", creditorName);
+		if (opUserService.save(para))
+			return succ("创建后台用户操作完成", true);
+		return error("01", "创建后台用户操作未生效", false);
+	}
+	
+	@ActionKey("/disabledOpUser")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message disabledOpUserV2(){
+		String dbUserCode = getPara("unUsedUserCode");
+		if( StringUtil.isBlank(dbUserCode) == true){
+			return error("02","用户编码不合法!",dbUserCode) ;
+		}
+		String updateUserCode = getUserCode();
+		String updateUserName = getUserInfo().getStr("op_name");
+		
+		Map<String, Object> para = new HashMap<String, Object>();
+		para.put("update_op_code", updateUserCode );
+		para.put("update_op_name", updateUserName );
+		//para.put("update_datetime", DateUtil.getNowDateTime() );
+		para.put("op_status", "B" ) ;
+		
+		if( opUserService.updateById(dbUserCode, null , para))
+			return succ("ok", "用户已禁用！") ;
+		
+		return error("01", "禁用失败!", null ) ;
+	}
+	
+	@ActionKey("/modOPUserV2")
+	@AuthNum(value=999)
+	@Before({OPUserModifyValidator.class,AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message modOpUserV2(){
+		
+		String opUserCode = getPara("op_code");
+		String opName = getPara("op_name");
+		String opMap = getPara("roleMap");
+		String opGroup = getPara("op_group");
+		String creditorName = getPara("creditorName");
+		String creditorCardId = getPara("creditorCardId");
+		String branchArea = getPara("branchArea");
+		String isBranch = getPara("isBranch");
+		String op_status = getPara("op_status");
+		String transferUserNo = getPara("transferUserNo","");
+//		String role_code = getPara("role_code","");
+
+		String updateUserName = getUserInfo().getStr("op_name");
+		String updateUserCode = getUserCode();
+		
+		Map<String, Object> para = new HashMap<String, Object>();
+//		para.put("role_code", role_code);
+		para.put("op_name", opName);
+		para.put("op_group", opGroup) ;
+		para.put("update_op_code", updateUserCode );
+		para.put("update_op_name", updateUserName );
+		para.put("op_map", opMap ) ;
+		para.put("creditorName", creditorName);
+		para.put("creditorCardId", creditorCardId);
+		para.put("branchArea", branchArea);
+		para.put("isBranch", isBranch);para.put("op_status", op_status);
+		para.put("transferUserNo", transferUserNo);
+
+		if( opUserService.updateById(opUserCode, null , para))
+			return succ("ok", "用户已修改！") ;
+		
+		return error("01", "修改失败!", null ) ;
+	}
+	
+	@ActionKey("/resetOPUserPasswordV2")
+	@AuthNum(value=999)
+	@Before({ OPUserResetOPUserPasswordValidator.class,AuthInterceptor.class,Tx.class,PkMsgInterceptor.class})
+	public Message resetOPUserPasswordV2() {
+		String opUserCode = getPara("op_code");//用户编码
+		String newPasswd = (String)CACHED.get("S0.admin-init-pwd");//取默认重置密码
+		try {
+			newPasswd = CommonUtil.encryptPasswd(newPasswd);
+		} catch (Exception e) {
+			return error("02", "重置后台用户密码时，信息加密过程发生错误:" + e.getMessage(), false);
+		}
+		if (opUserService.updatePassword(opUserCode, newPasswd))
+			return succ("重置密码完成", true);
+		return error("01", "重置后台用户密码操作未生效", false);
+	}
+	
+}

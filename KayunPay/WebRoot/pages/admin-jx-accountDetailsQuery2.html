@@ -1,0 +1,287 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<!-- <body onkeydown="zhazha(event)"> -->
+<body>
+		<h3 style="color: green; margin-left: 20px">近两日电子账户资金交易明细</h3>
+		<div class="am-u-sm-12 am-u-md-4">
+				<div class="am-u-sm-6" style="padding: 0;">
+					<div class="am-input-group am-datepicker-date" data-am-datepicker="{format: 'yyyy-mm-dd', viewMode: 'days'}">
+						<input type="text" class="am-form-field" id="my-startDate" placeholder="开始日期" readonly style="width: 71%;">
+							<span class="am-input-group-btn am-datepicker-add-on">
+								<button class="am-btn am-btn-default" type="button">
+									<span class="am-icon-calendar"></span>
+								</button>
+							</span> 
+					</div>
+				</div>
+				
+				<div class="am-u-sm-6" style="padding: 0;">
+					<div class="am-input-group am-datepicker-date" data-am-datepicker="{format: 'yyyy-mm-dd', viewMode: 'days'}">
+						<input type="text" class="am-form-field" id="my-endDate" placeholder="结束日期" readonly style="width: 71%;">
+							<span class="am-input-group-btn am-datepicker-add-on">
+								<button class="am-btn am-btn-default" type="button">
+									<span class="am-icon-calendar"></span>
+								</button>
+							</span>
+					</div>
+				</div>
+		</div>
+		<div class="am-u-md-3" style="width: 300px">
+		  <span>交易种类：</span>
+		    <select id = "selectType">
+		       <option value ="0" >所有交易</option>
+		       <option value ="1" >转入交易</option>
+		       <option value ="2" >转出交易</option>
+		       <option value ="9" >指定交易类型</option>
+		    </select>
+		</div><br/><br/>
+		
+		<div style="width: :1200px;margin-left: 460px;" >
+		   <div id="selecttrace"  style="width:200px;display: inline;">
+		    <span>交易类型：</span>
+		   </div>
+		   <!-- <div  style="width: 116px;display: inline;">
+		      <input type="text" class="tranType">
+		   </div> -->
+		   
+		    <div style="width: 116px;display: inline;">
+		        <span>电子/手机账户：</span>
+		    </div>
+		    <div  style="display: inline;">
+				<input type="text" class="allkey">
+				
+					<button class="querybutton" type="button" value="查询">查询</button>
+				
+			</div>
+		</div>
+
+<div class="am-g" style="font-size: 14px;">
+		<div class="am-u-sm-12">
+			<table class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<div style="display: inline;">
+			   <button class = "rtnInd" type="button" style="display: none;">翻页</button>
+			</div>	
+			<div style="display: inline;">
+			   <button class = "export" type="button" style="display: none;">导出</button>
+			</div>	
+		</div>
+	</div>
+		
+		
+
+
+	<!-- prompt start -->
+
+	
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script type="text/javascript" src="/portal/js/jxErr.js"></script>
+	<script type="text/javascript" src="/portal/js/jxTraceState.js"></script>
+	<script>
+	
+	$(function(){
+		var jxHtml = "<div  style='display: inline;'><select class='tranType'>";
+		jxHtml +="<option value=''>选择类型</option>";
+		var jxStateType = jxState();
+		var length = jxStateType.length;
+		
+		for(var i= 0;i<length;i++){
+			jxHtml += "<option value = '" + jxStateType[i] + "' >" +  jxTraceState(jxStateType[i]) + "</option>";
+			
+		}
+		jxHtml += "</select></div>";
+		$("#selecttrace").append(jxHtml);
+	})
+
+		var rtnInd = "";
+		var inpDate = "";
+		var inpTime = "";
+		var relDate = "";
+		var traceNo = "";
+		
+		function jxquery(rtnInd){
+			var type = $("#selectType").val();
+			var tranType = $(".tranType").val();
+			var accountId = $(".allkey").val();
+			var startDate = $("#my-startDate").val().replaceAll("-","");
+			var endDate = $("#my-endDate").val().replaceAll("-","");
+			/* if(startDate == ''||endDate == ''){
+				alert("时间不能为空");
+				return;
+			} */
+			if(accountId ==''){
+				alert("请填写电子账号");
+				return;
+			}
+			if(rtnInd == ''){
+				inpDate = "";
+				inpTime = "";
+				relDate = "";
+				traceNo = "";
+			}
+			YRHX.ajax({
+				url : "/accountDetailsQuery2",
+				data: {
+					 "accountId":accountId,
+					 "startDate":startDate,
+					 "endDate":endDate,
+					 "type":type,
+					 "tranType":tranType,
+					 "rtnInd":rtnInd,
+					 "inpDate":inpDate,
+					 "inpTime":inpTime,
+					 "relDate":relDate,
+					 "traceNo":traceNo
+				},
+				success:function(data){
+					var name = data.name;
+					var type = data.type;
+					var list = data.subPacks;
+					var tmpTotalData = {};
+					if(list.length==0){
+						alert("没有记录 ");
+						return;
+					}
+					if(list.length>0){
+						 $(".rtnInd").css('display','block');
+						 $(".rtnInd").attr('disabled',false);
+						 $(".export").css('display','block');
+						 var length = list.length;
+						inpDate = list[length-1].inpDate;
+						inpTime = list[length-1].inpTime;
+						relDate = list[length-1].relDate;
+						traceNo = list[length-1].traceNo;
+						if(length<10){
+							$(".rtnInd").attr('disabled','disabled');
+						}
+					}
+
+					makeTable(list,tmpTotalData,name,type);
+					
+					    
+				},error:function(data){
+					
+					if(data.return_info == ''){
+						  var returnCode = data.return_code;
+						  var message = jxErr(returnCode);
+						  YRHX.alert1(message || "获取信息失败");
+						  
+						}else{
+							YRHX.alert1(data.return_info ||"获取信息失败");
+						}
+					
+				}
+				
+			});
+		}
+		
+		
+		
+		function makeTable(tableData,countData,name,jxtype){
+			$(".am-g").table({
+				
+				dataFormat:function(rowObj){
+					rowObj["accDate"] =rowObj["accDate"].dateformat("yyyy-MM-dd"); 
+					rowObj["inpDate"] =rowObj["inpDate"].dateformat("yyyy-MM-dd"); 
+					rowObj["relDate"] =rowObj["relDate"].dateformat("yyyy-MM-dd"); 
+					rowObj["inpTime"] =rowObj["inpTime"];
+					rowObj["traceNo"] =rowObj["traceNo"];
+					var traceType = rowObj["tranType"];
+					rowObj["tranType"] = jxTraceState(traceType);
+					rowObj["orFlag"] =rowObj["orFlag"];
+					rowObj["txAmount"] =YRHX.toDecimal2(rowObj["txAmount"], "");
+					rowObj["txFlag"] = rowObj["txFlag"];
+					rowObj["describe"] = rowObj["describe"];
+					rowObj["currency"] = rowObj["currency"];
+					rowObj["currBal"] = YRHX.toDecimal2(rowObj["currBal"], "");
+					rowObj["forAccountId"] = rowObj["forAccountId"];
+					rowObj["name"] = rowObj["name"];
+
+					return rowObj;
+				},
+				max : 10,
+				pag :{index:1,max : 10 ,size : tableData.length},
+				header:[
+				        {name:"",text:"姓名",html:name},
+				        /* {name:"",text:"交易种类",html:jxtype}, */
+				        {name:"",text:"入账时间",html:"#{accDate}"},
+				        {name:"",text:"交易日期",html:"#{inpDate}"},
+				        {name:"",text:"自然日期",html:"#{relDate}"},
+				        {name:"",text:"交易时间",html:"#{inpTime}"},
+				        {name:"",text:"流水号",html:"#{traceNo}"},
+				        {name:"",text:"交易类型",html:"#{tranType}"},
+				        {name:"",text:"冲正",html:"#{orFlag}"},
+				        {name:"",text:"交易金额",html:"#{txAmount}"},
+				        {name:"",text:"交易符号",html:"#{txFlag}"},
+				        {name:"",text:"交易描述",html:"#{describe}"},
+				        {name:"",text:"余额",html:"#{currBal}"},
+				        {name:"",text:"对手账号",html:"#{forAccountId}"},
+				],
+				data : tableData
+			});
+		}
+		
+		$(".rtnInd").click(function(){
+			rtnInd = 1;
+			jxquery(rtnInd);
+		})
+		
+		$(".querybutton").click(function(){
+			rtnInd = "";
+			jxquery(rtnInd);
+
+		})
+		
+		$(".export").click(function(){
+			var type = $("#selectType").val();
+			var tranType = $(".tranType").val();
+			var accountId = $(".allkey").val();
+			var startDate = $("#my-startDate").val().replaceAll("-","");
+			var endDate = $("#my-endDate").val().replaceAll("-","");
+			
+			if(accountId ==''){
+				alert("请填写电子账号");
+				return;
+			}
+			
+			var para_url = "?accountId="+accountId+
+			 "&startDate="+startDate+
+			 "&endDate="+endDate+
+			 "&type="+type+
+			 "&tranType="+tranType;
+			window.open("/exportFileFor2day"+para_url,"blank");
+			
+		})
+
+		
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+	</script>
+</body>
+</html>

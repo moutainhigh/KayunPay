@@ -1,0 +1,50 @@
+package com.dutiantech.util;
+
+import java.io.IOException;
+import java.net.SocketException;
+
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
+
+/**
+ * 用于报备上传FTP工具类
+ * @author WCF
+ *
+ */
+public class FtpUtil {	
+	/**
+	 * 连接FTP
+	 * @param path  上传到FTP服务器哪个路径下
+	 * @param url	地址
+	 * @param port	端口号
+	 * @param userName	用户名
+	 * @param password	密码
+	 * @return
+	 */
+	public static boolean connectFTP(String path, String url, int port,
+			String userName, String password) {
+		boolean result = false;
+		// 创建FTP
+		FTPClient ftp = new FTPClient();
+		int reply;
+		try {
+			ftp.connect(url);//  连接FTP
+			ftp.login(userName, password);//  登录FTP
+			ftp.setFileType(FTPClient.BINARY_FILE_TYPE);
+			reply = ftp.getReplyCode();
+			if (!FTPReply.isPositiveCompletion(reply)) {
+				ftp.disconnect();
+				return result;
+			}
+			ftp.changeWorkingDirectory(path);
+			result = true;
+			return result;
+		} catch (SocketException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+}

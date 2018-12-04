@@ -1,0 +1,48 @@
+* {	margin: 0;padding: 0;}
+body { background:#110000; margin: 0;padding: 0; font-family: "Myriad Set Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif,"微软雅黑";}
+ul, ol, li {list-style: none;}
+:focus {outline: 0;}
+a { color: #000;text-decoration: none;}
+img { border: 0;}
+i {  font-style: normal;}
+table { border-collapse:collapse;}
+
+.mui-bar-nav{ -webkit-box-shadow:none; box-shadow:none; background:#fff;}
+.invite{ width:100%; position: absolute; top: 0; left: 0;}
+.invite_banner{ width:100%; padding-top:46.125%; background:url(/app/images/actInvite/banner.jpg) no-repeat; background-size:100% 100%;}
+.invite_num{ width:94%; height: 125px; margin:15px auto; background:url(/app/images/actInvite/bg_pic.jpg); background-size:100% 100%; position: relative;}
+.invite_numfont{ padding:14px 15px; font-size: 14px; color: #341600;}
+.invite_numfont span{ font-weight: bold;}
+.money_detail{ width:35%; height:35px; line-height: 35px; background:#fefdf8; box-shadow: 0px 0px 10px #e1c281 inset; border-radius: 25px; margin:0 auto; text-align: center; font-size: 14px; color: #341600; display: block; position: absolute; bottom:15px; left:50%; margin-left: -18%;}
+.invite_money{ width:94%; overflow: hidden; margin:0 auto;}
+.money_left,.money_right{ width:47%; height: 80px; float: left; background:url(/app/images/actInvite/bgcolor_1.jpg); background-size:100% 100%; border-radius: 4px;}
+.money_left{ margin-right:6%;}
+.money_left p,.money_right p{ color: #341600;; text-align: center; font-size: 12px; margin:15px 0 4px 0;}
+.money_num{ color: #fff!important; font-size: 26px!important; font-family: Arial; margin:0!important;}
+.invite_people{ width: 100%; position: relative;}
+.invite_title{ width:100%; height:4.5em; background:url(/app/images/actInvite/title.png) no-repeat; background-size:100% 100%; position: absolute; top:0; left:50%; margin-left: -47%; z-index: 1;}
+.num_main{ width: 94%; overflow: hidden; background:#e5c580; margin-bottom:20px; border-radius: 5px; position:absolute; top:3em; left: 50%; margin-left: -47%;}
+.num_mainbg{ background:#fffbec; overflow: hidden; margin:10px; border-radius: 5px;}
+.invite_one{ float: left; width:33.333%; border-right:1px solid #e9d5a7; margin:34px 0 20px 0;}
+.invite_one p{ color: #341600; text-align: center; font-weight: bold; margin:10px 0 20px 0; line-height: 18px;}
+.one_ico{ width:50px; height:50px; background:url(/app/images/actInvite/share.png) no-repeat; margin:36px auto 29px!important; background-size:100% 100%; display: block;}
+.one_font{ font-size: 12px; height: 55px; color: #341600!important; font-weight: normal!important; padding:0 10px; margin-bottom:0!important;}
+.two_code{ padding-top:11px; -webkit-user-select: text; user-select: text; margin-bottom:23px;}
+.two_font{ text-align: center; color: #5a5a5a; font-size: 14px;}
+.two_box{ width:60%; height:32px; line-height: 32px; background:url(/app/images/actInvite/bgcolor_2.jpg) no-repeat; background-size: 100% 100%; color: #fff; text-align: center; margin:8px auto 0; font-size: 14px; -webkit-user-select: text; user-select: text; }
+.three_pic{ width:80px; margin:0 auto 15px;}
+
+.detail{ margin-top:15px; width:100%; position: absolute; top: 44px; left: 0;}
+.detail_main{ width:94%; margin:0 auto; background:#fffbec; border-radius: 5px; }
+.detail_title{ width:100%; height:42px; background:url(/app/images/actInvite/detail_bg.jpg); background-size:100% 100%; border-radius: 5px 5px 0 0;}
+.title_font{ width:33.333%; float: left; text-align: center; color:#341600; font-size: 14px; height: 40px; line-height: 40px; }
+.detail_list{ width:100%; overflow: hidden;}
+.detail_list ul li{ height: 45px; line-height: 45px; width:100%; border-bottom: 1px solid #f0dfb9;}
+.detail_list ul li:last-child{ border-bottom: none;}
+.list_font{ width:33.333%; float: left; text-align: center; color:#321600; font-size: 14px;}
+.detail_rule{ width:94%; margin:0 auto; background:#fffced; padding:20px 15px; margin-top:20px; border-radius: 5px;}
+.rule_title{ font-size: 16px; color: #341600; font-weight: bold;}
+.rule_list{ margin-top:15px; overflow: hidden;}
+.rule_list span{ float: left; width: 18px; height: 18px; text-align: center; line-height: 19px; font-weight: bold; background:#e8cc83; color: #321600; font-size: 12px; border-radius: 100%; margin-right: 10px;}
+.rule_f{ float: left; width:90%; color: #341600; font-size: 14px;}
+.popup_bg{ width:100%; height: 100%; position: fixed; top: 0; left: 0; background:rgba(0,0,0,0.5); display: none;}

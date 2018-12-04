@@ -1,0 +1,332 @@
+@CHARSET "UTF-8";
+body {
+	width: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+#top {
+	background: url(/portal/images/activity/act201710/01.jpg) no-repeat center top;
+	height: 731px;
+	width: 100%;
+}
+
+#brief {
+	background: url(/portal/images/activity/act201710/02.png) no-repeat center top;
+	height: 256px;
+	width: 100%;
+}
+
+#list {
+	background: url(/portal/images/activity/act201710/03.jpg) no-repeat center top;
+	height: 1237px;
+	width: 100%;
+}
+
+#rewards {
+	background: url(/portal/images/activity/act201710/04.png) no-repeat center top;
+	height: 624px;
+	width: 100%;
+}
+
+#rules {
+	background: url(/portal/images/activity/act201710/05.jpg) no-repeat center top;
+	height: 580px;
+	width: 100%;
+}
+
+#login {
+	width: 100%;
+	height: 60px;
+	line-height: 60px;
+	color: white;
+	font-size: 20px;
+	font-family: "microsoft yahei";
+	text-align: center;
+	letter-spacing: 2px;
+	position: relative;
+	top: 200px;
+}
+
+a {
+	text-decoration: none;
+	color: yellow;
+}
+
+#cards {
+	height: 320px;
+	width: 1150px;
+	position: relative;
+	top: 220px;
+	text-align: center;
+	margin: 0 auto;
+}
+
+.card {
+	height: 311px;
+	width: 236px;
+	display: inline-block;
+	margin-left: 20px;
+	margin-right: 20px;
+	border-radius: 10px;
+	transform: rotateY(0deg);
+}
+
+#card1 {
+	background: url(/portal/images/activity/act201710/fan.png);
+	cursor: pointer;
+}
+
+#card2 {
+	background: url(/portal/images/activity/act201710/pai.png);
+	cursor: pointer;
+}
+
+#card3 {
+	background: url(/portal/images/activity/act201710/you.png);
+	cursor: pointer;
+}
+
+#card4 {
+	background: url(/portal/images/activity/act201710/li.png);
+	cursor: pointer;
+}
+
+#content {
+	width: 1080px;
+	height: 520px;
+	position: relative;
+	top: 300px;
+	margin: 0 auto;
+}
+
+#conLeft {
+	float: left;
+	width: 510px;
+	height: 510px;
+}
+
+#awardList {
+	width: 508px;
+	height: 378px;
+	background: url(/portal/images/activity/act201710/bgRewards.png) center top no-repeat;
+}
+
+#showAllBox {
+	width: 430px;
+	height: 236px;
+	margin: 0 auto;
+	position: relative;
+	top: 98px;
+	overflow: hidden;
+	padding: 0px;
+}
+
+ul {
+	height: 234px;
+	width: 390px;
+	position: relative;
+	margin: 0 auto;
+	padding: 0px;
+}
+
+li {
+	height: 38px;
+	line-height: 38px;
+	list-style-type: none;
+	border-bottom: dashed 1px #fcb77e;
+	margin: 0 auto;
+}
+
+#btn {
+	background: url(/portal/images/activity/act201710/btn.png);
+	width: 203px;
+	height: 70px;
+	margin: 0 auto;
+	cursor: pointer;
+	position: relative;
+	top: 28px;
+}
+
+#conRight {
+	float: right;
+	width: 540px;
+	height: 440px;
+	background: url(/portal/images/activity/act201710/rulePic.png) no-repeat top center;
+}
+
+ul span {
+	font-size: 16px;
+	font-family: "microsoft yahei";
+	color: #fa4347;
+	width: 128px;
+	display: inline-block;
+	text-align: center;
+}
+
+#yinying {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: gray;
+	z-index: 99;
+	opacity: 0.97;
+	-ms-opacity: 0.97;
+	-o-opacity: 0.97;
+	-webkit-opacity: 0.97;
+	-moz-opacity: 0.97;
+	text-align: center;
+	display: none;
+	overflow-y: auto;
+}
+
+#bgRecord {
+	width: 518px;
+	height: 657px;
+	background: url(/portal/images/activity/act201710/bgRecord.png) no-repeat top center;
+	margin: 0 auto;
+	z-index: 100;
+	position: relative;
+	top: 60px;
+	display: none;
+}
+
+#shadow {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: gray;
+	z-index: 99;
+	opacity: 0.95;
+	-ms-opacity: 0.95;
+	-o-opacity: 0.95;
+	-webkit-opacity: 0.95;
+	-moz-opacity: 0.95;
+	text-align: center;
+	display: none;
+	overflow-y: auto;
+}
+
+#congra {
+	width: 545px;
+	height: 338px;
+	background: url(/portal/images/activity/act201710/tipBox.png) no-repeat top center;
+	margin: 0 auto;
+	z-index: 100;
+	position: relative;
+	top: 100px;
+	display: none;
+}
+
+#circle {
+	height: 30px;
+	width: 30px;
+	border-radius: 15px;
+	position: relative;
+	top: 11px;
+	left: 479px;
+	cursor: pointer;
+}
+
+.num {
+	display: inline-block;
+	width: 38px;
+	height: 30px;
+	margin: 0px 38px 0px 38px;
+	position: relative;
+	top: 220px;
+	color: red;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+#userList {
+	height: 312px;
+	width: 420px;
+	position: relative;
+	top: 250px;
+	margin: 0 auto;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+#yrhx {
+	height: 30px;
+	line-height: 30px;
+	margin: 0 auto;
+	text-align: center;
+	position: relative;
+	top: 220px;
+}
+
+#yrhxNum {
+	color: red;
+	font-size: 22px;
+	font-family: "microsoft yahei";
+	font-weight: bold;
+	margin-left: 4px;
+	margin-right: 4px;
+}
+
+#userList li {
+	height: 38px;
+	line-height: 38px;
+	list-style-type: none;
+	border-bottom: dashed 1px #fcb77e;
+	margin: 0 auto;
+}
+
+.b1 {
+	float: left;
+}
+
+.b2 {
+	float: right;
+}
+
+#back {
+	width: 110px;
+	height: 40px;
+	line-height: 40px;
+	border-radius: 20px;
+	margin: 0 auto;
+	background-color: red;
+	position: relative;
+	top: 80px;
+	color: yellow;
+	font-size: 22px;
+	font-family: "bodoni mt black";
+	font-weight: bolder;
+	text-align: center;
+	cursor: pointer;
+}
+
+#payOut,
+#chance {
+	color: yellow;
+	font-size: 22px;
+	margin-left: 4px;
+	margin-right: 4px;
+}
+
+@-webkit-keyframes shineRed {
+	from {
+		-webkit-box-shadow: 0 0 0 yellow;
+	}
+	50% {
+		-webkit-box-shadow: 0 0 60px #FFFF00;
+	}
+	to {
+		-webkit-box-shadow: 0 0 0 yellow;
+	}
+}
+
+.shine_red {
+	-webkit-animation-name: shineRed;
+	-webkit-animation-duration: 2s;
+	-webkit-animation-iteration-count: infinite;
+}

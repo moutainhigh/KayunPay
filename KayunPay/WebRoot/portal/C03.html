@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>邀请奖励</title>
+<link type="text/css" href="/portal/css/public.css" rel="stylesheet">
+<link type="text/css" href="/portal/css/user.css" rel="stylesheet">
+<!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+<body>
+	<div class="wrapper">
+		<header id="header" class="header">
+			<!--code here-->
+		</header>
+		<nav class='user_index'></nav>
+		<main class="user">
+			<div class='user-main'>
+				<div class='invite_module1'>
+					<div class='invite_title'><span>我的邀请</span></div>
+					<ul>
+						<li>邀请好友<p class='invite_count'><span>0</span>人</p></li>
+						<li>获得投资券<p class='invite_amount'><span>0</span>张</p></li>
+						<li>预期赏金收益<p class='invite_money'><span></span>元</p></li>
+						<div class='clearfix'></div>
+					</ul>
+				</div>
+				<div class='invite_module2'>
+					<div class='invite_title'><span>邀请有礼</span></div>
+					<div class="invite_gift">
+						<div class="invite_gift1">
+							<div class="invite_gift_title">活动一：全民大闯关</div>
+							<p>三重关卡等你来闯，邀请越多，奖励越多</p>
+							<a href="http://www.yrhx.com/act20171201" target="_blank" class="invite_pic1"></a>
+						</div>
+						<div class="invite_gift2">
+							<div class="invite_gift_title">活动二：赏金计划</div>
+							<p>邀请好友注册并认证，享好友每笔投资收益5%奖励</p>
+							<a href="http://www.yrhx.com/act20180101" target="_blank"  class="invite_pic2"></a>
+						</div>
+					</div>
+					<div class='clearfix'></div>
+				</div>
+				
+				<div class='invite_module3'>
+					<div class='invite_title'><span>如何邀请好友？</span></div>
+					<div class='invite_way'>
+						<div class='invite_way_item'>
+							<p class='p_title'>
+								<strong>方式一</strong>
+							</p>
+							<ul>
+								<li><div class="share_icon share_icon1"><i></i></div></li>
+								<li><div class="share_icon share_icon2"><i></i></div></li>
+								<li><div class="share_icon share_icon3" onClick="share(2)"><i></i></div></li>
+								<li><div class="share_icon share_icon4" onClick="share(1)"><i></i></div></li>
+							</ul>
+							<p>点击分享图标给您的好友</p>
+						</div>
+						<div class='invite_way_item'>
+							<p class='p_title'>
+								<strong>方式二</strong>
+							</p>
+							<div class="invite_code">
+								<div class="invite_code_title">您的邀请码</div>
+								<div class="invite_code_font" id="copytxt"></div>
+								<button class="copy_font" type="button" data-clipboard-action="copy" data-clipboard-target="#copytxt"></button>
+							</div>
+							<p>复制邀请码,发送给好友,注册时输入</p>
+						</div>
+						<div class='invite_way_item'>
+							<p class='p_title'>
+								<strong>方式三</strong>
+							</p>
+							<div class="qrcode_pic" id="code"></div>
+							<p>让好友扫描上方二维码</p>
+						</div>
+						<div class='clearfix'></div>
+					</div>
+				</div>
+				<div class='invite_module_4'>
+					<div class='invite_title'><span id='queryShareCount'>邀请明细</span><span id='queryShareByPage'>奖励详情</span><i></i></div>
+					<div class='reword_con'>
+						<div class='reword_list'>
+							<table id="countDetail">
+							<thead><th>被推荐人</th><th>奖励日期</th><th>备注</th></thead>
+							<tbody>
+							
+							</tbody>
+						</table>
+						<div class="page_panel" id="countDetailPage"></div>
+						</div>
+						<div class='reword_list' style='display:none;'>
+							<table id="shareDetail">
+							<thead><th>奖励金额</th><th>奖励类型</th><th>好友呢称</th><th>奖励日期</th><th>备注</th></thead>
+							<tbody>
+							</tbody>
+						</table>
+						<div class="page_panel" id="shareDetailPage"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer id="footer" class="footer"></footer>
+
+	</div>
+<div class="share_weixin" id="code1">
+	<p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p><div class="weinxin_del"></div><p></p>
+	<!-- <img src="/portal/images/index/weixin.png">	 -->
+</div>	
+<div id="yinying" class="yinying"></div>
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+<script type="text/javascript" src="/portal/js/config.js"></script>
+<script type="text/javascript" src="/portal/js/public.js"></script>
+<script type="text/javascript">window.userNavActive = 11;topNavSelect= '4'; </script>
+<script type="text/javascript" src="/portal/js/user.js"></script>
+<script type="text/javascript" src="/portal/js/pub/widget-table.js"></script>
+<script type="text/javascript" src="/portal/js/pub/app.js"></script>
+<script type="text/javascript" src="/assets/plugin/ZeroClipboard/ZeroClipboard.min.js"></script>
+<script type="text/javascript" src="/portal/js/qrcode.js"></script>
+<script type="text/javascript" src="/portal/js/clipboard.min.js"></script>
+<script>
+NavMenu(4);
+$(".invite_module_4 .invite_title span").click(function(){
+	var index = $(this).index();
+	$('.invite_module_4 .invite_title i').css('left',index*110 + 'px');
+	$('.reword_con .reword_list').eq(index).show().siblings().hide();
+});
+
+	//queryShareByPage 奖励明细
+	$.queryShareByPage = function( pageNumber){
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("queryShareByPage"),
+			data: {
+				"pageNumber" : pageNumber || 1,
+				"pageSize" : 10
+			},
+			success : function( sucData ) {
+				var xx = parseInt(sucData.totalAmount);
+				$("#totalAmount").text( YRHX.toDecimal2( sucData.totalAmount / 10.0/10.0, "¥") );
+				sucData['totalAmount'] = sucData['totalAmount'] / 10.0 /10.0;
+				if(sucData['totalAmount']==0){
+					sucData['totalAmount'] = (sucData['totalAmount'].toString()).replace('.00','');
+				}else{
+						sucData['totalAmount'] = parseFloat(sucData['totalAmount']).toFixed(2);
+				}
+				//$('.invite_amount span').text(sucData['totalAmount']);  //获取投资券
+				var html_tab = "<tr><td>#{rewardAmount}</td>";
+				html_tab += "<td>#{rewardType}</td>";
+				html_tab += "<td>#{bUserName}</td>";
+				html_tab += "<td>#{rewardTimeStr}</td>";
+				html_tab += "<td>#{rmk}</td></tr>"
+				
+				var tableEle = $("#shareDetail tbody");
+				tableEle.html("");
+				var returnData = sucData.shares.list ;
+				if( returnData.length > 0 ){
+					for( var i = 0; i < returnData.length; i++ ){
+						var row = returnData[i];
+						var dd = parseInt(row["rewardAmount"]);
+						row["rewardAmount"] = YRHX.toDecimal2( dd / 10.0/10.0) + '元';
+						
+						row["rewardTimeStr"] = (row["rewardDate"]+row["rewardTime"]).dateformat();
+						if(row["rewardType"] == "A"){
+							row["rewardType"] = "好友投资返现";
+						}else if(row["rewardType"] == "B"){
+							row["rewardType"] = "好友投资返佣";
+						}
+						
+						var tmpHtml = html_tab.makeHtml( row );
+						
+						tableEle.append( tmpHtml );
+					}
+				}else{
+					//暂无数据
+					$("#shareDetail").noData();
+				}
+				
+				//分页
+				$("#shareDetailPage").pag(sucData["shares"]["pageNumber"], sucData["shares"]["pageSize"],sucData["shares"]["totalRow"], function() {
+					var reqIndex = $(this).attr("index");
+					$.queryShareByPage( reqIndex || 1);
+				});
+				
+			},
+			error: function(){
+				
+			}
+		})
+	}
+	//queryShareCount 邀请明细
+	$.queryShareCount = function( pageNumber){
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("queryShareCount"),
+			data: {
+				"pageNumber" : pageNumber || 1,
+				"pageSize" : 10
+			},
+			success : function( sucData ) {
+	
+				$('.invite_count span').text(sucData.tjrs);
+				var xx = parseInt(sucData.totalAmount);
+				$("#totalAmount").text( YRHX.toDecimal2( sucData.amount_all / 10.0/10.0, "¥") );
+				
+				
+				var html_tab = "<tr><td>#{bUserName}</td>";
+				html_tab += "<td>#{bRegTimeStr}</td>";
+				html_tab += "<td>#{rmdRemark}</td></tr>"
+				
+				var tableEle = $("#countDetail tbody");
+				tableEle.html("");
+				var returnData = sucData.pages.list ;
+				if( returnData.length > 0 ){
+					
+					for( var i = 0; i < returnData.length; i++ ){
+						var row = returnData[i];
+						var dd = parseInt(row["rewardAmount"]);
+						row["rewardAmount"] = YRHX.toDecimal2( dd / 10.0/10.0,"¥");
+						
+						row["bRegTimeStr"] = (row["bRegDate"]+row["bRegTime"]).dateformat();
+						
+						var tmpHtml = html_tab.makeHtml( row );
+						
+						tableEle.append( tmpHtml );
+					}
+				}else{
+					//暂无数据
+					$("#countDetail").noData();
+				}
+				
+				//分页
+				$("#countDetailPage").pag(sucData["pages"]["pageNumber"], sucData["pages"]["pageSize"],sucData["pages"]["totalRow"], function() {
+					var reqIndex = $(this).attr("index");
+					$.queryShareCount( reqIndex || 1);
+				});
+				
+			},
+			error: function(){
+				
+			}
+		})
+	}
+
+	//queryShareCount 邀请明细
+	//queryShareByPage 奖励明细
+	$.queryShareCount();
+	$.queryShareByPage();
+	$("#queryShareCount").click(function(){
+		$.queryShareCount();
+	})
+	$("#queryShareByPage").click(function(){
+		$.queryShareByPage();
+	})
+
+	var userCode = YRHX.Cookie('userCode').get();
+	
+	var shareUrl = window.location.origin+"/share?u="+userCode;
+	$("#shareUrl").text( shareUrl )
+	$("#shareImg").attr("src","http://qr.liantu.com/api.php?text="+shareUrl);
+	
+	// 定义一个新的复制对象
+	var clip = new ZeroClipboard( document.getElementById("copyBtn"), {
+	  moviePath: "/assets/plugin/ZeroClipboard/ZeroClipboard.swf"
+	} );
+
+	// 复制内容到剪贴板成功后的操作
+	clip.on( 'complete', function(client, args) {
+	   alert("复制成功，复制内容为："+ args.text);
+	} ); 
+
+$('.share_icon1,.share_icon2').click(function(){
+	$("#code1").find("img").remove();
+	$('body,html').css('overflow', 'hidden');
+	to_center($('#yinying').show());
+	to_center($('.share_weixin').show());
+	codetxt1();
+})
+$('.weinxin_del').click(function(){
+	$('body,html').css('overflow', 'auto');
+	$('#yinying').hide();
+	$('.share_weixin').hide();
+});
+
+
+
+var inviteCode = null;
+function UsercodeMoney(){
+	YRHX.ajax({
+		url : "/inviteRewardInfo",
+		//dataType:"jsonp",
+		data:{"beginDate":"20180101","endDate":""},
+		success : function( sucData ) {
+			var tNum=sucData.tNum;  //投资券
+			var sumReward=sucData.sumReward;  //预期赏金金额
+			inviteCode=sucData.inviteCode;  //邀请码
+			$(".invite_amount span").text(tNum);
+			$(".invite_money span").text(sumReward);
+			$(".invite_code_font").text(inviteCode); 
+			codetxt();
+		}
+	});
+}
+
+
+function codetxt(){
+	//设置二维码尺寸
+	var qrcode =new QRCode(document.getElementById("code"),{
+		width:80,
+		height:80
+	});
+	//显示微信扫码
+	var userCode = YRHX.Cookie('userCode').get();
+	var linktxt="http://www.yrhx.com/appRegister?u="+inviteCode;
+	qrcode.makeCode(linktxt);
+}
+
+function codetxt1(){
+	var qrcode1 =new QRCode(document.getElementById("code1"),{
+		width:300,
+		height:300
+	});
+	//显示微信扫码
+	var userCode = YRHX.Cookie('userCode').get();
+	var linktxt="http://www.yrhx.com/appRegister?u="+inviteCode;
+	qrcode1.makeCode(linktxt);
+}
+
+function share(t){
+    var p = {
+        url: "http://yrhx.com/register?u="+inviteCode,	
+        showcount: '0',
+        desc: '易融恒信（yrhx.com）,安全可靠透明的投资平台',
+        summary: '易融恒信（yrhx.com）,易融恒信,致力于做华中地区最好的p2p网贷平台,为投资者提供最安全,最靠谱,最透明的互联网金融p2p投资平台,咨询电话400-027-0707',/*分享摘要(可选)*/
+        title: '注册即送518红包',
+        site: '易融恒信',
+        pics: ''
+    };
+    var s = [];
+    for (var i in p) {
+        s.push(i + '=' + encodeURIComponent(p[i] || ''));
+    }
+    var params = s.join('&');
+    if (t == 1) {//空间
+        window.open("http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?" + params);
+    }
+    else if(t == 2){//好友
+        window.open("http://connect.qq.com/widget/shareqq/index.html?" + params);
+    }
+};
+
+$(function(){
+	UsercodeMoney();
+	
+	//复制
+	var clipboard = new Clipboard('.copy_font');
+	clipboard.on('success', function (e) {
+	    alert("复制成功");
+	    console.log(e);
+	});
+	clipboard.on('error', function (e) {
+	    console.log(e);
+	});
+
+});
+
+</script>
+
+</body>
+</html>

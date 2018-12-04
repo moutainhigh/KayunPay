@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>易融恒信-赏金计划,享好友投资收益5%</title>
+		<link href="app/css/activity/act20180101.css" rel="stylesheet" type="text/css" />
+		<script src="app/js/jquery-1.8.3.min.js" type="text/javascript"></script>
+		<script src="app/js/core.js" type="text/javascript"></script>
+	</head>
+	<body style="background:#feca1f;">
+		<div class="money_plan">
+			<div class="money_warp">
+				<div class="money_box">
+					<div class="money_title1">邀请详情</div>
+					<table>
+						<thead>
+							<tr class="money_th">
+								<th width="150px">排名</th>
+								<th width="250px">用户名</th>
+								<th width="300px">预期赏金收益</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+	//邀请详情
+	function InvitingDetails(){
+			YRHX.ajax({
+				url:"/app_queryRewardByUserCode",
+				data : {
+					beginDate : "20180101",
+				},
+				dataType:"jsonp",
+				success:function(data){
+					var tableHtml = $(".money_box table tbody");
+					tableHtml.html("");
+					for (var i = 0; i < data.length; i++) {
+						var row = data[i];
+						var len = row[0].length;
+						if (0 == row[0].indexOf("*")) {
+							row[0] = row[0]
+						} 
+						else {
+							if (len < 3) {
+								data[0] = data[0] + "***";
+							} else if (len < 11) {
+								row[0] = row[0].substr(0,3)+ "***";
+							} else if (len == 11) {
+								row[0] = row[0].substr(0,3)+ "***" + row[0].substr(7);
+							} else {
+								row[0] = row[0].substr(0,3)+ "***";
+							}
+						}
+						var html="<tr><td width='150px'><i class='m_num'></i></td><td  width='250px' class='m_font'>"+row[0]+"</td><td width='300px' class='m_font'>"+row[2]+"</td></tr>";
+							tableHtml.append(html);
+					}
+					DetailsRanking();
+				},
+			});
+	}
+	
+	function DetailsRanking(num) {
+		//前三名图标显示 
+		var numico=$(".money_box table tbody tr");
+		numico.each(function(){
+			var ranknum=$(this).index();
+			if(ranknum<3){
+				$(this).find("i").addClass('money_ranking');
+			}
+			else{
+				$(this).find("i").addClass('m_ico');
+			}
+		});
+		$(".money_box table tbody tr:odd").addClass("money_even");//隔行换色（奇数）
+		$(".money_box table tbody tr").eq(0).addClass("money_tr1");
+		$(".money_box table tbody tr").eq(2).addClass("money_tr3");
+		$(".money_box table tbody tr").eq(4).addClass("money_tr5");
+		$(".money_box table tbody tr").eq(6).addClass("money_tr7");
+		$(".money_box table tbody tr").eq(8).addClass("money_tr9");
+	}
+	$(function(){
+		InvitingDetails();
+	});
+	</script>
+</html>

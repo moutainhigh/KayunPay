@@ -1,0 +1,684 @@
+package com.dutiantech.controller.app;
+
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.dutiantech.util.Number;
+import com.dutiantech.Message;
+import com.dutiantech.anno.AuthNum;
+import com.dutiantech.controller.BaseController;
+import com.dutiantech.interceptor.AppInterceptor;
+import com.dutiantech.interceptor.PkMsgInterceptor;
+import com.dutiantech.model.BanksV2;
+import com.dutiantech.model.Funds;
+import com.dutiantech.model.LoanInfo;
+import com.dutiantech.model.LoanNotice;
+import com.dutiantech.model.Notice;
+import com.dutiantech.model.SignTrace;
+import com.dutiantech.model.User;
+import com.dutiantech.model.UserInfo;
+import com.dutiantech.model.BizLog.BIZ_TYPE;
+import com.dutiantech.plugins.Memcached;
+import com.dutiantech.service.BanksService;
+import com.dutiantech.service.FuiouTraceService;
+import com.dutiantech.service.FundsServiceV2;
+import com.dutiantech.service.LoanInfoService;
+import com.dutiantech.service.LoanNoticeService;
+import com.dutiantech.service.NoticeService;
+import com.dutiantech.service.SignTraceService;
+import com.dutiantech.service.UserInfoService;
+import com.dutiantech.service.UserService;
+import com.dutiantech.util.CommonUtil;
+import com.dutiantech.util.DateUtil;
+import com.dutiantech.util.IdCardUtils;
+import com.dutiantech.util.StringUtil;
+import com.dutiantech.util.SysEnum.traceState;
+import com.jfinal.aop.Before;
+import com.jfinal.core.ActionKey;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+
+public class AppProtalController extends BaseController{
+	private LoanInfoService loanInfoService = getService(LoanInfoService.class);
+	private SignTraceService signTraceService = getService(SignTraceService.class);
+	private FundsServiceV2 fundsServiceV2 = getService(FundsServiceV2.class);
+	private UserInfoService userInfoService = getService(UserInfoService.class);
+	private UserService userService = getService(UserService.class);
+	private BanksService banksService = getService(BanksService.class);
+	private FuiouTraceService fuiouTraceService = getService(FuiouTraceService.class);
+	private LoanNoticeService loanNoticeService = getService(LoanNoticeService.class);
+	private NoticeService noticeService = getService(NoticeService.class) ;
+	
+	/**
+	 * 版本号
+	 * */
+	@ActionKey("/app_ver")
+	@AuthNum(value=999)
+	public void ver(){
+		Message msg=null;
+		msg=succ("版本号", "20170922");
+		renderJson(msg);
+	}
+	/**
+	 * 首页显示
+	 * */
+	@ActionKey("/app_IndexPage")
+	@AuthNum(value=999)
+	public void IndexPage(){
+		Message msg=null;
+		Map<String,Object> map = new HashMap<String, Object>();
+		String minLimit = getPara("minLimit");
+		String maxLimit = getPara("maxLimit");
+		String productType = getPara("productType","");
+		String loanState = "J,M,N,O,P,Q,R";
+		//加载首页标
+		Page<LoanInfo> loanInfos = loanInfoService.findByPortal(1, 1,loanState,"1",productType,minLimit,maxLimit);
+		LoanInfo apploanInfo=loanInfos.getList().get(0);
+		map.put("loanInfos", apploanInfo);
+		map.put("serverTime", DateUtil.getNowDateTime());
+		//加载活动
+		String sql="select title,url,pic ";
+		sql+="from t_notice ";
+		sql+="where status=? and type =? and addDateTime>20170601000000 ";
+		sql+="order by id desc limit 5";
+		List<Notice> noticeList = Notice.noticeDao.find(sql,1,8);
+		//加载滚动最新公告(3条)
+		List<Notice> newsList = Notice.noticeDao.find("SELECT id,title FROM t_notice WHERE type = '0' AND `status` = '1' ORDER BY id DESC LIMIT 3");
+		for (int i = 0; i < newsList.size(); i++) {
+			Notice tmp = newsList.get(i);
+			tmp.put("nid", tmp.getInt("id"));
+			tmp.put("url", "");
+			tmp.remove("id");
+		}
+		map.put("noticeList", noticeList);
+		map.put("newsList", newsList);
+		msg= succ("ok", map);
+		renderJson(msg);
+	}
+	/**
+	 * 点击签到
+	 * */
+	@ActionKey("/app_singIn")
+	@AuthNum(value=999)
+	@Before({AppInterceptor.class, PkMsgInterceptor.class})
+	public void appsingIn(){
+		Message msg=null;
+		String userCode = getUserCode();
+		if (userCode == null) {
+			msg= error("02", "用户未登录", "noLogin");
+		}else{
+		Map<String,Object> map = new HashMap<String, Object>();
+		if (signTraceService.isSign(userCode)) {
+			msg= succ("已签到", null);
+		} else {
+			// 查询连续登录天数
+			int sustainDay = signTraceService.findSustainDayByUser(userCode);
+			// 账户积分变动
+			int pointDay = sustainDay % 20 == 0 ? 20 : sustainDay % 20;
+			int points = (SignTrace.POINT_MAP.get(pointDay) == null ? 0 : SignTrace.POINT_MAP.get(pointDay)) + 300; 
+			fundsServiceV2.doPoints(userCode, 0 , points,"签到获取积分") ;
+			// 保存签到记录
+			signTraceService.saveSignTrace(null, userCode, pointDay, points, "");
+			map.put("points", points / 100);
+			map.put("sustain_day", sustainDay);
+			msg= succ("签到成功", map);
+		}}
+		renderJson(msg);
+	}
+	
+	/**
+	 * 查询签到记录
+	 * @return
+	 */
+	@ActionKey("/app_signHistory")
+	@AuthNum(value=999)
+	@Before({AppInterceptor.class,PkMsgInterceptor.class}) 
+	public void appsignHistory() {
+		Message msg=null;
+		Map<String, Object> map = new HashMap<String, Object>();
+		String userCode = getUserCode();
+		if ("null".equals(userCode) || userCode == null) {
+			msg= error("01", "用户未登录", "noLogin");
+		}else{
+			String issign="签到成功";
+			if (signTraceService.isSign(userCode)) {
+				issign="已签到";
+			}
+			Calendar calendar = Calendar.getInstance();
+			// 获取用户签到日期
+			String[] signDays = signTraceService.getSignInDaysByMonth2(userCode, calendar.get(Calendar.MONTH) + 1);
+			map.put("signDays", signDays);
+			int sustainDay = signTraceService.findSustainDayByUser(userCode);
+			long points=signTraceService.findNowPointByUser(userCode);
+			map.put("points", points/100);
+			map.put("sustainDay", sustainDay);
+			Funds funds = fundsServiceV2.findById(userCode);
+			long mypoints=funds.getLong("points");
+			map.put("mypoints", mypoints/100);
+			msg= succ(issign, map);
+		}
+		renderJson(msg);
+	}
+	/**
+	 * 个人资料
+	 * */
+	@ActionKey("/app_userdetil")
+	@AuthNum(value=999)
+	@Before({AppInterceptor.class, PkMsgInterceptor.class})
+	public void appUserDetil(){
+		String userCode= getUserCode();
+		UserInfo userInfo = userInfoService.findById(userCode);
+		Map<String,Object> map = new HashMap<String, Object>();
+		Message msg=null;
+		if(null==userInfo){
+			msg=error("01","您还未实名认证", null);
+		}else{
+			String userCardId=userInfo.getStr("userCardId");
+			try {
+				userCardId=CommonUtil.decryptUserCardId(userCardId);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(StringUtil.isBlank(userCardId)){
+				msg= error("01", "未进行实名认证!", null);
+			}else{
+			String gender = IdCardUtils.getGenderByIdCard(userCardId);
+			if ("M".equals(gender)) {
+				gender = "男"; // 性别 男:0
+			} else if ("F".equals(gender)) {
+				gender = "女"; // 性别 女:1
+			}
+			String isAuthed=userInfo.getStr("isAuthed");
+			if("2".equals(isAuthed)){
+				map.put("userCardName", userInfo.getStr("userCardName"));
+				map.put("userCardId", userCardId);
+				map.put("sex", gender);
+				if(null==userInfo.getStr("userAdress")||"".equals(userInfo.getStr("userAdress"))){
+					map.put("userAddress", "");
+				}else{
+					map.put("userAddress", userInfo.getStr("userAdress"));
+				}
+				if(null==userInfo.getStr("ecpNme1")||"".equals(userInfo.getStr("ecpNme1"))){
+					map.put("ecpNme1", "");
+				}else{
+					map.put("ecpNme1", userInfo.getStr("ecpNme1"));
+				}
+				if(null==userInfo.getStr("ecpMbile1")||"".equals(userInfo.getStr("ecpMbile1"))){
+					map.put("ecpMbile1", "");
+				}else{
+					map.put("ecpMbile1", userInfo.getStr("ecpMbile1"));
+				}
+				if(null==userInfo.getStr("ecpRlation1")||"".equals(userInfo.getStr("ecpRlation1"))){
+					map.put("ecpRlation1", "");
+				}else{
+					map.put("ecpRlation1", userInfo.getStr("ecpRlation1"));
+				}
+				msg=succ("ok", map);
+			}else{
+				msg=error("02", "实名认证中或未通过!", null);
+			}
+		}}
+		renderJson(msg);
+	}
+	/**
+	 * 保存个人资料
+	 * */
+	@ActionKey("/app_updateuserdetil")
+	@AuthNum(value=999)
+	@Before({AppInterceptor.class, PkMsgInterceptor.class})
+	public void appUpdateUserDetil(){
+		Message msg=null;
+		String userCode = getUserCode();
+		UserInfo userInfo = userInfoService.findById(userCode);
+		//获取参数
+		String userAdress =getPara("userAdress");
+		String ecpNme1 =getPara("ecpNme1");
+		String ecpRlation1 =getPara("ecpRlation1");
+		String ecpMbile1 =getPara("ecpMbile1");
+		userInfo.set("userAdress", userAdress);
+		userInfo.set("ecpNme1", ecpNme1);
+		userInfo.set("ecpRlation1", ecpRlation1);
+		userInfo.set("ecpMbile1", ecpMbile1);
+		//删除不可修改字段
+		userInfo.remove("userCardName","userCardId","cardImg","isAuthed","userInfoMac");
+		//修改
+		boolean update = userInfo.update();
+		if(update == false){
+			//记录日志
+			BIZ_LOG_ERROR(userCode, BIZ_TYPE.USERINFO, "修改用户信息失败-02", null);
+			msg= error("02", "修改失败!", "");
+		}else{
+		//记录日志
+		BIZ_LOG_INFO(userCode, BIZ_TYPE.USERINFO, "修改用户信息成功");
+		msg= succ("修改成功","");
+		}
+		renderJson(msg);
+		
+	}
+	/**
+	 * 会员中心
+	 * */
+	@ActionKey("/app_vipdetil")
+	@AuthNum(value=999)
+	@Before({AppInterceptor.class, PkMsgInterceptor.class})
+	public void appVipDetil(){
+		String userCode=getUserCode();
+		Message msg=null;
+		Map<String,Object> map = new HashMap<String, Object>();
+		User user = userService.findById(userCode);
+		UserInfo userInfo =userInfoService.findById(userCode);
+		List<BanksV2> banksV2 = banksService.findBanks4User(userCode);
+		String userName= user.getStr("userName");
+		String vipLevelName =user.getStr("vipLevelName");
+		String tag="false";
+		Long  mypoints=user.getLong("userScore")/100;
+		String isUserInfo="已完善";
+		if(null==userInfo || StringUtil.isBlank(userInfo.getStr("userCardName"))
+				|| StringUtil.isBlank(userInfo.getStr("userAdress"))
+				|| StringUtil.isBlank(userInfo.getStr("ecpNme1"))
+				|| StringUtil.isBlank(userInfo.getStr("ecpRlation1"))
+				|| StringUtil.isBlank(userInfo.getStr("ecpMbile1"))) {
+			isUserInfo="未完善";
+		}
+		String isBank="已绑定";
+		if(banksV2.size()==0||null==banksV2){
+			isBank="未绑定";
+		}else{
+			boolean ii=fuiouTraceService.isfuiouAcount(user);
+			if(ii==false){
+				isBank="未激活";
+			}
+			else{
+				tag="true";
+			}
+		}
+		String userMobile= user.getStr("userMobile");
+		String cardId=userInfo.getStr("userCardId");
+		try {
+			userMobile = CommonUtil.decryptUserMobile(userMobile);
+			cardId = CommonUtil.decryptUserCardId(cardId);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		String isrealname="已认证";
+		if("".equals(cardId)||null==cardId){
+			isrealname="未认证";
+		}
+		map.put("isrealname", isrealname);
+		map.put("userMobile", userMobile);
+		map.put("userName", userName);
+		map.put("vipLevelName", vipLevelName);
+		map.put("mypoints", mypoints);
+		map.put("isUserInfo", isUserInfo);
+		map.put("isBank", isBank);
+		map.put("tag", tag);
+		msg=succ("ok", map);
+		renderJson(msg);
+	}
+	
+	/**
+	 * app查询账户资金信息
+	 * @return
+	 */
+	@ActionKey("/app_queryFund")
+	@AuthNum(value=999)
+	@Before({AppInterceptor.class,PkMsgInterceptor.class})
+	public void queryFund(){
+		Message message=null;
+		//获取用户标识
+		String userCode = getUserCode();
+		
+		Map<String,Object> resultMap = new HashMap<String, Object>();
+		
+		User user=null;
+		UserInfo userInfo=null;
+		//Object bankCount;
+		Funds fund=null;
+		//int countTickets = 0;
+		try{
+			user = userService.findById(userCode);
+			userInfo = userInfoService.findById(userCode);
+			if(null == user || userInfo == null){
+				message= error("01", "查询失败", null);
+				renderJson(message);
+			}
+			//Record record = Db.findFirst("select count(1) bankCount from t_banks_v2 where status = 0 and userCode = ?", userCode);
+			//bankCount = record.getColumns().get("bankCount");
+			fund = fundsServiceV2.findById(userCode);
+			//countTickets = ticketService.countTickets(userCode);
+		}catch(Exception e){
+			BIZ_LOG_ERROR(userCode, BIZ_TYPE.MAINPAGE, "查询失败", e);
+			message= error("02", "查询失败", e.getMessage());
+			renderJson(message);
+			}
+				Object[] nextSUM = Db.queryFirst("select SUM(nextAmount),SUM(nextInterest) from t_loan_trace where traceState=? and payUserCode=?;", 
+						traceState.N.val() , userCode );
+				if( null!= nextSUM[0]  ){
+					resultMap.put("nextAmount",Number.longToString(Number.ObjectTOLong(nextSUM[0])) ) ;//30天内待收本金
+				}
+				else{
+					resultMap.put("nextAmount","0.00") ;//30天内待收本金
+					
+				}
+				if(  null!= nextSUM[1] ){
+					resultMap.put("nextInterest",Number.longToString(Number.ObjectTOLong(nextSUM[1]))) ;//30天内待收利息
+				}else{
+					resultMap.put("nextInterest","0.00") ;//30天内待收本金
+				}
+				
+		//可用余额   冻结余额   代收本金  代收利息
+		long avBalance = fund.getLong("avBalance");//可用余额
+		long frozeBalance = fund.getLong("frozeBalance");//冻结余额
+		long recyMFee4loan=fund.getInt("recyMFee4loan");//利息管理费
+		//回报统计
+		long beRecyPrincipal = fund.getLong("beRecyPrincipal");//待收本金
+		long beRecyInterest = fund.getLong("beRecyInterest");//待收利息
+		long reciedInterest=fund.getLong("reciedInterest");//已收利息
+		long reciedPrincipal=fund.getLong("reciedPrincipal");//已收本金
+		
+		//资金统计
+		long outFundsCount=reciedPrincipal+beRecyPrincipal;//总借出金额
+		long forRecovery=beRecyPrincipal+beRecyInterest;//待回收本息
+		long haveRecovery= reciedPrincipal+reciedInterest;//已回收本息
+		long beRecyCount=fund.getInt("beRecyCount");//待回收笔数
+		long accumulatedEarnings=reciedInterest-recyMFee4loan ;//累计赚取收益
+		long totalBalance=avBalance+frozeBalance+beRecyPrincipal+beRecyInterest;//总资产
+		//long totalRecharge = fund.getLong("totalRecharge");//充值统计
+		//long totalWithdraw = fund.getLong("totalWithdraw");//提现统计
+		resultMap.put("userName",user.getStr("userName"));
+		resultMap.put("avBalance", Number.longToString(avBalance));
+		resultMap.put("frozeBalance", Number.longToString(frozeBalance));
+		resultMap.put("beRecyPrincipal", Number.longToString(beRecyPrincipal));
+		resultMap.put("beRecyInterest", Number.longToString(beRecyInterest));
+		resultMap.put("reciedInterest", Number.longToString(reciedInterest));
+		resultMap.put("reciedPrincipal", Number.longToString(reciedPrincipal));
+		resultMap.put("outFundsCount", Number.longToString(outFundsCount));
+		resultMap.put("forRecovery", Number.longToString(forRecovery));
+		resultMap.put("haveRecovery", Number.longToString(haveRecovery));
+		resultMap.put("beRecyCount", beRecyCount);
+		resultMap.put("accumulatedEarnings", Number.longToString(accumulatedEarnings));
+		resultMap.put("totalBalance", Number.longToString(totalBalance));
+		message = succ("查询成功", resultMap);
+		renderJson(message);
+	}
+	
+	/**
+	 * 平台数据 ws
+	 * */
+	@ActionKey("/app_apppaasdata")
+	@AuthNum(value=999)
+	@Before(PkMsgInterceptor.class)
+	public void AppPaasData(){
+		Message msg=null;
+		Map<String,Object> resultMap = new HashMap<String, Object>();
+		String sql = "select COALESCE(sum(reciedInterest),0),COALESCE(sum(beRecyPrincipal+beRecyInterest),0) from t_funds";
+		String sql2 = "select COALESCE(sum(loanAmount),0) from t_loan_info where loanState in('N','O','P','Q')";
+		Object[] result = Db.queryFirst(sql);
+		long loanAmount = Db.queryBigDecimal(sql2).longValue();
+		long payTotal =  Long.parseLong(result[0].toString());
+		long reciedTotal = Long.parseLong(result[1].toString());
+		resultMap.put("payTotal", Number.longToString(payTotal));//累积赚取利益
+		resultMap.put("reciedTotal", Number.longToString(reciedTotal));//待收金额
+		resultMap.put("payAmountTotal", Number.longToString(loanAmount));//交易总额
+		long tzr = Db.queryLong("select count(userCode) from t_funds where userCode not in (select userCode from t_loan_info)");
+		long jkr = Db.queryLong("select count(userCode) from t_funds where userCode in (select userCode from t_loan_info)");
+		resultMap.put("tzr", String.valueOf(tzr));
+		resultMap.put("jkr", String.valueOf(jkr));
+		//按日累积金额
+		int dayLength = getParaToInt("dayLength",7);
+		List<Map<String,Object>> result2 = new ArrayList<Map<String,Object>>();
+		List<String> days = CommonUtil.getAnyDateFromDayLength(dayLength, 0, 0, 0,"yyyyMMdd",0);
+		int dd=days.size();
+		for (int i = dd-1; i >=0; i--) {
+			String tmp1 = days.get(i);
+			long sum_loanAmount = loanInfoService.countLoanAmountByEffectDate(tmp1, tmp1);
+			Map<String,Object> tmp2 = new HashMap<String, Object>();
+			tmp2.put("date", tmp1);
+			tmp2.put("data", String.valueOf(sum_loanAmount/10000/100));
+			result2.add(tmp2);
+		}
+		resultMap.put("days", result2);
+		//按月累积金额
+		int monthLength = getParaToInt("monthLength",7);
+		List<Map<String,Object>> result3 = new ArrayList<Map<String,Object>>();
+		List<Map<String,String>> months = CommonUtil.getAnyDateFromMonthLength(monthLength, 0, 0, "yyyyMMdd", 0);
+		int mm=months.size();
+		for (int i = mm-1; i >=0; i--) {
+			String start = months.get(i).get("start");
+			String end = months.get(i).get("end");
+			long sum_loanAmount = loanInfoService.countLoanAmountByEffectDate(start, end);
+			Map<String,Object> tmp = new HashMap<String, Object>();
+			tmp.put("date", start.substring(0,6));
+			tmp.put("data", String.valueOf(sum_loanAmount/100/10000/100));
+			result3.add(tmp);
+		}
+		resultMap.put("months", result3);
+		msg= succ("查询成功", resultMap);
+		renderJson(msg);
+	}
+//	@ActionKey("/app_apppaasdata")
+//	@AuthNum(value=999)
+//	@Before(PkMsgInterceptor.class)
+//	public void AppPaasData(){
+//		Message msg=null;
+//		Map<String,Object> resultMap = new HashMap<String, Object>();
+//		resultMap.put("payTotal", "12,523,526,452.00");//累积赚取利益
+//		resultMap.put("reciedTotal", "12,523,526,452.00");//待收金额
+//		resultMap.put("payAmountTotal", "12,523,526,452.00");//交易总额
+//		resultMap.put("tzr", "99999");
+//		resultMap.put("jkr", "99999");
+//		List<Map<String, Object>> daylist = new ArrayList<Map<String,Object>>();
+//		for(int i= 0;i<7;i++){
+//			Map<String,Object> tmp = new HashMap<String, Object>();
+//			tmp.put("date", "2017080"+(i+3));
+//			tmp.put("data", "1"+i+"88");
+//			daylist.add(tmp);
+//		}
+//		List<Map<String, Object>> monthlist = new ArrayList<Map<String,Object>>();
+//		for(int i= 0;i<7;i++){
+//			Map<String,Object> tmp = new HashMap<String, Object>();
+//			tmp.put("date", "2017-0"+(i+2));
+//			tmp.put("data", "1"+i+"8");
+//			monthlist.add(tmp);
+//		}
+//		resultMap.put("days", daylist);
+//		resultMap.put("months", monthlist);
+//		msg=succ("查询成功", resultMap);
+//		renderJson(msg);
+//	}
+	
+	/**
+	 * 新标预告
+	 * */
+	@ActionKey("/app_querynewloans")
+	@AuthNum(value=999)
+	@Before(PkMsgInterceptor.class)
+	public void AppQueryNewLoans(){
+		Message msg= null;
+		Page<LoanNotice> loanNotices = loanNoticeService.findByPage(
+				1, 20, DateUtil.getNowDateTime(), null, "0", null);
+		List<LoanNotice> list = loanNotices.getList();
+		for(int i=0;i<list.size();i++){
+			LoanNotice loanNotice=list.get(i);
+			String date =loanNotice.getStr("overDateTime");
+			String hh=date.substring(date.length()-6,date.length()-4);
+			String mm=date.substring(date.length()-4,date.length()-2);
+			String time =hh+":"+mm;
+			loanNotice.put("time",time);
+		}
+		msg= succ("查询成功", loanNotices);
+		renderJson(msg);
+	}
+	/**
+	 * 邀请好友链接地址
+	 * */
+	@ActionKey("/app_friendurl")
+	@AuthNum(value=999)
+	@Before({AppInterceptor.class,PkMsgInterceptor.class})
+	public void AppFriendUrl(){
+		Message msg=null;
+		String userCode=getUserCode();
+		String url="http://www.yrhx.com/share?u="+userCode;
+		msg=succ("邀请成功", url);
+		renderJson(msg);
+	}
+	/**
+	 * 新手福利
+	 * @throws ParseException 
+	 * */
+	@ActionKey("/app_newloan")
+	@AuthNum(value=999)
+	@Before(PkMsgInterceptor.class)
+	public void AppNewLoan() throws ParseException{
+		Message msg=null;
+		Map<String,Object> map = new HashMap<String, Object>();
+		String minLimit = getPara("minLimit");
+		String maxLimit = getPara("maxLimit");
+		String product_Type = getPara("productType","");
+		String loanState = "J,M,N,O,P,Q,R";
+		//加载首页标
+		Page<LoanInfo> loanInfos = loanInfoService.findByPortal(1, 1,loanState,"1",product_Type,minLimit,maxLimit);
+		LoanInfo apploanInfo=loanInfos.getList().get(0);
+		DecimalFormat df = new DecimalFormat("0.00");
+		int bfb = (int) (100 * (apploanInfo.getLong("loanAmount") - apploanInfo.getLong("loanBalance")) / apploanInfo.getLong("loanAmount"));
+		String percent = df.format(bfb / 100.00);
+		apploanInfo.put("percent", percent);
+		apploanInfo.put("loanAmount", df.format(apploanInfo.getLong("loanAmount")/100));		
+		apploanInfo.put("loanBalance", df.format(apploanInfo.getLong("loanBalance")/100));
+		apploanInfo.put("maxLoanAmount", df.format(apploanInfo.getInt("maxLoanAmount")/100));
+		apploanInfo.put("minLoanAmount", df.format(apploanInfo.getInt("minLoanAmount")/100));
+		apploanInfo.put("rateByYear", df.format(apploanInfo.getInt("rateByYear")/100.00));
+		apploanInfo.put("rewardRateByYear", df.format(apploanInfo.getInt("rewardRateByYear")/100.00));
+		apploanInfo.put("benefits4new", df.format(apploanInfo.getInt("benefits4new")/100.00));
+		
+		String tmpLastPayLoanDateTime = apploanInfo.getStr("lastPayLoanDateTime");
+		String lastPayLoanDateTime = "";
+		if ("00000000000000".equals(tmpLastPayLoanDateTime)) {
+			lastPayLoanDateTime = "";
+		} else {
+			lastPayLoanDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+					.format(new SimpleDateFormat("yyyyHHddHHmmss")
+							.parse(tmpLastPayLoanDateTime));
+		}
+		apploanInfo.put("lastPayLoanDateTime", lastPayLoanDateTime);
+		
+		String productType = apploanInfo.getStr("productType");
+		if ("A".equals(productType)) {
+			productType = "质押宝";
+		} else if ("B".equals(productType)) {
+			productType = "车稳盈";
+		} else if ("C".equals(productType)) {
+			productType = "房稳赚";
+		} else if ("D".equals(productType)) {
+			productType = "其它";
+		} else if ("G".equals(productType)) {
+			productType = "稳定投";
+		}
+		apploanInfo.put("productType", productType);
+		String refundType = apploanInfo.getStr("refundType");
+		if ("A".equals(refundType)) {
+			refundType = "等额本息";
+		} else if ("B".equals(refundType)) {
+			refundType = "先息后本";
+		}
+		apploanInfo.put("refundType", refundType);
+		
+		map.put("loanInfos", apploanInfo);
+		msg=succ("新手福利", map);
+		renderJson(msg);
+		}
+
+	/**
+	 * 最新公告列表
+	 * 20170908 WCF
+	 */
+	@ActionKey("/appNoticeList")
+	@AuthNum(value = 999)
+	public void appNoticeList() {
+		Message msg = null;
+		Integer pageNumber = getParaToInt("pageNumber");
+		Integer pageSize = getParaToInt("pageSize");
+
+		// 验证数据完整性
+		if (null == pageNumber || pageNumber <= 0) {
+			pageNumber = 1;
+		}
+		if (null == pageSize || pageSize <= 0 || pageSize > 20) {
+			pageSize = 20;
+		}
+
+		Page<Notice> queryNotice = noticeService.queryNotice(pageNumber,
+				pageSize, "0", "1");
+		List<Notice> list = queryNotice.getList();
+		for (int i = 0; i < list.size(); i++) {
+			Notice tmp = list.get(i);
+			String upDateTime = "";
+			try {
+				upDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+						.format(new SimpleDateFormat("yyyyMMddHHmmss")
+								.parse(tmp.getStr("upDateTime")));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			tmp.put("upDateTime", upDateTime);
+			tmp.put("nid", tmp.getInt("id"));
+			tmp.remove("description", "clicks", "addDateTime", "pic", "url", "type", "id");
+		}
+		msg = succ("list", queryNotice);
+		renderJson(msg);
+	}
+	
+	/**
+	 * 最新公告详情
+	 * @param nid 公告id
+	 * 20170908 WCF
+	 */
+	@ActionKey("/appNoticeDetail")
+	@AuthNum(value = 999)
+	public void noticeDetail() {
+		Message msg = new Message();
+		String id = getPara("nid");
+		
+		Notice notice = Notice.noticeDao.findFirst("SELECT title,content,upDateTime FROM t_notice WHERE id = ?", id);
+		String upDateTime = "";
+		try {
+			upDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+					.format(new SimpleDateFormat("yyyyMMddHHmmss")
+							.parse(notice.getStr("upDateTime")));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		notice.put("upDateTime", upDateTime);
+		
+		msg = succ("detail", notice);
+		renderJson(msg);
+	}
+
+	/**
+	 * app生成图形验证码
+	 * */
+	@ActionKey("/appGetVerifiCode")
+	@AuthNum(value = 999)
+	@Before({ PkMsgInterceptor.class })
+	public void appGetVerifiCode() {
+		Message msg = null;
+		String verifiCode = "";// 验证码
+		String verifiId = "";// 验证标识
+		Map<String, String> map = new HashMap<String, String>();
+		verifiId = CommonUtil.genMchntSsn();
+		verifiCode = CommonUtil.getVerifiCode();
+		// cached
+		Memcached.set("verifi_code_" + verifiId, verifiCode, 60 * 10 * 1000);
+		map.put("verifiId", verifiId);
+		map.put("verifiCode", verifiCode);
+		msg = succ("map", map);
+		renderJson(msg);
+	}
+}

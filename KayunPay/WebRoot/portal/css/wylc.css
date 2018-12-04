@@ -1,0 +1,574 @@
+.project_info {
+	margin-top: 30px;
+	height: 360px;
+	background: #ffffff;
+}
+
+.project_info .project_img {
+	float: left;
+	margin-left: 25px;
+	margin-top: 25px;
+}
+
+.project_info h1 {
+	margin: 0px 25px 0px 220px;
+	padding-top: 35px;
+	padding-bottom: 15px;
+	height: 22px;
+	font-size: 18px;
+	font-weight: normal;
+	text-indent: -8px;
+	border-bottom: 1px #eaeaea solid;
+}
+
+.uf_tips {
+	padding: 0px 50px;
+	font-size: 14px;
+	line-height: 30px;
+}
+
+.project_info h1 span {
+	float: left;
+	margin-right: 16px;
+}
+
+.project_info h1 i {
+	float: left;
+	margin-top: 1px;
+	margin-right: 5px;
+	width: 22px;
+	height: 22px;
+}
+
+.project_info h1 .icon0 {
+	background: url(../images/list_table_icon0.png);
+}
+
+.project_info h1 .icon1 {
+	background: url(../images/list_table_icon1.png);
+}
+
+.project_info h1 .icon2 {
+	background: url(../images/list_table_icon2.png);
+}
+
+.project_info h1 .icon3 {
+	background: url(../images/list_table_icon3.png);
+}
+
+.project_info .project_data {
+	margin: 0px 25px 0px 220px;
+	border-bottom: 1px #eaeaea solid;
+	height: 85px;
+}
+
+.project_info .project_data div {
+	float: left;
+	width: 80px;
+}
+
+.project_info .project_data .annual_interest_rate {
+	padding-top: 17px;
+}
+
+.project_info .project_data .annual_interest_rate .text {
+	display: block;
+	font-size: 12px;
+	color: #999999;
+}
+
+.project_info .project_data .annual_interest_rate .num {
+	display: block;
+	margin-top: 5px;
+	font-size: 20px;
+	color: #2993e4;
+}
+
+.project_info .project_data .time_limit {
+	display: block;
+	margin-left: 70px;
+	padding-top: 17px;
+}
+
+.project_info .project_data .time_limit .text {
+	display: block;
+	font-size: 12px;
+	color: #999999;
+}
+
+.project_info .project_data .time_limit .num {
+	display: block;
+	margin-top: 5px;
+	font-size: 18px;
+}
+
+.project_info .project_data .money {
+	display: block;
+	margin-left: 70px;
+	padding-top: 17px;
+}
+
+.project_info .project_data .money .text {
+	display: block;
+	font-size: 12px;
+	color: #999999;
+}
+
+.project_info .project_data .money .num {
+	display: block;
+	margin-top: 5px;
+	font-size: 20px;
+}
+
+.project_info .project_data .money .num span {
+	font-size: 11px;
+}
+
+.project_info .project_data .repayment_method {
+	display: block;
+	margin-left: 70px;
+	padding-top: 17px;
+	width: 160px;
+}
+
+.project_info .project_data .repayment_method .text {
+	display: block;
+	font-size: 12px;
+	color: #999999;
+}
+
+.project_info .project_data .repayment_method .num {
+	display: block;
+	margin-top: 6px;
+	font-size: 17px;
+}
+
+.project_info .project_data .report_form {
+	margin-left: 30px;
+	padding-top: 10px;
+}
+
+.project_info .project_data .report_form .bb {
+	position: relative;
+	margin-left: 0px;
+	width: 60px;
+	height: 60px;
+	background: url(../images/y_icon.png);
+}
+
+.project_info .project_data .report_form .bb span {
+	position: absolute;
+	left: 6px;
+	top: 15px;
+	width: 50px;
+	height: 32px;
+	line-height: 32px;
+	text-align: center;
+	color: #ff0000;
+	font-size:14px;
+}
+
+.project_info .project_text {
+	margin: 0px 25px 0px 220px;
+	font-size: 14px;
+	line-height: 30px;
+	color: #999999;
+}
+
+.project_info .project_text .num {
+	margin-right: 24px;
+	color: #333333;
+}
+
+.project_info .project_other {
+	margin: 30px 25px 0px;
+	border: 1px #fbe2e0 solid;
+	background: #fff9f9;
+	height: 125px;
+}
+
+.project_info .balance {
+	float: left;
+	margin-left: 20px;
+	padding-top: 35px;
+	width: 220px;
+	font-size: 14px;
+}
+
+.project_info .balance .num {
+	margin-top: 10px;
+	font-weight: bold;
+ 	color: #999;
+}
+
+.project_info .balance .num a {
+	margin-left: 35px;
+	color: #ff0000;
+}
+
+.project_info .button_panel {
+	float: right;
+	padding-top: 34px;
+	width: 310px;
+}
+
+.project_info .button_panel .canVoteBox {
+	display: none;
+	float: left;
+	font-size: 14px;
+	margin-right: 30px;
+}
+
+.project_info .button_panel .canVoteInput {
+	width: 100px;
+	margin-right: 10px;
+	border: 1px solid #e2e2e2;
+	padding: 5px;
+}
+
+.project_info .button_panel button {
+	border: 0px none;
+	width: 115px;
+	height: 55px;
+	background: #b2b2b2;
+	color: #ffffff;
+	font-size: 16px;
+	outline: none;
+	cursor: pointer;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-ms-border-radius: 3px;
+	-o-border-radius: 3px;
+	-moz-border-radius: 3px;
+}
+
+.project_info .text_panel {
+	float: right;
+	padding-top: 37px;
+	color: #666666;
+	font-size: 14px;
+}
+
+.project_info .text_panel .down {
+	margin-top: 10px;
+}
+
+.project_main {
+	padding-bottom: 90px;
+	background: #ffffff;
+}
+
+.project_main ul {
+	margin: 10px 0px 0px 0px;
+	padding: 0px;
+	height: 48px;
+	position:relative;
+	border-bottom:1px solid #e6e6e6;
+}
+ /* .project_main ul i{
+	width: 120px;
+    height: 3px;
+    display: block;
+    background: #FF5256;
+    position: absolute;
+    left: 0;
+    top: 47px;
+	-webkit-transition: all .5s ease-out;
+    -moz-transition: all 5s ease-out;
+    -ms-transition: all .5s ease-out;
+    transition: all .5s ease-out;
+}  */
+
+.project_main li {
+    float: left;
+    position: relative;
+    width: 120px;
+    color: #333;
+    font-size: 16px;
+    line-height: 48px;
+    list-style: none;
+    text-align: center;
+    cursor: pointer;
+	margin-right:70px;
+}
+.project_main li.active {
+   border-bottom: 3px #FF5256 solid;
+    color: #FF5256;
+    background: #ffffff;
+}
+
+.project_main li .num {
+	position: absolute;
+	right: 20px;
+	top: 5px;
+	width: 19px;
+	height: 19px;
+	text-align: center;
+	line-height: 19px;
+	color: #ffffff;
+	font-size: 13px;
+	font-style: normal;
+	background: url(../images/num.png);
+}
+
+.project_description {
+	margin:50px 25px 25px 0;
+	padding-bottom: 55px;
+	line-height: 30px;
+	font-size: 14px;
+	color: #666;
+}
+.project_main  .tab-content-list h4{
+	color:#333;
+	font-size:16px;
+	
+}
+.project_description t {
+    font-size: 13px;
+    display: block;
+    color: #333;
+    margin-top: 30px;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+#span1{display:inline-block;width:20px;height:20px;background:#ededed;border-radius:50%;text-align:center;line-height:20px;}
+
+.borrower_information .s_text0 {
+	margin: 35px 30px 40px;
+	font-size: 12px;
+	color: #666666
+}
+
+.borrower_information .list {
+	margin: 0px 30px;
+	height: 360px;
+}
+
+.borrower_information .list h4 {
+	position: relative;
+	top: -12px;
+	margin: 0px 0px 0px 0px;
+	width: 100%;
+	font-size: 14px;
+}
+
+.borrower_information .list .list_mery {
+	float: left;
+}
+
+.borrower_information .list .credit_information {
+	width: 475px;
+	height: 306px;
+}
+
+.borrower_information .list .credit_information_main {
+	margin-top: 15px;
+	height: 20px;
+	line-height: 20px;
+	font-size: 14px;
+}
+.loanUserInfo_main{
+	width: 475px;
+	height: 160px;
+	margin-top: 15px;
+	line-height: 20px;
+	font-size: 14px;
+}
+.borrower_information .list .credit_information_main div {
+	float: left;
+	margin-bottom: 20px;
+	width: 236px;
+	height: 15px;
+	line-height: 15px;
+	color: #333;
+}
+.loanUserInfo_main div{
+	float: left;
+	margin-bottom: 20px;
+	width: 236px;
+	height: 15px;
+	line-height: 15px;
+	color: #333;
+}
+.borrower_information .list .credit_information_main div label {
+	color: #666;
+}
+.loanUserInfo_main div label{
+	color: #666;
+}
+.loanUserInfo_main table{width:930px;height:200px;text-align:center;border:1px solid #e9e9e9}
+.loanUserInfo_main table .td{background-color:#f5f5f5;color:#a599b1;}
+.loanUserInfo_main table .td1{width:100px;}
+.borrower_information .list .loan_record {
+	/* width: 464px; */
+	display:none;
+	font-size: 12px;
+	text-indent: 180px;
+}
+
+.borrower_information .list .loan_record_main {
+	margin-top: 14px;
+	color: #666666;
+}
+
+.borrower_information .list .loan_record div {
+	margin-bottom: 20px;
+	height: 15px;
+	line-height: 15px;
+	font-size:14px;
+	color:#333;
+}
+
+.borrower_information .list .loan_record div label {
+	color: #666;
+}
+
+.borrower_information .audit_record{
+	margin: 26px 25px 0px;
+  height: 130px;
+  border: 1px #ededed solid;
+  background: #fbfbfb;
+}
+.borrower_information .audit_record h4 {
+  position: relative;
+  top: -18px;
+  margin: 0px auto;
+  width: 170px;
+  color: #ffffff;
+  font-size: 14px;
+  text-align: center;
+  background: #80beef;
+  line-height: 35px;
+  border-radius: 18px;
+  -ms-border-radius: 18px;
+  -moz-border-radius: 18px;
+  -o-border-radius: 18px;
+  -webkit-border-radius: 18px;
+}
+
+.borrower_information .audit_record dl{
+	margin: 0px 30px 0px 90px;
+	padding: 0px;
+	border: 0px none;
+	background: #fbfbfb;
+}
+
+.borrower_information .audit_record dd{
+	border: 0px;
+    height: 20px;
+    text-align: left;
+    line-height: 20px;
+    font-size: 14px;
+    width: 168px;
+    float: left;
+    margin: 0;
+    margin-bottom: 15px;
+}
+
+.borrower_information .audit_record dd i{
+	margin-top: 2px;
+	float: left;
+	width: 18px;
+	height: 18px;
+	background: url(../images/icons/icon.png);
+	background-position: -8px 0;
+}
+
+.borrower_images_text {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.borrower_images .borrower_images_box {
+	width: 620px;
+	margin: 70px auto 0 auto;
+}
+
+.borrower_images .borrower_images_box .viewImg {
+	border: 10px solid #fff;
+	box-shadow: 0 0 10px 3px #c9d6f1;
+	width: 610px;
+	margin: 30px 0;
+}
+
+.borrower_images .borrower_images_box h1 {
+	text-align: center;
+}
+
+.bid_history {
+	
+}
+
+.bid_history .bid_history_box, .pay-back-detail {
+	padding: 20px;
+	color: #333;
+	font-size: 14px;
+}
+
+.bid_history .bid_history_box .bid_history_top {
+	
+}
+
+.bid_history .bid_history_box .bid_history_top span {
+	padding: 0 20px;
+}
+
+.bid_history .bid_history_box .bid_history_top i {
+	font-style: normal;
+}
+
+table.wylc {
+	margin-top: 20px;
+	width: 100%;
+	text-align: center;
+}
+
+table.wylc  td {
+	font-family: 'Arial';
+	color: #666;
+	word-break: break-all;
+	padding: 20px 0;
+}
+
+table.wylc  th {
+	background-color: #f0f0f0;
+	padding: 13px 0;
+	font-weight: normal;
+}
+
+table.wylc  tbody tr {
+	border-bottom: 1px dashed #f0f0f0;
+}
+
+.wylc .bid_history_num {
+	min-width: 20px;
+	height: 20px;
+	display: inline-block;
+	line-height: 20px;
+	background-color: #c8c8c8;
+	color: #fff;
+}
+
+#takeItBtn {
+	float: right;
+	text-align: center;
+	border: 0px none;
+	margin-top: 20px;
+	width: 80px;
+	height: 35px;
+	line-height: 35px;
+	background: #eb4f38;
+	color: #ffffff;
+	font-size: 14px;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-ms-border-radius: 3px;
+	-o-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	font-weight: bold;
+	cursor: pointer;
+}
+.isMe{
+	background-color:#F0F9FE;
+}

@@ -1,0 +1,279 @@
+package com.dutiantech.controller.portal;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.ArrayUtils;
+
+import com.alibaba.fastjson.JSONObject;
+import com.dutiantech.Message;
+import com.dutiantech.anno.AuthNum;
+import com.dutiantech.controller.BaseController;
+import com.dutiantech.interceptor.AuthInterceptor;
+import com.dutiantech.interceptor.PkMsgInterceptor;
+import com.dutiantech.model.LoanTrace;
+import com.dutiantech.model.Redeem;
+import com.dutiantech.model.Tickets;
+import com.dutiantech.model.User;
+import com.dutiantech.model.UserInfo;
+import com.dutiantech.service.FundsServiceV2;
+import com.dutiantech.service.LoanTraceService;
+import com.dutiantech.service.LoanTransferService;
+import com.dutiantech.service.RedeemService;
+import com.dutiantech.service.TicketsService;
+import com.dutiantech.service.UserInfoService;
+import com.dutiantech.service.UserService;
+import com.dutiantech.util.CommonUtil;
+import com.dutiantech.util.DateUtil;
+import com.dutiantech.util.FileOperate;
+import com.dutiantech.util.StringUtil;
+import com.dutiantech.util.SysEnum;
+import com.dutiantech.vo.VipV2;
+import com.jfinal.aop.Before;
+import com.jfinal.core.ActionKey;
+
+public class TicketController extends BaseController {
+	
+	private TicketsService ticketService = getService(TicketsService.class);
+	private LoanTraceService loanTraceService = getService(LoanTraceService.class);
+	private UserService userService = getService(UserService.class);
+	private UserInfoService userInfoService = getService(UserInfoService.class);
+	private FundsServiceV2 fundsServiceV2 = getService(FundsServiceV2.class);
+	private RedeemService redeemService = getService(RedeemService.class);
+	private LoanTransferService loanTransferService = getService(LoanTransferService.class);
+	
+	@ActionKey("/queryTickets4User")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message queryTickets4User() {
+		
+		String userCode = getUserCode();
+		
+		int pageNumber =1;
+		int pageSize = 20;
+		try {
+			pageNumber = getParaToInt("pageNumber",1);
+			if(pageNumber < 1)
+				pageNumber = 1;
+		} catch (Exception e) {
+			pageNumber = 1;
+		}
+		try {
+			pageSize = getParaToInt("pageSize",20);
+			if(pageSize < 1)
+				pageSize = 20;
+		} catch (Exception e) {
+			pageSize = 20;
+		}
+		
+		String ttype = getPara("ttype");
+		
+		String tstate = getPara("tstate");
+		
+		String makeSource = getPara("makeSource");
+		
+		String beginDate_make = getPara("beginDate_make");
+		if(!StringUtil.isBlank(beginDate_make)){
+			beginDate_make = beginDate_make + "000000";
+		}
+		
+		String endDate_make = getPara("endDate_make");
+		if(!StringUtil.isBlank(endDate_make)){
+			endDate_make = endDate_make + "235959";
+		}
+		
+		String beginDate_used = getPara("beginDate_used");
+		
+		if(!StringUtil.isBlank(beginDate_used)){
+			beginDate_used = beginDate_used + "000000";
+		}
+		
+		String endDate_used = getPara("endDate_used");
+		
+		if(!StringUtil.isBlank(endDate_used)){
+			endDate_used = endDate_used + "235959";
+		}
+		
+		String beginDate_expDate = getPara("beginDate_expDate");
+		
+		String endDate_expDate = getPara("endDate_expDate");
+		//20170726 ws
+		String loanMonth=getPara("loanMonth");
+		int m=0;
+		if(null!=loanMonth&&loanMonth.length()>0){
+			m=loanMonth.length();
+			if(m==1){
+				loanMonth="0"+loanMonth;
+			}
+		}
+		User user = userService.findById(userCode);
+		Integer vipLevel = user.getInt("vipLevel");//会员等级
+		int rewardInterest = VipV2.getVipByLevel(vipLevel).getRewardInterest();//会员加息奖励
+		
+		if("D".equals(ttype)){
+			Map<String,Object> result = new HashMap<String, Object>();
+			List<Object> funds=new ArrayList<Object>();
+			long rewardRateAmount = fundsServiceV2.findById(userCode).getLong("rewardRateAmount");
+			Map<String,Object> tmpticket = new HashMap<String, Object>();
+			tmpticket.put("examount", rewardRateAmount);
+			tmpticket.put("ttype", "D");
+			tmpticket.put("tcode", "rewardrateamountDyrhx");
+			tmpticket.put("expDate", "2018-06-30");
+			funds.add(tmpticket);
+			result.put("list", funds);
+			result.put("rewardInterest", rewardInterest*0.01);
+			return succ("查询完成", result);
+		}else{
+			Map<String,Object> result =  ticketService.findByPage(pageNumber, pageSize, ttype, tstate, makeSource,userCode, beginDate_make, endDate_make, beginDate_used, endDate_used, beginDate_expDate, endDate_expDate,loanMonth);
+			//查询是否有可用加息券   让前台判断是否显示加息券栏（应该是加息券全面推广前临时的）
+			if(!"C".equals(ttype)){
+				List<Tickets> Tickets=ticketService.queryOneTickets(userCode, "C", "A");
+				if(Tickets.size()>0){
+					result.put("haveratetickets",true);
+				}else{
+					result.put("haveratetickets",false);
+				}
+			}else{
+				result.put("haveratetickets",true);
+			}
+			result.put("rewardInterest", rewardInterest*0.01);
+		return succ("查询完成", result);
+		}
+		
+		
+	}
+	
+
+	/*
+	 * 通过流水编号查询loanTicket和债转现金额
+	 */
+	@ActionKey("/queryDeductionMoney")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message queryDeductionMoney(){
+		String traceCode = getPara("traceCode");
+		Map<String,Object> map = null; 
+		if(StringUtil.isBlank(traceCode)){
+			return error("01", "流水号不存在", null);
+		}
+
+		LoanTrace loanTrace = loanTraceService.findById(traceCode);
+		String loanTicket = loanTrace.getStr("loanTicket");
+		
+		if(!loanTransferService.vilidateIsTransfer(traceCode)){
+			if (StringUtil.isBlank(loanTicket) == false) {
+				map = new HashMap<String,Object>();
+				JSONObject jsonTicket = JSONObject.parseArray(loanTicket).getJSONObject(0);
+				if (null != jsonTicket) {
+					String isDel = null;
+					String type=jsonTicket.getString("type");
+					Long amount = StringUtil.isBlank(jsonTicket.getString("amount")) ? null : Long.parseLong(jsonTicket.getString("amount"));
+					Long exAmount = StringUtil.isBlank(jsonTicket.getString("examount")) ? null : Long.parseLong(jsonTicket.getString("examount"));
+					if (null != jsonTicket.getString("isDel")){
+						isDel = jsonTicket.getString("isDel");
+					}else{
+						if (exAmount == null || exAmount > 50000) {
+							isDel = "Y";
+						} else {
+							isDel = "N";
+						}	
+					}
+					map.put("type", type);
+					map.put("isDel", isDel);
+					map.put("amount", amount);
+				}
+			}
+		}
+		return succ("success", map);
+	}
+	
+	/**
+	 * 加息券兑换码兑换
+	 * */
+	@ActionKey("/ticketConvert")
+	@AuthNum(value=999)
+	@Before({AuthInterceptor.class,PkMsgInterceptor.class})
+	public Message ticketConvert(){
+		String nowdate=DateUtil.getNowDateTime();
+		long nowdates=Long.parseLong(nowdate);
+		if(nowdates<20171118060000L){
+			return error("04", "还未到兑换时间，请于2017-11-18 06:00后兑换", null);
+		}
+		String userCode=getUserCode();
+		User user=userService.findById(userCode);
+		String userMobile=user.getStr("userMobile");
+		String incdkey=getPara("incdkey","");
+		FileOperate file= new FileOperate();
+		String url="//home//tickets//tikcetscdkey-"+nowdate.substring(0,6)+".txt";
+		String[] read={};
+		int nowdays=DateUtil.getDaysByYearMonth(nowdate);
+		String expDate=nowdate.substring(0,6)+nowdays;//这个月最后一天
+		try {
+			if(nowdates<20171201000000L){
+				read=file.readTxtLine(url, "utf-8");
+			}
+			userMobile=CommonUtil.decryptUserMobile(userMobile);
+		} catch (Exception e) {
+			return error("01", "兑换失败", null);
+		}
+		for(int i=0;i<read.length;i++){
+			if(incdkey.equals(read[i])&&incdkey.length()>0){
+				String userName=user.getStr("userName");
+				UserInfo userInfo=userInfoService.findById(userCode);
+				String userTrueName=userInfo.getStr("userCardName");
+				String tname="兑换码加息券[YF]";
+				int rate=100;
+				boolean xyz = ticketService.saveRate(userCode, userName, userMobile, userTrueName, tname, expDate, rate, null, SysEnum.makeSource.B,0,"0","Y");
+				if(xyz){
+					read=ArrayUtils.remove(read, i);
+					file.delFile(url);
+					String fileContent="";
+					for(int j=0;j<read.length;j++){
+						fileContent+=read[j]+"\r\n";
+					}
+					file.createFile(url, fileContent, "utf-8");
+					//存兑换记录
+//					MarketUser marketUser = new MarketUser();
+//					marketUser.set("userCode", userCode);
+//					marketUser.set("userName", user.getStr("userName"));
+//					marketUser.set("userCardName", userInfo.getStr("userCardName"));
+//					marketUser.set("userAddress", userInfo.getStr("userAdress"));
+//					marketUser.set("userMobile",userMobile);
+//					marketUser.set("mCode", "yfsctzqzsjxq201711"+incdkey);
+//					marketUser.set("mName", "[羿飞水池投资圈专属]加息券");
+//					marketUser.set("point", 0);
+//					marketUserService.save(marketUser);
+					return succ("OK",userName+"：兑换[羿飞水池投资圈专属]加息券成功");
+				}
+				return error("02", "兑换失败", false);
+			}
+		}
+		List<Redeem> redeems=redeemService.queryRedeemCode("A", "A",expDate);
+		if(null!=redeems){
+			for(int i=0;i<redeems.size();i++){
+				Redeem redeem=redeems.get(i);
+				if(incdkey.equals(redeem.getStr("redeemCode"))){
+					String userName=user.getStr("userName");
+					UserInfo userInfo=userInfoService.findById(userCode);
+					String userTrueName=userInfo.getStr("userCardName");
+					String tname=redeem.getStr("rName");
+					int rate=redeem.getInt("rate");
+					boolean xyz = ticketService.saveRate(userCode, userName, userMobile, userTrueName, tname, expDate, rate, null, SysEnum.makeSource.B,0,"0","Y");
+					if(xyz){
+						redeem.set("userCode", userCode);
+						redeemService.upDateRedeemCode(redeem);
+						if(tname.indexOf("YF")>=0){
+							return succ("OK",userName+"：兑换[羿飞水池投资圈专属]加息券成功");
+						}else{
+							return succ("OK",userName+"：兑换"+tname+"成功");
+						}
+					}
+					return error("02", "兑换失败", false);
+				}
+			}
+		}
+		return error("03", "兑换失败", false);
+	}
+}

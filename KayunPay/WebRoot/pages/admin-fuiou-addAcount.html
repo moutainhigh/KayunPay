@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>后台开通存管账户</title>
+
+		<meta name="keywords" content="keyword1,keyword2,keyword3">
+		<meta name="description" content="this is my page">
+		<meta name="content-type" content="text/html; charset=UTF-8">
+		<style type="text/css">
+			#content {
+				border: 1px red solid;
+				margin: 0 auto;
+				width: 800px;
+				margin-top: 100px;
+			}
+			
+			#Province {
+				width: 150px;
+			}
+			
+			#City {
+				width: 150px;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<div id="content">
+			客户姓名: <input type="text" id="trueName" /><br /><br /> 证件类型: <span id="cardType">身份证</span><br /><br /> 证件号码: <input type="text" id="cardNo" /><br /><br /> 手机号码: <input type="text" id="phoneNo" /><br /><br />
+			<select id="Province" class="porvice"></select>
+			<select id="City" class="city"></select><br /><br />
+			<select id="Bank" class="bank"></select><br /><br /> 银行卡号: <input type="text" id="bankNo" /><br /><br />
+			<input type="button" id="submit" style="width: 100px;height: 40px;font-size: 26px;" value="提交" />
+		</div>
+	</body>
+	<script src="../assets/js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script type="text/javascript" src="/portal/js/pub/core.js?v=1.0.0" charset="utf-8"></script>
+	<script type="text/javascript" src="/portal/js/config.js"></script>
+	<script type="text/javascript" src="/portal/js/public.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			init_porvice();
+			init_Bankname();
+		});
+
+		function init_porvice() {
+			YRHX.ajax({
+				url: "/queryBankProvinceCodesAdmin",
+				success: function(sucData) {
+					$("#Province").html("");
+					$("#Province").append("<option value='请选择省份' selected='selected'>请选择省份</option>");
+					$("#City").append("<option value='请选择城市' selected='selected'>请选择市区县</option>");
+					for(var i = 0; i < sucData.length; i++) {
+						var bankprovince = sucData[i];
+						$("#Province").append("<option value='" + bankprovince.provinceCode + "'>" + bankprovince.provinceName + "</option>");
+					}
+
+				},
+				error: function(errorData) {
+					$.popTips("popTipErr", errorData.return_info || "获取信息失败");
+				}
+			});
+			$('#Province').change(function() {
+				var provinceCode = $(this).find('option:selected').val();
+				if("请选择省份" == provinceCode) {
+					$("#City").html("");
+					$("#City").append("<option value='请选择城市' selected='selected'>请选择城市</option>");
+				} else {
+					YRHX.ajax({
+						url: "/queryBankCityCodesAdmin",
+						data: {
+							"provinceCode": provinceCode
+						},
+						success: function(sucData) {
+							$("#City").html("");
+							for(var i = 0; i < sucData.length; i++) {
+								var bankcity = sucData[i];
+								$("#City").append("<option value='" + bankcity.cityCode + "'>" + bankcity.cityName + "</option>");
+							}
+						},
+						error: function(errorData) {
+							$.popTips("popTipErr", errorData.return_info || "获取信息失败");
+						}
+					});
+				}
+
+			});
+		}
+
+		function init_Bankname() {
+			$("#Bank").append("<option value='请选择银行名称' selected='selected'>请选择银行名称</option>")
+			YRHX.ajax({
+				url: "/querBankNameAdmin",
+				success: function(sucData) {
+					for(var i = 0; i < sucData.length; i++) {
+						var bank = sucData[i];
+						$("#Bank").append("<option value='" + bank.bankCode + "'>" + bank.bankName + "</option>");
+					}
+				}
+			});
+		}
+
+		$("#submit").click(function() {
+			var userName = $("#trueName").val().trim();
+			var cardType = $("#cardType").text();
+			var cardNo = $("#cardNo").val().trim();
+			var phoneNo = $("#phoneNo").val().trim();
+			var provinceName = $("#Province").find("option:selected").text();
+			var cityName = $("#City").find("option:selected").text();
+			var provinceCode = $("#Province").val();
+			var cityCode = $("#City").val();
+			var bankName = $("#Bank").find("option:selected").text();
+			var bankCode = $("#Bank").val();
+			var bankNo = $("#bankNo").val().trim();
+			if("" == userName) {
+				alert("请填写客户姓名");
+				return;
+			} else if("" == cardNo) {
+				alert("请填身份证号");
+				return;
+			} else if("" == phoneNo) {
+				alert("请填手机号");
+				return;
+			} else if(provinceName.indexOf("选择") >= 0) {
+				alert("请选择省份");
+				return;
+			} else if(bankName.indexOf("选择") >= 0) {
+				alert("请选择银行卡行别");
+				return;
+			} else if("" == bankNo) {
+				alert("请填银行卡号");
+				return;
+			} else if(cardNo.length != 18) {
+				alert("身份证长度有误");
+				return;
+			} else if(isNaN(phoneNo) || phoneNo.length != 11) {
+				alert("手机号输入有误");
+				return;
+			} else if(isNaN(bankNo)) {
+				alert("卡号输入有误");
+				return;
+			}
+			//alert(userName + cardType + cardNo + provinceName + "省" + provinceCode + cityName + "市" + cityCode + phoneNo + "wcf" + bankName + bankNo + bankCode);
+
+			YRHX.ajax({
+				url: "/openAccountByAdmin",
+				data: {
+					'userName': userName,
+					'cardNo': cardNo,
+					'phoneNo': phoneNo,
+					'provinceName': provinceName,
+					'cityName': cityName,
+					'bankName': bankName,
+					'cityCode': cityCode,
+					'bankCode': bankCode,
+					'bankNo': bankNo,
+				},
+				success: function(sucAddData) {
+					$.popTips("popTipSuc", "存管账户开通成功");
+				},
+				error: function(errorData) {
+					$.popTips("popTipErr", errorData.return_info || "存管账户开通失败,请确认实名信息、银行卡信息是否正确");
+				}
+			});
+		})
+	</script>
+
+</html>

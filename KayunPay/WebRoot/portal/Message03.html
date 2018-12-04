@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>易融恒信-安全可靠透明的投资平台,p2p网贷平台</title>
+<meta name="keywords" content="易融恒信,网贷平台,p2p网贷平台排名,p2p投资,p2b网贷,p2p投资平台,小投资,武汉贷款,武汉小额投资,武汉网贷公司,武汉易融恒信"/>
+<meta name="description" content="易融恒信,致力于做华中地区最好的p2p网贷平台,为投资者提供最安全,最靠谱,最透明的互联网金融p2p投资平台,咨询电话400-027-0707"/>
+<link type="text/css" href="/portal/css/public.css?v=1.2.35" rel="stylesheet">
+<link type="text/css" href="/portal/css/aboutUs.css?v=1.1" rel="stylesheet">
+</head>
+<body>
+	<div class="wrapper">
+	    <header id="header" class="header"></header>
+	    <div class="aboutUs">
+        <div class="aboutUs-main">
+            <div class="aboutUs-main-left"><h2><i class="iconHome"></i>信息披露</h2>
+				<div class="aboutUs-nav" id="info-nav">
+					<i class='ico'></i>
+				</div>
+            </div>
+            <div class="aboutUs-main-right">
+                <div class="aboutUs-main-title"><span>资质证书</span><i></i></div>
+                <div class="aboutUs-main-content">
+                	<!-- <div class="m-ct">
+				      <div class="m-privacy">
+						<img src="/portal/images/about/license1.jpg" width="719px;" style="margin-right:auto;" />
+						<img src="/portal/images/about/license2.jpg" width="719px;" style="margin-right:auto;" />
+						<img src="/portal/images/about/license3.jpg" width="719px;" style="margin-right:auto;" />
+					</div> -->
+					
+					
+					<div class="modular">
+			        	<div class="license">
+			                <ul id="zi-little">
+			                    <li>
+			                    	<img src="/portal/images/about/license4.jpg" alt="中华人民共和国信息安全等级保护三级认证">
+			                        <p>中华人民共和国信息安全等级保护三级认证</p>
+			                    </li>
+			                    <li>
+			                        <img src="/portal/images/about/license1.jpg" alt="营业执照">
+			                        <p>营业执照</p>
+			                    </li>
+			                    <li>
+			                        <img src="/portal/images/about/license2.jpg" alt="中华人民共和国组织机构代码证">
+			                        <p>中华人民共和国组织机构代码证</p>
+			                    </li>
+			                    <li>
+			                        <img src="/portal/images/about/license3.jpg" alt="税务登记证">
+			                        <p>税务登记证</p>
+			                    </li>
+			                    <div class="cl bot"></div>
+			                </ul>
+			            </div>
+			        </div>
+					<div id="show-pics" style="display:none;">
+			            <i class="close"></i>
+			            <div id="win-arrow-box">
+			                <div class="btn-box-warp">
+			                    <i class="pre"></i>
+			                    <i class="next"></i>
+			                </div>
+			            </div>
+			            <div class="img-box-warp">
+			                <div class="img-box">
+			                    <img class="nochange" src=""></div>
+			            </div>
+			        </div>
+			        <div id="area-layer" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+	    <footer id="footer" class="footer"></footer>
+	</div>
+	<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="/portal/js/config.js?v=1.2.18" charset="utf-8"></script>
+	<script type="text/javascript" src="/portal/js/pub/core.js?v=1.2.18" charset="utf-8"></script>
+	<script type="text/javascript" src="/portal/js/public.js?v=1.8.27"></script>
+	<script type="text/javascript" src="/portal/js/aboutUs.js?v=1.6"></script>
+	<script>
+	$(function(){
+		window.onload = function(){
+			$('.nav_menu_list li').eq(3).addClass('selected').siblings().removeClass('selected');
+			$('.nav_menu_list1 li').eq(3).addClass('selected').siblings().removeClass('selected')
+		}
+		var curSrc;
+	    var curNum;
+	    var num=0;
+	    var $parent;
+	    var winW=$(window).width();
+	    var winH=$(window).height();
+	    var imgboxW=$('.img-box-warp').width();
+	    var imgboxH=$('.img-box-warp').height();
+	    var myleft=(winW-imgboxW)/2;
+	    var mytop=(winH-imgboxH)/2;
+	    function into()
+	    {
+	        curSrc='';
+	        curNum=0;
+	        num=0;
+	        imgLeft=0;
+	        imgTop=0;
+	    }
+		
+		//listenClick($('.license ul li'));
+		
+		$('.license ul li').click(function () {
+            into();
+            $parent=$(this).parent();
+            curSrc=$(this).find('img').attr('src');
+            curNum=$(this).index();
+            num=$(this).siblings('li').length;
+            $('#show-pics').fadeIn(50);
+            $('#area-layer').fadeIn(50);
+            $('.img-box-warp').css({'left':myleft,'top':mytop});
+            showPic();
+        });
+		
+		/* function listenClick(obj)
+	    {
+	        obj.click(function () {
+	            into();
+	            $parent=$(this).parent();
+	            curSrc=$(this).find('img').attr('src');
+	            curNum=$(this).index();
+	            num=$(this).siblings('li').length;
+	            $('#show-pics').fadeIn(50);
+	            //$('.#area-layer').fadeIn(50);
+	            $('.img-box-warp').css({'left':myleft,'top':mytop});
+	            showPic();
+	        });
+	    } */
+	    function showPic() {
+	        $('.img-box').find('img').attr("src",curSrc);
+	        $('.img-box-warp img').css({'left':0,'top':0});
+	    }
+	    
+	    $('#win-arrow-box').find('.pre').click(function () {
+	        if (curNum< 0) {
+	            curNum=num-1;
+	        } else {
+	            curNum--;
+	        }
+	        curSrc=$parent.find('li').eq(curNum).find('img').attr('src');
+	        showPic();
+	    });
+	    $('#win-arrow-box').find('.next').click(function () {
+
+	        if (curNum == num) {
+	            curNum=0;
+	        } else {
+	            curNum++;
+	        }
+	        curSrc=$parent.find('li').eq(curNum).find('img').attr('src');
+	        showPic();
+	    });
+	    
+	    $('#show-pics .close').click(function () {
+	        $('#show-pics').fadeOut(100);
+	        $('#area-layer').fadeOut(100);
+	    });
+		
+	});
+	
+	
+	</script>
+</body>
+</html>

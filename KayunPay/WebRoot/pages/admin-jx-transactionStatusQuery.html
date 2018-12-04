@@ -1,0 +1,258 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+<style type="text/css">
+.dashedLine {
+    height: 1px;
+	width: 100%;
+	margin: 20px 0;
+	border-top: 1px dashed #e4e4e4;
+}
+  
+</style>
+</head>
+<!-- <body onkeydown="zhazha(event)"> -->
+<body>
+		<h3 style="color: green; margin-left: 20px">查询交易状态（批次）</h3>
+		<div id="jxAccountId" style="border: 1px;background: #00800017; margin-left: 80px;margin-right: 80px;">
+		
+		<table style="width: 100%;margin-left: 20px;">
+		   <tbody>
+		      <tr style="height: 35px;">
+		        <td>
+		                               查询类别：<select id = "selectReqType" style="background: #8080802b;">
+		                      <option value="">选择查询类别</option>
+		                      <option value ="1" >流水号查询（批次不可用）</option>
+		                      <option value ="2" >订单号查询</option>
+		                 </select> 
+		                             交易类型：<select id = "selectReqTxCode" style="background: #8080802b;">
+		                      <option value="">查询交易类型</option>
+		                      <option value ="batchLendPay" >批次放款</option>
+		                      <option value ="batchRepay" >批次还款</option>
+		                      <option value ="batchCreditEnd" >批次结束债权交易</option>
+		                      <option value ="batchCreditInvest" >批次投资人购买债权</option>
+		                      <option value ="batchSubstRepay" >批次担保账户代偿</option>
+		                 </select>
+		                            交易全流水：<input id="jxTraceCode" name="jxTraceCode" style="width: 250px;">
+		        </td>
+		      </tr>
+		      <!-- <tr style="height: 35px;">
+		        <td>
+		                                        交易日期：<input id='reqTxDate' name = 'reqTxDate' style="width: 200px;">
+		                                        交易时间：<input id='reqTxTime' name = 'reqTxTime' style="width: 200px;">
+		                                        交易流水号：<input id='reqSeqNo' name = 'reqSeqNo' style="width: 200px;">
+		        </td>
+		      </tr> -->
+		      <tr style="height: 35px;">
+		        <td>
+		                                       电子/手机账号：<input id='accountId' name = 'accountId' style="width: 200px;">
+		                                       订单号：<input id='reqOrderId' name = 'reqOrderId' style="width: 200px;">
+		             <button id='jxQuery'>查询</button>
+		        </td>
+		      </tr>
+		   </tbody>
+		
+		</table>
+		
+		
+		
+		
+		  <!-- <div style="display: inline;">
+		    <select id = "selectReqType" style="background: #8080802b;">
+		       <option value="">选择查询类别</option>
+		       <option value ="1" >流水号查询（批次不可用）</option>
+		       <option value ="2" >订单号查询</option>
+		    </select> 
+		</div>
+		  <div style="display: inline;">
+		    <select id = "selectReqTxCode" style="background: #8080802b;">
+		       <option value="">查询交易类型</option>
+		       <option value ="batchLendPay" >批次放款</option>
+		       <option value ="batchRepay" >批次还款</option>
+		       <option value ="batchCreditEnd" >批次结束债权交易</option>
+		       <option value ="batchCreditInvest" >批次投资人购买债权</option>
+		       <option value ="batchSubstRepay" >批次担保账户代偿</option>
+		    </select>
+		    
+		</div>
+		<div style="display: inline;">
+		          交易日期：<input id='reqTxDate' name = 'reqTxDate' style="width: 200px;">
+		   </div>
+		   <div style="display: inline;">
+		          交易时间：<input id='reqTxTime' name = 'reqTxTime' style="width: 200px;">
+		   </div>
+		
+		   <div>
+		      <div style="display: inline;">
+		          交易流水号：<input id='reqSeqNo' name = 'reqSeqNo' style="width: 200px;">
+		   </div>
+		   <div style="display: inline;">
+		          电子账号：<input id='accountId' name = 'accountId' style="width: 200px;">
+		   </div>
+		   <div style="display: inline;">
+		          订单号：<input id='reqOrderId' name = 'reqOrderId' style="width: 200px;">
+		   </div>
+		   
+		   <div style="display: inline;">
+		      <button id='jxQuery'>查询</button>
+		   </div> 
+		   </div> -->
+		   
+		</div>
+		<div id = "jxresult" style="margin-left:80px;display: none;background: #00800017;" >
+		<div class="dashedLine"></div>
+		<div class="dashedLine"></div>
+		 <h4 style="color: green;">查询结果如下：</h4>
+		 <table border="1">
+		    <tr>
+		      <td>电子账号：</td>
+		      <td><input id='accountIdResult'  readonly="readonly"></td>
+		    </tr>
+		    <tr>
+		      <td>查询类别：</td>
+		      <td><input id='reqTypeResult'  readonly="readonly"></td>
+		    </tr>
+		    <tr>
+		      <td>查询交易代码：</td>
+		      <td><input id='reqTxCodeResult'  readonly="readonly"></td>
+		    </tr>
+		    <tr>
+		      <td>交易日期：</td>
+		      <td><input id='reqTxDateResult'  readonly="readonly"></td>
+		    </tr>
+		    <tr>
+		      <td>交易时间：</td>
+		      <td><input id='reqTxTimeResult'  readonly="readonly"></td>
+		    </tr>
+		    <tr>
+		      <td>交易流水号：</td>
+		      <td><input id='reqSeqNoResult'  readonly="readonly"></td>
+		    </tr>
+		    <tr>
+		      <td>订单号：</td>
+		      <td><input id='reqOrderIdResult'  readonly="readonly"></td>
+		    </tr>
+		    <tr>
+		      <td>交易状态：</td>
+		      <td><input id='txStateResult'  readonly="readonly"></td>
+		    </tr>
+		    <tr>
+		      <td>交易金额：</td>
+		      <td><input id='txAmountResult'  readonly="readonly"></td>
+		    </tr>
+		    <tr>
+		      <td>失败描述：</td>
+		      <td><input id='failMsgResult'  readonly="readonly"></td>
+		    </tr>
+		    
+		 </table>
+		 
+		</div>
+		
+		
+
+
+	<!-- prompt start -->
+
+	
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script type="text/javascript" src="/portal/js/jxErr.js"></script>
+	<script>
+		
+		
+		$("#jxQuery").click(function(){
+			/* var reqTxDate = $("#reqTxDate").val();
+			var reqTxTime = $("#reqTxTime").val();
+			var reqSeqNo = $("#reqSeqNo").val(); */
+			var reqType = $("#selectReqType").val();
+			var reqTxCode = $("#selectReqTxCode").val();
+			var accountId = $("#accountId").val();
+			var jxTraceCode=$("#jxTraceCode").val();
+			var reqOrderId = $("#reqOrderId").val();
+			if(reqType == ''){
+				alert("查询类别不能为空");
+				return;
+			};
+			if(reqType == 1){
+				/* if(reqTxDate == '' || reqTxTime ==''){
+					alert("按流水号查询时交易日期和时间不能为空");
+					return;
+				};
+				if(reqSeqNo == ''){
+					alert("按流水号查询时交易流水号不能为空");
+					return;
+				} */
+				if(jxTraceCode == ""){
+					alert("按流水号查询时交易全流水号不能为空");
+				}
+			}else if(reqType == 2){
+				if(reqOrderId == ''){
+					alert("按订单号查询时订单号不能为空");
+					return;
+				}
+			}
+			YRHX.ajax({
+				url : "/transactionStatusQuery",
+				data: {
+					"accountId":accountId,
+					"reqType":reqType,
+					"reqTxCdoe":reqTxCode,
+					/* "reqTxDate":reqTxDate,
+					"reqTxTime":reqTxTime,
+					"reqSeqNo":reqSeqNo, */
+					"jxTraceCode":jxTraceCode,
+					"reqOrderId":reqOrderId
+					},
+				success:function(data){
+					    $("#jxresult").css('display','block');
+					    $("#accountIdResult").val(data.accountId);
+					    $("#reqTypeResult").val(data.reqType);
+					    $("#reqTxCodeResult").val(data.reqTxCode);
+					    $("#reqTxDateResult").val(data.reqTxDate.dateformat("yyyy-MM-dd"));
+					    $("#reqTxTimeResult").val(data.reqTxTime.dateformat("hh:mm:ss"));
+					    $("#reqSeqNoResult").val(data.reqSeqNo);
+					    $("#reqOrderIdResult").val(data.reqOrderId);
+					    $("#txStateResult").val(data.txState);
+					    $("#txAmountResult").val(data.txAmount);
+					    $("#failMsgResult").val(data.failMsg);
+				},error:function(data){
+					if(data.return_info == ''){
+						  var returnCode = data.return_code;
+						  var message = jxErr(returnCode);
+						  YRHX.alert1(message || "获取信息失败");
+						  
+						}else{
+							YRHX.alert1(data.return_info ||"获取信息失败");
+						}
+				}
+				
+			});
+			
+		})
+
+		
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+	</script>
+</body>
+</html>

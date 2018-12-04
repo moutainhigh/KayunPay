@@ -1,0 +1,229 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+	<h3 style="color: green; margin-left: 20px">红包发放</h3>
+
+	<div class="am-g">
+		<div class="am-u-sm-12 am-u-md-4" style="width:600px";>
+			<span>红包金额</span>&nbsp;<input type="text" name="txAmount" size="10" id="voucherPayTxAmount"/>
+			<span>平台手机号</span>&nbsp;<input type="text" name="mobile" size="15" id="voucherPayMobile"/>
+			<input type="button" id="voucherPay" value="发送"/>
+		</div>
+		<div class="am-u-sm-12 am-u-md-3">
+			<div class="am-input-group am-input-group-sm">
+				<input type="text" class="am-form-field allkey"><span
+					class="am-input-group-btn">
+					<button class="am-btn am-btn-default query-btn" type="button">搜索</button>
+				</span>
+			</div>
+		</div>
+	</div>
+	
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 15 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+						<li id="not"><input type="text" size="5" id="goValue" onkeypress="return IsNum(event)" value="1"/></li>
+						<li id="go"><input type="button" value="GO" onclick="$('#go').attr('index',$('#goValue').val())"/></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="../assets/js/jquery.min.js"></script>
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script>
+		
+		var maxQueryNum = 10;
+		var queryUrl = "/queryVoucherPaysByPage";
+		var size=0;//总页数
+		
+		$(".query-btn").click(function(){
+			queryData(1);
+		});
+		//查询实现
+		function queryData( pNum , pSize ){
+			//对页码参数验证
+			if(isNaN(pNum)){
+				alert("GO栏请输入数字！");
+				return;
+			}
+			if(size<1){
+				size=1;
+			}
+			if(pNum > size && size != 0){
+				pNum=size;
+				$("#goValue").val(pNum);
+			}
+			YRHX.ajax({
+				url : queryUrl,
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize ||maxQueryNum,
+					allkey : $(".allkey").val()
+				},
+				success : function(sucData){
+					size=Math.ceil(sucData["totalRow"]/maxQueryNum);//总页数
+					makeTable(sucData.list , {
+						index : sucData["pageNumber"] , 
+						max : sucData["pageSize"] ,
+						size : sucData["totalRow"]
+					});
+				},
+				error : function(data) {
+					YRHX.alert("提示",data.return_info || "获取信息失败");
+				}
+			});
+		}
+		
+		$(".query-btn").click(function(){
+			queryData(1);
+			$("#goValue").val(1);//设置GO栏默认页码为1
+		});
+		
+		$("div.pad-div").initPagEvent( queryData );
+		
+		$("#voucherPay").click(function(){
+			var txAmount = $("#voucherPayTxAmount").val();
+			var mobile = $("#voucherPayMobile").val();
+			//对页码参数验证
+			if(isNaN(txAmount) || txAmount.length == 0){
+				alert("红包金额输入错误");
+				return;
+			}
+			if(isNaN(mobile) || mobile.length != 11){
+				alert("手机号输入不正确");
+			}
+			YRHX.ajax({
+				url : "/voucherPay",
+				data : {
+					txAmount : txAmount,
+					mobile : mobile
+				},
+				success : function(sucData){
+					YRHX.alert("提示","红包发送"+sucData || "获取信息失败");
+				},
+				error : function(data) {
+					YRHX.alert("提示",data.return_info || "获取信息失败");
+				}
+			});
+		});
+
+		function makeTable( tableData ,pageData){
+			$(".am-g").table({
+						dataFormat : function(rowObj) {
+							rowObj["userName"] = rowObj["userName"]||"";
+							rowObj["userMobile"] = rowObj["userMobile"]||"";
+							rowObj["remark"] = rowObj["remark"]||"";
+							return rowObj;
+						},
+						max : 10,
+						pag : pageData,
+						header : [
+								{
+									name : "",text : "交易流水号",html : "#{jxTraceCode}"
+								},
+								{
+									name : "",text : "红包金额",html : "#{txAmount}"
+								},
+								{
+									name : "",text : "电子账号",html : "#{forAccountId}"
+								},
+								{
+									name : "",text : "用户名",html : "#{userName}"
+								},
+								{
+									name : "",text : "手机号",html : "#{userMobile}"
+								},
+								{
+									name : "",text : "交易状态",html : "#{retMsg}"
+								},
+								{
+									name : "",text : "备注",html : "#{remark}"
+								},
+								{
+									name : "",text : "操作",html : $.makeButtons([
+                                     	{"text":"红包撤销","url":"javascript:voucherPayCancel('#{jxTraceCode}','#{txAmount}','#{forAccountId}');","ico":"am-icon-pencil-square-o"},
+                                     	{"text":"红包隔日撤销","url":"javascript:voucherPayDelayCancel('#{jxTraceCode}','#{txAmount}','#{forAccountId}');","ico":"am-icon-pencil-square-o"}
+                                     	])
+								}],
+						data : tableData
+					});
+			}
+		
+		//红包发放撤销
+		function voucherPayCancel(jxTraceCode,txAmount,forAccountId){
+			YRHX.ajax({
+				url : "/voucherPayCancel",
+				data : {
+					jxTraceCode : jxTraceCode,
+					txAmount : txAmount,
+					forAccountId : forAccountId
+				},
+				success : function(sucData){
+					YRHX.alert("提示","红包撤销"+sucData || "获取信息失败");
+				},
+				error : function(data) {
+					YRHX.alert("提示",data.return_info || "获取信息失败");
+				}
+			});
+		}
+
+		//红包发放隔日撤销
+		function voucherPayDelayCancel(jxTraceCode,txAmount,forAccountId){
+			YRHX.ajax({
+				url : "/voucherPayDelayCancel",
+				data : {
+					jxTraceCode : jxTraceCode,
+					txAmount : txAmount,
+					forAccountId : forAccountId
+				},
+				success : function(sucData){
+					YRHX.alert("提示","红包撤销"+sucData || "获取信息失败");
+				},
+				error : function(data) {
+					YRHX.alert("提示",data.return_info || "获取信息失败");
+				}
+			});
+		}
+		
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		queryData(1);
+	</script>
+</body>
+</html>

@@ -1,0 +1,501 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="../assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body onkeydown="zhazha(event)">
+	<div class="am-g">
+		<!-- 标准功能按钮 Start  -->
+		<div class="am-u-sm-12 am-u-md-4">
+			<div class="am-btn-toolbar">
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default cz-btn">
+						<span class="am-icon-archive "></span> 人工充值
+					</button>
+				</div>
+				<!--
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default tx-btn">
+						<span class="am-icon-archive "></span> 人工提现
+					</button>
+				</div>
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default froze-btn">
+						<span class="am-icon-archive "></span> 冻结资金
+					</button>
+				</div>
+				<div class="am-btn-group am-btn-group-xs">
+					<button type="button" class="am-btn am-btn-default unfroze-btn">
+						<span class="am-icon-archive "></span> 解冻资金
+					</button>
+				</div>
+				  -->
+			</div>
+		</div>
+		<!-- 标准功能按钮  End -->
+		<!-- 条件区 Start -->
+		<div class="am-u-sm-12 am-u-md-4">
+				<div class="am-u-sm-6" style="padding: 0;">
+					<div class="am-input-group am-datepicker-date" data-am-datepicker="{format: 'yyyy-mm-dd', viewMode: 'days'}">
+						<input type="text" class="am-form-field" id="my-startDate" placeholder="开始日期" readonly style="width: 71%;">
+							<span class="am-input-group-btn am-datepicker-add-on">
+								<button class="am-btn am-btn-default" type="button">
+									<span class="am-icon-calendar"></span>
+								</button>
+							</span> 
+					</div>
+				</div>
+				
+				<div class="am-u-sm-6" style="padding: 0;">
+					<div class="am-input-group am-datepicker-date" data-am-datepicker="{format: 'yyyy-mm-dd', viewMode: 'days'}">
+						<input type="text" class="am-form-field" id="my-endDate" placeholder="结束日期" readonly style="width: 71%;">
+							<span class="am-input-group-btn am-datepicker-add-on">
+								<button class="am-btn am-btn-default" type="button">
+									<span class="am-icon-calendar"></span>
+								</button>
+							</span>
+					</div>
+				</div>
+		</div>
+		<div class="am-u-sm-12 am-u-md-3">
+			<div class="am-input-group am-input-group-sm">
+				<input type="text" class="am-form-field allkey"><span
+					class="am-input-group-btn">
+					<button class="am-btn am-btn-default query-btn" type="button">搜索</button>
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- 条件区  End -->
+	<!-- Table -->
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<table
+				class="am-table am-table-bd am-table-striped admin-content-table">
+				<thead>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<!-- 分页 -->
+			<div class="am-cf pad-div">
+				<span>共 15 条记录</span>
+				<div class="am-fr">
+					<ul class="am-pagination">
+						<li class="am-disabled"><a href="#">首页</a></li>
+						<li class="am-disabled"><a href="#">上一页</a></li>
+						<li><a href="#">下一页</a></li>
+						<li><a href="#">尾页</a></li>
+						<li id="not"><input type="text" size="5" id="goValue" onkeypress="return IsNum(event)" value="1"/></li>
+						<li id="go"><input type="button" value="GO" onclick="$('#go').attr('index',$('#goValue').val())"/></li>
+					</ul>
+				</div>
+				<button class="am-btn am-btn-success am-btn-xs" onclick="exportExcel()" style="margin-left:10px" type="button">导出Excel</button>
+			</div>
+		</div>
+	</div>
+	<!-- prompt start -->
+	<div class="am-modal am-modal-prompt" tabindex="-1" id="promptDiv">
+		<div class="am-modal-dialog">
+			<div class="am-modal-hd title">标题</div>
+			<div class="am-modal-bd content">
+				 <span>请输入</span>
+				 <input type="text" class="am-modal-prompt-input">
+				  备注
+				 <input type="text" class="am-modal-prompt-input">
+			</div>
+			<div class="am-modal-footer">
+				<span class="am-modal-btn" data-am-modal-cancel>取消</span> <span
+					class="am-modal-btn" data-am-modal-confirm>提交</span>
+			</div>
+		</div>
+	</div>
+	<!-- prompt end -->
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/isNum.js"></script>
+	<script>
+	
+	function zhazha(e){
+		var keynum = 0;
+		if(window.event){
+			keynum = e.keyCode
+		}
+		else if(e.which){
+			keynum = e.which
+		}
+		if(keynum==13){
+			queryData(1);
+		}
+	}
+	
+		var maxQueryNum = 10;
+		var queryUrl = "/getFundsByPage2";
+		var exportExcelUrl = "/exportExcel?bb=funds2";
+		var size=0;//总页数
+		
+		function exportExcel(){
+			var allkey =  $(".allkey").val();
+			var beginDate = $("#my-startDate").val();
+			var endDate = $("#my-endDate").val();
+			var para_url = "&allkey="+encodeURIComponent(allkey)+"&beginDate="+beginDate.replaceAll("-","")+"&endDate="+endDate.replaceAll("-","");
+			window.open(exportExcelUrl+para_url,"_blank");
+		};
+
+		//查询实现
+		function queryData(pNum, pSize) {
+			//对页码参数验证
+			if(isNaN(pNum)){
+				alert("GO栏请输入数字！");
+				return;
+			}
+			if(size<1){
+				size=1;
+			}
+			if(pNum > size && size != 0){
+				pNum=size;
+				$("#goValue").val(pNum);
+			}
+			YRHX.ajax({
+				url : queryUrl,
+				data : {
+					pageNumber : pNum,
+					pageSize : pSize || maxQueryNum,
+					allkey : $(".allkey").val(),
+					beginDate : $("#my-startDate").val().replaceAll("-",""),
+					endDate : $("#my-endDate").val().replaceAll("-","")
+				},
+				success : function(sucData) {
+					size=Math.ceil(sucData["totalRow"]/maxQueryNum);//总页数
+					/*var ct_info = "总计：&nbsp;";
+					ct_info = ct_info + "借款总额共"+YRHX.toDecimal2(sucData["count_loanTotal"]/ 10.0/10.0, "￥")+"，";
+					ct_info = ct_info + "还款中共"+sucData["count_loanCount"]+"期，";
+					ct_info = ct_info + "已还共"+sucData["count_loanSuccessCount"]+"期，";
+					ct_info = ct_info + "待还本金共"+YRHX.toDecimal2(sucData["count_beRecyPrincipal4loan"] /10.0 /10.0, "￥")+"，";
+					ct_info = ct_info + "待还利息共"+YRHX.toDecimal2(sucData["count_beRecyInterest4loan"] /10.0 /10.0, "￥")+"。";*/
+					
+					var tmpTotalData = {};
+					tmpTotalData["还款中"] = sucData["count_loanCount"]+"期" ;
+					tmpTotalData["借款总额"] = YRHX.toDecimal2(sucData["count_loanTotal"]/ 10.0/10.0, "￥") ;
+					tmpTotalData["待还本金"] = YRHX.toDecimal2(sucData["count_beRecyPrincipal4loan"] /10.0 /10.0, "￥") ;
+					tmpTotalData["已还"] = sucData["count_loanSuccessCount"]+"期" ;
+					tmpTotalData["待还利息"] = YRHX.toDecimal2(sucData["count_beRecyInterest4loan"] /10.0 /10.0, "￥") ;
+					
+					makeTable(sucData.list, {
+						index : sucData["pageNumber"],
+						max : sucData["pageSize"],
+						size : sucData["totalRow"]
+					},tmpTotalData);
+				},
+				error : function(data) {
+					alert(data.return_info || "获取信息失败");
+				}
+			});
+
+		}
+
+		$(".query-btn").click(function(){
+			queryData(1);
+			$("#goValue").val(1);//设置GO栏默认页码为1
+		});
+
+		$("div.pad-div").initPagEvent( queryData );
+
+		function makeTable(tableData, pageData,countData) {
+			$(".am-g").table(
+					{
+						count_info : countData,
+						dataFormat : function(rowObj) {
+							rowObj["beRecyPrincipal4loan"] = YRHX.toDecimal2(
+									rowObj["beRecyPrincipal4loan"] / 10.0 /10.0, "￥");
+							rowObj["beRecyInterest4loan"] = YRHX.toDecimal2(
+									rowObj["beRecyInterest4loan"] / 10.0/10.0, "￥");
+							rowObj["loanTotal"] = YRHX.toDecimal2(
+									rowObj["loanTotal"] / 10.0 / 10.0, "￥");
+							
+							rowObj["loanSuccessCount"] = rowObj["loanSuccessCount"] + rowObj["loanBySysCount"]+"";
+							rowObj["loanCount"] = rowObj["loanCount"] + "";
+							rowObj["userCardName"] = rowObj["userCardName"] || " ";
+							return rowObj;
+						},
+						max : 10,
+						pag : pageData,
+						header : [ {
+							name : "",
+							type : "checkbox",
+							key : "userCode"
+						}, {
+							name : "",
+							text : "昵称",
+							html : "#{userName}"
+						},{
+							name : "",
+							text : "姓名",
+							html : "#{userCardName}"
+						},{
+							name : "",
+							text : "借款总额",
+							html : "#{loanTotal}"
+						}, {
+							name : "",
+							text : "还款中",
+							html : " #{loanCount} 期"
+						}, {
+							name : "",
+							text : "已还",
+							html : " #{loanSuccessCount} 期"
+						}, {
+							name : "",
+							text : "待还本金",
+							html : "#{beRecyPrincipal4loan}"
+						}, {
+							name : "",
+							text : "待还利息",
+							html : "#{beRecyInterest4loan}"
+						},
+						{
+							name : "",text : "操作",html : $.makeButtons([
+										//{"text":"充值","url":"/pageRechargeTraceList?asuuu=#{userCode}","ico":"am-icon-pencil-square-o"},
+										//{"text":"提现","url":"/pageWithdrawTraceList?asuuu=#{userCode}","ico":"am-icon-pencil-square-o"},
+										//{"text":"投标","url":"/pageUserLoanTraceList?payUserCode=#{userCode}","ico":"am-icon-pencil-square-o"},
+										{"text":"资金明细","url":"/pageFundsTraceList?userCode=#{userCode}","ico":"am-icon-pencil-square-o"},
+										{"text":"资金账户","url":"/pageFundsForm?opType=view&key=#{userCode}","ico":"am-icon-pencil-square-o"},
+										{"text":"借款明细","url":"/mHKGL?fuserCode=#{userCode}","ico":"am-icon-pencil-square-o"}
+										])
+						} ],
+						data : tableData
+					});
+		}
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		queryData(1);
+		
+		function showPrompt(title , content , callback ){
+			$('#promptDiv').find("div.title").text(title);
+			$('#promptDiv').find("div.content").find("span").text(content);
+			$('#promptDiv').find("input").val("");
+			$('#promptDiv').modal({
+				relatedTarget: this,
+				onConfirm: callback ,
+				onCancel: function(e) {
+				}
+			});
+		}
+		
+		$(".cz-btn").click(function(){
+			var row = window.getCheckedRow();
+			if (row.length == 0) {
+				YRHX.alert("提示", "未选中需充值的账户！");
+				return;
+			}
+			if (row.length == 1) {
+				YRHX.prompt("人工充值","请输入充值金额(单位分)",function(e){
+					var amount = parseInt(e.data[0] );
+					var remark = e.data[1];
+					row = window.getCheckedRow();
+					if( amount > 0 ){
+						YRHX.ajax({
+							url : "/recharge" ,
+							data :{
+								"amount" : amount ,
+								"fundsUserCode" : row.attr("key"),
+								"remark" : remark
+							},
+							success:function(data){
+								queryData(1);
+								YRHX.alert("操作成功","充值成功,充值金额：" + YRHX.toDecimal2(amount/100) + "元");
+							},
+							error : function(data){
+								if(data.return_code=="-315"){
+									var error_Msg = "";
+									$.each(data.return_data,function(key,value){
+										error_Msg = error_Msg + value+"<br>";
+									});
+									YRHX.alert("警告",error_Msg);
+								}else{
+									YRHX.alert("警告",data.return_info || "获取信息失败");
+								}
+							}
+						});
+					}else{
+						YRHX.alert("金额必须得是数字！");
+					}
+					
+				});
+			} else {
+				YRHX.alert("提示", "一次最多只可以给一个用户充值！");
+				return;
+			}
+		});
+		$(".tx-btn").click(function(){
+			var row = window.getCheckedRow();
+			if (row.length == 0) {
+				YRHX.alert("提示", "未选中需提现的账户！");
+				return;
+			}
+			if (row.length == 1) {
+				YRHX.prompt("人工提现","请输入提现金额(单位分)",function(e){
+					var amount = parseInt(e.data[0] );
+					var remark = e.data[1];
+					row = window.getCheckedRow();
+					if( amount > 0 ){
+						YRHX.ajax({
+							url : "/withdrawals" ,
+							data :{
+								"amount" : amount ,
+								"fundsUserCode" : row.attr("key"),
+								"remark" : remark
+							},
+							success:function(data){
+								queryData(1);
+								YRHX.alert("操作成功","提现成功,提现金额：" + YRHX.toDecimal2(amount/100) + "元");
+							},
+							error : function(data){
+								if(data.return_code=="-315"){
+									var error_Msg = "";
+									$.each(data.return_data,function(key,value){
+										error_Msg = error_Msg + value+"<br>";
+									});
+									YRHX.alert("警告",error_Msg);
+								}else{
+									YRHX.alert("警告",data.return_info || "获取信息失败");
+								}
+							}
+						});
+					}else{
+						YRHX.alert("金额必须得是数字！");
+					}
+				});
+			} else {
+				YRHX.alert("提示", "一次最多只可以给一个用户提现！");
+				return;
+			}
+		});
+
+		$(".froze-btn").click(function(){
+			var row = window.getCheckedRow();
+			if (row.length == 0) {
+				YRHX.alert("提示", "未选中需冻结资金的账户！");
+				return;
+			}
+			if (row.length == 1) {
+				YRHX.prompt("冻结资金","请输入需要冻结金额(单位分)",function(e){
+					var amount = parseInt(e.data[0] );
+					var remark = e.data[1];
+					if( amount > 0 ){
+						YRHX.ajax({
+							url : "/convertBalance" ,
+							data :{
+								"amount" : amount ,
+								"type" : "1" ,
+								"fundsUserCode" : row.attr("key"),
+								"remark" : remark
+							},
+							success:function(data){
+								if(data && data==true){
+									queryData(1);
+									YRHX.alert("操作成功","将可用余额转冻结账户成功,冻结金额：" + YRHX.toDecimal2(amount/100) + "元");
+								}
+								YRHX.alert("提示","操作失败，未生效");
+								
+							},
+							error : function(data){
+								if(data.return_code=="-315"){
+									var error_Msg = "";
+									$.each(data.return_data,function(key,value){
+										error_Msg = error_Msg + value+"<br>";
+									});
+									YRHX.alert("警告",error_Msg);
+								}else{
+									YRHX.alert("警告",data.return_info || "获取信息失败");
+								}
+							}
+						});
+					}else{
+						YRHX.alert("金额必须得是数字！");
+					}
+				});
+			} else {
+				YRHX.alert("提示", "一次最多只可以给一个用户提现！");
+				return;
+			}
+		});
+		$(".unfroze-btn").click(function(){
+			var row = window.getCheckedRow();
+			if (row.length == 0) {
+				YRHX.alert("提示", "未选中需解冻资金的账户！");
+				return;
+			}
+			if (row.length == 1) {
+				YRHX.prompt("解冻资金","请输入需要解冻金额(单位分)",function(e){
+					var amount = parseInt(e.data[0] );
+					var remark = e.data[1];
+					if( amount > 0 ){
+						YRHX.ajax({
+							url : "/convertBalance" ,
+							data :{
+								"amount" : amount ,
+								"type" : "0" ,
+								"fundsUserCode" : row.attr("key"),
+								"remark" : remark
+							},
+							success:function(data){
+								if(data && data==true){
+									queryData(1);
+									YRHX.alert("操作成功","将冻结账户资金转余额账户成功,解冻金额：" + YRHX.toDecimal2(amount/100) + "元");
+								}
+								YRHX.alert("提示","操作失败，未生效");
+								
+							},
+							error : function(data){
+								if(data.return_code=="-315"){
+									var error_Msg = "";
+									$.each(data.return_data,function(key,value){
+										error_Msg = error_Msg + value+"<br>";
+									});
+									YRHX.alert("警告",error_Msg);
+								}else{
+									YRHX.alert("警告",data.return_info || "获取信息失败");
+								}
+							}
+						});
+					}else{
+						YRHX.alert("金额必须得是数字！");
+					}
+				});
+			} else {
+				YRHX.alert("提示", "一次最多只可以给一个用户提现！");
+				return;
+			}
+		});
+		queryData(1);
+	</script>
+</body>
+</html>

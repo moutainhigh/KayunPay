@@ -1,0 +1,214 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="stylesheet" href="../assets/plugin/ztree/css/zTreeStyle.css">
+</head>
+<body>
+	<!-- iframe body start -->
+	<form id="info-form" action="" data-am-validator>
+		<div class="am-tabs am-margin" data-am-tabs="{noSwipe: 1}">
+			<ul class="am-tabs-nav am-nav am-nav-tabs">
+				<li class="am-active"><a href="#tab1">基本信息</a></li>
+				<li class="am-active"><a href="#tab2">权限</a></li>
+			</ul>
+			<div class="am-tabs-bd">
+				<div
+					class="am-tab-panel am-fade am-in am-active am-form am-form-inline"
+					id="tab1">
+					<div class="am-g am-margin-top field" name="role_code" type="text" text="角色编号" desc="" minlength=32 maxlength=32 add="hide" mod="disabled"></div>
+					<div class="am-g am-margin-top field" name="role_status" type="select" text="角色状态" map="roleStatus" desc="" add="hide" ></div>
+					<div class="am-g am-margin-top field" name="role_name" type="text" text="角色名称" desc="" minlength=3 maxlength=10></div>
+					<div class="am-g am-margin-top field" name="role_group" type="select" text="角色部门" map="roleGroup" desc=""></div>
+					<div class="am-g am-margin-top field" name="role_desc" type="text" text="角色备注" desc="" maxlength=30></div>
+				</div>
+				<div
+					class="am-tab-panel am-fade am-in am-active am-form am-form-inline"
+					id="tab2">
+					<ul id="menuMap" class="ztree">
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="am-margin">
+			<button id="subBtn" type="button"
+				class="am-btn am-btn-primary am-btn-xs submit-btn">提交</button>
+			<button id="cancelBtn" type="button"
+				class="am-btn am-btn-primary am-btn-xs back-btn">返回</button>
+		</div>
+	</form>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<script src="../assets/plugin/ztree/js/jquery.ztree.all-3.5.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script>
+		//---init
+		//biz code
+		$(".back-btn").click(function() {
+			window.history.go(-1);
+		});
+		
+		$(".submit-btn").click(function() {
+			var form = $("#info-form") ;
+			if( form.validateForm() ){
+				var reqData = form.formSerialize("roleV2");
+				reqData["roleV2.role_map"] = getTreeValue("menuMap");
+				YRHX.ajax({
+					url : form.attr("action") ,
+					data : reqData ,
+					success : function(){
+						if(formType=="add"){
+							alert("新增角色成功!");
+							window.location.href="/mRoleManager";
+						}else{
+							alert("修改角色成功!");
+							window.location.href="/mRoleManager";
+						}
+					},error:function( res){
+						YRHX.alert("警告",data.return_info || "获取信息失败");
+					}
+				});
+			}
+		});
+
+		function getTreeValue(tid) {
+			var chs = $.fn.zTree.getZTreeObj(tid).getCheckedNodes(true);
+			return formatTreeValue(chs);
+		}
+		function queryMenu(callback) {
+			YRHX.ajax({
+				url : "/queryMenuListV2",
+				data : {},
+				success : callback
+			});
+		}
+		function formatTreeValue(treeList) {
+			var menuVal = [];
+			var i = 0;
+			while (i < 500) {
+				//init 
+				menuVal.push("0");
+				i++;
+			}
+			for ( var mi in treeList) {
+				var menu = treeList[mi];
+				menuVal[menu["id"]] = '1';
+			}
+			return menuVal.join("");
+		}
+		function initFormData(keyCode) {
+			YRHX.ajax({
+				url : "/queryRoleByCode",
+				data : {
+					role_code : keyCode
+				},
+				success : function(sucData) {
+					$("#info-form").formUnSerialize(sucData);
+					var roleMap = sucData["role_map"];
+					queryMenu(function(menus){
+						var menusTreeData = [];
+						for ( var mi in menus) {
+							var menu = menus[mi];
+							//TODO 判断是否默认勾选
+							var v = roleMap.charAt( menu.menu_id ) == 1;
+							menusTreeData.push({
+								id : menu.menu_id,
+								pId : menu.menu_id_p,
+								name : menu.menu_name,
+								checked : v
+							});
+						}
+						//console.log(menusTreeData);
+						$.fn.zTree.init($("#menuMap"), setting, menusTreeData);
+					});
+				},
+				error : function(data) {
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+		}
+
+		var formType = YRHX.queryString("opType");
+		
+		//选择查看禁用提交按钮
+		if(formType=="view"){
+			$("#subBtn").hide();
+		}
+		var op4form = {
+			"add" : {
+				"formType" : "add",
+				"request" : "/newRole"
+			},
+			"mod" : {
+				"formType" : "mod",
+				"request" : "/modRole"
+			},
+			"view" : {
+				"formType" : "view",
+				"request" : "hah"
+			}
+		};
+		$("#info-form").formInit(op4form[formType||"view"]);
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		var setting = {
+			check : {
+				enable : true
+			},
+			data : {
+				simpleData : {
+					enable : true
+				}
+			}
+		};
+		$("#info-form").validatorInit();
+		var keyCode = YRHX.queryString("key");
+		if (keyCode) {
+			initFormData(keyCode);
+		}else{
+			queryMenu(function(menus) {
+				//
+				var menusTreeData = [];
+				for ( var mi in menus) {
+					var menu = menus[mi];
+					//TODO 判断是否默认勾选
+					menusTreeData.push({
+						id : menu.menu_id,
+						pId : menu.menu_id_p,
+						name : menu.menu_name,
+						checked : false
+					});
+				}
+				//console.log(menusTreeData);
+				$.fn.zTree.init($("#menuMap"), setting, menusTreeData);
+			});
+		}
+		$("#tab1").css("height",500);//避免下拉框超过盒子被隐藏
+	</script>
+</body>
+</html>

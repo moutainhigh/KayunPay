@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link type="text/css" href="/portal/css/activity/act0901.css" rel="stylesheet">
+	</head>
+
+	<body>
+		<div id="topic">
+
+		</div>
+		<div id="bg1">
+
+		</div>
+		<div id="bg2">
+
+		</div>
+		<div id="content">
+			<div id="myBox">
+				<div id="phone">
+					<img src="/portal/images/activity/act0901/phone.jpg" />
+				</div>
+				<div id="textNum">
+					已有<span id="peoNum">--</span>位土豪提前预定了<span id="phoneNum">--</span>部新iPhone
+				</div>
+				<div id="myInfo">
+					<img src="/portal/images/activity/act0901/money.png" style="margin-right: 12px;position: relative;top: 5px;" />我的累计加权投资金额为:
+				</div>
+				<div id="myAmt">
+					请<a href="http://www.yrhx.com/login">登录</a>后查看
+				</div>
+				<div id="tzPic">
+					<img src="/portal/images/activity/act0901/tzNow.png" id="tz" style="cursor: pointer;" />
+				</div>
+			</div>
+			<div id="listBox">
+				<div id="top">
+
+				</div>
+				<div id="list">
+					<table style="background: url(/portal/images/activity/act0901/trColor.png);height: 38px;width: 704px;margin: 0 auto;">
+						<tr>
+							<td width="70px">排名</td>
+							<td width="120px">用户名</td>
+							<td width="170px">投资金额</td>
+							<td width="170px">累计加权金额</td>
+							<td>奖励</td>
+						</tr>
+					</table>
+					<ul>
+						
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div id="bg3">
+
+		</div>
+		<div id="bg4">
+
+		</div>
+		<div id="bg5">
+
+		</div>
+	</body>
+	<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js?v=1.0.0" charset="utf-8"></script>
+	<script type="text/javascript" src="/portal/js/pub/core.js?v=1.0.0" charset="utf-8"></script>
+	<script type="text/javascript">
+		$("#tz").click(function() {
+			window.open("http://www.yrhx.com/Z02");
+		});
+
+		$(function() {
+			showAwardList();
+			getMyJQ();
+		});
+
+		function showAwardList() {
+			YRHX.ajax({
+				url: "/activity5All",
+				success: function(sucData) {
+					var peoNum = sucData.countPerson;
+					var phoneNum = sucData.countIphone;
+					$("#peoNum").text(peoNum);
+					$("#phoneNum").text(phoneNum);
+					var html_ul = "<li><span class='rank'>#{rank}</span><span class='userName'>#{userName}</span><span class='tzAmount'>#{loanAmount}</span><span class='jqAmount'>#{loanAmountJQ}</span><span class='award'>#{personIphone}部新iPhone</span></li>";
+					var tableEle = $("#list ul");
+					tableEle.html("");
+					var rsData = sucData.newList;
+					if(rsData.length > 0) {
+						for(var i = 0; i < rsData.length; i++) {
+							var row = rsData[i];
+							var len = row["userName"].length;
+							if(0 == row["userName"].indexOf("*")) {
+								row["userName"] = row["userName"]
+							} else {
+								if(len < 3) {
+									row["userName"] = row["userName"] + "***";
+								} else if(len < 11) {
+									row["userName"] = row["userName"].substr(0, 3) + "***";
+								} else if(len == 11) {
+									row["userName"] = row["userName"].substr(0, 3) + "***" + row["userName"].substr(7);
+								} else {
+									row["userName"] = row["userName"].substr(0, 3) + "***";
+								}
+							}
+							row["loanAmountJQ"] = YRHX.toDecimal2(row["loanAmountJQ"] / 10.0 / 10.0);
+							row["loanAmount"] = YRHX.toDecimal2(row["loanAmount"] / 10.0 / 10.0);
+							
+							row.rank = i + 1;
+							var tmpHtml = html_ul.makeHtml(row);
+							tableEle.append(tmpHtml);
+						}
+					} else {
+						$("#list ul").html("<div id='noOne'>暂无达标出借人</div>");
+					}
+				},
+			});
+		}
+
+		function getMyJQ() {
+			var userName = YRHX.Cookie("userName").get();
+			if(userName != null) {
+				$("#myAmt").html("");
+				YRHX.ajax({
+					url: "/activity5User",
+					success: function(sucData) {
+						jq = sucData.loanAmountJQ === undefined ? 0 : sucData.loanAmountJQ;
+						$("#myAmt").html("<span id='amt'>" + jq + "</span>万");
+					},
+					error: function(errData) {
+						$.popTips("popTipErr", errData.return_info);
+					}
+				});
+			}
+		}
+	</script>
+
+</html>

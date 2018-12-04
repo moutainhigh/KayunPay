@@ -1,0 +1,136 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+	<!-- iframe body start -->
+	<form id="info-form" action="/nigezhazha" data-am-validator method="post">
+		<div class="am-tabs am-margin" data-am-tabs="{noSwipe: 1}">
+			<ul class="am-tabs-nav am-nav am-nav-tabs">
+				<li class="am-active"><a href="#tab1">贷款基本信息</a></li>
+			</ul>
+			<div class="am-tabs-bd">
+				<div class="am-tab-panel am-fade am-in am-active am-form am-form-inline" id="tab1">
+					<div class="am-g am-margin-top field" name="loanTitle" type="text" text="贷款标题" >
+					</div>
+					
+					<div class="am-g am-margin-top field" name="contractNo" type="text" text="借款合同号" >
+					</div>
+					
+					<div class="am-g am-margin-top field" name="loanAmount" type="text" text="贷款金额" desc="单位 元，例：10000.10 ">
+					</div>
+					
+					<div class="am-g am-margin-top field" name="loanArea" type="text" text="贷款地区" desc="贷款地区">
+					</div>
+					
+					<div class="am-g am-margin-top field" name="loanType" type="select" map="loanType" text="贷款标类型">
+					</div>
+					
+					<div class="am-g am-margin-top field" name="loanTimeLimit" type="text" text="还款期限" min="1" max="36" desc="单位 月，不超过36个月">
+					</div>
+					
+					<div class="am-g am-margin-top field" name="refundType" type="select" map="refundType" text="还款方式" >
+					</div>
+					
+					<div class="am-g am-margin-top field" name="rateByYear" type="text" text="年利率" min="1" max="24" desc="单位%，如19.20,该字段值不可以高过24.00">
+					</div>
+					
+					<div class="am-g am-margin-top field" name="loanUsedType" type="select" map="loanUsedType" text="借款用途" >
+					</div>
+					
+					<div class="am-g am-margin-top field" name="loanUserCode" add="disabled" type="text" text="借款人" desc="选择借款人，人工操作，需要去借款中那里获得借款编号">
+					</div>
+					
+				</div>
+				
+			</div>
+		</div>
+		<div class="am-margin">
+			<button id="submitBtn" type="button" class="am-btn am-btn-primary am-btn-xs">保存</button>
+		</div>
+	</form>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script>
+		//---init
+		var loanTypeData = YRHX.sortData( RES["DATA_MAP"]["loanType"] );	//{key:value}
+		
+		//biz code
+		$("#submitBtn").click(function(){
+			if( $("#info-form").validateForm() ){
+				var zz = $("#info-form").formSerialize();
+				zz["loanTypeDesc"] = loanTypeData[ zz["loanType"] ];
+				zz["loanAmount"] = parseFloat(zz["loanAmount"])*100;		//单位转为分
+				zz["rateByYear"] = parseFloat(zz["rateByYear"])*100;		//单位转为分
+				if( zz["rateByYear"] > 2400 ){
+					YRHX.alert("警告","利率过高不可以搞过24%");
+					return false ;
+				}
+				
+				YRHX.ajax({
+					url : $("#info-form").attr("action"),
+					data : zz,
+					success : function(sucData){
+						if(sucData["loanCode"]!=null && sucData["loanCode"].length>0){
+							YRHX.alert("提示","创建标完成，【等待材料】");
+							setTimeout(function(){
+								window.location.href = "pageLoanForm?opType=edit&loanCode="+sucData["loanCode"];
+							},1500);
+						}
+					},
+					error : function(data) {
+						if(data.return_code=="-315"){
+							var error_Msg = "";
+							$.each(data.return_data,function(key,value){
+								error_Msg = error_Msg + value+"<br>";
+							});
+							YRHX.alert("警告",error_Msg);
+						}else{
+							YRHX.alert("警告",data.return_info || "获取信息失败");
+						}
+					}
+				});
+			}
+		});
+
+		$("#info-form").formInit({
+			"formType" : "add",
+			"request" : "/createBasicLoan"
+		});
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		$("#info-form").validatorInit();
+		
+		var userCode = YRHX.queryString("pUserCode");
+		$("input[name=loanUserCode]").val( userCode );
+		
+	</script>
+</body>
+</html>

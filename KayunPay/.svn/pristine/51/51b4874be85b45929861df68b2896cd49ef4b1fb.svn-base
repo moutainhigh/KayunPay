@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>易融恒信-安全可靠透明的投资平台,p2p网贷平台</title>
+<meta name="keywords" content="易融恒信,网贷平台,p2p网贷平台排名,p2p投资,p2b网贷,p2p投资平台,小投资,武汉贷款,武汉小额投资,武汉网贷公司,武汉易融恒信"/>
+<meta name="description" content="易融恒信,致力于做华中地区最好的p2p网贷平台,为投资者提供最安全,最靠谱,最透明的互联网金融p2p投资平台,咨询电话400-027-0707"/>
+<link href="/portal/css/public.css" rel="stylesheet" media="screen" type="text/css"  charset="utf-8" />
+<link type="text/css" href="/portal/css/sscw.css" rel="stylesheet">
+<!--[if lt IE 9]><script src="/portal/js/html5shiv.min.js"></script><![endif]-->
+</head>
+<body>
+<header id="header" class="header"></header>
+
+<div class="sscw">
+	<div class="present">
+		
+	</div>
+	<!--总金额排行榜-->
+	<div class="overall">
+		<div class="headline">
+			<strong>总金额排行榜</strong><b>(前<strong>10</strong>名出借人)</b>
+			<!--  <span class="now_rank">您好，<i class="uName"></i>您当前的投资排名为<strong class="allRank"></strong>位 , 不错哟，继续加油！</span>-->
+		</div>
+		<table class="all_list">
+			<thead>
+				<th width="100px;">排名</th><th width="230">用户名</th><!-- <th width="255px">投资金额(元)</th> --><th width="170px">投标笔数</th><th width="255px">平均收益率</th><!-- <th>活跃积分</th> -->
+			</thead>
+			<tbody>
+			
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="clear"></div>
+<!--月和周排行榜-->
+<div class="rankList">
+	<div class="month_rank">
+		<div class="headline">
+			<strong>本月投资金额排行榜</strong><b>(前<strong>10</strong>名出借人)</b>
+			<!-- <span class="now_rank">您当前的投资排名为<strong class="monthRank">2</strong>位,赞一个！</span> -->
+		</div>
+		<table class="month_list">
+			<thead>
+				<th width="113px">排名</th><th width="125px">用户名</th><!-- <th width="185px">投资金额</th> --><!--  <th>投标笔数</th>-->
+			</thead>
+			<tbody>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="week_rank">
+		<div class="headline">
+			<strong>今日投资金额排行榜</strong><b>(前<strong>10</strong>名出借人)</b>
+		</div>
+		<table class="day_list">
+			<thead>
+				<th width="113px">排名</th><th width="125px">用户名</th><!-- <th width="185px">投资金额</th> --><!--  <th>投标笔数</th>-->
+			</thead>
+			<tbody>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+				<tr><td><i></i></td><td></td><td></td><td></td></tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<footer id="footer" class="footer">
+</footer>
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js"></script>
+<script type="text/javascript" src="/portal/js/config.js"></script>
+<script>
+	topNavSelect = 2;
+</script>
+<script type="text/javascript" src="/portal/js/public.js"></script>
+<script type="text/javascript" src="/portal/js/user.js"></script>
+<script type="text/javascript" src="/portal/js/pub/widget-table.js"></script>
+<script type="text/javascript" src="/portal/js/pub/app.js"></script>
+<script>
+YRHX.ajax({
+	url : CONFIG.getRequestURI("duangToubiaoOrder1"),
+    success: function (sucData) {
+    	var overHtml="<tr>";
+    	overHtml += "<td><i></i></td>";
+    	overHtml += "<td>#{userName}</td>";
+    	/* overHtml += "<td><strong>#{tzje}</strong></td>"; */
+    	overHtml += "<td>#{tbbs}</td>";
+    	overHtml += "<td>#{pingjun_rate}%</td>";
+    	/* overHtml += "<td>#{userScore}</td>"; */
+    	overHtml +="</tr>";
+    	$('.all_list').find('tbody').html('');
+    	if(sucData && sucData.length > 0){
+    		for(var i=0; i< sucData.length; i++){
+    			var row=sucData[i];
+    			var len=row["userName"].length;
+    			if( len <2){
+    				row["userName"]=row["userName"] + "***";
+    			}else if(len < 8){
+    				row["userName"]=row["userName"].substr(0,Math.floor(len / 2)) +"***";
+    			}else{
+    				row["userName"]= row["userName"].substr(0,3) +"***"
+    			}
+    			 row["tzje"] = YRHX.toDecimal2(row["tzje"] / 10.0/10.0, "￥"); 
+    			/* row["userScore"] = (row["userScore"]/10.0/10.0).toFixed(2); */
+    			row["pingjun_rate"] = row["pingjun_rate"] / 10.0 / 10.0;
+    			var s = row["pingjun_rate"] + "";
+    			row["pingjun_rate"] = s.substring(0,5);
+    			var tempHTml=overHtml.makeHtml(row);
+    			$('.all_list').find('tbody').append(tempHTml);
+    		}
+    	}else{
+    		
+    	}
+    	$.rankICon('.all_list tr');
+    	
+    },
+    error: function (errData) {
+	}
+});
+
+//月、日排行
+YRHX.ajax({
+	url : CONFIG.getRequestURI("duangToubiaoOrder2"),
+    success: function (sucData) {
+    	var monthHtml="<tr>";
+    	monthHtml += "<td><i></i></td>";
+    	monthHtml += "<td>#{userName}</td>";
+/*     	monthHtml += "<td><span class='week_m'>#{traceAmount}</span></td>"; */
+    	//monthHtml += "<td>#{tbcs}</td>";
+    	monthHtml +="</tr>";
+    	
+    	
+    	//月排行
+     	var monthData=sucData['month'];
+     	if(monthData && monthData.length > 0){
+     		$('.month_list').find('tbody').html('');
+    		for(var i=0 ;i < monthData.length ; i++){
+    			var row=monthData[i];
+    			var len=row["userName"].length;
+    			if( len <2){
+    				row["userName"]=row["userName"] + "***";
+    			}else if(len < 8){
+    				row["userName"]=row["userName"].substr(0,Math.floor(len / 2)) +"***";
+    			}else{
+    				row["userName"]= row["userName"].substr(0,3) +"***"
+    			}
+    			row["traceAmount"] = YRHX.toDecimal2(row["traceAmount"] / 10.0/10.0, "￥");
+    			var tempHTml=monthHtml.makeHtml(row);
+    			$('.month_list').find('tbody').append(tempHTml);
+    		}
+    	}else{
+    		
+    	}
+     	$.rankICon('.month_list tr');
+    	
+		//日排行
+    	
+    	var dayData=sucData['day'];
+    	if(dayData && dayData.length > 0){
+    		$('.day_list').find('tbody').html('');
+    		for(var i=0 ;i < dayData.length ; i++){
+    			var row=dayData[i];
+    			/*console.log(row["userName"])*/
+    			var len=row["userName"].length;
+    			if( len <2){
+    				row["userName"]=row["userName"] + "***";
+    			}else if(len < 8){
+    				row["userName"]=row["userName"].substr(0,Math.floor(len / 2)) +"***";
+    			}else{
+    				row["userName"]= row["userName"].substr(0,3) +"***"
+    			}
+    			row["traceAmount"] = YRHX.toDecimal2(row["traceAmount"] / 10.0/10.0, "￥");
+    			var tempHTml=monthHtml.makeHtml(row);
+    			$('.day_list').find('tbody').append(tempHTml);
+    		}
+    	}else{
+    		
+    	}
+    	$.rankICon('.day_list tr');
+    },
+    error: function (errData) {
+
+    }
+});
+
+$.rankICon=function( target ){
+	var target=$(target);
+	target.each(function(){
+		var i=$(this).index();
+		if(i == 0){
+			$(this).find('i').addClass('first');
+		}else if(i == 1){
+			$(this).find('i').addClass('second');
+		}else if(i == 2){
+			$(this).find('i').addClass('third');
+		}else{
+			$(this).find('i').addClass('four').text(i +1);
+		}
+	});
+}
+
+//自己排名状态
+//YRHX.ajax({
+//	url:CONFIG.getRequestURI("duangMyRank"),
+//	success:function(sucData){
+//		if(sucData < 0){ 
+//			$('.allRank').text('');
+//		}else{
+//			$('.allRank').text(sucData);
+//		}
+//		
+//		if(YRHX.Cookie("userCode").get()){
+//			$('.now_rank').css('display','inline-block');
+//			$('.uName').text(YRHX.Cookie("userName").get());
+//		}else{
+//			$('.now_rank').hide();
+//		}
+//	}
+//});
+
+</script>
+</body>
+</html>

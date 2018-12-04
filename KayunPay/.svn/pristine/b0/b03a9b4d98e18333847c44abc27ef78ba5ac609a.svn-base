@@ -1,0 +1,190 @@
+package com.dutiantech.config;
+
+import java.util.List;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.dutiantech.CACHED;
+import com.dutiantech.Log;
+import com.dutiantech.PicCloud;
+import com.dutiantech.config.db.AdminDB;
+import com.dutiantech.config.db.PortalDB;
+import com.dutiantech.config.db.PublicDB;
+import com.dutiantech.config.render.ControllerErrorRender;
+import com.dutiantech.config.routes.AdminRoutes;
+import com.dutiantech.config.routes.AppRoutes;
+import com.dutiantech.config.routes.BranchRoutes;
+import com.dutiantech.config.routes.ExportDateRoutes;
+import com.dutiantech.config.routes.PortalRoutes;
+import com.dutiantech.config.routes.PublicRoutes;
+import com.dutiantech.model.SysConfig;
+import com.dutiantech.plugins.MemcachedPlugin;
+import com.dutiantech.plugins.QCloudPic;
+import com.jfinal.config.Constants;
+import com.jfinal.config.Handlers;
+import com.jfinal.config.Interceptors;
+import com.jfinal.config.JFinalConfig;
+import com.jfinal.config.Plugins;
+import com.jfinal.config.Routes;
+import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
+import com.jfinal.plugin.druid.DruidPlugin;
+import com.jfinal.render.IErrorRenderFactory;
+import com.jfinal.render.Render;
+import com.jfinal.render.ViewType;
+
+public class AdminConfig extends JFinalConfig {
+
+	//设置是否为开发模式 true：开发模式  false：正式模式
+	public static boolean isDevMode = true ;
+
+	public static int workType = 0; //0 - admin  1- portal , 2- branch 3- 数据对接
+
+	class ERF implements IErrorRenderFactory{
+
+		@Override
+		public Render getRender(int errorCode, String view) {
+			
+			return new ControllerErrorRender("/portal/404.html") ;
+		}
+		
+	}
+	
+	@Override
+	public void configConstant(Constants me) {
+		me.setDevMode( isDevMode );
+		me.setViewType( ViewType.OTHER );
+		me.setErrorRenderFactory(new ERF());
+//		me.setError401View("/e404");
+//		me.setError403View("/e404");
+//		me.setError500View("/e404");
+//		me.setFreeMarkerViewExtension("/e404");
+	}
+
+	@Override
+	public void configRoute(Routes me) {
+		int workTypeValue = AdminConfig.workType ;
+		me.add(new PublicRoutes()) ;
+		me.add(new AppRoutes());
+		
+		if( workTypeValue == 0  ){
+			me.add( new AdminRoutes() ) ;
+		}
+		
+		if( workTypeValue == 1  ){
+			me.add( new PortalRoutes()) ;
+		}
+		
+		if( workTypeValue == 2  ){
+			me.add( new BranchRoutes()) ;
+		}
+		
+		if( workTypeValue == 3  ){
+			me.add( new ExportDateRoutes()) ;
+		}
+	}
+
+	private String makeKey(String key){
+		if( isDevMode )
+			key += "_test" ;
+		return key ;	
+	}
+	
+	private String getValueToString(String key){
+		return getProperty( makeKey( key ) );
+	}
+	
+	public Integer getValueToInt(String key) {
+		return getPropertyToInt(makeKey( key )) ;
+	};
+	
+//	C3p0Plugin c3p0Plugin ;
+	
+	@Override
+	public void configPlugin(Plugins me) {
+		//初始化数据库连接
+		loadPropertyFile("db-config.txt");
+//		c3p0Plugin = new C3p0Plugin(getValueToString("url"),
+//				getValueToString("username"), getValueToString("password"));
+//				me.add(c3p0Plugin);
+//				
+		
+//		ActiveRecordPlugin arp = new ActiveRecordPlugin(c3p0Plugin);
+		
+		DruidPlugin dp = new DruidPlugin( getValueToString("url"), 
+				getValueToString("username"), getValueToString("password")) ;
+		me.add( dp );
+		ActiveRecordPlugin arp = new ActiveRecordPlugin( dp );
+		me.add(arp);
+
+		//memcached 插件
+		loadPropertyFile("memcached-config.txt");
+		int memCount = getValueToInt("client_count") ;
+		for(int index = 0 ; index < memCount ; index ++){
+			//me.add( ) ;
+			new MemcachedPlugin(getValueToString("name_" + (index+1)),
+					getValueToString("ip_" + (index+1)),
+					getValueToInt("port_" + (index+1)),
+					getValueToInt("weight_" + (index+1))).start();
+		}
+		//初始化图片服务
+		loadPropertyFile("qcloud-img-config.txt");
+		QCloudPic.addClient("A1", new PicCloud( getValueToInt("appid"),
+				getValueToString("secretid"), getValueToString("secretkey"),getValueToString("bucket")));
+		
+		PublicDB.addMapping( arp );
+		if( AdminConfig.workType == 0 ){
+			AdminDB.addMapping( arp );
+		}
+		if( AdminConfig.workType == 1 ){
+			PortalDB.addMapping(arp);
+		}
+		if( AdminConfig.workType == 2 ){
+			//
+		}
+		
+		//加载自动投标密钥
+		/*loadPropertyFile("runtime-config.txt");
+		CACHED.put("autoLoanKey", getValueToString("autoLoanKey"));
+		CACHED.put("scanTransferKey", getValueToString("scanTransferKey"));
+		CACHED.put("init_pwd", getValueToString("init_pwd"));
+		CACHED.put("platform_userCode", getValueToString("platform_userCode")); 
+		CACHED.put("md5key_lianlian", getValueToString("payKey_lianlian"));
+		CACHED.put("paymerno_lianlian", getValueToString("paymerno_lianlian"));
+		CACHED.put("rsa_prikey_lianlian", getValueToString("rsa_prikey_lianlian"));
+		CACHED.put("rsa_pubkey_lianlian", getValueToString("rsa_pubkey_lianlian"));
+		CACHED.put("notify_host_lianlian", getValueToString("notify_host_lianlian"));*/
+	}
+	
+	@Override
+	public void configInterceptor(Interceptors me) {
+		
+	}
+
+	@Override
+	public void configHandler(Handlers me) {
+	}
+	
+	@Override
+	public void afterJFinalStart() {
+		super.afterJFinalStart();
+//		c3p0Plugin.getComboPooledDataSource().setMaxStatements(0);
+//		c3p0Plugin.getComboPooledDataSource().setMaxStatementsPerConnection(100);
+//		c3p0Plugin.getComboPooledDataSource().setCheckoutTimeout(100);
+		
+		List<SysConfig> cfgs = SysConfig.sysConfigDao.find("select * from t_sys_config");
+		for(SysConfig cfg : cfgs ){
+			JSONArray array = JSONArray.parseArray( cfg.getStr("cfgContent") ) ;
+			String keyCode = cfg.getStr("cfgCode");
+			for(Object obj : array ){
+				JSONObject json = (JSONObject)obj ;
+				String key = keyCode+"."+json.getString("key");
+				String val = json.getString("value");
+				String desc = json.getString("desc");
+				CACHED.put( key , val , false );
+				Log.info(String.format("加载[%s][key=%s][value=%s]成功", desc , key , val ));
+			}
+		}
+		
+	}
+
+}

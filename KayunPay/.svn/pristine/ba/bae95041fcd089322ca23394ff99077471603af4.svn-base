@@ -1,0 +1,84 @@
+package com.dutiantech.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.dutiantech.model.LoanNxjd;
+import com.dutiantech.util.DateUtil;
+import com.dutiantech.util.StringUtil;
+import com.jfinal.plugin.activerecord.Db;
+
+public class LoanNxjdService extends BaseService {
+
+	public final String BASE_SELECT_FIELDS = "uid, loanCode, ztyLoanCode, term, status, addDate, addTime, userName, userCardId, updateDate, updateTime";
+	
+	/**
+	 * 保存
+	 * @param loanNxjd
+	 * @return
+	 */
+	public boolean save(LoanNxjd loanNxjd) {
+		loanNxjd.set("addDate", DateUtil.getNowDate());
+		loanNxjd.set("addTime", DateUtil.getNowTime());
+		return loanNxjd.save();
+	}
+	
+	public boolean saveOrUpdate(LoanNxjd loanNxjd) {
+		Integer uid = loanNxjd.getInt("uid");
+		boolean doResult = false;
+		if (uid != null) {
+			LoanNxjd tmpLoanNxjd = LoanNxjd.loanNxjdDao.findById(uid);
+			if (tmpLoanNxjd == null) {
+				loanNxjd.set("addDate", DateUtil.getNowDate());
+				loanNxjd.set("addTime", DateUtil.getNowTime());
+				doResult = loanNxjd.save();
+			} else {
+				tmpLoanNxjd._setAttrs(loanNxjd);
+				tmpLoanNxjd.set("updateDate", DateUtil.getNowDate());
+				tmpLoanNxjd.set("updateTime", DateUtil.getNowTime());
+				doResult = tmpLoanNxjd.update();
+			}
+		} else {
+			loanNxjd.set("addDate", DateUtil.getNowDate());
+			loanNxjd.set("addTime", DateUtil.getNowTime());
+			doResult = loanNxjd.save();
+		}
+		return doResult;
+	}
+	
+	/**
+	 * 查询最后一个关联标
+	 * @param loanCode
+	 * @return
+	 */
+	public LoanNxjd findLastByLoanCode(String loanCode) {
+		return LoanNxjd.loanNxjdDao.findFirst("SELECT * FROM `t_loan_nxjd` WHERE loanCode = ? order by CONCAT(addDate,addTime) desc", loanCode);
+	}
+	
+	public int sumBorrowTimeByLoanCode(String loanCode) {
+		return Db.queryBigDecimal("SELECT SUM(term) FROM t_loan_nxjd WHERE loanCode = ?", loanCode).intValue();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<LoanNxjd> findByCondition(Map<String, String>... condition) {
+		String sqlSelect = "SELECT " + BASE_SELECT_FIELDS;
+		String sqlFrom = " FROM t_loan_nxjd";
+		String sqlOrder = " ORDER by addDate asc";
+		List<Object> paras = new ArrayList<Object>();
+		StringBuffer buff = new StringBuffer("");
+		for (Map<String, String> map : condition) {
+			if (!StringUtil.isBlank(map.get("status"))) {
+				makeExp(buff, paras, "status", "=", map.get("status"), "and");
+			}
+			if (!StringUtil.isBlank(map.get("loanCode"))) {
+				makeExp(buff, paras, "loanCode", "=", map.get("loanCode"), "and");
+			}
+			if (!StringUtil.isBlank(map.get("ztyLoanCode"))) {
+				makeExp(buff, paras, "ztyLoanCode", "=", map.get("ztyLoanCode"), "and");
+			}
+		}
+		System.out.println(sqlSelect + " " + sqlFrom + (makeSql4Where(buff)).toString() + sqlOrder);
+		return LoanNxjd.loanNxjdDao.find(sqlSelect + " " + sqlFrom + (makeSql4Where(buff)).toString() + sqlOrder, paras.toArray());
+	}
+}

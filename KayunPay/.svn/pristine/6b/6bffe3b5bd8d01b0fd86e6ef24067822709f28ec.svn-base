@@ -1,0 +1,11 @@
+package com.dutiantech.service;
+
+import com.dutiantech.model.Contracts;
+
+public class ContractsService extends BaseService {
+	
+	public Contracts findById(String contractCode) {
+		return Contracts.contractsDao.findById(contractCode);
+	}
+	
+}

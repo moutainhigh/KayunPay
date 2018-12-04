@@ -1,0 +1,156 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="stylesheet" href="../assets/plugin/ztree/css/zTreeStyle.css">
+<style type="text/css">
+	.am-form input[type="number"][disabled], .am-form input[type="number"][readonly], .am-form input[type="search"][disabled], .am-form input[type="search"][readonly], .am-form input[type="text"][disabled], .am-form input[type="text"][readonly], .am-form input[type="password"][disabled], .am-form input[type="password"][readonly], .am-form input[type="datetime"][disabled], .am-form input[type="datetime"][readonly], .am-form input[type="datetime-local"][disabled], .am-form input[type="datetime-local"][readonly], .am-form input[type="date"][disabled], .am-form input[type="date"][readonly], .am-form input[type="month"][disabled], .am-form input[type="month"][readonly], .am-form input[type="time"][disabled], .am-form input[type="time"][readonly], .am-form input[type="week"][disabled], .am-form input[type="week"][readonly], .am-form input[type="email"][disabled], .am-form input[type="email"][readonly], .am-form input[type="url"][disabled], .am-form input[type="url"][readonly], .am-form input[type="tel"][disabled], .am-form input[type="tel"][readonly], .am-form input[type="color"][disabled], .am-form input[type="color"][readonly], .am-form select[disabled], .am-form select[readonly], .am-form textarea[disabled], .am-form textarea[readonly], .am-form-field[disabled], .am-form-field[readonly], fieldset[disabled] .am-form input[type="number"], fieldset[disabled] .am-form input[type="search"], fieldset[disabled] .am-form input[type="text"], fieldset[disabled] .am-form input[type="password"], fieldset[disabled] .am-form input[type="datetime"], fieldset[disabled] .am-form input[type="datetime-local"], fieldset[disabled] .am-form input[type="date"], fieldset[disabled] .am-form input[type="month"], fieldset[disabled] .am-form input[type="time"], fieldset[disabled] .am-form input[type="week"], fieldset[disabled] .am-form input[type="email"], fieldset[disabled] .am-form input[type="url"], fieldset[disabled] .am-form input[type="tel"], fieldset[disabled] .am-form input[type="color"], fieldset[disabled] .am-form select, fieldset[disabled] .am-form textarea, fieldset[disabled] .am-form-field{
+		width:423px;
+	}
+	.am-form input[type="number"], .am-form input[type="search"], .am-form input[type="text"], .am-form input[type="password"], .am-form input[type="datetime"], .am-form input[type="datetime-local"], .am-form input[type="date"], .am-form input[type="month"], .am-form input[type="time"], .am-form input[type="week"], .am-form input[type="email"], .am-form input[type="url"], .am-form input[type="tel"], .am-form input[type="color"], .am-form select, .am-form textarea, .am-form-field{
+		width:423px;
+	}
+</style>
+</head>
+<body>
+	<!-- iframe body start -->
+	<form id="info-form" action="" data-am-validator>
+		<div class="am-tabs am-margin" data-am-tabs="{noSwipe: 1}">
+			<ul class="am-tabs-nav am-nav am-nav-tabs">
+				<li class="am-active"><a href="#tab1">合同信息</a></li>
+			</ul>
+			<div class="am-tabs-bd">
+				<div class="am-tab-panel am-fade am-in am-active am-form am-form-inline" id="tab1" >
+					<div class="am-g am-margin-top field" name="contractCode" type="text" text="合同编码" add="hide" edit="disabled" view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="uid" type="text" text="序号" edit="disabled" add="hide  view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="title" type="text" text="合同标题"   view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="content" widths=423px type="textarea" text="合同内容" view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="opCode" type="text" text="后台操作员" add="hide" edit="disabled"  view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="addDateTime"  type="text" text="添加合同日期" add="hide" edit="disabled"  view="disabled">
+					</div>
+					<div class="am-g am-margin-top field" name="updateDateTime" type="text" text="最后更新日期" add="hide" edit="disabled" view="disabled">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="am-margin">
+			<button id="submitBtn" type="button" class="am-btn am-btn-primary am-btn-xs submit-btn">提交</button>
+			<button id="cancelBtn" type="button" class="am-btn am-btn-primary am-btn-xs back-btn">返回</button>
+		</div>
+	</form>
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<script src="../assets/plugin/ztree/js/jquery.ztree.all-3.5.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script>
+	
+		//---init
+		function initFormData( key ){
+			YRHX.ajax({
+				url : "/queryContractsById" ,
+				data : {
+					contractCode : key 
+				},
+				success : function( sucData ){
+					sucData["addDateTime"] = sucData["addDateTime"].dateformat();
+					sucData["updateDateTime"] = sucData["updateDateTime"].dateformat();
+					$("#info-form").formUnSerialize( sucData ); 
+				},
+				error : function( data ){
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+		}
+		
+		
+		$(".submit-btn").click(function(){
+			if( $("#info-form").validateForm() ){
+				var zz = $("#info-form").formSerialize();   //"transferInfo"
+				YRHX.ajax({
+					url : $("#info-form").attr("action"),
+					data : zz,
+					success : function( sucData ){
+						//确定之后页面后退
+						YRHX.alert2("操作成功！");
+					},error:function( data ){
+						if(data.return_code=="-315"){
+							var error_Msg = "";
+							$.each(data.return_data,function(key,value){
+								error_Msg = error_Msg + value+"<br>";
+							});
+							YRHX.alert("警告",error_Msg);
+						}else{
+							YRHX.alert("警告",data.return_info || "获取信息失败");
+						}
+					}
+				});
+			}
+		});
+		
+		
+		$(".back-btn").click(function(){
+			window.history.go(-1);
+		});
+		var opMap = {} ;
+		opMap["add"] = {
+			"formType" : "add" , 
+			"request" : "/addContracts"
+		};
+		opMap["edit"] = {
+			"formType" : "edit" , 
+			"request" : "/modContracts"
+		};
+		opMap["view"] = {
+			"formType" : "view" , 
+			"request" : "www.yrhx.com"
+		};
+		var opType = YRHX.queryString("opType")||"view"  ;
+		if( opType == "view"){
+			$(".submit-btn").hide();
+		}
+		$("#info-form").formInit(opMap[YRHX.queryString("opType")||"view" ]);	
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		var setting = {
+			check: {
+				enable: true
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+		
+		$("#info-form").validatorInit();
+		var keyCode = YRHX.queryString("key");
+		if( keyCode ){
+			initFormData( keyCode );
+		}else{
+			//YRHX.alert1("警告", "获取信息失败!");
+		}
+	</script>
+</body>
+</html>

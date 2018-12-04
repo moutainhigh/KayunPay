@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>金秋十月，翻牌有礼</title>
+		<link rel="stylesheet" type="text/css" href="/portal/css/activity/act201710.css" />
+	</head>
+
+	<body>
+		<div id="top">
+
+		</div>
+		<div id="brief">
+
+		</div>
+		<div id="list">
+			<div id="login">
+				请<a href="/login">登录</a>查看本日累计投资金额
+			</div>
+			<div id="cards">
+				<div id="card1" class="card">
+
+				</div>
+				<div id="card2" class="card">
+
+				</div>
+				<div id="card3" class="card">
+
+				</div>
+				<div id="card4" class="card">
+
+				</div>
+			</div>
+			<div id="content">
+				<div id="conLeft">
+					<div id="awardList">
+						<div id="showAllBox">
+							<ul id="showAll">
+							</ul>
+						</div>
+					</div>
+					<div id="btn">
+
+					</div>
+				</div>
+				<div id="conRight">
+
+				</div>
+			</div>
+		</div>
+		<div id="rewards">
+
+		</div>
+		<div id="rules">
+
+		</div>
+		<!-- 阴影背景 -->
+		<div id="yinying">
+			<div id="bgRecord">
+				<div id="Y" class="num">
+
+				</div>
+				<div id="R" class="num">
+
+				</div>
+				<div id="H" class="num">
+
+				</div>
+				<div id="X" class="num">
+
+				</div>
+				<div id="yrhx">
+
+				</div>
+				<div id="userList">
+					<ul id="userUl">
+					</ul>
+				</div>
+			</div>
+			<div id="back">
+				返回
+			</div>
+		</div>
+		<div id="shadow">
+			<div id="congra">
+				<div id="circle">
+
+				</div>
+				<div id="words">
+					<br /><br /><br /><br /><br />
+					<p style="font-weight: bold;font-size: 24px;">刚刚翻到了</p>
+					<p id="showAward" style="color: red;font-size: 38px;font-weight: bold;font-family: 'microsoft yahei';"></p>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js?v=1.0.0" charset="utf-8"></script>
+	<script type="text/javascript" src="/portal/js/pub/core.js?v=1.0.0" charset="utf-8"></script>
+	<script src="/portal/js/jquery.flip.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var chance = 0;
+
+		$(function() {
+			if (isLogin()) {
+				getLotteryInfo();
+			}
+		});
+
+		function getLotteryInfo() {
+			YRHX.ajax({
+				url: "/activity6User",
+				success: function(sucData) {
+					chance = sucData.leftNum;
+					if(chance == 0) {
+						$(".card").css('cursor', 'auto').unbind('click');
+					}
+					$("#login").html("今日您的投资金额为<span id='payOut'>" + YRHX.toDecimal2(sucData.nowDayAmount / 10.0 / 10.0) + "</span>元，还有<span id='chance'>" + chance + "</span>次翻牌机会，快来翻吧！");
+				},
+				error: function(errData) {
+					$.popTips("popTipErr", errData.return_info);
+				}
+			});
+		}
+		
+		function getLotteryRecord() {
+			YRHX.ajax({
+				url: "/activity6User",
+				success: function(sucData) {
+					chance = sucData.leftNum;
+					if(chance == 0) {
+						$(".card").css('cursor', 'auto').unbind('click');
+					}
+					$("#Y").text(sucData.y + "张");
+					$("#R").text(sucData.r + "张");
+					$("#H").text(sucData.h + "张");
+					$("#X").text(sucData.x + "张");
+
+					var ar = [sucData.y, sucData.r, sucData.h, sucData.x];
+					var min = ar[0];
+					for(var i = 0; i < ar.length; i++) {
+						if(ar[i] < min) {
+							min = ar[i];
+						}
+					}
+					if(min == 0) {
+						$("#yrhx").text("易,融,恒,信还未集齐，继续加油哦！");
+					} else {
+						$("#yrhx").html("您已集齐易,融,恒,信<span id='yrhxNum'>" + min + "</span>套");
+					}
+
+					var html_ul = "<li><span class='b1'>#{prizeName}</span><span class='b2'>#{updateDateTime}</span></li>";
+					var tableEle = $("#userUl");
+					tableEle.html("");
+					var rsData = sucData.list;
+					if(rsData.length > 0) {
+						for(var i = 0; i < rsData.length; i++) {
+							var row = rsData[i];
+							row["updateDateTime"] = row["updateDateTime"].substring(4, 6) + "-" + row["updateDateTime"].substring(6, 8) + "  " + row["updateDateTime"].substring(8, 10) + ":" + row["updateDateTime"].substring(10, 12);
+							var tmpHtml = html_ul.makeHtml(row);
+							tableEle.append(tmpHtml);
+						}
+					}
+				},
+				error: function(errData) {
+					$.popTips("popTipErr", errData.return_info);
+				}
+			});
+
+		}
+
+		$(function() {
+			$("#btn").click(function() {
+				if (isLogin()) {
+					$(function() {
+						getLotteryRecord();
+					});
+					$("#yinying").css('display', 'block');
+					$("#bgRecord").css('display', 'block');
+					$("body").css('overflow', 'hidden');
+				} else {
+					alert("请登录后查看");
+				}
+			});
+		});
+		
+		function isLogin() {
+			var userName = YRHX.Cookie("userName").get();
+			if(userName == null || userName == "") {
+				return false;
+			}
+			return true;
+		}
+
+		$(function() {
+			$("#back").click(function() {
+				$("#yinying").css('display', 'none');
+				$("#bgRecord").css('display', 'none');
+				$("body").css('overflow', 'auto');
+			});
+		});
+
+		$(function() {
+			$("#circle").click(function() {
+				window.location.reload();
+			});
+		});
+
+		$(function() {
+			$('.card').click(function() {
+				var _this = $(this);
+				$(".card").not(_this).each(function() {
+					$(this).unbind('click');
+				});
+				var arr = ["K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U"];
+				YRHX.ajax({
+					url: "/TurnAroundCard",
+					success: function(sucData) {
+						var type = sucData.prizeType;
+						var prize = sucData.prizeName;
+						_this.flip({
+							direction: 'lr',
+							content: '',
+							speed: 500,
+							forceWidth: true,
+							forceHeight: true,
+							onEnd: function() {
+								_this.css('background', 'url(/portal/images/activity/act201710/' + type + '.png)').unbind('click');
+								$(".card").css('cursor', 'auto').unbind('click');
+								_this.addClass("shine_red");
+								setTimeout(function() {
+									$(".card").not(_this).each(function() {
+										var other = $(this);
+										removeByValue(arr, type);
+										var sj = Math.floor(Math.random() * arr.length);
+										other.css('background', 'url(/portal/images/activity/act201710/' + arr[sj] + '.png)');
+										other.flip({
+											direction: 'lr',
+											content: ' ',
+											speed: 500,
+											onEnd: function() {
+												setTimeout(function() {
+													$("#shadow").css('display', 'block');
+													$("#congra").css('display', 'block');
+													$("#showAward").text(prize);
+												}, 1000);
+											}
+										});
+									});
+								}, 300);
+
+							}
+						});
+
+					},
+					error: function(errData) {
+						alert(errData.return_info);
+						return;
+					}
+				});
+
+			});
+		});
+
+		$.showAllUsers = function() {
+			YRHX.ajax({
+				url: "/findRecord6All",
+				success: function(sucData) {
+					var html_ul = "<li><span class='a1'>#{userName}</span><span class='a2'>刚刚翻到了</span><span class='a3'>#{prizeName}</span></li>";
+					var tableEle = $("#showAll");
+					tableEle.html("");
+					var rsData = sucData.list;
+					if(rsData.length > 0) {
+						for(var i = 0; i < rsData.length; i++) {
+							var row = rsData[i];
+							var len = row["userName"].length;
+							if(len < 3) {
+								row["userName"] = row["userName"] + "***";
+							} else if(len < 11) {
+								row["userName"] = row["userName"].substr(0, 3) + "***";
+							} else if(len == 11) {
+								row["userName"] = row["userName"].substr(0, 3) + "***" + row["userName"].substr(7);
+							} else {
+								row["userName"] = row["userName"].substr(0, 3) + "***";
+							}
+							var tmpHtml = html_ul.makeHtml(row);
+							tableEle.append(tmpHtml);
+						}
+					}
+				},
+			});
+		}
+
+		$.showAllUsers();
+		$(function() {
+			var listPanel = $('#showAll');
+			var z = 0; //向上滚动top值
+			function up() { //向上滚动
+				listPanel.animate({ //中奖结果
+					'top': (z - 38) + 'px'
+				}, 2500, 'linear', function() {
+					listPanel.css({
+							'top': '0px'
+						})
+						.find("li:first").appendTo(listPanel);
+					up();
+				});
+			}
+			up();
+		});
+
+		function removeByValue(arr, val) {
+			for(var i = 0; i < arr.length; i++) {
+				if(arr[i] == val) {
+					arr.splice(i, 1);
+					break;
+				}
+			}
+		}
+	</script>
+
+</html>

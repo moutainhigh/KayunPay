@@ -1,0 +1,284 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed" href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="stylesheet" href="../app/js/themes/default/default.css" />
+<style>
+.am-text-right{
+	  text-align: left!important;
+}
+.am-u-md-2{
+	width: 9%;
+} 
+[class*=am-u-]+[class*=am-u-]:last-child{
+	float:left;
+}
+#uplaodPic input{
+	display:none;
+}
+
+</style>
+</head>
+<body>
+	<!-- iframe body start -->
+	<form id="info-form" action="" data-am-validator>
+		<div class="am-tabs am-margin" data-am-tabs="{noSwipe: 1}">
+			<ul class="am-tabs-nav am-nav am-nav-tabs">
+				<li class="am-active"><a href="#tab1">添加商品信息</a></li>
+			</ul>
+			<div class="am-tabs-bd">
+				<div class="am-tab-panel am-fade am-in am-active am-form am-form-inline" >
+				
+					<div  class="am-g am-margin-top field aType" name="mType" type="select" map="mType" text="商品类型" defaultValue="A">
+					</div>
+					
+					<div  class="am-g am-margin-top field jType" name="settingsType" type="select" map="settingsType" text="奖券类型" defaultValue="A">
+					</div>
+					
+					<div  class="am-g am-margin-top field jxType" name="setRemarkRateType" type="select" map="setRemarkRateType" text="奖券类型" defaultValue="X1">
+					</div>
+					
+					<div class="am-g am-margin-top field" name="mName" type="text" text="商品名" >
+					</div>
+
+					<div class="am-g am-margin-top field" name="mDesc" type="text" text="商品描述">
+					</div>
+
+					<div class="am-g am-margin-top field" name="point" type="text" text="需要积分" >
+					</div>
+
+					<div class="am-g am-margin-top field" name="count" type="text" text="数量">
+					</div>
+
+					<div class="am-g am-margin-top field" name="level" type="text" text="所需等级" defaultValue="1" edit="disabled" >
+					</div>
+					
+					<div class="am-g am-margin-top field lType" name="levelName" type="select" map="proVipLevel" text="所需等级名称" >
+					</div>
+
+					<div class="am-g am-margin-top field" name="startDateTime" type="text" text="兑换开始时间">
+					</div>
+
+					<div class="am-g am-margin-top field" name="endDateTime" type="text" text="兑换结束时间">
+					</div>
+
+
+					<div class="am-g am-margin-top field" name="mRemark" type="text" text="备注">
+					</div>
+					
+					<div class="am-g am-margin-top field" name="status" type="select" map="productIssue" text="发布状态">
+					</div>
+					
+					<div class="am-g am-margin-top" name="mPic" type="text" text="商品图片" id="uplaodPic">
+					
+						<div class="am-u-sm-4 am-u-md-2 am-text-right">上传商品图</div>
+						<div class="am-u-sm-8 am-u-md-10">
+							
+							<img src="/portal/images/pview.png" width="200" height="150" id="picview" name="picview">
+						</div>
+					</div>
+
+
+
+				</div>
+			</div>
+		</div>
+		<div class="am-margin">
+			<button id="submitBtn" type="button" class="am-btn am-btn-primary am-btn-xs">提交</button>
+			<button id="cancelBtn" type="button" class="am-btn am-btn-primary am-btn-xs">返回</button>
+		</div>
+	</form>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script src="../app/js/kindeditor-min.js"></script>
+	<script src="../app/js/zh_CN.js"></script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+
+		var editor;
+		KindEditor.ready(function(K) {
+			var editor = K.editor({
+				uploadJson : "/upload?z=loan",
+				allowFileManager : true
+			});
+
+
+			K('#uplaodPic').click(function() {
+				editor.loadPlugin('image', function() {
+					editor.plugin.imageDialog({
+						imageUrl : K('#picview').attr("src"),
+						clickFn : function(url, title, width, height, border, align) {
+							K('#picview').attr({
+								"picUrl":url.replace("http://yrhx1130-10013338.image.myqcloud.com/","http://image1.yrhx.com/"),
+								"src":url
+							});
+
+							editor.hideDialog();
+						}
+					});
+				});
+			});
+
+		});
+
+		$("#cancelBtn").click(function(){
+			history.go(-1);
+		});
+
+		var mCode = YRHX.queryString("mCode");
+		$("#info-form").validatorInit();
+		$("#info-form").formInit({
+			"formType" : "edit" ,
+			"request" : "/updateNotice"
+		});
+
+		//数据渲染
+		if( mCode ){
+			initFormData( mCode );
+		}
+
+		//提交
+		var requestUrl = "";
+		var ajaxData = {};
+		$("#submitBtn").on("click",function(){
+			var article = $("#info-form").formSerialize();
+			var mType=article["mType"];
+			if(article["mType"]=="C"){
+				mType+=article["settingsType"];
+			}else if(article["mType"]=="X"){
+				mType = "C"+article["setRemarkRateType"];
+			}
+			if( mCode ){
+				var mid = YRHX.queryString("mid")
+				requestUrl =  "/updateMarket";
+				ajaxData = {
+					"market.mid" : mid ,
+					"market.mCode" : mCode,
+					"market.mName" : article["mName"],
+					"market.mDesc" : article["mDesc"],
+					"market.mPic" : $("#picview").attr("picurl"),
+					"market.point" : article["point"] * 100,
+					"market.count" : article["count"],
+					"market.status" : article["status"],
+					"market.startDateTime" : article["startDateTime"],
+					"market.endDateTime" : article["endDateTime"],
+					"market.level" : article["level"],
+					"market.levelName" : article["levelName"],
+					"market.mRemark" : article["mRemark"],
+					"market.mType":mType
+				};
+			}else{
+				requestUrl =  "/addMarket";
+				ajaxData = {
+					"market.mName" : article["mName"],
+					"market.mDesc" : article["mDesc"],
+					"market.mPic" : $("#picview").attr("picurl"),
+					"market.point" : article["point"] * 100,
+					"market.count" : article["count"],
+					"market.status" : article["status"],
+					"market.startDateTime" : article["startDateTime"],
+					"market.endDateTime" : article["endDateTime"],
+					"market.level" : article["level"],
+					"market.levelName" : article["levelName"],
+					"market.mRemark" : article["mRemark"],
+					"market.mType":mType 
+					/* "market.mName" : "京东100E电子卷",
+					"market.mDesc" : "京东100E电子卷",
+					"market.mPic" : "http://yrhxtest-10001063.image.myqcloud.com/yrhxtest-10001063/0/574ffc50-9cde-4073-b99c-fd12f3d4fd45/yasuo",
+					"market.point" : 10000*100,
+					"market.count" : 10,
+					"market.status" : "",
+					"market.startDateTime" : "",
+					"market.endDateTime" : "",
+					"market.level" : 1,
+					"market.levelName" : "少尉",
+					"market.mRemark" : "xxxxx" */
+				};
+			}
+			YRHX.ajax({
+				url : requestUrl ,
+				data : ajaxData,
+				success : function( sucData ){
+					alert("添加成功");
+					window.location.href = "/mProductManager";
+				},
+				error : function(data){
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+		});
+
+		function initFormData( mCode ){
+			YRHX.ajax({
+				url : "/queryMarketDetail" ,
+				data : {
+					mCode : mCode
+				},
+				success : function( sucData ){
+					sucData["point"] =  sucData["point"] / 100;
+					// add by xangshun at 20170509
+					if(sucData["mType"].length>1){
+						
+							sucData["settingsType"] =  sucData["mType"].substring(1);
+							sucData["mType"] =  sucData["mType"].substring(0,1);
+					}
+					// end add
+					$("#info-form").formUnSerialize( sucData );
+					if( sucData["mPic"] ){
+						$("#picview").attr({
+							"src":sucData["mPic"],
+							"picurl":sucData["mPic"]
+						});
+					}
+				},
+				error : function(data){
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+		}
+
+		$("body").delegate(".lType .am-selected-list li","click",function(){
+			
+			var curLevel = $(this).attr("data-index")*1 + 1;
+			$("input[name='level']").val( curLevel );
+		})
+		
+		function selectchange(){
+			if($(".aType .am-u-sm-8 .am-field-valid option:selected").val()=="C"){
+				$(".jType").css("display","block");
+				$(".jxType").hide();
+			}else if($(".aType .am-u-sm-8 .am-field-valid option:selected").val()=="X"){
+				$(".jType").hide();
+				$(".jxType").css("display","block");
+			}else{
+				$(".jType").hide();
+				$(".jxType").hide();
+			};
+		}
+	</script>
+	
+</body>
+</html>

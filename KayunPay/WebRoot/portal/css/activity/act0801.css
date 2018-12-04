@@ -1,0 +1,392 @@
+body {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+#topic {
+	width: 100%;
+	height: 1056px;
+	background: url(/portal/images/activity/01.jpg) no-repeat center top;
+}
+
+#middle {
+	width: 100%;
+	height: 1090px;
+	background: url(/portal/images/activity/02.jpg) no-repeat center top;
+	margin: 0 auto;
+}
+
+#content {
+	width: 100%;
+	height: 1234px;
+	background: url(/portal/images/activity/03.jpg) no-repeat center top;
+}
+
+#foot {
+	width: 100%;
+	height: 502px;
+	background: url(/portal/images/activity/04.jpg) no-repeat center top;
+}
+
+#mid_content {
+	width: 1060px;
+	margin: 0 auto;
+}
+
+#mid_left {
+	height: 600px;
+	width: 420px;
+	position: relative;
+	top: 280px;
+	float: left;
+	position: relative;
+	margin: 0 auto;
+}
+
+#mid_left_top {
+	text-align: center;
+	height: 136px;
+	letter-spacing: 1px;
+	color: white;
+	font-size: 18px;
+	font-weight: bold;
+	font-family: "microsoft yahei";
+}
+
+#noLogin {
+	margin-left: 15px;
+	color: yellow;
+	font-size: 20px;
+	font-weight: bold;
+	text-decoration: none;
+	font-family: "microsoft yahei";
+	display: inline;
+}
+
+#yesLogin {
+	display: none;
+}
+
+#chance {
+	margin-left: 4px;
+	margin-right: 4px;
+	font-family: "microsoft yahei";
+	font-weight: bolder;
+	font-size: 22px;
+	color: yellow;
+}
+
+#record {
+	margin: 0 auto;
+	margin-top: 20px;
+	cursor: pointer;
+	width: 213px;
+}
+
+#mid_left_foot {
+	width: 420px;
+	height: 431px;
+	position: relative;
+	top: 10px;
+	text-align: center;
+	background: url(/portal/images/activity/list.jpg) no-repeat center top;
+	overflow: hidden;
+}
+
+#mid_right {
+	height: 755px;
+	width: 608px;
+	position: relative;
+	top: 280px;
+	float: right;
+	position: relative;
+	margin: 0 auto;
+}
+
+#bg {
+	height: 750px;
+	width: 604px;
+	background: url(/portal/images/activity/circle.jpg) no-repeat;
+}
+
+#choujiang {
+	position: absolute;
+	z-index: 10;
+	top: 292px;
+	left: 250px;
+	cursor: pointer;
+}
+
+#awards {
+	position: absolute;
+	z-index: 5;
+	top: 118px;
+	left: 54px;
+	transition: all 3s;
+}
+
+#yinying {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: gray;
+	z-index: 99;
+	
+	opacity: 0.97;
+    -ms-opacity: 0.97;
+    -o-opacity: 0.97;
+    -webkit-opacity: 0.97;
+    -moz-opacity: 0.97;
+	
+	text-align: center;
+	display: none;
+	overflow-y: scroll;
+}
+
+#rs_pic {
+	position: relative;
+	top: 30%;
+	margin: 0 auto;
+	width: 589px;
+	height: 377px;
+	z-index: 99;
+	display: none;
+}
+
+#exit {
+	position: relative;
+	top: 24px;
+	left: 517px;
+	height: 22px;
+	width: 22px;
+	border-radius: 11px;
+	cursor: pointer;
+	display: none;
+}
+
+#tz_now {
+	position: relative;
+	top: 265px;
+	left: 190px;
+	height: 56px;
+	width: 235px;
+	border-radius: 28px;
+	cursor: pointer;
+	display: none;
+}
+
+#djs {
+	width: 400px;
+	height: 30px;
+	position: relative;
+	top: 686px;
+	margin: 0 auto;
+	color: orange;
+	font-family: "microsoft yahei";
+	font-weight: bolder;
+	font-size: 22px;
+}
+
+#djs span {
+	color: red;
+	margin-right: 8px;
+}
+
+#rest {
+	z-index: 99;
+	width: 400px;
+	height: 30px;
+	position: relative;
+	top: 686px;
+	margin: 0 auto;
+	color: orange;
+	font-family: "microsoft yahei";
+	font-weight: bolder;
+	font-size: 22px;
+	display: none;
+	text-align: center;
+}
+
+#rest span {
+	color: red;
+	margin-left: 8px;
+	margin-right: 8px;
+}
+
+#qiangguang {
+	z-index: 199;
+	width: 400px;
+	height: 30px;
+	position: relative;
+	top: 686px;
+	margin: 0 auto;
+	color: orange;
+	font-family: "microsoft yahei";
+	font-weight: bolder;
+	font-size: 22px;
+	display: none;
+	text-align: center;
+}
+
+#recordBg {
+	position: relative;
+	top: 14%;
+	margin: 0 auto;
+	width: 510px;
+	height: 567px;
+	z-index: 99;
+	background-image: url(/portal/images/activity/recordList.png);
+	display: none;
+}
+
+#quit {
+	width: 22px;
+	height: 22px;
+	border-radius: 11px;
+	position: relative;
+	left: 486px;
+	top: -316px;
+	cursor: pointer;
+}
+
+#record_list {
+	width: 380px;
+	height: 380px;
+	position: relative;
+	top: 130px;
+	text-align: center;
+	left: 52px;
+}
+
+#record_list_title {
+	list-style-type: none;
+	width: 370px;
+	padding: 0;
+	margin: 0 auto;
+	height: 40px;
+	border-radius: 10px;
+	background: #E0E0E0;
+}
+
+#record_list_title li {
+	height: 40px;
+	line-height: 40px;
+	font-size: 22px;
+	font-family: "microsoft yahei";
+	color: black;
+	font-weight: bold;
+}
+
+#title1,#title2 {
+	display: inline-block;
+	width: 181px;	
+	text-align: center;
+}
+
+#scroll {
+	overflow-y: scroll;
+	width: 400px;
+	height: 330px;
+	padding: 0;
+	margin: 0 auto;
+	margin-top: 25px;
+}
+
+#userAwards_list {
+	list-style-type: none;
+	width: 370px;
+	height: 330px;
+	padding: 0;
+	margin: 0 auto;	
+}
+
+#userAwards_list li {
+	list-style-type: none;
+	border-bottom: 1px dashed #CCC;
+	line-height: 45px;
+	height: 45px;
+	font-family: "microsoft yahei";
+	font-size: 20px;
+}
+
+.b1,.b2 {	
+	display: inline-block;
+	width: 181px;
+	text-align: center;
+}
+
+#showAllBox {
+	width: 330px;
+	height: 273px;
+	list-style-type: none;
+	overflow: hidden;
+	top: 109px;
+	position: relative;
+	margin: 0 auto;
+}
+
+#showAll {
+	float: left;
+	list-style-type: none;
+	overflow: hidden;
+	position: relative;
+	padding-left: 20px;
+}
+
+#showAll li {
+	list-style-type: none;
+	border-bottom: 1px dashed #CCC;
+	line-height: 39px;
+	height: 39px;
+}
+
+.a1 {
+	font-family: "microsoft yahei";
+	font-size: 16px;
+	display: inline-block;
+	width: 80px;
+	text-align:left;
+}
+
+.a2 {
+	font-family: "microsoft yahei";
+	font-size: 16px;
+	display: inline-block;
+	width: 150px;
+}
+
+.a3 {
+	font-family: "microsoft yahei";
+	font-size: 16px;
+	display: inline-block;
+	width: 70px;
+	text-align:right;
+}
+
+#userTotal {
+	position: relative;
+	margin: 0 auto;
+	height: 40px;
+	color: white;
+	font-family: "microsoft yahei";
+	font-weight: bold;
+	font-size: 22px;
+	text-align: center;
+	top: 400px;
+}
+
+#userTotal span {
+	color: red;
+	margin-left: 5px;
+	margin-right: 9px;
+	font-size: 24px;
+	position: relative;
+	top: 1px;
+}
+
+
+
+

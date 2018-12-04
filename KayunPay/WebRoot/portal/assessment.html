@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>风险承受能力测评</title>
+<link type="text/css" href="/portal/css/public.css?v=1.0.0" rel="stylesheet">
+<link type="text/css" href="/portal/css/user.css?v=1.0.1" rel="stylesheet">
+<script type="text/javascript" src="/portal/js/pub/jquery-1.7.1.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/config.js?v=1.2.18" charset="utf-8"></script>
+<script type="text/javascript" src="/portal/js/pub/core.js?v=1.2.18" charset="utf-8"></script>
+<script>   topNavSelect= '3';</script>
+<script type="text/javascript" src="/portal/js/public.js?v=1.8.27"></script>
+</head>
+<body>
+	<div class="wrapper">
+	    <header id="header" class="header">
+	        <!--code here-->
+	    </header>
+	    <div class="assess">
+	    	<div class="assess_top"></div>
+	    	<div class="assess_main">
+	    		<div class="assess_box">
+	    			<div class="assess_list chose1" choseText="">
+	    				<div class="assess_title">1.您的年龄是多少:</div>
+	    				<div class="assessInput">
+	    					<label><input type="radio" value="" name="radioInput1">A.18-30岁</label>
+	    					<label><input type="radio" value="" name="radioInput1">B.31-45岁</label>
+	    					<label><input type="radio" value="" name="radioInput1">C.46-60岁</label>
+	    					<label><input type="radio" value="" name="radioInput1">D.60岁以上</label>
+	    				</div>
+	    			</div>
+	    			<div class="assess_list chose2" choseText="">
+	    				<div class="assess_title">2.您的家庭年收入:</div>
+	    				<div class="assessInput">
+	    					<label><input type="radio" value="" name="radioInput2">A.10万元以内</label>
+	    					<label><input type="radio" value="" name="radioInput2">B.10-30万</label>
+	    					<label><input type="radio" value="" name="radioInput2">C.30-50万</label>
+	    					<label><input type="radio" value="" name="radioInput2">D.50万以上</label>
+	    				</div>
+	    			</div>
+	    			<div class="assess_list chose3" choseText="">
+	    				<div class="assess_title">3.您的最高学历:</div>
+	    				<div class="assessInput">
+	    					<label><input type="radio" value="" name="radioInput3">A.高中及以下</label>
+	    					<label><input type="radio" value="" name="radioInput3">B.中专或大专</label>
+	    					<label><input type="radio" value="" name="radioInput3">C.本科</label>
+	    					<label><input type="radio" value="" name="radioInput3">D.硕士及以上</label>
+	    				</div>
+	    			</div>
+	    			<div class="assess_list chose4" choseText="">
+	    				<div class="assess_title">4.在您每年的家庭年收入中，可用于投资和储蓄的比例是:</div>
+	    				<div class="assessInput">
+	    					<label><input type="radio" value="" name="radioInput4">A.10％以下</label>
+	    					<label><input type="radio" value="" name="radioInput4">B.10％-25％</label>
+	    					<label><input type="radio" value="" name="radioInput4">C.25％-50％</label>
+	    					<label><input type="radio" value="" name="radioInput4">D.50％以上</label>
+	    				</div>
+	    			</div>
+	    			<div class="assess_list chose5" choseText="">
+	    				<div class="assess_title">5.您有多少年投资银行理财、P2P、基金、股票、信托等金融产品的经验:</div>
+	    				<div class="assessInput">
+	    					<label><input type="radio" value="" name="radioInput5">A.没有经验</label>
+	    					<label><input type="radio" value="" name="radioInput5">B.少于2年</label>
+	    					<label><input type="radio" value="" name="radioInput5">C.2—5年</label>
+	    					<label><input type="radio" value="" name="radioInput5">D.5年以上</label>
+	    				</div>
+	    			</div>
+	    			<div class="assess_list chose6" choseText="">
+	    				<div class="assess_title">6.您投资过哪类金融产品:</div>
+	    				<div class="assessInput">
+	    					<label><input type="radio" value="" name="radioInput6">A.除了银行存款，无其他投资经验</label>
+	    					<label><input type="radio" value="" name="radioInput6">B.仅投资过银行理财/宝宝类/保险等风险较低且收益稳定的产品</label>
+	    					<label><input type="radio" value="" name="radioInput6">C.投资过股票/期货等高收益高风险的产品</label>
+	    					<label><input type="radio" value="" name="radioInput6">D.其他</label>
+	    				</div>
+	    			</div>
+	    			<div class="assess_list chose7" choseText="">
+	    				<div class="assess_title">7.您的投资目标是:</div>
+	    				<div class="assessInput">
+	    					<label><input type="radio" value="" name="radioInput7">A.资产保值抗通胀</label>
+	    					<label><input type="radio" value="" name="radioInput7">B.资产稳健增值</label>
+	    					<label><input type="radio" value="" name="radioInput7">C.资产快速增值</label>
+	    					<label><input type="radio" value="" name="radioInput7">D.获得超高投资收益</label>
+	    				</div>
+	    			</div>
+	    			<div class="assess_list chose8" choseText="">
+	    				<div class="assess_title">8.您偏好的投资期限:</div>
+	    				<div class="assessInput">
+	    					<label><input type="radio" value="" name="radioInput8">A.1—3个月</label>
+	    					<label><input type="radio" value="" name="radioInput8">B.4—12个月</label>
+	    					<label><input type="radio" value="" name="radioInput8">C.13—18个月</label>
+	    					<label><input type="radio" value="" name="radioInput8">D.18个月以上</label>
+	    				</div>
+	    			</div>
+	    			<div class="assess_list chose9" choseText="">
+	    				<div class="assess_title">9.假设有两种投资，A会获得10％的收益，风险较小；B会获得30％的收益，但风险较大，您会:</div>
+	    				<div class="assessInput">
+	    					<label><input type="radio" value="" name="radioInput9">A.全部投资于A</label>
+	    					<label><input type="radio" value="" name="radioInput9">B.投资A和B，但大部分投资于收益较小且风险较低的A</label>
+	    					<label><input type="radio" value="" name="radioInput9">C.投资A和B，但大部分投资于收益较高且风险较大的B</label>
+	    					<label><input type="radio" value="" name="radioInput9">D.全部投资于风险较大，收益较高的B</label>
+	    				</div>
+	    			</div>
+	    			<div class="assess_list chose10" choseText="">
+	    				<div class="assess_title">10.您的投资出现何种波动时，您会感到明显的焦虑:</div>
+	    				<div class="assessInput">
+	    					<label><input type="radio" value="" name="radioInput10">A.本金无损失，但收益未达到预期</label>
+	    					<label><input type="radio" value="" name="radioInput10">B.出现轻微本金损失</label>
+	    					<label><input type="radio" value="" name="radioInput10">C.本金10％以内的损失</label>
+	    					<label><input type="radio" value="" name="radioInput10">D.本金10％-30％的损失</label>
+	    					<label><input type="radio" value="" name="radioInput10">E.本金30％以上的损失</label>
+	    				</div>
+	    			</div>
+	    		</div>
+	    		<div class="assess_submit">提交</div>
+	    	</div>
+	    </div>
+	    <footer id="footer" class="footer"></footer>
+	</div>
+	<script>
+	
+	function close_login_dialog() {
+		if (window.closeLoginDialog) {
+			window.closeLoginDialog();
+		}else {
+			$("#loginDialog").hide();
+			$("#yinying").hide();
+			$('body,html').css('overflow', 'auto');
+		}
+	}
+
+	// 登录模态框
+	function show_login_dialog() {
+		if ($("div").hasClass("login_dialog")) {
+			// 重复登录
+			$("#loginDialog").show();
+			$("#yinying").show();
+		} 
+		else {
+			var dislogElement = $('<div>').addClass('login_dialog').attr('id','loginDialog');
+			var closeElement = $('<div>').addClass('del').appendTo(dislogElement);
+			var h2Element = $('<h2>').html('用户登录');
+			var formElement = $('<div>').attr('id', 'login_form');
+			var accountElement = null;
+			accountElement = $('<input>')
+					.attr('name', 'account')
+					.attr('type', 'text')
+					.attr('maxlength', '30')
+					.attr('placeholder', '输入11位手机号码')
+					.blur(
+							function() {
+								if ($(this).val() == '') {
+									$('#login_account_err').show();
+									$('#login_account_err').find('span').remove();
+									$('#login_account_err').append($('<span>').html('请输入用户名'));
+								} else if (!/^1\d{10}$/.test($.trim($(this).val()))) {
+									$('#login_account_err').show();
+									$('#login_account_err').find('span').remove();
+									$('#login_account_err').append($('<span>').html('用户名不合法'));
+								} else {
+									$('#login_account_err').hide();
+								}
+							});
+			if (typeof (autologin) != 'undefined') {
+				accountElement.val(autologin);
+			}
+
+			$('<div>').addClass('item').append(
+					$('<i>').addClass('iconUser').css('marginTop', '17px')).append(
+					accountElement).append(
+					$('<p>').attr('id', 'login_account_ok').addClass('tips-right')
+							.addClass('u-tips')).append(
+					$('<p>').attr('id', 'login_account_err').addClass('tips-error')
+							.addClass('u-tips')).appendTo(formElement);
+
+			$('<div>').addClass('item').append(
+					$('<i>').addClass('iconPwd').css('marginTop', '17px')).append(
+					$('<input>').attr('type', 'password').attr('name', 'password')
+							.addClass('inp').attr('maxlength', '30').val('').attr(
+									'placeholder', '输入密码'))
+					.append(
+							$('<p>').attr('id', 'login_password_ok').addClass('tips-right').addClass('u-tips').html(
+									$('<i>').addClass('iconfont'))).append(
+							$('<p>').attr('id', 'login_password_err').addClass(
+									'tips-error').addClass('u-tips').html(
+									$('<i>').addClass('iconfont'))).appendTo(formElement);
+
+			$('<div>').addClass('button_panel').append(
+					$('<div>').addClass('loginBtn').attr('id', 'login_btn').html('登录').click(function() {
+						loginFnPop();
+					})).appendTo(formElement);
+
+			$('<div>').addClass('other')
+					.append('赶快加入易融恒信吧&nbsp;&nbsp;&nbsp;&nbsp;').append(
+							$('<a>').attr('href', '/register').html('立即注册'))
+					.append('！').appendTo(formElement);
+
+			closeElement.appendTo(dislogElement);
+			closeElement.click(close_login_dialog);
+			h2Element.appendTo(dislogElement);
+			formElement.appendTo(dislogElement);
+			init_yinying();
+
+			$('body,html').css('overflow', 'hidden');
+			to_center($('#yinying').show());
+			to_center(dislogElement.appendTo('body').show());
+
+			$("input[name='password']").focus(function() {
+				$(window).on("keydown", function(event) {
+					if (event.keyCode == 13) {
+						loginFnPop();
+					}
+				});
+			})
+		}
+	}
+	function init_yinying() {
+		if ($('#yinying').length == 0) {
+			$('<div>').attr('id', 'yinying').addClass('yinying').appendTo('body');
+		}
+	}
+
+	// 居中
+	function to_center(obj) {
+		var width = $(window).width();
+		var height = $(window).height();
+		var top = $(window).scrollTop();
+		var eleWidth = obj.width();
+		var eleHeight = obj.height();
+		obj.css({
+			left : (width - eleWidth) / 2,
+			top : top + (height - eleHeight) * 2 / 5
+		});
+	}
+	function loginFnPop() {
+		var loginName = $('#login_form').find('input[name=account]').val();
+		var loginPwd = $('#login_form').find('input[name=password]').val();
+		YRHX.Cookie().clear();
+		YRHX.ajax({
+			url : CONFIG.getRequestURI("login"),
+			data : {
+				loginName : loginName,
+				loginPwd : loginPwd
+			},
+			success : function(sucData) {
+				setTimeout(function() {
+					YRHX.Cookie("loginName", loginName).set();
+					YRHX.Cookie("userCode", sucData.userCode).set();
+					YRHX.Cookie("userName", sucData.userName).set();
+					close_login_dialog();
+					if (window.loginSuccessCallback) {
+						window.loginSuccessCallback();
+					} else {
+						window.location.href=window.location.href;
+					}
+					
+				}, 300);
+			},
+			error : function(errData) {
+				alert('用户名或密码错误');
+			}
+		});
+	}
+
+		$(function(){
+			$(".assessInput label").click(function(){
+				var val=$(this).find("input");
+				var txt=$(this).text();
+				var chosetxt=txt.slice(0,1);
+				if(val.attr("checked")){
+					$(this).parents(".assess_list").attr("choseText",chosetxt);
+				}
+			});
+			
+			$(".assess_submit").click(function(){
+				var userName = YRHX.Cookie("userName").get();
+				if(userName != null) {
+					var age=$(this).prevAll(".assess_box").find(".chose1").attr("choseText");
+					var familyIncome=$(this).prevAll(".assess_box").find(".chose2").attr("choseText");
+					var education=$(this).prevAll(".assess_box").find(".chose3").attr("choseText");
+					var investratio=$(this).prevAll(".assess_box").find(".chose4").attr("choseText");
+					var investexperience=$(this).prevAll(".assess_box").find(".chose5").attr("choseText");
+					var investproduct=$(this).prevAll(".assess_box").find(".chose6").attr("choseText");
+					var investaim=$(this).prevAll(".assess_box").find(".chose7").attr("choseText");
+					var investlimit=$(this).prevAll(".assess_box").find(".chose8").attr("choseText");
+					var compare=$(this).prevAll(".assess_box").find(".chose9").attr("choseText");
+					var moodswing=$(this).prevAll(".assess_box").find(".chose10").attr("choseText");
+					
+					var val=$(this).prevAll(".assess_box").find(".assess_list input");
+					if($(".assess_box").find(".assess_list[choseText='']").length>0){
+						alert("请完成能力评估试题。");
+					}
+					else{
+						YRHX.ajax({
+							url:"exposureRating",
+							dataType:"jsonp",
+							data:{
+								"age":age,
+								"familyIncome":familyIncome,
+								"education":education,
+								"investratio":investratio,
+								"investexperience":investexperience,
+								"investproduct":investproduct,
+								"investaim":investaim,
+								"investlimit":investlimit,
+								"compare":compare,
+								"moodswing":moodswing
+								},
+							success:function(curdata){
+								var result=curdata.result;  //测评结果
+								window.location.href = "/assessment01?level="+result;
+							},
+							error:function(errorData){
+								alert(errorData.return_info);
+							}
+						});
+					}
+				}
+				else{
+					show_login_dialog();
+				}
+			});
+			
+			
+		});
+	
+	</script>
+</body>
+</html>

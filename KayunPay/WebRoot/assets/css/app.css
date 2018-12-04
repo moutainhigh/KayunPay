@@ -1,0 +1,101 @@
+/* Write your styles */
+#picFile {
+	opacity: 0;
+	position: absolute;
+	left:18%;
+	width: 100px;
+	z-index: 100;
+	height: 40px;
+}
+#loanFile {
+	opacity: 0;
+	position: absolute;
+	top:0;
+	height: 100%;
+	width: 100%;
+	z-index: 100;
+}
+.am-margin-btn{
+	margin-left:17.6%;
+}
+.am-gallery-title{
+	border: 1px solid #ededed;
+}
+.am-gallery-close{
+	position: absolute;
+	right: 0;
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+}
+.am-dec-close{
+	position: absolute;
+	right: 0;
+	top:0;
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+}
+.am-position-relative{
+	position:relative;
+}
+
+.am-loan-des-item{
+	width: 50%;
+	background-color:#f6f6f6;
+	position:relative;
+	padding: 20px 60px 20px 20px;
+	border-bottom: 1px solid #ccc;
+}
+.am-des-addBtn{
+	background-color:#f6f6f6;
+	padding: 10px 0;
+	width: 50%;
+	text-align: center;
+	cursor: pointer;
+}
+.webuploader-container {
+	position: relative;
+}
+.webuploader-element-invisible {
+	position: absolute !important;
+	clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+    clip: rect(1px,1px,1px,1px);
+}
+.webuploader-pick {
+	position: relative;
+	display: inline-block;
+	cursor: pointer;
+	background: #00b7ee;
+	padding: 10px 15px;
+	color: #fff;
+	/*text-align: center;*/
+	border-radius: 3px;
+	overflow: hidden;
+}
+.webuploader-pick-hover {
+	background: #00a2d4;
+}
+
+.webuploader-pick-disable {
+	opacity: 0.6;
+	pointer-events:none;
+}
+.loan-pic-item {
+	margin : 10px !important; 
+}
+.loan-pic-item img{
+	width : 100% !important; 
+	height : 100% !important; 
+}
+
+.loan-pic-item input{
+	width : 100% !important;
+}
+.self_width{
+	width:100%;
+}
+.self_width li{
+	width:25%;
+}
+

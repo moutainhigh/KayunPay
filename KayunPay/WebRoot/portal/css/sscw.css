@@ -1,0 +1,787 @@
+body{
+    background-color: #ececec;
+	padding:0;
+	margin:0;
+	font-family:'Microsoft yahei';
+	font-size:14px;
+}
+ul{
+	list-style-type:none;
+}
+.clear{
+	clear:both;
+}
+.sscw{
+    width: 1180px;
+    margin:20px auto 0px auto;
+    background-color: #fff;
+	overflow:hidden;
+	margin-bottom:20px;
+}
+
+.sscw h1{
+	height:70px;
+	border-bottom:1px solid #ECECEC;
+	font-size:24px;
+	color:#222;
+	padding:0;
+	padding-left:34px;
+	line-height:70px;
+}
+.sscw h1 b{
+	font-size:14px;
+	color:#999;
+	float:right;
+	margin-right:26px;
+	font-weight:normal;
+}
+.sscw_count{
+	text-align:center;
+	height:186px;
+	color:#666;
+	line-height:35px;
+	width:100%;
+}
+.sscw_count strong{
+	color:#333;
+	font-size:24px;
+}
+
+.deal_all{
+	height:40px;
+	line-height:40px;
+	font-size:18px;
+	color:#222;
+	padding:0 47px;
+}
+.deal_all .icon{
+	float:right;
+	cursor:pointer;
+}
+.deal_all a{
+	color:#666;
+	background:#F0F0F0;
+	padding:9px 22px;
+	font-size:14px;
+	border-radius:5px;
+	margin-left:10px;
+
+}
+.deal_all a:hover{
+	text-decoration:none;
+}
+.deal_all a.active{
+	background:#F13D2E;
+	color:#fff;
+}
+
+.plot{
+	color:#666;
+	padding-left:45px;
+}
+
+.deal_canvas{
+	width:1140px;
+}
+.deal_canvas canvas{
+	margin-left:20px;
+}
+
+.scale{
+	width:1180px;
+	margin:0 auto;
+}
+.title{
+	font-size:18px;
+	color:#222;
+	border-bottom:1px solid #EDEDED;
+	line-height:50px;
+	text-indent:25px;
+}
+.title span{
+	float:right;
+	color:#999;
+	font-size:14px;
+	margin-right:25px;
+}
+.sscw_left{
+	width:580px;
+	float:left;
+	background:#fff;
+	margin-top:20px;
+}
+.sscw_right{
+	width:580px;
+	float:right;
+	background:#fff;
+	margin-top:20px;
+}
+
+.limit{
+	padding: 50px 0 50px 360px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.limit_num{
+	padding:0 0 30px 117px;
+	list-style-type:none;
+}
+.limit_num li{
+	color:#666;
+	padding-left:15px;
+	background:url(/portal/images/icons/num_li.jpg) no-repeat left center;
+	display:inline-block;
+	width:310px;
+}
+.limit_num li strong{
+	font-size:16px;
+	color:#333;
+}
+
+.limit_profile{
+	height:130px;
+	color:#fff;
+	overflow:hidden;
+}
+.limit_left{
+	background:#78BCE9;
+	padding:30px 28px 0 28px;
+	line-height:35px;
+	width:774px;
+	height:100px;
+	float:left;
+}
+.limit_right{
+	width:350px;
+	background:#2DD37F;
+	position:relative;
+	float:right;
+	height:130px;
+	
+}
+.limit_right p{
+	margin-top:40px;
+	text-align:center;
+	width:250px;
+}
+.limit_right p strong{
+	font-size:24px;
+}
+.limit_right a{
+	position:absolute;
+	display:block;
+	width:104px;
+	height:35px;
+	line-height:35px;
+	background:url(/portal/images/query.png) no-repeat;
+	color:#2DD37F;
+	text-align:center;
+	font-weight:bold;
+	top:52px;
+	left:224px;
+	text-decoration:none;
+	
+}
+.limit_right a:hover{
+	text-decoration:none;
+}
+
+.sscw-main{
+	width:1180px;
+	margin:0 auto;
+	background:#fff;
+	margin-bottom:20px;
+}
+.sscw-main .tabNav{
+    overflow: hidden;
+    margin-top: 20px;
+    background:#f8f8f8;
+}
+.sscw-main .tabNav .active {
+    border-top:3px solid #F03D2D;
+    color: #F03D2D;
+    background:#fff;
+}
+.sscw-main .tabNav li {
+    float: left;
+    padding: 0 40px;
+    height: 65px;
+    text-align: center;
+    line-height: 65px;
+    overflow: hidden;
+    cursor: pointer;
+	list-style-type:none;
+	font-size:16px;
+}
+.sscw-main #tabContent{
+    margin-top: 20px;
+    padding-bottom: 20px;
+}
+.sscw-main .tab-content-list table{
+    width: 1140px;
+    text-align: center;
+	margin:0 20px;
+}
+.sscw-main .tab-content-list table td {
+    font-family: 'Microsoft yahei';
+    color: #666;
+    word-break: break-all;
+    padding: 15px 0;
+}
+.sscw-main .tab-content-list table .uid_color{
+	color:#F13D2E;
+}
+.sscw-main .tab-content-list tbody tr:nth-child(even){
+    background-color: #f7f7f7;
+}
+.sscw-main .tab-content-list table th{
+    border-bottom: 1px solid #e0e0e0;
+	color:#666;
+    padding: 9px 0;
+	font-weight:normal;
+}
+.sscw-main .tab-content-list table .remark{
+	position: relative;
+    width: 330px;
+    text-align: center;
+    line-height: 30px;
+}
+.sscw-main .tab-content-list table .remark span{
+	width: 240px;
+    height: 30px;
+    display:block;
+    line-height:30px;
+    overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	float:left;
+}
+.sscw-main .tab-content-list table .remark_detail{
+    padding: 0 10px;
+    box-sizing: border-box;
+    z-index: 30;
+    line-height: 30px;
+  	color:#0095FF;
+  	text-decoration:none;
+}
+.sscw-main .kindList {
+	margin:0 20px 20px 20px
+}
+.sscw-main .kindList .select{
+	width: 170px;
+    height: 25px;
+    line-height: 25px;
+	position: relative;
+    display: inline-block;
+    border: 1px #dbdbdb solid;
+    text-indent: 10px;
+    background: url(/portal/images/select_icon.png) no-repeat #ffffff;
+    background-position: 95% 50%;
+    float:left;
+}
+.sscw-main .kindList .select .options{
+    top: 25px;
+}
+.sscw-main .kindList ul {
+    display: none;
+}
+.sscw-main .kindList ul span{
+    display: none;
+}
+.sscw-main .kindList .weekPay{
+    display: inline-block;
+    padding-left: 20px;
+}
+.sscw-main .kindList .weekPay b{
+    color: #f03d2d;
+}
+.repay_pic{
+	color:#F13D2C;
+	cursor:pointer;
+}
+.page_panel {
+  margin: 0px 20px;
+  text-align: right;
+  line-height: 50px;
+}
+.page_panel a {
+  padding: 0px 5px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.bid_state{
+	margin:0 15px;
+}
+
+
+.present{
+	height:212px;
+	background:url(/portal/images/cup.jpg) no-repeat top center;
+	position:relative;
+}
+
+
+.overall{
+	padding-bottom:12px;
+}
+
+.headline {
+	line-height:35px;
+	margin:22px 0;
+	text-indent:18px;
+}
+
+
+.headline > strong{
+	font-size:18px;
+	font-weight:bold;
+	color:#333;
+}
+.headline b{
+	color:#666;
+	font-size:14px;
+	margin-left:7px;
+	font-weight:normal;
+}
+.headline .now_rank{
+	color:#000;
+	margin-left:73px;
+	display:none;
+}
+.headline .now_rank>i{
+	font-style:normal;
+	margin-right:13px;
+}
+.headline .now_rank strong{
+	color:#F0402F;
+	margin: 0 3px;
+}
+
+.all_list{
+	width:1136px;
+	margin:0 22px;
+	border-collapse: collapse;
+}
+
+.all_list thead th{
+	font-size:14px;
+	font-weight:normal;
+	line-height:36px;
+	background:#F2F2F2;
+	
+}
+.all_list td{
+	text-align:center;
+	line-height:50px;
+	border-bottom:1px solid #EBEBEB;
+}
+.month_list td{
+	text-align:center;
+	height:45px;
+	line-height:45px;
+}
+.day_list td{
+	text-align:center;
+	height:45px;
+	line-height:45px;
+}
+.all_list td strong{
+	color:#0195FF;
+}
+
+td i{
+	width: 17px;
+    height: 22px;
+    display: block;
+    margin-left: 44px;
+}
+td i.first{
+	background:url(/portal/images/icons/rank1.png);
+}
+td i.second{
+	background:url(/portal/images/icons/rank2.png);
+}
+td i.third{
+	background:url(/portal/images/icons/rank3.png);
+}
+td i.four{
+	width: 17px;
+    height: 17px;
+	line-height:17px;
+	font-style:normal;
+    background: #B5B5B5;
+    color: #666;
+    border-radius: 3px;
+    display: block;
+    float: left;
+    margin-left: 44px;
+    text-align: center;
+	color:#fff;
+	font-size:12px;
+}
+
+.rankList{
+	width:1180px;
+	margin:20px auto;
+	overflow:hidden;
+}
+.month_rank{
+	width:580px;
+	background:#fff;
+	float:left;
+	height:590px;
+	padding-bottom:10px
+}
+.week_rank{
+	width:580px;
+	float:right;
+	background:#fff;
+	height:590px;
+	padding-bottom:10px
+}
+
+.month_list th,.day_list th{
+	background:#F2F2F2;
+	font-weight:normal;
+	line-height:35px;
+}
+.month_list,.day_list{
+	width:545px;
+	border-collapse: collapse;
+	margin-left:18px;
+}
+
+
+.week_m{
+	color:#0095FF;
+}
+
+
+
+.return_dialog{
+	display: none;
+    position: absolute;
+    width: 1024px;
+    height:492px;
+    z-index: 10;
+   	background-color: white;
+    box-shadow: 0 0 15px gray;
+    border-radius: 7px;
+}
+.return_dialog .img_src{
+	width:100%;
+	height:100%;
+	border-radius:5px;
+}
+
+.return_close{
+    position:absolute;
+    right:15px;
+    top:15px;
+    width: 13px;
+    height: 13px;
+    background: url(/portal/images/big_close.png);
+    cursor: pointer;
+}
+.should{
+	float:left;
+	color:#666;
+	margin-left:16px;
+}
+.should span{
+	color:#0094FE;
+}
+
+
+
+/*=============================  ���ձ��ý�  ============================*/
+.fxbyj{
+    width: 1120px;
+    padding:0 30px 80px;
+    margin:40px auto 60px auto;
+    background-color: #fff;
+}
+.fxbyj-main{
+	overflow:hidden;
+	text-align:center;
+}
+.fxbyj-main div{
+	text-align:left;
+}
+.fxbyj .firstPart{
+    width: 1120px;
+    height: 514px;
+    background: url(../images/firstPartBg.jpg) no-repeat;
+}
+
+.fxbyj .firstPart a{
+    display: block;
+    padding:290px 0 0 290px;
+}
+.fxbyj .mark{
+	margin-top:50px;
+	color:#666;
+	text-indent:100px;
+}
+.fxbyj .secondPart{
+    margin-bottom: 20px;
+    clear:both;
+    padding-top:20px;
+}
+.fxbyj .secondPart  p {
+    font-size: 14px;
+    line-height: 25px;
+    padding: 27px 0 20px 160px;
+    background: url(../images/secondBg.png) 70px no-repeat;
+}
+.fxbyj .secondPart  p.title2{
+	 background: url(../images/secondBg1.jpg) 70px no-repeat;
+	 padding:26px 0 20px 160px;
+	 margin-top:20px;
+}
+.fxbyj .secondPart  p.title3{
+	 background: url(../images/secondBg2.jpg) 70px no-repeat;
+	 padding:26px 0 20px 160px;
+	 margin-top:20px;
+}
+.fxbyj .secondPart p b{
+    color:#f03d2d;
+}
+.fxbyj .secondPart p a{
+	margin:0 15px;
+}
+.fxbyj .fxbyj-main img{
+	
+}
+
+.day_report{
+	width:1180px;
+	margin:20px auto 0;
+	background:#fff;
+	overflow:hidden;
+	position: relative;
+}
+.day_calendar{
+	width:462px;
+	float:left;
+	margin:40px 25px;
+}
+.day_data{
+	background:#F0F0F0;
+	float:left;
+	position:relative;
+	padding-left:65px;
+	width:550px;
+	color:#262626;
+	border-radius:5px;
+	padding:30px 0 95px 65px;
+	font-size:14px;
+	line-height: 37px;
+	margin-left:25px;
+	margin-top:40px;
+}
+.day_data span{
+	color:#656565;
+}
+.day_data i{
+	position:absolute;
+	width:12px;
+	height:24px;
+	left: -11px;
+    top: 43px;
+	background:url(/portal/images/icons/data_point.jpg);
+	
+}
+.day_data .day_amount{
+	color:#0092FC;
+	font-size:24px;
+}
+.day_data font{
+	font-size:14px;
+}
+/*������ʽ */
+#tool{
+	text-align:center;
+	width:460px;
+	height:45px;
+	line-height:40px;	
+	border:1px solid #F0F0F0;
+	border-bottom:none;
+	font-size:16px;
+}
+#tool i{
+	margin-top:12px;
+}
+#calender{
+	background: #fff;
+	font-family: "Microsoft yahei";
+}
+
+.tool .left{
+	display:block;
+	width:21px;
+	height:20px;
+	background:url(/portal/images/icons/calender_left.png) no-repeat;
+	float:left;
+	cursor:pointer;
+	margin-left:32px;
+}
+.tool .right{
+	display:block;
+	width:21px;
+	height:20px;
+	background:url(/portal/images/icons/calender_right.png) no-repeat;
+	float:right;
+	cursor:pointer;
+	margin-right:32px;
+}
+
+.calender-month{
+	position: relative;
+	background: #fff;
+}
+.calender-caption{
+	height: 50px;
+	z-index: 2;
+	background:#36AAFF;
+	color:#fff;
+}
+.calender-content{
+	position: relative;
+    overflow: hidden;
+    padding-top: 10px;
+    border: 1px solid #f0f0f0;
+    border-top: none;
+    border-bottom: none;
+}
+.calender-content:after{
+	content: '';
+	display: block;
+	clear: both;
+}
+.calender-cell{
+	float: left;
+	width: 14.28571428%;
+	height: 40px;
+	text-align: center;
+	line-height: 40px;
+	font-size: 16px;
+	color: #232323;
+	z-index: 1;
+	cursor:pointer;
+	border-bottom:1px solid #f0f0f0;
+}
+.calender-cell.cur{
+	background:#F13D2E;
+	color:#fff;
+}
+.calender-cell-dark{
+	color:#A9A9A9;
+	border-bottom:1px solid #f0f0f0;
+}
+.calender-caption .calender-cell{
+	height: 50px;
+	line-height: 50px;
+	font-size: 16px;
+	color: #fff;
+}
+.badDebt,.overdue{
+	font-size: 23px;
+    color: #78BCEB;
+    position: absolute;
+    font-weight: bold;
+        height: 30px;
+    line-height: 30px;
+}
+.badDebt{
+	left: 220px;
+    top: 59px;
+}
+.overdue{
+	left:850px;
+    top: 147px;
+    color:#2DD381;
+}
+.badDebt:after{
+	position: absolute;
+    right: 0;
+    bottom: 17px;
+    left: 87px;
+    height: 1px;
+    content: '';
+    background: #78BCE9;
+    width: 53px;
+}
+.overdue:after{
+	position: absolute;
+    right: 0;
+    bottom: 13px;
+    left: -62px;
+    height: 1px;
+    content: '';
+    background: #2DD381;
+    width: 53px;
+}
+.mapRank{
+	position: absolute;
+	right: 50px;
+    top: 80px;
+	width: 340px;
+}
+.mapRank .rankTitle{
+	background-color: #eee;
+	font-size: 16px;
+	padding: 5px 20px;
+}
+.mapRank .rankRow{
+	
+}
+.mapRank .rankRow li{
+	padding: 12px;
+	border-bottom: 1px solid #eee;
+}
+.mapRank .rankRow li .rankNo{
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #78bce9;
+    color: #fff;
+    text-align: center;
+    float: left;
+    margin-right: 10px;
+    font-size: 12px;
+    line-height: 20px;
+	
+}
+.mapRank .rankRow li .rankFirst{
+	background: url(/portal/images/icons/rank1.png);
+	width: 17px;
+    height: 22px;
+    display: block;
+    float:left;
+    margin-right: 10px;
+}
+.mapRank .rankRow li .rankSecond{
+	background: url(/portal/images/icons/rank2.png);
+	width: 17px;
+    height: 22px;
+    display: block;
+    float:left;
+    margin-right: 10px;
+}
+.mapRank .rankRow li .rankThird{
+	background: url(/portal/images/icons/rank3.png);
+	width: 17px;
+    height: 22px;
+    display: block;
+    float:left;
+    margin-right: 10px;
+}
+
+.mapRank .rankRow li .rankMoney{
+	float: right;
+}
+
+

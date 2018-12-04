@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>风险承受能力测评</title>
+<link href="app/css/admin.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="app/js/jquery-1.8.3.min.js"></script>
+<script src="app/js/core.js" type="text/javascript"></script>
+</head>
+<body>
+	<div class="assessResult">
+		<div class="result">
+	    	<span></span>
+	    </div>
+	    <p></p>
+	    <div class="result_btn">
+	    	<a href="/app_assessment" class="againAssess">重新评估</a>
+	    </div>
+	</div>
+	<script type="text/javascript">
+		function assessText(){
+			YRHX.ajax({
+				url:"/app_searchEvaluateResult",
+				//dataType:"jsonp",
+				success:function(curdata){
+					var result=curdata;  //测评结果
+					var assesstxt="";
+					if(result!="未测评"){
+						$(".result span").text(result);
+						if(result =="保守型"){
+							assesstxt="您对风险比较敏感，更注重资产的安全性，力求确保本金绝对安全。";
+						}
+						else if(result =="稳健型"){
+							assesstxt="从总体投资来看，在风险较小的情况下获得一定的收益是您主要的投资目的。";
+						}
+						else if(result =="进取型"){
+							assesstxt="您愿意承担一定的风险来获取更高的收益。";
+						}
+						else if(result =="冒险型"){
+							assesstxt="追求高收益，勇于承受高风险是您的投资策略，倾向于尝试各种资产配置。";
+						}
+						$(".assessResult p").text(assesstxt);
+					}
+				}
+			});
+		}
+	
+		$(function(){
+			assessText();
+		});
+	</script>
+</body>
+</html>

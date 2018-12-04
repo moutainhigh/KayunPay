@@ -1,0 +1,538 @@
+package com.dutiantech.service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.alibaba.fastjson.JSONObject;
+import com.dutiantech.CACHED;
+import com.dutiantech.exception.BaseBizRunTimeException;
+import com.dutiantech.model.LoanInfo;
+import com.dutiantech.model.Tickets;
+import com.dutiantech.model.User;
+import com.dutiantech.model.Tickets.STATE;
+import com.dutiantech.model.UserInfo;
+import com.dutiantech.util.CommonUtil;
+import com.dutiantech.util.DateUtil;
+import com.dutiantech.util.StringUtil;
+import com.dutiantech.util.SysEnum;
+import com.dutiantech.util.UIDUtil;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+
+public class TicketsService extends BaseService {
+	
+	public static final String basic_selectFields = "tid,tCode,tname,ttype,amount,rate,useEx,tstate,userCode,userName,makeDateTime,expDate,usedDateTime,makeSource,makeSourceDesc,makeSourceUser,tMac,loanMonth,isDel";
+	
+	/**
+	 * 添加抵用券
+	 * @param userCode	用户编号
+	 * @param userName	用户名
+	 * @param userMobile	用户手机号
+	 * @param userTrueName	用户真实姓名
+	 * @param tname	奖券名
+	 * @param expDate	过期日期
+	 * @param settingsType	
+	 * @param opUserCode	操作用户编号
+	 * @param ms 奖券生成类型
+	 * @return
+	 */
+	public boolean save(String userCode, String userName, String userMobile, String userTrueName, String tname, String expDate, String settingsType,String opUserCode,SysEnum.makeSource ms,String loanMonth,String isDel){
+		Tickets tickets = new Tickets();
+		tickets.set("tCode", UIDUtil.generate());
+		tickets.set("userMobile", userMobile);tickets.set("userName", userName);tickets.set("userTrueName", userTrueName);
+		tickets.set("userCode", userCode);tickets.set("tname", tname);
+		tickets.set("expDate", expDate);tickets.set("usedDateTime", "00000000000000");
+		tickets.set("makeDateTime", DateUtil.getNowDateTime());
+		tickets.set("tMac", "1111");
+		tickets.set("makeSource", ms.val());
+		tickets.set("makeSourceDesc", ms.desc());
+		tickets.set("loanMonth", loanMonth);
+		tickets.set("isDel", isDel);
+		if(StringUtil.isBlank(opUserCode)){
+			
+			tickets.set("makeSourceUser", "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+		}else{
+			tickets.set("makeSourceUser", opUserCode);
+		}
+		
+		String tmpKey = "TT." + settingsType +"_" ;
+		int amount = CACHED.getInt(tmpKey + "payAmount");
+//		String useEx = (String) CACHED.get("S4.xjdyq_useEx");
+		int exAmount = CACHED.getInt(tmpKey + "exAmount");
+		int exRate = CACHED.getInt(tmpKey + "exRate");
+		int exLimit = CACHED.getInt(tmpKey + "exLimit");
+		String exType = CACHED.getStr( tmpKey+"type") ;
+		JSONObject useExObj = new JSONObject() ;
+		useExObj.put("amount", exAmount ) ;
+		useExObj.put("rate", exRate ) ;
+		useExObj.put("limit", exLimit ) ;
+		
+		tickets.set("tstate", "A");
+		tickets.set("amount", amount);
+		tickets.set("useEx", useExObj.toJSONString() );
+		tickets.set("rate", 0);
+		tickets.set("ttype", exType ) ;
+		return tickets.save();
+	}
+	
+	/**
+	 * 添加加息券
+	 * @param userCode	用户编号
+	 * @param userName	用户名
+	 * @param userMobile	用户手机号
+	 * @param userTrueName	用户真实姓名
+	 * @param tname	奖券名
+	 * @param expDate	过期日期
+	 * @param rate	加息量
+	 * @param opUserCode	操作用户编号
+	 * @param ms 奖券生成类型
+	 * @param examount  使用额度
+	 * @param loanMonth 限定期数
+	 * @param isDel  是否抵扣
+	 * @return
+	 */
+	public boolean saveRate(String userCode, String userName, String userMobile, String userTrueName, String tname, String expDate, int rate,String opUserCode,SysEnum.makeSource ms,int examount ,String loanMonth,String isDel){
+		Tickets tickets = new Tickets();
+		tickets.set("tCode", UIDUtil.generate());
+		tickets.set("userMobile", userMobile);tickets.set("userName", userName);tickets.set("userTrueName", userTrueName);
+		tickets.set("userCode", userCode);tickets.set("tname", tname);
+		tickets.set("expDate", expDate);tickets.set("usedDateTime", "00000000000000");
+		tickets.set("makeDateTime", DateUtil.getNowDateTime());
+		tickets.set("tMac", "1111");
+		tickets.set("makeSource", ms.val());
+		tickets.set("makeSourceDesc", ms.desc());
+		tickets.set("loanMonth", loanMonth);
+		tickets.set("isDel", isDel);
+		if(StringUtil.isBlank(opUserCode)){
+			
+			tickets.set("makeSourceUser", "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+		}else{
+			tickets.set("makeSourceUser", opUserCode);
+		}
+		
+		JSONObject useExObj = new JSONObject() ;
+		useExObj.put("amount", examount ) ;
+		useExObj.put("rate", 0 ) ;
+		useExObj.put("limit", 0 ) ;
+		
+		tickets.set("tstate", "A");
+		tickets.set("amount", 0);
+		tickets.set("useEx", useExObj.toJSONString() );
+		tickets.set("rate", rate);
+		tickets.set("ttype", "C" ) ;
+		return tickets.save();
+	}
+	/**
+	 * 根据id删除一个
+	 * @param tid
+	 * @return
+	 */
+	public boolean del(int tid){
+		return Tickets.ticketsDao.deleteById(tid);
+	}
+	
+//	/**
+//	 * 修改奖券状态
+//	 * @param tid
+//	 * @param oldState
+//	 * @param newState
+//	 * @return
+//	 */
+//	public boolean updateTState(int tid,String oldState,String newState){
+//		Tickets tickets = Tickets.ticketsDao.findByIdLoadColumns(tid, "tid,tstate");
+//		if(oldState.equals(tickets.getStr("tstate"))){
+//			tickets.set("tstate", newState);
+//			return tickets.update();
+//		}
+//		return false;
+//	}
+	
+	/**
+	 * 根据tCode查询奖券
+	 * @param tid
+	 * @return
+	 */
+	public Tickets findByCode(String tCode){
+		return Tickets.ticketsDao.findByIdLoadColumns(tCode, basic_selectFields);
+	}
+	
+	/**
+	 * 查询状态为可用的理财券
+	 * @param tCode
+	 * @return
+	 */
+	public Tickets findByCode2(String tCode){
+		return Tickets.ticketsDao.findFirst("select "+ basic_selectFields + " from t_tickets where tCode = ? and tstate = 'A'",tCode);
+	}
+	/**
+	 * 根据id查询指定的字段
+	 * @param tid
+	 * @param fields
+	 * @return
+	 */
+	public Tickets findById4Fields(int tid, String fields){
+		return Tickets.ticketsDao.findByIdLoadColumns(tid, fields);
+	}
+	
+	public Map<String,Object> findByPage(Integer pageNumber, Integer pageSize,String ttype,String tstate,String makeSource,String userCode,String beginDateTime_make,String endDateTime_make,String beginDateTime_used,String endDateTime_used,String beginDate_expDate, String endDate_expDate,String loanMonth){
+		String sqlSelect = "select "+basic_selectFields;
+		String sqlFrom = " from t_tickets";
+		String sqlOrder = " order by expDate asc,amount desc, usedDateTime desc";
+		
+		StringBuffer buff = new StringBuffer("");
+		List<Object> paras = new ArrayList<Object>();
+		makeExp(buff, paras, "userCode", "=", userCode, "and");
+		if(StringUtil.isBlank(ttype) == false){
+			String[] ttypes = ttype.split(",");
+			makeExp4In(buff, paras, "ttype", ttypes, "and");
+		}
+		if(StringUtil.isBlank(tstate) == false){
+			String[] tstates = tstate.split(",");
+			makeExp4In(buff, paras, "tstate", tstates, "and");
+		}
+		makeExp(buff, paras, "makeSource", "=", makeSource, "and");
+		makeExp(buff, paras, "makeDateTime", ">=", beginDateTime_make, "and");
+		makeExp(buff, paras, "makeDateTime", "<=", endDateTime_make, "and");
+		makeExp(buff, paras, "usedDateTime", ">=", beginDateTime_used, "and");
+		makeExp(buff, paras, "usedDateTime", "<=", endDateTime_used, "and");
+		makeExp(buff, paras, "expDate", ">=", beginDate_expDate, "and");
+		makeExp(buff, paras, "expDate", "<=", endDate_expDate, "and");
+		String sqlLoanMonth="";
+		if(StringUtil.isBlank( loanMonth ) == false){
+			sqlLoanMonth=" and (loanMonth like '%"+loanMonth+"%' or loanMonth='0' or isnull(loanMonth)) ";
+		}
+		Page<Tickets> pages =  Tickets.ticketsDao.paginate(pageNumber, pageSize, sqlSelect,sqlFrom+(makeSql4Where(buff)).toString()+sqlLoanMonth+sqlOrder,paras.toArray());
+		
+		Map<String,Object> result = new HashMap<String, Object>();
+		
+		result.put("firstPage", pages.isFirstPage());
+		result.put("lastPage", pages.isLastPage());
+		result.put("pageNumber", pages.getPageNumber());
+		result.put("pageSize", pages.getPageSize());
+		result.put("totalPage", pages.getTotalPage());
+		result.put("totalRow", pages.getTotalRow());
+		result.put("list", pages.getList());
+		return result;
+	}
+	
+	/**
+	 * 	使用现金抵用券
+	 * @param userCode
+	 * @param ticketCode	
+	 * @param loanInfo 		使用环境描述
+	 * @return
+	 * 		返回使用后的ticket,如果为空则使用失败
+	 */
+	public Tickets useTicket4A(String userCode , String ticketCode , long payAmount ,  LoanInfo loanInfo ){
+		if( loanInfo == null ){
+			throw new BaseBizRunTimeException("T0", "无使用场景", null ) ;
+		}
+		Tickets ticket = Tickets.ticketsDao.findById( ticketCode );
+		
+		//检查归属
+		String tUserCode = ticket.getStr("userCode") ;
+		if( userCode.equals(tUserCode) == false ){
+			throw new BaseBizRunTimeException("T7", "非法请求", null ) ;
+		}
+		
+		String tState = ticket.getStr("tstate") ;
+		//检查状态是否可用
+		if( Tickets.STATE.A.key().equals( tState ) == false ){
+			throw new BaseBizRunTimeException("T1", "现金券不可用[" + Tickets.STATE.valueOf(tState).desc() + "]", null ) ;
+		}
+		//检查过期日期
+		String nowDate = DateUtil.getNowDate() ;
+		String expDate = ticket.getStr("expDate");
+		if( DateUtil.compareDateByStr("yyyyMMdd", nowDate , expDate ) > 0 ){
+			throw new BaseBizRunTimeException("T2", "现金券已过期[" + expDate + "]", null ) ;
+		}
+		
+		//检查使用条件
+		String strUseEx = ticket.getStr("useEx");
+		if( StringUtil.isBlank(strUseEx) == false ){
+			long loanRate = loanInfo.getInt("rateByYear") + loanInfo.getInt("rewardRateByYear");//这里引用的rewardRateByYear已经包含了新手年利率与加息券利息
+			long loanLimit = loanInfo.getInt("loanTimeLimit") ;
+			
+			JSONObject json = JSONObject.parseObject( strUseEx ) ;
+			//固定三个条件 amount / rate /limit 
+			long exAmount = json.getLongValue("amount") ;
+			int exRate = json.getIntValue("rate") ;
+			int exLimit = json.getIntValue("limit") ;
+			if("A".equals(ticket.getStr("ttype"))){
+				if( payAmount < exAmount ){
+					throw new BaseBizRunTimeException("T4", "单笔投资必须大于" + exAmount/10.0/10.0 + "元才可以使用!", null ) ;
+				}
+			}else if("C".equals(ticket.getStr("ttype"))){
+				if(payAmount > exAmount&&exAmount>0){
+					throw new BaseBizRunTimeException("T4.5", "单笔投资必须小于等于" + exAmount/10.0/10.0 + "元才可以使用!", null ) ;
+				}
+			}
+			
+			if( loanRate-ticket.getInt("rate") < exRate ){
+				throw new BaseBizRunTimeException("T5", "借款标利率必须大于" + exRate/10.0/10.0 + "%才可以使用!", null ) ;
+			}
+			
+			if( loanLimit < exLimit ){
+				throw new BaseBizRunTimeException("T6", "借款标期限必须大于" + exLimit + "才可以使用!", null ) ;
+			}
+			
+		}
+		
+//		UserInfo user = UserInfo.userInfoDao.findById( userCode );
+		
+		JSONObject payInfo = new JSONObject() ;
+		payInfo.put("payAmount", payAmount );
+		payInfo.put("loanTitle", loanInfo.getStr("loanTitle") );
+		
+		int execResult = Db.update("update t_tickets set loanCode=?,tstate=?,usedDateTime=?,payInfo=? where "
+				+ "tCode=? and tstate=? and expDate>=? ", 
+				loanInfo.getStr("loanCode") , STATE.E.key() , DateUtil.getNowDateTime(),
+				payInfo.toJSONString(), ticketCode ,
+				STATE.A.key() , nowDate ) ;
+		if( execResult <= 0 ){
+			throw new BaseBizRunTimeException("T7", "抵用券使用失败！[" + execResult + "]", null ) ; 
+		}
+		return ticket  ;
+	}
+	
+	public Tickets useTicket(String userCode , String ticketCode , long payAmount , String loanCode){
+		LoanInfo loan = LoanInfo.loanInfoDao.findById(loanCode) ;
+		return useTicket4A(userCode , ticketCode , payAmount , loan ) ;
+	}
+
+	/**
+	 * 代金券回滚
+	 * @param ticketCode
+	 */
+	public void rollBackTicket(String tCode ){
+		Db.update("update t_tickets set loanCode='',tstate=?,usedDateTime='',payInfo='' where tCode=? and tstate=?",
+				STATE.A.key() , tCode , STATE.E.key() );
+	}
+
+	/**
+	 * 根据奖券名称获取用户拥有的券
+	 * @param userCode
+	 * @param ticketName
+	 * @return
+	 */
+	public List<Tickets> queryTickets(String userCode, String ticketName) {
+		return Tickets.ticketsDao.find("select * from t_tickets where userCode = ? and tname = ? ", userCode,ticketName);
+	}
+	
+	/**
+	 * 获取用户拥有可用奖券数量
+	 * @param userCode
+	 * @return
+	 */
+	public Integer countTickets(String userCode) {
+		return Db.queryLong("select count(1) from t_tickets where userCode = ? and tstate = 'A' ", userCode).intValue();
+	}
+	
+	/**
+	 * 查询用户所有可用券
+	 * */
+	public List<Tickets> queryOneTickets(String userCode,String ttype,String tstate){
+		return Tickets.ticketsDao.find("select * from t_tickets where userCode = ? and ttype = ? and tstate = ? ",userCode,ttype,tstate);
+	}
+	/**
+	 * 查询用户可用的现金券,按过期时间升序
+	 * @param userCode
+	 * @return
+	 */
+	public List<Tickets> queryATicketsByUserCode1(String userCode){
+		return Tickets.ticketsDao.find("select * from t_tickets where userCode = ? and ttype='A' and tstate = 'A' and expDate>= ?  order by expDate asc, amount desc",userCode,DateUtil.getNowDate());
+	}
+	//符合期限的券 现金券时间优先
+	public List<Tickets> queryATicketsByUserCode1(String userCode,String loanMonth){
+		loanMonth = loanMonth.length() == 1 ? "0" + loanMonth : loanMonth;
+		loanMonth = "%" + loanMonth + "%";
+		return Tickets.ticketsDao.find("select * from t_tickets where userCode = ? and ttype='A' and tstate = 'A' and expDate>= ? and (loanMonth like '"+loanMonth+"' or loanMonth = '0' or isnull(loanMonth)) order by expDate asc, amount desc",userCode,DateUtil.getNowDate());
+	}
+	/**
+	 * 查询用户可用的现金券,按金额降序
+	 * @param userCode
+	 * @return
+	 */
+	public List<Tickets> queryATicketsByUserCode2(String userCode){
+		return Tickets.ticketsDao.find("select * from t_tickets where userCode = ? and ttype='A' and tstate = 'A' and expDate>= ?  order by amount desc, expDate asc",userCode,DateUtil.getNowDate());
+	}
+	//符合期限的券 现金券金额优先
+	public List<Tickets> queryATicketsByUserCode2(String userCode,String loanMonth){
+		loanMonth = loanMonth.length() == 1 ? "0" + loanMonth : loanMonth;
+		loanMonth = "%" + loanMonth + "%";
+		return Tickets.ticketsDao.find("select * from t_tickets where userCode = ? and ttype='A' and tstate = 'A' and expDate>= ? and (loanMonth like '"+loanMonth+"' or loanMonth = '0' or isnull(loanMonth))  order by amount desc, expDate asc",userCode,DateUtil.getNowDate());
+	}
+	//符合期限的券 加息券
+	public List<Tickets> queryATicketsByUserCodeByRewardRate(String userCode,String loanMonth,String priorityMode){
+		loanMonth = loanMonth.length() == 1 ? "0" + loanMonth : loanMonth;
+		loanMonth = "%" + loanMonth + "%";
+		String addsql="";
+		if("A".equals(priorityMode)){
+			addsql="order by expDate asc, rate desc";
+		}else if("C".equals(priorityMode)){
+			addsql="order by rate desc, expDate asc";
+		}
+		return Tickets.ticketsDao.find("select * from t_tickets where userCode = ? and ttype='C' and tstate = 'A' and expDate>= ? and (loanMonth like '"+loanMonth+"' or loanMonth = '0' or isnull(loanMonth))  "+addsql,userCode,DateUtil.getNowDate());
+	}
+	
+	/**
+	 * 新增现金抵用券
+	 * @param userCode			受益人
+	 * @param ticketName		券名
+	 * @param expDate			过期日期,这天之后过期
+	 * @param payAmount			抵扣金额
+	 * @param expAmount			使用条件，单笔投资最低额度
+	 * @return
+	 */
+	public boolean saveADV(String userCode, String ticketName,String expDate,long payAmount,long expAmount ){
+		Tickets tickets = new Tickets();
+		tickets.set("tCode", UIDUtil.generate());
+		String userMobile = "00000000000";
+		String userName = "";
+		String userCardName = "";
+		try {
+			User user = User.userDao.findByIdLoadColumns(userCode, "userCode,userMobile,userName");
+			userCardName = UserInfo.userInfoDao.findByIdLoadColumns(userCode, "userCardName").getStr("userCardName");
+			userName = user.getStr("userName");
+			userMobile = user.getStr("userMobile");
+			userMobile = CommonUtil.decryptUserMobile(userMobile);
+			if(CommonUtil.isMobile(userMobile) == false){
+				userMobile = "00000000000";
+			}
+		} catch (Exception e) {
+			
+		}
+		tickets.set("userMobile", userMobile);tickets.set("userName", userName);tickets.set("userTrueName", userCardName);
+		tickets.set("userCode", userCode);tickets.set("tname",ticketName);
+		tickets.set("expDate", expDate);tickets.set("usedDateTime", "00000000000000");
+		tickets.set("makeDateTime", DateUtil.getNowDateTime());
+		tickets.set("tMac", "1111");
+		tickets.set("makeSource", "B");
+		tickets.set("makeSourceDesc", "活动");
+		tickets.set("makeSourceUser", "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+
+		JSONObject useExObj = new JSONObject() ;
+		useExObj.put("amount", expAmount ) ;
+		useExObj.put("rate", 0 ) ;
+		useExObj.put("limit", 0 ) ;
+		
+		tickets.set("tstate", "A");
+		tickets.set("amount", payAmount);
+		tickets.set("useEx", useExObj.toJSONString() );
+		tickets.set("rate", 0);
+		tickets.set("ttype", "A" ) ;
+		return tickets.save();
+	}
+	
+
+	/**
+	 * 新增现金抵用券
+	 * @param userCode			受益人
+	 * @param ticketName		券名
+	 * @param expDate			过期日期,这天之后过期
+	 * @param payAmount			抵扣金额
+	 * @param expAmount			使用条件，单笔投资最低额度
+	 * @param loanMonth			投标期限，比如01-02-03表示可投1月、2月、3月标，0或Null可投任意标
+	 * @param isDel				债转是否抵扣
+	 * @return
+	 */
+	public boolean saveADV(String userCode, String ticketName,String expDate,long payAmount,long expAmount, String loanMonth, String isDel){
+		Tickets tickets = new Tickets();
+		tickets.set("tCode", UIDUtil.generate());
+		String userMobile = "00000000000";
+		String userName = "";
+		String userCardName = "";
+		try {
+			User user = User.userDao.findByIdLoadColumns(userCode, "userCode,userMobile,userName");
+			userCardName = UserInfo.userInfoDao.findByIdLoadColumns(userCode, "userCardName").getStr("userCardName");
+			userName = user.getStr("userName");
+			userMobile = user.getStr("userMobile");
+			userMobile = CommonUtil.decryptUserMobile(userMobile);
+			if(CommonUtil.isMobile(userMobile) == false){
+				userMobile = "00000000000";
+			}
+		} catch (Exception e) {
+			
+		}
+		tickets.set("userMobile", userMobile);tickets.set("userName", userName);tickets.set("userTrueName", userCardName);
+		tickets.set("userCode", userCode);tickets.set("tname",ticketName);
+		tickets.set("expDate", expDate);tickets.set("usedDateTime", "00000000000000");
+		tickets.set("makeDateTime", DateUtil.getNowDateTime());
+		tickets.set("tMac", "1111");
+		tickets.set("makeSource", "B");
+		tickets.set("makeSourceDesc", "活动");
+		tickets.set("makeSourceUser", "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+
+		JSONObject useExObj = new JSONObject() ;
+		useExObj.put("amount", expAmount ) ;
+		useExObj.put("rate", 0 ) ;
+		useExObj.put("limit", 0 ) ;
+		
+		tickets.set("tstate", "A");
+		tickets.set("amount", payAmount);
+		tickets.set("useEx", useExObj.toJSONString() );
+		tickets.set("rate", 0);
+		tickets.set("ttype", "A");
+		tickets.set("loanMonth", loanMonth);
+		tickets.set("isDel", "Y");
+		return tickets.save();
+	}
+	
+	
+	/***
+	 * 查询用户现金券使用的抵扣金额
+	 * @param userCode
+	 * @return
+	 */
+	public long queryUseAmount1(String userCode){
+		return Db.queryBigDecimal("select COALESCE(SUM(amount),0) from t_tickets where ttype = 'A' and tstate = 'E' and userCode = ?",userCode).longValue();
+	}
+	
+	/**
+	 * 	发放新手奖励
+	 * @param regUserCode
+	 * @return
+	 */
+	public boolean toReward4newUser(String regUserCode ){
+		saveADV(regUserCode, "18元现金券【新手奖励】", DateUtil.addDay(DateUtil.getNowDate(),7), 1800, 180000);
+		
+		saveADV(regUserCode, "20元现金券【新手奖励】", DateUtil.addDay(DateUtil.getNowDate(),7), 2000, 300000);
+		saveADV(regUserCode, "20元现金券【新手奖励】", DateUtil.addDay(DateUtil.getNowDate(),7), 2000, 300000);
+		saveADV(regUserCode, "20元现金券【新手奖励】", DateUtil.addDay(DateUtil.getNowDate(),7), 2000, 300000);
+		saveADV(regUserCode, "20元现金券【新手奖励】", DateUtil.addDay(DateUtil.getNowDate(),7), 2000, 300000);
+		
+		
+		saveADV(regUserCode, "30元现金券【新手奖励】", DateUtil.addDay(DateUtil.getNowDate(),7), 3000, 500000);
+		saveADV(regUserCode, "30元现金券【新手奖励】", DateUtil.addDay(DateUtil.getNowDate(),7), 3000, 500000);
+		saveADV(regUserCode, "30元现金券【新手奖励】", DateUtil.addDay(DateUtil.getNowDate(),7), 3000, 500000);
+		saveADV(regUserCode, "30元现金券【新手奖励】", DateUtil.addDay(DateUtil.getNowDate(),7), 3000, 500000);
+		
+		
+		saveADV(regUserCode, "50元现金券【新手奖励】", DateUtil.addDay(DateUtil.getNowDate(),15), 5000, 1000000);
+		saveADV(regUserCode, "50元现金券【新手奖励】", DateUtil.addDay(DateUtil.getNowDate(),15), 5000, 1000000);
+		saveADV(regUserCode, "50元现金券【新手奖励】", DateUtil.addDay(DateUtil.getNowDate(),15), 5000, 1000000);
+		saveADV(regUserCode, "50元现金券【新手奖励】", DateUtil.addDay(DateUtil.getNowDate(),15), 5000, 1000000);
+		
+		saveADV(regUserCode, "100元现金券【新手奖励】", DateUtil.addDay(DateUtil.getNowDate(),15), 10000, 2000000);
+		return true ;
+	}
+	
+	/**
+	 * 查询一飞的加息券
+	 * @param tid
+	 * @return
+	 */
+	public List<Tickets> findYFByCode(String tCode){
+		String sql="select * from t_tickets where tname like '%YF%' ";
+		if(StringUtil.isBlank(tCode)){
+			sql+="and tCode="+tCode;
+		}
+		return Tickets.ticketsDao.find(sql);
+	}
+}
+
+
+
+

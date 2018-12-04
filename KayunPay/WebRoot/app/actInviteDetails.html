@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>赏金计划-享好友投资收益</title>		
+		<link rel="stylesheet" href="app/css/mui.min.css" type="text/css" />
+		<link href="app/css/activity/actInvite.css" type="text/css" rel="stylesheet" />
+		<script src="app/js/jquery-1.8.3.min.js" type="text/javascript"></script>
+		<script src="app/js/core.js" type="text/javascript"></script>
+		<script src="app/js/mui.min.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div class="mui-bar mui-bar-nav"  style="background:#000!important;">
+			<a href="javascript:;" onClick="javascript:history.back(-1);" class="mui-pull-left mui-icon mui-icon-arrowleft" style="display:block;color:#fff; font-size:16px; line-height:40px;">返回</a>
+			<!-- <h1 class="mui-center mui-title">邀请详情</h1> -->
+		</div>
+		<div class="detail">
+			<div class="detail_main">
+				<div class="detail_title">
+					<div class="title_font">被邀请人</div>
+					<div class="title_font">投资金额</div>
+					<div class="title_font">预期赏金收益</div>
+				</div>
+				<div class="detail_list">
+					<ul>
+					</ul>
+				</div>
+			</div>
+			<div class="detail_rule">
+				<div class="rule_title">预期赏金收益规则:</div>
+				<div class="rule_list">
+					<span>1</span>
+					<div class="rule_f">5%预期赏金收益于被邀请人投资每期回款收益时发放至账户中。</div>
+				</div>
+				<div class="rule_list">
+					<span>2</span>
+					<div class="rule_f">若被邀请人投资后债权转让，则邀请人不再享有此笔投资收益 的5%。</div>
+				</div>
+				<div class="rule_list">
+					<span>3</span>
+					<div class="rule_f">被邀请人投资项目提前还款，则邀请人不再享有此笔投资收益 的5%。</div>
+				</div>
+			</div>
+		</div>		
+	</body>
+	<script>
+	
+		function inviteDateli(){
+			YRHX.ajax({
+				url:"/queryRewardDetailByUserCode",
+				//dataType:"jsonp",
+				data:{"beginDate":"20180101","endDate":""},
+				success:function(data){
+					var listHtml=$(".detail_list ul");
+					listHtml.html("");
+					if(data.length>=1){
+						for(var i=0; i<data.length; i++){
+							var row=data[i];
+							var len=row[0].length;
+							if (0 == row[0].indexOf("*")) {
+								row[0] = row[0]
+							} 
+							else {
+								if (len > 7) {
+									row[0] = row[0].substr(0,3)+ "**" + row[0].substr(6);
+								} 
+								else if(len >= 11){
+									row[0] = row[0].substr(0,3)+ "**" + row[0].substr(7);
+								}
+							}
+							var html="<li><div class='list_font'>"+row[0]+"</div><div class='list_font'>"+row[1]+"元</div><div class='list_font'>"+row[2]+"元</div></li>";
+							listHtml.append(html);
+						}
+					}
+					else{
+						$(".detail_list ul").append("<li style='text-align:center; font-size:16px;'>暂时无数据</li>")
+					}
+				}
+			});
+		}
+	
+		
+		$(function(){
+			
+			inviteDateli();
+			
+		});
+		
+	</script>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>易融恒信提示 - 易融恒信，做中国最大的网贷!</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link type="text/css" href="/portal/mobile/css/style.css" rel="stylesheet" />
+	<script type="text/javascript" src="/portal/mobile/js/jquery-1.7.1.min.js"></script>
+</head>
+<body>
+<!-- <div class="top_panel has_back">
+	<a id="back" class="back iconfont" href="/" rel="external">&#xe619;</a>
+	最新公告
+</div> -->
+<ul class="notice_list" id="notice">
+	<!-- <li>
+		<a href="#">
+			<img src="/portal/moblie/images/index.jpg" />
+		</a>
+		<h4>
+			<a href="#"  rel="external">标题</a>	
+		</h4>
+		<p class="years">2016-1-1</p>
+	</li>
+	<li>
+		<a href="#">
+			<img src="/portal/moblie/images/index.jpg" />
+		</a>
+		<h4>
+			<a href="#"  rel="external">标题</a>	
+		</h4>
+		<p class="years">2016-1-1</p>
+	</li>
+	<li>
+		<a href="#">
+			<img src="/portal/moblie/images/index.jpg" />
+		</a>
+		<h4>
+			<a href="#"  rel="external">标题</a>	
+		</h4>
+		<p class="years">2016-1-1</p>
+	</li> -->
+
+</ul>
+</body>
+<script>
+	//最新公告
+	$.queryNews = function( pageNumber ){
+		$.ajax({
+			url :"/queryNewsByPage",
+			data:{
+				"pageNumber": pageNumber || 1,
+				"pageSize": 10,
+				"isContent": 1, //0为完整数据  1为简化数据
+				"type": 0 //0网站公告 1公司新闻 2行业动态3媒体报道4易融月刊5往期专题
+			},
+			success : function( sucData ){
+				var html_tab = "<li><a href='N_detail?id=#{id}'><img src='#{pic}'></a><h4><a href='N_detail?id=#{id}'>#{title}</a></h4><p class='years'>#{updateTime}</p></li>";
+				var tableEle = $("#notice");
+				tableEle.html("");
+				var returnData = sucData.return_data.list ;
+				if( returnData.length > 0 ){
+
+					for( var i = 0; i < returnData.length; i++ ){
+						var row = returnData[i];
+						row["updateTime"] = row["upDateTime"].dateformat();
+						row["pic"] = row["pic"]?row["pic"]:"/portal/images/defaultPic.jpg";
+
+						var tmpHtml = html_tab.makeHtml( row );
+
+						tableEle.append( tmpHtml );
+					}
+
+					/* //分页
+					$("#pagination").pag(sucData["pageNumber"], sucData["pageSize"],sucData["totalRow"], function() {
+						var reqIndex = $(this).attr("index");
+						$.queryNews( reqIndex || 1);
+					}); */
+
+				}
+			},
+			error: function( errData ){
+
+			}
+		});
+	}
+
+	$.queryNews();
+	
+	String.prototype.replaceAll = function(s1,s2,notSafe){
+		if( !notSafe ){
+			if( typeof(s2) == "string" ){
+				s2 = s2.replace(new RegExp("<","gm"),"&lt;");
+				s2 = s2.replace(new RegExp(">","gm"),"&gt;");
+				s2 = s2.replace(new RegExp("\"","gm"),"&quot;");
+			}
+		}
+		return this.replace(new RegExp(s1,"gm"),s2);
+	};
+	
+	String.prototype.makeHtml = function( obj ){
+    	if( !obj )
+    		obj = {} ;
+    	var temp = this ;
+    	for( var key in obj ){
+    		
+    		temp = temp.replaceAll( "#{" + key +"}" , typeof( obj[key] ) != 'undefined'? obj[key]:"" );
+    	}
+    	return temp ;
+    };
+    
+	String.prototype.dateformat = function(){
+    	var temp = this ;
+    	var returnVal = "" ;
+    	if( this.length == 6 ){
+    		//temp = "00000000" + this ;
+    		returnVal += temp.substring(0,2);
+    		returnVal += ":" ;
+    		returnVal += temp.substring(2,4);
+    		returnVal += ":" ;
+    		returnVal += temp.substring(4,6);
+    	}
+    	if( this.length == 8){
+    		//temp = this + "000000";
+    		returnVal = temp.substring(0,4);
+    		returnVal += "-" ;
+    		returnVal += temp.substring(4,6);
+    		returnVal += "-" ;
+    		returnVal += temp.substring(6,8);
+    	}
+    	if( this.length == 14){
+    		returnVal = temp.substring(0,4);
+    		returnVal += "-" ;
+    		returnVal += temp.substring(4,6);
+    		returnVal += "-" ;
+    		returnVal += temp.substring(6,8);
+    		returnVal += " " ;
+    		returnVal += temp.substring(8,10);
+    		returnVal += ":" ;
+    		returnVal += temp.substring(10,12);
+    		returnVal += ":" ;
+    		returnVal += temp.substring(12,14);
+    	}
+    	return returnVal ;
+    };
+
+</script>
+</html>

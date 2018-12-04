@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<title>易融恒信管理</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="alternate icon" type="image/png" href="assets/i/favicon.png">
+<link rel="stylesheet" href="assets/css/amazeui.min.css" />
+<script src="assets/js/jquery.min.js"></script>
+<script src="app/js/res.js"></script>
+<script src="app/js/biz.js"></script>
+<style>
+.header {
+	text-align: center;
+}
+
+.header h1 {
+	font-size: 200%;
+	color: #333;
+	margin-top: 30px;
+}
+
+.header p {
+	font-size: 14px;
+}
+.capImg{
+    width: 10%;
+    position: absolute;
+    margin: 0 10px;
+    border: 1px solid #048fd4;
+    background-color: #f2f9fc;
+    font-style: normal;
+    font-size: 12px;
+    text-align: center;
+    line-height: 38px;
+    cursor: pointer;
+}
+.capInput{
+	width:15% !important;
+	float:left;
+}
+.grayBtn{
+	background-color:#a6a6a6;
+	border: 1px solid #a6a6a6;
+}
+</style>
+</head>
+<body>
+	<div class="header">
+		<div class="am-g">
+			<!-- >h1>易融恒信管理后台</h1 -->
+			<h1>自古深情留不住</h1><h1>总是套路得人心</h1>
+			<p></p>
+		</div>
+		<hr />
+	</div>
+	<div class="am-g">
+		<div class="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+			<br>
+			<form method="post" class="am-form">
+			 	<input type="hidden" value="" name="ticket" id="ticket"/>
+				<label for="userName">手机:</label> <input type="text" name="userName" id="userName" value=""> <br> 
+				<label for="userCap">验证码:</label> 
+				<div>
+					<input type="text" name="tc_vcode_input" id="tc_vcode_input" value="" class="capInput" maxlength="6">
+					 <i id="sendMsgBtn" class="capImg" />获取验证码</i><br/><br>
+				</div>
+				<div class="am-cf">
+					<input type="button" id="loginBtn" value="  登    录   " class="am-btn am-btn-primary am-btn-lg am-fl">
+				</div>
+			</form>
+			<hr>
+			<p class="copy-right"></p>
+		</div>
+	</div>
+</body>
+<script src="../assets/js/amazeui.min.js"></script>
+<script>
+	
+	
+	$("#sendMsgBtn").click(function(){
+		var uName = $("#userName").val();
+		
+		if( uName.length == 11 ){
+			YRHX.ajax({
+				url : "/sendMsg4AdminLogin" ,
+				data : {
+					"mobile" : uName 
+				},
+				success : function( capurl  ){
+					
+				},
+				error : function( errData ){
+					alert(errData.return_info || "验证码服务异常");
+				}
+			});
+		}else{
+			alert("请认真填写手机号");
+		}
+		
+		
+		
+		
+	});
+
+
+	$("title").text(RES["title"]);
+	$(".copy-right").text(RES["copyright"]);
+	
+	$("#loginBtn").click(function(){
+		$.loginFn();
+		
+	});
+	$.loginFn = function(){
+		var userName = $("#userName").val();
+		var userCap = $("#tc_vcode_input").val();
+
+		
+		if( userName.length <= 0 ){
+			YRHX.alert("别闹，手机号空的！");
+			return false ;
+		}
+		
+		if(  userCap.length <= 0 ){
+			YRHX.alert("别闹，验证码空的！");
+			return false ;
+		}
+		
+		YRHX.ajax({
+			url : "/doLoginV3" ,
+			data : {
+				"userName" : userName ,
+				"smsMsg" : userCap
+			},
+			success : function( userData ){
+				for(var key in userData){
+					YRHX.Cookie( key , userData[ key ] ).set();
+				}
+				window.location.href = "main";
+			},
+			error : function( errData ){
+				YRHX.alert("进不去，你懂的！" , "用户名你确认是对的？ 密码你确认是对的？ 不要闹！<br />失败原因：" + errData.return_info);
+			}
+		});
+	}
+	
+	$("#tc_vcode_input").focus(function(){
+		$(window).on("keydown",function(event){
+			if (event.keyCode == 13) {
+				$.loginFn();
+			}
+		});
+	})
+
+</script>
+</html>

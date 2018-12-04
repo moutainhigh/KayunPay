@@ -1,0 +1,2 @@
+ALTER table t_redeem add rate int;
+UPDATE t_redeem set rate = 100;

@@ -1,0 +1,1 @@
+INSERT INTO `t_menu_v2` (`menu_id`, `menu_id_p`, `menu_name`, `menu_type`, `menu_url`, `menu_class`, `menu_method`, `menu_status`, `menu_desc`) VALUES ('0077', '39', '放款列表', 'A', '/mFkList', 'com.dutiantech.controller.admin.ActionController', 'mFkList', 'A', '自动生成');

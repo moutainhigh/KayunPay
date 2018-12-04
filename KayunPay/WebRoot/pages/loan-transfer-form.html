@@ -1,0 +1,140 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title></title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png" href="assets/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="../assets/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="../assets/css/amazeui.min.css" />
+<link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+	<!-- iframe body start -->
+	<form id="info-form" action="" data-am-validator>
+		<div class="am-tabs am-margin" data-am-tabs="{noSwipe: 1}">
+			<ul class="am-tabs-nav am-nav am-nav-tabs">
+				<li class="am-active"><a href="#tab1">基本信息</a></li>
+				<li ><a href="#tab2">债权转让详情</a></li>
+			</ul>
+			<div class="am-tabs-bd">
+				<div class="am-tab-panel am-fade am-in am-active am-form am-form-inline" id="tab1">
+				
+					<div class="am-g am-margin-top field" name="loanTitle" type="text" text="贷款标标题" >
+					</div>
+					
+					<div class="am-g am-margin-top field" name="refundType" type="select" map="refundType" text="还款方式" >
+					</div>
+					
+					<div class="am-g am-margin-top field" name="rateByYear" type="text" text="年利率" >
+					</div>
+					
+					<div class="am-g am-margin-top field" name="payAmount" type="text" text="投标人投标金额" >
+					</div>
+					
+					<div class="am-g am-margin-top field" name="transCode" type="text" text="债权转让编码" >
+					</div>
+					
+					<div class="am-g am-margin-top field" name="traceCode" type="text" text="投标流水编码" >
+					</div>
+					
+					<div class="am-g am-margin-top field" name="loanCode" type="text" text="贷款标编码" >
+					</div>
+					
+				</div>
+				<div class="am-tab-panel am-fade am-form" id="tab2">
+					
+					<div class="am-g am-margin-top field" name="payUserName" type="text" text="投标人昵称" >
+					</div>
+					
+					<div class="am-g am-margin-top field" name="leftAmount" type="text" text="剩余本金" >
+					</div>
+					
+					<div class="am-g am-margin-top field" name="loanRecyCount" type="text" text="剩余还款期数" >
+					</div>
+					
+					<div class="am-g am-margin-top field" name="nextRecyDay" type="text" text="最近收益日" >
+					</div>
+					
+					<div class="am-g am-margin-top field" name="gotUserName" type="text" text="债权承接人昵称" >
+					</div>
+					
+					<div class="am-g am-margin-top field" name="gotUserName" type="text" text="债权承接人昵称" >
+					</div>
+					
+					<div class="am-g am-margin-top field" name="transAmount" type="text" text="债权承接人实付金额" >
+					</div>
+					
+					<div class="am-g am-margin-top field" name="transAmount" type="text" text="债权承接人实付金额" >
+					</div>
+					
+					<div class="am-g am-margin-top field" name="gotDateTime" type="text" text="债权转让生效时间" >
+					</div>
+					
+				</div>
+			</div>
+		</div>
+		<div class="am-margin">
+			<button id="cancelBtn" type="button" class="am-btn am-btn-primary am-btn-xs">返回</button>
+		</div>
+	</form>
+	<!-- iframe body end -->
+	<!--[if lt IE 9]>
+	<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+	<script src="../assets/js/polyfill/rem.min.js"></script>
+	<script src="../assets/js/polyfill/respond.min.js"></script>
+	<script src="../assets/js/amazeui.legacy.js"></script>
+	<![endif]-->
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="../assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="../app/js/res.js"></script>
+	<script src="../app/js/table-widget.js"></script>
+	<script src="../app/js/form-widget.js"></script>
+	<script src="../app/js/biz.js"></script>
+	<script>
+		
+		$("#cancelBtn").click(function(){
+			history.go(-1);
+		});
+
+		function initFormData( key ){
+			YRHX.ajax({
+				url : "/getLoanTransferById" ,
+				data : {
+					transCode : key
+				},
+				success : function( sucData ){
+					sucData["transState"] = sucData["transState"]=="A"?"转让中":"已转让";
+					sucData["gotDateTime"] = (sucData["gotDate"]+sucData["gotTime"]).dateformat();
+					$("#info-form").formUnSerialize( sucData ); 
+				},
+				error : function(data){
+					YRHX.alert("警告",data.return_info || "获取信息失败");
+				}
+			});
+		}
+
+		var formType = YRHX.queryString("opType");
+		$("#info-form").formInit({
+			"formType" : "view",
+			"request" : "http://www.qq.com"
+		});
+	</script>
+	<script src="../assets/js/amazeui.min.js"></script>
+	<script>
+		$("#info-form").validatorInit();
+		var key = YRHX.queryString("transCode");
+		if( key ){
+			initFormData( key );
+		}		
+	</script>
+</body>
+</html>
