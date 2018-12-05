@@ -15,7 +15,6 @@ import com.dutiantech.config.routes.AdminRoutes;
 import com.dutiantech.config.routes.AppRoutes;
 import com.dutiantech.config.routes.BranchRoutes;
 import com.dutiantech.config.routes.ExportDateRoutes;
-import com.dutiantech.config.routes.PortalRoutes;
 import com.dutiantech.config.routes.PublicRoutes;
 import com.dutiantech.model.SysConfig;
 import com.dutiantech.plugins.MemcachedPlugin;
@@ -70,7 +69,6 @@ public class AdminConfig extends JFinalConfig {
 		}
 		
 		if( workTypeValue == 1  ){
-			me.add( new PortalRoutes() ) ;
 			me.add( new AppRoutes() );
 		}
 		

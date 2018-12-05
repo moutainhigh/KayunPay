@@ -1,1 +1,0 @@
-alter table t_settlement_plan add jxTraceCode char(200) default '' comment 'jxTrace流水号(分隔符号:&&)';

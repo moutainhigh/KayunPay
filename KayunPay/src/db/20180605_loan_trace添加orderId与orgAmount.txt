@@ -1,2 +1,0 @@
-ALTER table t_loan_trace add orderId char(20);
-ALTER table t_loan_trace add orgAmount BIGINT;

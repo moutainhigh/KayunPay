@@ -1,1 +1,0 @@
-alter table t_loan_overdue add overdueType char(2) default 'I' comment '逾期类型(A:还本金利息,P:还本金,不还利息,I:不还本金,还利息,N:不还本金利息)' after refundType;

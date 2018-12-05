@@ -16,16 +16,16 @@ public class AppRoutes extends Routes{
 
 	@Override
 	public void config() {
-		add("app_userController", UserController.class);
-		add("app_fundsController", AppFundsController.class);
-		add("app_protalController", AppProtalController.class);
-		add("app_loanInfoController", AppLoanInfoController.class);
-		add("app_bankv2Controller", BankV2Controller.class);
-		add("app_transferController", AppTransferController.class);
-		add("app_ticketController", AppTicketController.class);
-		add("app_loanCenterController", AppLoanCenterController.class);
-		add("app_actionController", ActionController.class);
-		add("app_activityController", ActivityController.class);
+		add("appUserController", UserController.class);
+		add("appFundsController", AppFundsController.class);
+		add("appProtalController", AppProtalController.class);
+		add("appLoanInfoController", AppLoanInfoController.class);
+		add("appBankv2Controller", BankV2Controller.class);
+		add("appTransferController", AppTransferController.class);
+		add("appTicketController", AppTicketController.class);
+		add("appLoanCenterController", AppLoanCenterController.class);
+		add("appActionController", ActionController.class);
+		add("appActivityController", ActivityController.class);
 	}
 
 }

@@ -1,1 +1,0 @@
-INSERT INTO `t_menu_v2` VALUES (0127, 39, '代扣代付', 'A', '/jxTransfer', 'com.dutiantech.controller.admin.ActionController', 'jxTransfer', 'A', '自动生成');

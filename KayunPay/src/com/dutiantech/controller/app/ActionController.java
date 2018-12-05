@@ -9,6 +9,11 @@ public class ActionController extends BaseController {
 	 * ------------------------ HTML   路径 映射 --------------------------
 	 * 							(路径page开头)
 	 */
+	@ActionKey("/")
+	public void index() {
+		renderText("success");
+	}
+	
 	@ActionKey("/app_act20171201")
 	public void appAct20171201() {
 		forward("/app/act20171128.html");

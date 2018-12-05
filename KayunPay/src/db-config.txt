@@ -1,6 +1,6 @@
 #####测试配置#############
 driver_test=com.mysql.jdbc.Driver
-url_test=jdbc:mysql://192.168.1.115:3306/kayunpay?useUnicode=true&characterEncoding=utf8
+url_test=jdbc:mysql://192.168.1.115:3306/kayunpay?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT&useSSL=false
 username_test=root
 password_test=root
 

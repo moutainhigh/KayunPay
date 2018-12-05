@@ -1,1 +1,0 @@
-INSERT INTO `t_menu_v2` VALUES (0126, 100, 'aleve交易记录', 'A', '/jxQueryAleveFromDownFile', 'com.dutiantech.controller.admin.ActionController', 'jxQueryAleveFromDownFile', 'A', '自动生成');
